@@ -137,4 +137,21 @@ public class DeferredHolder<R, T extends R> implements Supplier<T>, Holder<R> {
     public boolean canSerializeIn(HolderOwner<R> owner) {
         return resolveReference().map(holder -> holder.canSerializeIn(owner)).orElse(key != null);
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (!(o instanceof Holder<?> other)) {
+            return false;
+        }
+        return unwrapKey().isPresent() && unwrapKey().equals(other.unwrapKey());
+    }
+
+    // Matches Holder.Reference's identity hash so registry holders and this holder find each other in hash maps.
+    @Override
+    public int hashCode() {
+        return resolveReference().map(System::identityHashCode).orElseGet(() -> System.identityHashCode(this));
+    }
 }

@@ -23,4 +23,10 @@ public class EntityTeleportEvent extends Event {
     public void setTargetX(double v){targetX=v;}
     public void setTargetY(double v){targetY=v;}
     public void setTargetZ(double v){targetZ=v;}
+
+    public static class TeleportCommand extends EntityTeleportEvent {
+        public TeleportCommand(Entity entity, double x, double y, double z) {
+            super(entity, x, y, z);
+        }
+    }
 }

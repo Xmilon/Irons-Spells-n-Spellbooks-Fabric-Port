@@ -49,8 +49,8 @@ public class Snowball extends AbstractMagicProjectile {
 
     @Override
     public void impactParticles(double x, double y, double z) {
-        MagicManager.spawnParticles(level, ParticleHelper.SNOW_DUST, x, y, z, 50, 0.5, 0.5, 0.5, .2, true);
-        MagicManager.spawnParticles(level, ParticleHelper.SNOWFLAKE, x, y, z, 50, 0.5, 0.5, 0.5, .2, false);
+        MagicManager.spawnParticles(level(), ParticleHelper.SNOW_DUST, x, y, z, 50, 0.5, 0.5, 0.5, .2, true);
+        MagicManager.spawnParticles(level(), ParticleHelper.SNOWFLAKE, x, y, z, 50, 0.5, 0.5, 0.5, .2, false);
     }
 
     @Override
@@ -61,13 +61,13 @@ public class Snowball extends AbstractMagicProjectile {
     @Override
     protected void onHit(HitResult hitresult) {
         super.onHit(hitresult);
-        createFrostField(Utils.moveToRelativeGroundLevel(level, hitresult.getLocation(), 2));
+        createFrostField(Utils.moveToRelativeGroundLevel(level(), hitresult.getLocation(), 2));
         float explosionRadius = getExplosionRadius();
         var entities = level().getEntities(this, this.getBoundingBox().inflate(explosionRadius));
         for (Entity entity : entities) {
             double distance = entity.distanceToSqr(hitresult.getLocation());
             if (entity instanceof LivingEntity livingEntity && distance < explosionRadius * explosionRadius && canHitEntity(entity) && !DamageSources.isFriendlyFireBetween(getOwner(), entity)) {
-                if (Utils.hasLineOfSight(level, hitresult.getLocation(), entity.position().add(0, entity.getEyeHeight() * .5f, 0), true)) {
+                if (Utils.hasLineOfSight(level(), hitresult.getLocation(), entity.position().add(0, entity.getEyeHeight() * .5f, 0), true)) {
 //                    double p = (1 - Math.pow(Math.sqrt(distance) / (explosionRadius), 3));
 //                    entity.setTicksFrozen(entity.getTicksFrozen() + (int) (entity.getTicksRequiredToFreeze() * 2 * p));
                     livingEntity.addEffect(new MobEffectInstance(net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MobEffectRegistry.CHILLED.get()), (int) getDamage()));
@@ -79,7 +79,7 @@ public class Snowball extends AbstractMagicProjectile {
 
     public void createFrostField(Vec3 location) {
         if (!level().isClientSide) {
-            FrostField fire = new FrostField(level);
+            FrostField fire = new FrostField(level());
             fire.setOwner(getOwner());
             fire.setDuration((int) getDamage());
             fire.setRadius(getExplosionRadius());

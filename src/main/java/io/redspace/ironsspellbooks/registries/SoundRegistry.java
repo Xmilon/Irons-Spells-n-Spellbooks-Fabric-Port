@@ -17,6 +17,12 @@ public class SoundRegistry {
     }
 
     //TODO: bring sound locations into spec
+    public static DeferredHolder<SoundEvent, SoundEvent> ARCANE_IMPACT = registerSoundEvent("entity.generic.arcane_impact");
+    public static DeferredHolder<SoundEvent, SoundEvent> GRAVITY_FISSURE_CHARGE = registerSoundEvent("spell.gravity_fissure.charge");
+    public static DeferredHolder<SoundEvent, SoundEvent> SOULFIRE_RAY_CAST = registerSoundEvent("spell.soulfire_ray.cast");
+    public static DeferredHolder<SoundEvent, SoundEvent> SOULFIRE_RAY_CHARGE = registerSoundEvent("spell.soulfire_ray.charge");
+    public static DeferredHolder<SoundEvent, SoundEvent> CHARGE_CHAINS = registerSoundEvent("spell.arcane_shackle.charge");
+    public static DeferredHolder<SoundEvent, SoundEvent> ECHOING_STRIKES_CAST = registerSoundEvent("spell.echoing_strikes.cast");
     public static DeferredHolder<SoundEvent, SoundEvent> FORCE_IMPACT = registerSoundEvent("force_impact");
     public static DeferredHolder<SoundEvent, SoundEvent> ICE_IMPACT = registerSoundEvent("ice_impact");
     public static DeferredHolder<SoundEvent, SoundEvent> FIRE_IMPACT = registerSoundEvent("entity.generic.fire_impact");

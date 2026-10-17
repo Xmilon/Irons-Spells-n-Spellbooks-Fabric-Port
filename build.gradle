@@ -25,6 +25,7 @@ repositories {
 }
 
 loom {
+	accessWidenerPath = file("src/main/resources/irons_spellbooks.accesswidener")
 	runs {
 		client {
 			runDir = "run/client"
@@ -76,6 +77,7 @@ processResources {
 
 tasks.withType(JavaCompile).configureEach {
 	it.options.release = 21
+	it.options.compilerArgs << "-Xmaxerrs" << "2000"
 }
 
 java {

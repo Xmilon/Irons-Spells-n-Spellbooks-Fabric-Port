@@ -17,6 +17,8 @@ import io.redspace.ironsspellbooks.item.consumables.SimpleElixir;
 import io.redspace.ironsspellbooks.item.curios.*;
 import io.redspace.ironsspellbooks.item.weapons.*;
 import io.redspace.ironsspellbooks.item.weapons.pyrium_staff.PyriumStaffItem;
+import io.redspace.ironsspellbooks.item.consumables.TinctureOfForgetfulnessItem;
+import io.redspace.ironsspellbooks.item.curios.WickedBoneRingItem;
 import io.redspace.ironsspellbooks.render.CinderousRarity;
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import net.minecraft.ChatFormatting;
@@ -217,6 +219,11 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, ChronicleItem> THE_CHRONICLE = ITEMS.register("chronicle", () -> new ChronicleItem(new Item.Properties().stacksTo(1).rarity(Rarity.EPIC)));
 
     public static final DeferredHolder<Item, Item> CINDEROUS_SOULCALLER = ITEMS.register("cinderous_soulcaller", () -> new CinderousSoulcallerItem(ItemPropertiesHelper.material(1).rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue()).fireResistant()));
+    public static final DeferredHolder<Item, Item> BONE_KEY = ITEMS.register("bone_key", () -> new SimpleDescriptiveItem(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON).fireResistant()));
+    public static final DeferredHolder<Item, Item> DEAD_KING_PHYLACTERY = ITEMS.register("dead_king_phylactery", () -> new SimpleDescriptiveItem(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON).fireResistant()));
+    public static final DeferredHolder<Item, Item> DEAD_KING_PHYLACTERY_SHARD = ITEMS.register("dead_king_phylactery_shard", () -> new Item(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON).fireResistant()));
+    public static final DeferredHolder<Item, Item> PREPARED_ICE_SPIDER_EGG = ITEMS.register("prepared_ice_spider_egg", () -> new Item(ItemPropertiesHelper.material()));
+    public static final DeferredHolder<Item, Item> TINCTURE_OF_FORGETFULNESS = ITEMS.register("tincture_of_forgetfulness", () -> new TinctureOfForgetfulnessItem(ItemPropertiesHelper.material(16)));
     public static final DeferredHolder<Item, Item> DECREPIT_KEY = ITEMS.register("decrepit_key", () -> new SimpleDescriptiveItem(ItemPropertiesHelper.material().rarity(Rarity.UNCOMMON).fireResistant()));
 
 
@@ -235,6 +242,9 @@ public class ItemRegistry {
     public static final DeferredHolder<Item, Item> PORTAL_FRAME_ITEM = ITEMS.register("portal_frame", PortalFrameBlockItem::new);
     public static final DeferredHolder<Item, Item> BRAZIER_ITEM = ITEMS.register("brazier", () -> new BlockItem(BlockRegistry.BRAZIER_FIRE.get(), new Item.Properties()));
     public static final DeferredHolder<Item, Item> SOUL_BRAZIER_ITEM = ITEMS.register("brazier_soul", () -> new BlockItem(BlockRegistry.BRAZIER_SOUL.get(), new Item.Properties()));
+    public static final DeferredHolder<Item, Item> COOKED_ICE_SPIDER_EGG_BLOCK_ITEM = ITEMS.register("cooked_ice_spider_egg", () -> new BlockItem(BlockRegistry.COOKED_ICE_SPIDER_EGG.get(), new Item.Properties().stacksTo(1)));
+    public static final DeferredHolder<Item, Item> BONE_VAULT_BLOCK_ITEM = ITEMS.register("bone_vault", () -> new BlockItem(BlockRegistry.BONE_VAULT_BLOCK.get(), new Item.Properties()));
+    public static final DeferredHolder<Item, Item> CINDEROUS_VAULT_BLOCK_ITEM = ITEMS.register("cinderous_vault", () -> new BlockItem(BlockRegistry.CINDEROUS_VAULT_BLOCK.get(), new Item.Properties().rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue())));
     public static final DeferredHolder<Item, Item> CINDEROUS_KEYSTONE_BLOCK_ITEM = ITEMS.register("cinderous_soul_rune", () -> new BlockItem(BlockRegistry.CINDEROUS_KEYSTONE.get(), new Item.Properties().rarity(CinderousRarity.CINDEROUS_RARITY_PROXY.getValue())));
     public static final DeferredHolder<Item, Item> ICE_SPIDER_EGG_BLOCK_ITEM = ITEMS.register("ice_spider_egg", () -> new BlockItem(BlockRegistry.ICE_SPIDER_EGG.get(), new Item.Properties().rarity(Rarity.RARE)));
 
@@ -325,6 +335,7 @@ public class ItemRegistry {
     public static final Supplier<CurioBaseItem> HEAVY_CHAIN = ITEMS.register("heavy_chain_necklace", () -> new CurioBaseItem(ItemPropertiesHelper.equipment(1)).withAttributes(TrinketsSlots.NECKLACE_SLOT, new AttributeContainer(AttributeRegistry.SPELL_RESIST, 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)));
     public static final Supplier<CurioBaseItem> EMERALD_STONEPLATE_RING = ITEMS.register("emerald_stoneplate_ring", () -> new SimpleDescriptiveCurio(ItemPropertiesHelper.equipment(1), TrinketsSlots.RING_SLOT));
     public static final Supplier<CurioBaseItem> FIREWARD_RING = ITEMS.register("fireward_ring", FirewardRing::new);
+    public static final Supplier<CurioBaseItem> WICKED_BONE_RING = ITEMS.register("wicked_bone_ring", () -> new WickedBoneRingItem(new Item.Properties().stacksTo(1).rarity(Rarity.UNCOMMON).fireResistant()));
     public static final Supplier<CurioBaseItem> FROSTWARD_RING = ITEMS.register("frostward_ring", FrostwardRing::new);
     public static final Supplier<CurioBaseItem> POISONWARD_RING = ITEMS.register("poisonward_ring", PoisonwardRing::new);
     public static final Supplier<CurioBaseItem> CONJURERS_TALISMAN = ITEMS.register("conjurers_talisman", () -> new CurioBaseItem(ItemPropertiesHelper.equipment(1)).withAttributes(TrinketsSlots.NECKLACE_SLOT, new AttributeContainer(AttributeRegistry.SUMMON_DAMAGE, 0.15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)));

@@ -95,6 +95,7 @@ public class CommonSetup {
         FabricDefaultAttributeRegistry.register(EntityRegistry.SUMMONED_CLAYMORE.get(), SummonedClaymoreEntity.prepareAttributes());
         FabricDefaultAttributeRegistry.register(EntityRegistry.SUMMONED_RAPIER.get(), SummonedRapierEntity.prepareAttributes());
         FabricDefaultAttributeRegistry.register(EntityRegistry.ICE_SPIDER.get(), IceSpiderEntity.prepareAttributes());
+        FabricDefaultAttributeRegistry.register(EntityRegistry.SCAPEGOAT.get(), io.redspace.ironsspellbooks.entity.spells.scapegoat.ScapegoatEntity.prepareAttributes());
 
         SpawnPlacements.register(
                 EntityRegistry.NECROMANCER.get(),
@@ -124,32 +125,32 @@ public class CommonSetup {
         // PlayerMixin should already inject these into Player#createAttributes. This fallback keeps Fabric builds
         // resilient in case that mixin fails to apply for any reason.
         AttributeSupplier.Builder playerAttributes = Player.createAttributes()
-                .add(AttributeRegistry.MAX_MANA)
-                .add(AttributeRegistry.MANA_REGEN)
-                .add(AttributeRegistry.COOLDOWN_REDUCTION)
-                .add(AttributeRegistry.SPELL_POWER)
-                .add(AttributeRegistry.SPELL_RESIST)
-                .add(AttributeRegistry.CAST_TIME_REDUCTION)
-                .add(AttributeRegistry.SUMMON_DAMAGE)
-                .add(AttributeRegistry.CASTING_MOVESPEED)
-                .add(AttributeRegistry.FIRE_MAGIC_RESIST)
-                .add(AttributeRegistry.ICE_MAGIC_RESIST)
-                .add(AttributeRegistry.LIGHTNING_MAGIC_RESIST)
-                .add(AttributeRegistry.HOLY_MAGIC_RESIST)
-                .add(AttributeRegistry.ENDER_MAGIC_RESIST)
-                .add(AttributeRegistry.BLOOD_MAGIC_RESIST)
-                .add(AttributeRegistry.EVOCATION_MAGIC_RESIST)
-                .add(AttributeRegistry.NATURE_MAGIC_RESIST)
-                .add(AttributeRegistry.ELDRITCH_MAGIC_RESIST)
-                .add(AttributeRegistry.FIRE_SPELL_POWER)
-                .add(AttributeRegistry.ICE_SPELL_POWER)
-                .add(AttributeRegistry.LIGHTNING_SPELL_POWER)
-                .add(AttributeRegistry.HOLY_SPELL_POWER)
-                .add(AttributeRegistry.ENDER_SPELL_POWER)
-                .add(AttributeRegistry.BLOOD_SPELL_POWER)
-                .add(AttributeRegistry.EVOCATION_SPELL_POWER)
-                .add(AttributeRegistry.NATURE_SPELL_POWER)
-                .add(AttributeRegistry.ELDRITCH_SPELL_POWER);
+                .add(AttributeRegistry.registered(AttributeRegistry.MAX_MANA))
+                .add(AttributeRegistry.registered(AttributeRegistry.MANA_REGEN))
+                .add(AttributeRegistry.registered(AttributeRegistry.COOLDOWN_REDUCTION))
+                .add(AttributeRegistry.registered(AttributeRegistry.SPELL_POWER))
+                .add(AttributeRegistry.registered(AttributeRegistry.SPELL_RESIST))
+                .add(AttributeRegistry.registered(AttributeRegistry.CAST_TIME_REDUCTION))
+                .add(AttributeRegistry.registered(AttributeRegistry.SUMMON_DAMAGE))
+                .add(AttributeRegistry.registered(AttributeRegistry.CASTING_MOVESPEED))
+                .add(AttributeRegistry.registered(AttributeRegistry.FIRE_MAGIC_RESIST))
+                .add(AttributeRegistry.registered(AttributeRegistry.ICE_MAGIC_RESIST))
+                .add(AttributeRegistry.registered(AttributeRegistry.LIGHTNING_MAGIC_RESIST))
+                .add(AttributeRegistry.registered(AttributeRegistry.HOLY_MAGIC_RESIST))
+                .add(AttributeRegistry.registered(AttributeRegistry.ENDER_MAGIC_RESIST))
+                .add(AttributeRegistry.registered(AttributeRegistry.BLOOD_MAGIC_RESIST))
+                .add(AttributeRegistry.registered(AttributeRegistry.EVOCATION_MAGIC_RESIST))
+                .add(AttributeRegistry.registered(AttributeRegistry.NATURE_MAGIC_RESIST))
+                .add(AttributeRegistry.registered(AttributeRegistry.ELDRITCH_MAGIC_RESIST))
+                .add(AttributeRegistry.registered(AttributeRegistry.FIRE_SPELL_POWER))
+                .add(AttributeRegistry.registered(AttributeRegistry.ICE_SPELL_POWER))
+                .add(AttributeRegistry.registered(AttributeRegistry.LIGHTNING_SPELL_POWER))
+                .add(AttributeRegistry.registered(AttributeRegistry.HOLY_SPELL_POWER))
+                .add(AttributeRegistry.registered(AttributeRegistry.ENDER_SPELL_POWER))
+                .add(AttributeRegistry.registered(AttributeRegistry.BLOOD_SPELL_POWER))
+                .add(AttributeRegistry.registered(AttributeRegistry.EVOCATION_SPELL_POWER))
+                .add(AttributeRegistry.registered(AttributeRegistry.NATURE_SPELL_POWER))
+                .add(AttributeRegistry.registered(AttributeRegistry.ELDRITCH_SPELL_POWER));
         AttributeSupplier supplier = playerAttributes.build();
         try {
             FabricDefaultAttributeRegistry.register(net.minecraft.world.entity.EntityType.PLAYER, supplier);

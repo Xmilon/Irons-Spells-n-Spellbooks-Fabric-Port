@@ -19,10 +19,13 @@ public class BlockEvent extends Event {
 
     public static class BreakEvent extends BlockEvent {
         private final Player player;
+        private final net.minecraft.world.level.block.state.BlockState state;
         public BreakEvent(Level level, BlockPos pos, Player player) {
             super(level, pos);
             this.player = player;
+            this.state = level.getBlockState(pos);
         }
+        public net.minecraft.world.level.block.state.BlockState getState() { return state; }
         public Player getPlayer() { return player; }
     }
 }

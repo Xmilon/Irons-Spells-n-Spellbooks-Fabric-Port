@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.api.util;
 
+import net.minecraft.world.effect.MobEffectInstance;
+import net.minecraft.world.effect.MobEffect;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.attribute.IMagicAttribute;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
@@ -972,6 +974,50 @@ public class Utils {
         a.remove(DataComponents.DAMAGE);
         b.remove(DataComponents.DAMAGE);
         return ItemStack.isSameItemSameComponents(a, b);
+    }
+
+    public static void fudgeNoCollision(Level level, Entity entity) {
+        // very rudimentary, brute force collision resolution
+        level.getBlockCollisions(entity, entity.getBoundingBox()).forEach(
+                shape -> {
+                    AABB riftBox = entity.getBoundingBox();
+                    AABB collider = shape.bounds();
+                    double dx, dy, dz;
+                    if (riftBox.getCenter().x > collider.getCenter().x) {
+                        dx = Math.max(0, collider.maxX - riftBox.minX);
+                    } else {
+                        dx = Math.min(0, collider.minX - riftBox.maxX);
+                    }
+                    if (riftBox.getCenter().y > collider.getCenter().y) {
+                        dy = Math.max(0, collider.maxY - riftBox.minY);
+                    } else {
+                        dy = Math.min(0, collider.minY - riftBox.maxY);
+                    }
+                    if (riftBox.getCenter().z > collider.getCenter().z) {
+                        dz = Math.max(0, collider.maxZ - riftBox.minZ);
+                    } else {
+                        dz = Math.min(0, collider.minZ - riftBox.maxZ);
+                    }
+                    entity.moveTo(entity.position().add(dx, dy, dz));
+                }
+        );
+    }
+
+    public static Predicate<Entity> tauntPredicate(Entity taunter) {
+        return entity -> (entity instanceof Enemy ^ taunter instanceof Enemy && !taunter.isAlliedTo(entity))
+                || ((taunter instanceof LivingEntity livingEntity && entity instanceof NeutralMob neutralMob) && neutralMob.isAngryAt(livingEntity));
+    }
+
+    public static MobEffectInstance addEffectStack(LivingEntity entity, Holder<MobEffect> effect, int amplifierCap, int defaultDuration) {
+        MobEffectInstance previous = entity.getEffect(effect);
+        MobEffectInstance inst;
+        if (previous != null) {
+            inst = new MobEffectInstance(effect, Math.max(defaultDuration, previous.getDuration()), Math.min(previous.getAmplifier() + 1, amplifierCap), previous.isAmbient(), previous.isVisible(), previous.showIcon());
+        } else {
+            inst = new MobEffectInstance(effect, defaultDuration, 0, false, false, true);
+        }
+        entity.addEffect(inst);
+        return inst;
     }
 }
 

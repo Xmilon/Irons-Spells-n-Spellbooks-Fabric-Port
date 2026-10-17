@@ -1,5 +1,8 @@
 package io.redspace.ironsspellbooks.player;
 
+import io.redspace.ironsspellbooks.api.magic.MagicData;
+import net.minecraft.world.entity.LivingEntity;
+import io.redspace.ironsspellbooks.spells.CastingMobAimingData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.ICastData;
@@ -295,6 +298,17 @@ public class ClientSpellCastHelper {
     @Deprecated(forRemoval = true)
     public static void animatePlayerStart(Player player, ResourceLocation resourceLocation) {
         AnimationHelper.animatePlayerStart(player, resourceLocation);
+    }
+
+    public static void handleCastingMobAimingData(int entityId, CastingMobAimingData aimingData) {
+        var level = Minecraft.getInstance().level;
+        if (level == null) {
+            return;
+        }
+        var entity = level.getEntity(entityId);
+        if (entity instanceof LivingEntity livingEntity) {
+            MagicData.getPlayerMagicData(livingEntity).setAdditionalCastData(aimingData);
+        }
     }
 }
 

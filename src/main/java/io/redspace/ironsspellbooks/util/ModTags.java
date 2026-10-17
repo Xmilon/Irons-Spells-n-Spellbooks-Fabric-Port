@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.util;
 
+import net.minecraft.tags.ItemTags;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceLocation;
@@ -58,6 +59,8 @@ public class ModTags {
     private static TagKey<DamageType> create(String tag) {
         return TagKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, tag));
     }
+    public static final TagKey<EntityType<?>> CANT_RICOCHET = TagKey.create(Registries.ENTITY_TYPE, ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "cant_ricochet"));
+    public static final TagKey<Item> DEAD_KING_RESPAWNABLE = TagKey.create(Registries.ITEM, ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "dead_king_respawnable"));
 }
 
 

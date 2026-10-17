@@ -30,7 +30,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class MagicArrowProjectile extends AbstractMagicProjectile {
-    private final List<Entity> victims = new ArrayList<>();
+    protected final List<Entity> victims = new ArrayList<>();
     private int hitsPerTick;
 
     public MagicArrowProjectile(EntityType<? extends Projectile> pEntityType, Level pLevel) {
@@ -59,7 +59,7 @@ public class MagicArrowProjectile extends AbstractMagicProjectile {
 
     @Override
     public void impactParticles(double x, double y, double z) {
-        MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, x, y, z, 10, .1, .1, .1, .4, false);
+        MagicManager.spawnParticles(level(), ParticleHelper.UNSTABLE_ENDER, x, y, z, 10, .1, .1, .1, .4, false);
     }
 
     @Override

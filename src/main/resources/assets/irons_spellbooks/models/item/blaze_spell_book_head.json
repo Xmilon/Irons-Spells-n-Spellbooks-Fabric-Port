@@ -1,0 +1,7 @@
+{
+  "textures": {
+    "book": "irons_spellbooks:item/spell_book_models/blaze_spell_book",
+    "particle": "irons_spellbooks:item/spell_book_models/blaze_spell_book"
+  },
+  "parent": "irons_spellbooks:item/template_spell_book_model_open"
+}

@@ -3,9 +3,12 @@ package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
+import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.audio.DeadKingAmbienceSoundInstance;
+import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.audio.DeadKingAmbienceSoundManager;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -64,23 +67,32 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
     @Override
     public void tick() {
         super.tick();
+        this.setHealth(this.getMaxHealth());
         if (triggered()) {
             ++currentAnimTime;
             if (!level().isClientSide) {
                 if (currentAnimTime > animLength) {
                     DeadKingBoss boss = new DeadKingBoss(level());
                     boss.moveTo(this.position().add(0, 1, 0));
+                    float f = this.getYRot();
+                    boss.setYRot(f);
+                    boss.yRotO = f;
+                    boss.yHeadRot = f;
+                    boss.yHeadRotO = f;
+                    boss.yBodyRot = f;
+                    boss.yBodyRotO = f;
+                    boss.setSpawnPos(boss.position());
                     boss.finalizeSpawn((ServerLevel) level(), level().getCurrentDifficultyAt(boss.getOnPos()), MobSpawnType.TRIGGERED, null);
                     boss.setPersistenceRequired();
-                    this.level().addFreshEntity(boss);
+                    level.addFreshEntity(boss);
                     MagicManager.spawnParticles(level(), ParticleTypes.SCULK_SOUL, position().x, position().y + 2.5, position().z, 80, .2, .2, .2, .25, true);
-                    this.level().playSound(null, getX(), getY(), getZ(), SoundRegistry.DEAD_KING_SPAWN.get(), SoundSource.MASTER, 20, 1);
+                    level.playSound(null, getX(), getY(), getZ(), SoundRegistry.DEAD_KING_SPAWN.get(), SoundSource.MASTER, 20, 1);
                     discard();
                 }
             } else {
                 resurrectParticles();
             }
-        } else if (this.level().isClientSide) {
+        } else if (level.isClientSide) {
             //Ambience sound handling
             if (tickCount % 40 == 0) {
                 MinecraftInstanceHelper.ifPlayerPresent(player -> {
@@ -105,7 +117,7 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
         float distance = Mth.clamp(Utils.smoothstep(0, 1.15f, f * 3), 0, 1.15f);
         Vec3 pos = new Vec3(0, 0, distance).yRot(rot * Mth.DEG_TO_RAD).add(0, height, 0).add(position());
 
-        this.level().addParticle(ParticleTypes.SCULK_SOUL, pos.x, pos.y, pos.z, 0, 0, 0);
+        level.addParticle(ParticleTypes.SCULK_SOUL, pos.x, pos.y, pos.z, 0, 0, 0);
         float radius = 4;
         if (random.nextFloat() < f * 1.5f) {
             Vec3 random = position().add(new Vec3(
@@ -114,7 +126,7 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
                     (this.random.nextFloat() * 2 - 1) * radius
             ));
             Vec3 motion = position().subtract(random).scale(.04f);
-            this.level().addParticle(ParticleTypes.SCULK_SOUL, random.x, random.y, random.z, motion.x, motion.y, motion.z);
+            level.addParticle(ParticleTypes.SCULK_SOUL, random.x, random.y, random.z, motion.x, motion.y, motion.z);
         }
     }
 
@@ -124,7 +136,7 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
             discard();
             return true;
         } else {
-            Player player = this.level().getNearestPlayer(this, 8);
+            Player player = level.getNearestPlayer(this, 8);
             if (player != null) {
                 trigger();
             }
@@ -141,9 +153,9 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
         return super.mobInteract(pPlayer, pHand);
     }
 
-    private void trigger() {
+    public void trigger() {
         if (!triggered()) {
-            this.level().playSound(null, getX(), getY(), getZ(), SoundRegistry.DEAD_KING_RESURRECT.get(), SoundSource.AMBIENT, 2, 1);
+            level.playSound(null, getX(), getY(), getZ(), SoundRegistry.DEAD_KING_RESURRECT.get(), SoundSource.AMBIENT, 2, 1);
             this.entityData.set(TRIGGERED, true);
             if (this.ambienceSoundManager != null) {
                 ambienceSoundManager.triggerStop();
@@ -191,6 +203,9 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
     public boolean shouldAlwaysAnimateHead() {
         return false;
     }
+
+    @Override
+    public void recreateFromPacket(ClientboundAddEntityPacket packet) {
+        super.recreateFromPacket(packet);
+    }
 }
-
-

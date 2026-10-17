@@ -1,5 +1,41 @@
 package io.redspace.ironsspellbooks;
 
+import io.redspace.ironsspellbooks.entity.VisualFallingBlockRenderer;
+import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingRenderer;
+import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingSoulRenderer;
+import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.undead_spawner.UndeadRiftRenderer;
+import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.fire_orb.OminousFireOrbRenderer;
+import io.redspace.ironsspellbooks.entity.spells.acid_orb.AcidOrbRenderer;
+import io.redspace.ironsspellbooks.entity.spells.ball_lightning.BallLightningRenderer;
+import io.redspace.ironsspellbooks.entity.spells.echoing_strikes.EchoingMagicArrowRenderer;
+import io.redspace.ironsspellbooks.entity.spells.echoing_strikes.EchoingSwordModel;
+import io.redspace.ironsspellbooks.entity.spells.echoing_strikes.MagicSwordRenderer;
+import io.redspace.ironsspellbooks.entity.spells.eldritch_blast.EldritchBlastRenderer;
+import io.redspace.ironsspellbooks.entity.spells.ender_chain.ArcaneShackleRenderer;
+import io.redspace.ironsspellbooks.entity.spells.ender_chain.EnderChainRenderer;
+import io.redspace.ironsspellbooks.entity.spells.fireball.FireballRenderer;
+import io.redspace.ironsspellbooks.entity.spells.firebolt.FireboltRenderer;
+import io.redspace.ironsspellbooks.entity.spells.guiding_bolt.GuidingBoltRenderer;
+import io.redspace.ironsspellbooks.entity.spells.gust.GustRenderer;
+import io.redspace.ironsspellbooks.entity.spells.ice_spike.IceSpikeRenderer;
+import io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombRenderer;
+import io.redspace.ironsspellbooks.entity.spells.icicle.IcicleRenderer;
+import io.redspace.ironsspellbooks.entity.spells.ray_of_frost.RayOfFrostRenderer;
+import io.redspace.ironsspellbooks.entity.spells.scapegoat.ScapegoatRenderer;
+import io.redspace.ironsspellbooks.entity.spells.shield.ShieldModel;
+import io.redspace.ironsspellbooks.entity.spells.shield.ShieldTrimModel;
+import io.redspace.ironsspellbooks.entity.spells.skull_projectile.SkullProjectileRenderer;
+import io.redspace.ironsspellbooks.item.weapons.pyrium_staff.PyriumStaffHeadModel;
+import io.redspace.ironsspellbooks.item.weapons.pyrium_staff.PyriumStaffOrbModel;
+import io.redspace.ironsspellbooks.particle.DragonFireParticle;
+import io.redspace.ironsspellbooks.particle.FallingSparkleParticle;
+import io.redspace.ironsspellbooks.particle.SoulfireRayParticle;
+import io.redspace.ironsspellbooks.particle.TintedBubblePopParticle;
+import io.redspace.ironsspellbooks.render.AngelWingsModel;
+import io.redspace.ironsspellbooks.render.ArmorCapeLayer;
+import io.redspace.ironsspellbooks.render.EnergySwirlLayer;
+import io.redspace.ironsspellbooks.render.ReplacedFireballRenderer;
+import net.minecraft.client.renderer.entity.NoopRenderer;
 import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilScreen;
 import io.redspace.ironsspellbooks.gui.inscription_table.InscriptionTableScreen;
 import io.redspace.ironsspellbooks.gui.overlays.ActiveSpellOverlay;
@@ -41,6 +77,9 @@ import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRe
 import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
+import io.redspace.ironsspellbooks.item.WaywardCompass;
+import io.redspace.ironsspellbooks.registries.ComponentRegistry;
+import net.minecraft.client.renderer.item.CompassItemPropertyFunction;
 import net.minecraft.client.renderer.item.ItemProperties;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -76,6 +115,10 @@ public class IronsSpellbooksClient implements ClientModInitializer {
         registerTooltipCallbacks();
         registerItemProperties();
         registerHudOverlays();
+        io.redspace.ironsspellbooks.setup.ClientEventBridge.init();
+        // Order matters: BossbarManager adjusts the increment that RecastOverlay then tallies.
+        net.neoforged.neoforge.common.NeoForge.EVENT_BUS.register(io.redspace.ironsspellbooks.api.util.BossbarManager.class);
+        net.neoforged.neoforge.common.NeoForge.EVENT_BUS.register(RecastOverlay.class);
         registerModelLayers();
         registerEntityRenderers();
         registerPlayerRenderLayers();
@@ -89,6 +132,10 @@ public class IronsSpellbooksClient implements ClientModInitializer {
     }
 
     private static void registerItemProperties() {
+        ItemProperties.register(ItemRegistry.WAYWARD_COMPASS.get(), ResourceLocation.withDefaultNamespace("angle"),
+                new CompassItemPropertyFunction((level, itemStack, entity) -> WaywardCompass.getCatacombsLocation(entity, itemStack)));
+        ItemProperties.register(ItemRegistry.WIZARD_HELMET.get(), IronsSpellbooks.id("hat"), (itemStack, clientLevel, livingEntity, i) -> itemStack.getOrDefault(ComponentRegistry.CLOTHING_VARIANT, "").equals("hat") ? 1.0f : 0f);
+        ItemProperties.register(ItemRegistry.TWILIGHT_GALE.get(), ResourceLocation.withDefaultNamespace("throwing"), (stack, level, entity, seed) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F);
         var autoloader = ItemRegistry.AUTOLOADER_CROSSBOW.get();
 
         ItemProperties.register(autoloader, ResourceLocation.withDefaultNamespace("pull"), (stack, level, entity, seed) -> {
@@ -121,17 +168,33 @@ public class IronsSpellbooksClient implements ClientModInitializer {
 
     private static void registerModelLoadingPlugins() {
         ModelLoadingPlugin.register(context -> {
-            var itemRegistry = Minecraft.getInstance().level != null
-                    ? Minecraft.getInstance().level.registryAccess().registryOrThrow(Registries.ITEM)
-                    : BuiltInRegistries.ITEM;
-            for (var item : itemRegistry) {
-                if (item instanceof io.redspace.ironsspellbooks.item.SpellBook) {
-                    ResourceLocation id = itemRegistry.getKey(item);
-                    if (id != null && IronsSpellbooks.MODID.equals(id.getNamespace())) {
-                        context.addModels(ResourceLocation.fromNamespaceAndPath(id.getNamespace(), id.getPath() + "_flat"));
-                    }
-                }
+            for (String name : io.redspace.ironsspellbooks.render.ItemVariantModels.GUI) {
+                context.addModels(io.redspace.ironsspellbooks.render.ItemVariantModels.guiId(name));
             }
+            for (String name : io.redspace.ironsspellbooks.render.ItemVariantModels.HEAD) {
+                context.addModels(io.redspace.ironsspellbooks.render.ItemVariantModels.headId(name));
+            }
+            for (var school : io.redspace.ironsspellbooks.api.registry.SchoolRegistry.REGISTRY) {
+                context.addModels(io.redspace.ironsspellbooks.render.AffinityRingRenderer.getAffinityRingModelLocation(school));
+                context.addModels(io.redspace.ironsspellbooks.render.ScrollModel.getScrollModelLocation(school));
+            }
+            context.addModels(IronsSpellbooks.id("item/pyrium_staff_haft"));
+            context.addModels(IronsSpellbooks.id("item/fiery_dagger"));
+            context.addModels(IronsSpellbooks.id("item/firebrand_gui"));
+            context.addModels(IronsSpellbooks.id("item/firebrand_normal"));
+            context.modifyModelAfterBake().register((model, ctx) -> {
+                if (model != null && IronsSpellbooks.id("item/fiery_dagger").equals(ctx.resourceId())) {
+                    return new io.redspace.ironsspellbooks.render.SpectralItemModel(model);
+                }
+                var topLevel = ctx.topLevelId();
+                if (model == null || topLevel == null) {
+                    return model;
+                }
+                if (topLevel.equals(net.minecraft.client.resources.model.ModelResourceLocation.inventory(IronsSpellbooks.id("scroll")))) {
+                    return new io.redspace.ironsspellbooks.render.ScrollModel(model);
+                }
+                return model;
+            });
         });
     }
 
@@ -266,6 +329,38 @@ public class IronsSpellbooksClient implements ClientModInitializer {
         registerEntityRenderer(EntityRegistry.ICE_TOMB.get(), io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombRenderer::new);
         registerEntityRenderer(EntityRegistry.SNOWBALL.get(), io.redspace.ironsspellbooks.entity.spells.snowball.SnowballRenderer::new);
         registerEntityRenderer(EntityRegistry.THROWN_SPEAR.get(), io.redspace.ironsspellbooks.entity.spells.thrown_spear.ThrownSpearRenderer::new);
+        registerEntityRenderer(EntityType.SMALL_FIREBALL, (context) -> new ReplacedFireballRenderer(context, 0.75f, .75f));
+        registerEntityRenderer(EntityType.FIREBALL, (context) -> new ReplacedFireballRenderer(context, 1.25f, 3f));
+        registerEntityRenderer(EntityRegistry.CONE_OF_COLD_PROJECTILE.get(), NoopRenderer::new);
+        registerEntityRenderer(EntityRegistry.FIRE_BREATH_PROJECTILE.get(), NoopRenderer::new);
+        registerEntityRenderer(EntityRegistry.POISON_BREATH_PROJECTILE.get(), NoopRenderer::new);
+        registerEntityRenderer(EntityRegistry.DRAGON_BREATH_PROJECTILE.get(), NoopRenderer::new);
+        registerEntityRenderer(EntityRegistry.FIRE_ERUPTION_AOE.get(), NoopRenderer::new);
+        registerEntityRenderer(EntityRegistry.DEAD_KING_CORPSE.get(), DeadKingRenderer::new);
+        registerEntityRenderer(EntityRegistry.DEAD_KING_SOUL.get(), DeadKingSoulRenderer::new);
+        registerEntityRenderer(EntityRegistry.POISON_CLOUD.get(), NoopRenderer::new);
+        registerEntityRenderer(EntityRegistry.DRAGON_BREATH_POOL.get(), NoopRenderer::new);
+        registerEntityRenderer(EntityRegistry.POISON_SPLASH.get(), NoopRenderer::new);
+        registerEntityRenderer(EntityRegistry.FIRE_FIELD.get(), NoopRenderer::new);
+        registerEntityRenderer(EntityRegistry.HEALING_AOE.get(), NoopRenderer::new);
+        registerEntityRenderer(EntityRegistry.CHAIN_LIGHTNING.get(), NoopRenderer::new);
+        registerEntityRenderer(EntityRegistry.FIREFLY_SWARM.get(), NoopRenderer::new);
+        registerEntityRenderer(EntityRegistry.EARTHQUAKE_AOE.get(), NoopRenderer::new);
+        registerEntityRenderer(EntityRegistry.BLIZZARD_AOE.get(), NoopRenderer::new);
+        registerEntityRenderer(EntityRegistry.FALLING_BLOCK.get(), VisualFallingBlockRenderer::new);
+        registerEntityRenderer(EntityRegistry.ARROW_VOLLEY_ENTITY.get(), NoopRenderer::new);
+        registerEntityRenderer(EntityRegistry.STOMP_AOE.get(), NoopRenderer::new);
+        registerEntityRenderer(EntityRegistry.ECHOING_STRIKE.get(), NoopRenderer::new);
+        registerEntityRenderer(EntityRegistry.LIGHTNING_STRIKE.get(), NoopRenderer::new);
+        registerEntityRenderer(EntityRegistry.FROST_FIELD.get(), NoopRenderer::new);
+        registerEntityRenderer(EntityRegistry.OMINOUS_FIRE_ORB.get(), OminousFireOrbRenderer::new);
+        registerEntityRenderer(EntityRegistry.UNDEAD_RIFT.get(), UndeadRiftRenderer::new);
+        registerEntityRenderer(EntityRegistry.FANG_SWIRL.get(), NoopRenderer::new);
+        registerEntityRenderer(EntityRegistry.ARCANE_SHACKLE.get(), ArcaneShackleRenderer::new);
+        registerEntityRenderer(EntityRegistry.ENDER_CHAIN.get(), EnderChainRenderer::new);
+        registerEntityRenderer(EntityRegistry.ECHOING_SWORD.get(), c -> new MagicSwordRenderer<>(c, EchoingSwordModel::new));
+        registerEntityRenderer(EntityRegistry.ECHOING_ARROW.get(), EchoingMagicArrowRenderer::new);
+        registerEntityRenderer(EntityRegistry.SCAPEGOAT.get(), ScapegoatRenderer::new);
     }
 
     private static void registerPlayerRenderLayers() {
@@ -301,6 +396,8 @@ public class IronsSpellbooksClient implements ClientModInitializer {
                 net.minecraft.client.model.geom.builders.LayerDefinition.create(net.minecraft.client.model.HumanoidModel.createMesh(new net.minecraft.client.model.geom.builders.CubeDeformation(0.0F), 0.0F), 64, 64));
         registerModelLayer(io.redspace.ironsspellbooks.item.weapons.pyrium_staff.PyriumStaffHeadModel.LAYER_LOCATION, io.redspace.ironsspellbooks.item.weapons.pyrium_staff.PyriumStaffHeadModel::createBodyLayer);
         registerModelLayer(io.redspace.ironsspellbooks.item.weapons.pyrium_staff.PyriumStaffOrbModel.LAYER_LOCATION, io.redspace.ironsspellbooks.item.weapons.pyrium_staff.PyriumStaffOrbModel::createBodyLayer);
+        registerModelLayer(DeadKingSoulRenderer.MODEL_LAYER_LOCATION, DeadKingSoulRenderer::createBodyLayer);
+        registerModelLayer(DeadKingSoulRenderer.CROWN_CUBE_LAYER_LOCATION, DeadKingSoulRenderer::createCrownCubeLayer);
     }
 
     private static void registerBlockEntityRenderers() {
@@ -353,6 +450,10 @@ public class IronsSpellbooksClient implements ClientModInitializer {
         factory.register(ParticleRegistry.TRACE_PARTICLE.get(), io.redspace.ironsspellbooks.particle.TraceParticle.Provider::new);
         factory.register(ParticleRegistry.FALLING_BLOCK_PARTICLE.get(), sprites -> new io.redspace.ironsspellbooks.particle.FallingBlockParticle.Provider());
         factory.register(ParticleRegistry.SWIRLING_PARTICLE.get(), sprites -> new io.redspace.ironsspellbooks.particle.SwirlingParticle.Provider());
+        factory.register(ParticleRegistry.SOULFIRE_RAY_PARTICLE.get(), SoulfireRayParticle.Provider::new);
+        factory.register(ParticleRegistry.SOUL_FIRE_PARTICLE.get(), DragonFireParticle.Provider::new);
+        factory.register(ParticleRegistry.TINTED_BUBBLE_POP_PARTICLE.get(), TintedBubblePopParticle.Provider::new);
+        factory.register(ParticleRegistry.FALLING_SPARKLE_PARTICLE.get(), FallingSparkleParticle.Provider::new);
     }
 
     @SuppressWarnings({"rawtypes", "unchecked"})

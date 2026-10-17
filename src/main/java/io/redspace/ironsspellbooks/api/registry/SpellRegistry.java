@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.api.registry;
 
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
@@ -101,6 +102,11 @@ public class SpellRegistry {
     //TODO: should the none spell be registered?
 
     // BLOOD
+    public static final Supplier<AbstractSpell> ARCANE_SHACKLE_SPELL = registerSpell(new ArcaneShackleSpell());
+    public static final Supplier<AbstractSpell> GRAVITY_FISSURE = registerSpell(new GravityFissureSpell());
+    public static final Supplier<AbstractSpell> FANG_SWIRL_SPELL = registerSpell(new FangSwirlSpell());
+    public static final Supplier<AbstractSpell> SCAPEGOAT_SPELL = registerSpell(new ScapegoatSpell());
+    public static final Supplier<AbstractSpell> BLIZZARD_SPELL = registerSpell(new BlizzardSpell());
     public static final Supplier<AbstractSpell> ACUPUNCTURE_SPELL = registerSpell(new AcupunctureSpell());
     public static final Supplier<AbstractSpell> BLOOD_NEEDLES_SPELL = registerSpell(new BloodNeedlesSpell());
     public static final Supplier<AbstractSpell> BLOOD_SLASH_SPELL = registerSpell(new BloodSlashSpell());

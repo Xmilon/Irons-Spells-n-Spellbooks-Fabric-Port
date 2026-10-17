@@ -21,7 +21,6 @@ import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.Map;
-import java.util.WeakHashMap;
 
 public class MagicData {
 
@@ -300,15 +299,16 @@ public class MagicData {
 
     /********* SYSTEM *******************************************************/
 
-    private static final Map<LivingEntity, MagicData> ENTITY_MAGIC_DATA = new WeakHashMap<>();
-
     public static MagicData getPlayerMagicData(LivingEntity livingEntity) {
-        return ENTITY_MAGIC_DATA.computeIfAbsent(livingEntity, entity -> {
-            if (entity instanceof ServerPlayer serverPlayer) {
-                return new MagicData(serverPlayer);
-            }
-            return new MagicData(entity instanceof net.minecraft.world.entity.Mob);
-        });
+        var holder = (MagicDataHolder) livingEntity;
+        MagicData data = holder.irons_spellbooks$getMagicData();
+        if (data == null) {
+            data = livingEntity instanceof ServerPlayer serverPlayer
+                    ? new MagicData(serverPlayer)
+                    : new MagicData(livingEntity instanceof net.minecraft.world.entity.Mob);
+            holder.irons_spellbooks$setMagicData(data);
+        }
+        return data;
     }
 
     public void copyFrom(MagicData oldData, HolderLookup.Provider provider, boolean wasDeath) {

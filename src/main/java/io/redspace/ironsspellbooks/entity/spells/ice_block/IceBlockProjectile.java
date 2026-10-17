@@ -180,7 +180,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
             }
         } else {
             if (airTime % 3 == 0) {
-                HitResult ground = Utils.raycastForBlock(level, position(), position().subtract(0, 3.5, 0), ClipContext.Fluid.ANY);
+                HitResult ground = Utils.raycastForBlock(level(), position(), position().subtract(0, 3.5, 0), ClipContext.Fluid.ANY);
                 if (ground.getType() == HitResult.Type.MISS) {
                     tooHigh = true;
                 }
@@ -241,8 +241,8 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
 
     @Override
     public void impactParticles(double x, double y, double z) {
-        MagicManager.spawnParticles(level, ParticleTypes.SNOWFLAKE, x, y, z, 50, .8, .1, .8, 0.2, false);
-        MagicManager.spawnParticles(level, ParticleHelper.SNOWFLAKE, x, y, z, 25, .5, .1, .5, 0.3, false);
+        MagicManager.spawnParticles(level(), ParticleTypes.SNOWFLAKE, x, y, z, 50, .8, .1, .8, 0.2, false);
+        MagicManager.spawnParticles(level(), ParticleHelper.SNOWFLAKE, x, y, z, 25, .5, .1, .5, 0.3, false);
     }
 
     @Override

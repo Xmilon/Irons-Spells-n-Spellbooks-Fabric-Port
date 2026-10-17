@@ -75,6 +75,9 @@ public class IronsSpellbooks implements ModInitializer {
         ClientConfigs.SPEC.toString();
         ServerConfigs.SPEC.toString();
 
+        net.fabricmc.loader.api.FabricLoader.getInstance()
+                .getEntrypointContainers("irons_spellbooks:addon", io.redspace.ironsspellbooks.api.IronsSpellbooksAddon.class)
+                .forEach(container -> container.getEntrypoint().onInitialize());
     }
 
     public static ResourceLocation id(@NotNull String path) {

@@ -38,7 +38,7 @@ public class GuidingBoltProjectile extends AbstractMagicProjectile {
 
     @Override
     public void impactParticles(double x, double y, double z) {
-        MagicManager.spawnParticles(level, ParticleHelper.WISP, x, y, z, 25, 0, 0, 0, .18, true);
+        MagicManager.spawnParticles(level(), ParticleHelper.WISP, x, y, z, 25, 0, 0, 0, .18, true);
     }
 
     @Override

@@ -14,6 +14,16 @@
 
 [Documentation Site](https://iron431.github.io/Irons-Spellbooks-Docs/)
 
+## Requirements
+
+Minecraft 1.21.1 (Fabric)
+
+- Fabric API: [Modrinth](https://modrinth.com/mod/fabric-api) | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/fabric-api)
+- GeckoLib: [Modrinth](https://modrinth.com/mod/geckolib) | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/geckolib)
+- Player Animation Library: [Modrinth](https://modrinth.com/mod/playeranimator) | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/playeranimator)
+- Accessories: [Modrinth](https://modrinth.com/mod/accessories) | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/accessories)
+- owo-lib: [Modrinth](https://modrinth.com/mod/owo-lib) | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/owo-lib)
+
 ## General
 
 If you love the mod and would like to help support its ongoing development consider becoming a patron

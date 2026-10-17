@@ -1,6 +1,8 @@
 package io.redspace.ironsspellbooks.registries;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.effect.SacrificialMarkEffect;
+import io.redspace.ironsspellbooks.effect.SoulBurnMobEffect;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.effect.*;
 import io.redspace.ironsspellbooks.effect.guiding_bolt.GuidingBoltEffect;
@@ -44,6 +46,8 @@ public class MobEffectRegistry {
     public static final DeferredHolder<MobEffect, MobEffect> INSTANT_MANA = MOB_EFFECT_DEFERRED_REGISTER.register("instant_mana", () -> new InstantManaEffect(MobEffectCategory.BENEFICIAL, 0x00b7ec));
     public static final DeferredHolder<MobEffect, MobEffect> OAKSKIN = MOB_EFFECT_DEFERRED_REGISTER.register("oakskin", () -> new OakskinEffect(MobEffectCategory.BENEFICIAL, 0xffef95)
             .addAttributeModifier(Attributes.MOVEMENT_SPEED, IronsSpellbooks.id("mobeffect_oakskin"), -OakskinEffect.SLOWNESS_MAGNITUDE, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL));
+    public static final DeferredHolder<MobEffect, MobEffect> SOUL_BURN = MOB_EFFECT_DEFERRED_REGISTER.register("soul_burn", () -> new SoulBurnMobEffect(MobEffectCategory.HARMFUL, 0x614ab7));
+    public static final DeferredHolder<MobEffect, MobEffect> SACRIFICIAL_MARK = MOB_EFFECT_DEFERRED_REGISTER.register("sacrificial_mark", SacrificialMarkEffect::new);
     public static final DeferredHolder<MobEffect, MobEffect> PLANAR_SIGHT = MOB_EFFECT_DEFERRED_REGISTER.register("planar_sight", () -> new PlanarSightEffect(MobEffectCategory.BENEFICIAL, 0x6c42f5));
     public static final DeferredHolder<MobEffect, MobEffect> ANTIGRAVITY = MOB_EFFECT_DEFERRED_REGISTER.register("antigravity", () -> new MagicMobEffect(MobEffectCategory.NEUTRAL, 0x6c42f5)
             .addAttributeModifier(Attributes.GRAVITY, IronsSpellbooks.id("mobeffect_antigravity"), -1.02, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));

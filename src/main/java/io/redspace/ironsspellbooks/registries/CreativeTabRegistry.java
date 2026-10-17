@@ -45,7 +45,7 @@ public final class CreativeTabRegistry {
             "mana_ring", "silver_ring", "cooldown_ring", "cast_time_ring", "heavy_chain", "emerald_stoneplate_ring",
             "fireward_ring", "frostward_ring", "poisonward_ring", "conjurers_talisman", "greater_conjurers_talisman",
             "affinity_ring", "concentration_amulet", "amethyst_resonance_charm", "expulsion_ring", "visibility_ring",
-            "teleportation_amulet", "betrayer_signet", "invisibility_ring"
+            "teleportation_amulet", "betrayer_signet", "invisibility_ring", "wicked_bone_ring"
     );
 
     private static final List<String> MATERIALS_ORDER = List.of(
@@ -59,11 +59,11 @@ public final class CreativeTabRegistry {
             "weapon_parts", "mithril_weave", "divine_soulshard", "pyrium_ingot", "arcane_ingot", "shriving_stone",
             "eldritch_manuscript", "ancient_knowledge_fragment", "icy_fang", "ice_crystal", "frosted_helve", "energized_core",
             "ice_spider_furled_map", "citadel_furled_map",
-            "decrepit_key", "cinderous_soulcaller",
+            "decrepit_key", "cinderous_soulcaller", "bone_key", "dead_king_phylactery", "dead_king_phylactery_shard",
             "blank_rune", "fire_rune", "ice_rune", "lightning_rune", "ender_rune", "holy_rune", "blood_rune",
             "evocation_rune", "mana_rune", "cooldown_rune", "protection_rune", "nature_rune",
             "oakskin_elixir", "greater_oakskin_elixir", "greater_healing_elixir", "invisibility_elixir",
-            "greater_invisibility_elixir", "evasion_elixir", "greater_evasion_elixir", "fire_ale", "netherward_tincture",
+            "greater_invisibility_elixir", "evasion_elixir", "greater_evasion_elixir", "fire_ale", "netherward_tincture", "tincture_of_forgetfulness", "greater_healing_potion", "prepared_ice_spider_egg", "magic_cloth",
             "music_disc_dead_king_lullaby", "music_disc_flame_still_burns", "disc_fragment_flame_still_burns", "music_disc_whispers_of_ice",
             "keeper_spawn_egg", "dead_king_corpse_spawn_egg", "archevoker_spawn_egg", "necromancer_spawn_egg",
             "cryomancer_spawn_egg", "pyromancer_spawn_egg", "priest_spawn_egg", "apothecarist_spawn_egg", "ice_spider_spawn_egg"

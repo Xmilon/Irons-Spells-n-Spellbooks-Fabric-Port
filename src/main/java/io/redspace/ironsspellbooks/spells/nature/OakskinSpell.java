@@ -84,7 +84,7 @@ public class OakskinSpell extends AbstractSpell {
     }
 
     private float getPercentDamage(int spellLevel, LivingEntity entity) {
-        return OakskinEffect.getReductionAmount(spellLevel) * 100;
+        return OakskinEffect.getReductionAmount(spellLevel, entity) * 100;
     }
 
     @Override

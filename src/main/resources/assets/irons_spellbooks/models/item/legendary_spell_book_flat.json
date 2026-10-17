@@ -1,7 +1,0 @@
-{
-  "parent": "item/generated",
-  "textures": {
-    "layer0": "irons_spellbooks:item/legendary_spell_book"
-  }
-}
-

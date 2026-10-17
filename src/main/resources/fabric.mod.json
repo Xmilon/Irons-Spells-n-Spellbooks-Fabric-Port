@@ -25,6 +25,7 @@
 			"io.redspace.ironsspellbooks.FabricDatagenEntrypoint"
 		]
 	},
+	"accessWidener": "irons_spellbooks.accesswidener",
 	"mixins": [
 		"irons_spellbooks.mixins.json"
 	],

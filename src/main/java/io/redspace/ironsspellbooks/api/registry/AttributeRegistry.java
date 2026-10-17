@@ -13,6 +13,7 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ItemStack;
@@ -66,6 +67,30 @@ public class AttributeRegistry {
     public static final DeferredHolder<Attribute, Attribute> EVOCATION_SPELL_POWER = newPowerAttribute("evocation");
     public static final DeferredHolder<Attribute, Attribute> NATURE_SPELL_POWER = newPowerAttribute("nature");
     public static final DeferredHolder<Attribute, Attribute> ELDRITCH_SPELL_POWER = newPowerAttribute("eldritch");
+
+    /** Registry-bound holder; vanilla attribute maps (sync packets, save/load) are keyed by it, not by DeferredHolder. */
+    public static net.minecraft.core.Holder<Attribute> registered(DeferredHolder<Attribute, Attribute> holder) {
+        return holder.unwrapKey()
+                .flatMap(net.minecraft.core.registries.BuiltInRegistries.ATTRIBUTE::getHolder)
+                .<net.minecraft.core.Holder<Attribute>>map(h -> h)
+                .orElse(holder);
+    }
+
+    /**
+     * Fabric replacement for EntityAttributeModificationEvent: gives a living entity type's supplier every attribute of this mod it lacks.
+     */
+    public static AttributeSupplier withModAttributes(AttributeSupplier supplier) {
+        var builder = new AttributeSupplier.Builder();
+        ((io.redspace.ironsspellbooks.mixin.AttributeSupplierAccessor) supplier).irons_spellbooks$instances()
+                .forEach((attribute, instance) -> builder.add(attribute, instance.getBaseValue()));
+        for (var entry : ATTRIBUTES.getEntries()) {
+            var holder = registered((DeferredHolder<Attribute, Attribute>) entry);
+            if (!supplier.hasAttribute(holder)) {
+                builder.add(holder);
+            }
+        }
+        return builder.build();
+    }
 
     @SubscribeEvent
     public static void modifyEntityAttributes(EntityAttributeModificationEvent e) {

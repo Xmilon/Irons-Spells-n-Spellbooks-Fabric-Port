@@ -99,7 +99,7 @@ public class ThrownItemProjectile extends AbstractMagicProjectile {
         double damage = getDamage();
         var target = pResult.getEntity();
         var damageSource = SpellRegistry.THROW_SPELL.get().getDamageSource(this, getOwner());
-        if (DamageSources.applyDamage(target, (float) damage, damageSource) && !item.isEmpty() && level instanceof ServerLevel serverLevel) {
+        if (DamageSources.applyDamage(target, (float) damage, damageSource) && !item.isEmpty() && level() instanceof ServerLevel serverLevel) {
             EnchantmentHelper.doPostAttackEffectsWithItemSource(serverLevel, target, damageSource, item);
         }
         discard();
@@ -114,7 +114,7 @@ public class ThrownItemProjectile extends AbstractMagicProjectile {
 
     @Override
     public void impactParticles(double x, double y, double z) {
-        MagicManager.spawnParticles(level, ParticleTypes.CRIT, x, y, z, 25, 0.1, 0.1, 0.1, 0.5, true);
+        MagicManager.spawnParticles(level(), ParticleTypes.CRIT, x, y, z, 25, 0.1, 0.1, 0.1, 0.5, true);
     }
 
     @Override

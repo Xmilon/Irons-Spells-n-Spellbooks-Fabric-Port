@@ -3,7 +3,10 @@ package io.redspace.ironsspellbooks.registries;
 
 import com.google.common.collect.ImmutableSet;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.world.entity.ai.village.poi.PoiTypes;
 import net.minecraft.world.entity.ai.village.poi.PoiType;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.state.BlockState;
@@ -19,6 +22,10 @@ public class PoiTypeRegistry {
 
     public static void register(IEventBus eventBus) {
         POIS.register(eventBus);
+        // NeoForge does this automatically; vanilla needs the block states mapped or POIs are never recorded
+        PoiTypes.registerBlockStates(
+                BuiltInRegistries.POINT_OF_INTEREST_TYPE.getHolderOrThrow(ResourceKey.create(Registries.POINT_OF_INTEREST_TYPE, CINDEROUS_KEYSTONE_POI.getLocation())),
+                getBlockStates(BlockRegistry.CINDEROUS_KEYSTONE.get()));
     }
 
     public static final DeferredHolder<PoiType, PoiType> CINDEROUS_KEYSTONE_POI = POIS.register("cinderous_soul_rune", ()->new PoiType(getBlockStates(BlockRegistry.CINDEROUS_KEYSTONE.get()),1,1));

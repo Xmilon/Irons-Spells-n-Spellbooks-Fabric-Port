@@ -58,7 +58,7 @@ public class IcicleProjectile extends AbstractMagicProjectile {
 
     @Override
     public void impactParticles(double x, double y, double z) {
-        MagicManager.spawnParticles(level, ParticleHelper.SNOWFLAKE, x, y, z, 15, .1, .1, .1, .1, true);
+        MagicManager.spawnParticles(level(), ParticleHelper.SNOWFLAKE, x, y, z, 15, .1, .1, .1, .1, true);
     }
 
     @Override

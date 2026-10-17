@@ -7,6 +7,8 @@ import net.minecraft.resources.ResourceLocation;
 public class SpellAnimations {
     public static ResourceLocation ANIMATION_RESOURCE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animation");
 
+    public static final AnimationHolder ONE_HANDED_RAY_CHARGE = new AnimationHolder(IronsSpellbooks.id("charge_one_handed_ray"), false, true);
+    public static final AnimationHolder ONE_HANDED_RAY_SHOOT = new AnimationHolder(IronsSpellbooks.id("shoot_one_handed_ray"), true, true);
     public static final AnimationHolder ANIMATION_INSTANT_CAST = new AnimationHolder(IronsSpellbooks.id("instant_projectile"), true);
     public static final AnimationHolder ANIMATION_CONTINUOUS_CAST = new AnimationHolder(IronsSpellbooks.id("continuous_thrust"), false);
     public static final AnimationHolder ANIMATION_CHARGED_CAST = new AnimationHolder(IronsSpellbooks.id("charged_throw"), true);

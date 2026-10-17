@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
+import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.events.SpellCooldownAddedEvent;
 import io.redspace.ironsspellbooks.api.magic.IMagicManager;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
@@ -50,15 +51,14 @@ public class MagicManager implements IMagicManager {
     }
 
 
+    public void forget(UUID playerId) {
+        lastKnownMaxMana.remove(playerId);
+        lastKnownMana.remove(playerId);
+        lastKnownSpellListHash.remove(playerId);
+    }
+
     public void tick(Level level) {
         boolean doManaRegen = level.getServer().getTickCount() % MANA_REGEN_TICKS == 0;
-        var activePlayers = level.players().stream()
-                .filter(ServerPlayer.class::isInstance)
-                .map(player -> player.getUUID())
-                .collect(java.util.stream.Collectors.toSet());
-        lastKnownMaxMana.keySet().retainAll(activePlayers);
-        lastKnownMana.keySet().retainAll(activePlayers);
-        lastKnownSpellListHash.keySet().retainAll(activePlayers);
 
         level.players().stream().toList().forEach(player -> {
             if (player instanceof ServerPlayer serverPlayer) {

@@ -44,9 +44,21 @@ import java.util.Map;
 import java.util.WeakHashMap;
 
 @Mixin(LivingEntity.class)
-public abstract class LivingEntityMixin {
+public abstract class LivingEntityMixin implements io.redspace.ironsspellbooks.api.magic.MagicDataHolder {
     @Unique
-    private static final Map<LivingEntity, Multimap<Holder<Attribute>, AttributeModifier>> irons_spellbooks$curioAttributeCache = new WeakHashMap<>();
+    private Multimap<Holder<Attribute>, AttributeModifier> irons_spellbooks$curioAttributeCache;
+    @Unique
+    private io.redspace.ironsspellbooks.api.magic.MagicData irons_spellbooks$magicData;
+
+    @Override
+    public io.redspace.ironsspellbooks.api.magic.MagicData irons_spellbooks$getMagicData() {
+        return irons_spellbooks$magicData;
+    }
+
+    @Override
+    public void irons_spellbooks$setMagicData(io.redspace.ironsspellbooks.api.magic.MagicData magicData) {
+        this.irons_spellbooks$magicData = magicData;
+    }
     @Unique
     private boolean irons_spellbooks$wasFallFlying;
 
@@ -199,14 +211,14 @@ public abstract class LivingEntityMixin {
             }
         });
 
-        Multimap<Holder<Attribute>, AttributeModifier> previousModifiers = irons_spellbooks$curioAttributeCache.get(self);
+        Multimap<Holder<Attribute>, AttributeModifier> previousModifiers = this.irons_spellbooks$curioAttributeCache;
         if (previousModifiers != null && !previousModifiers.isEmpty()) {
             self.getAttributes().removeAttributeModifiers(previousModifiers);
         }
         if (!nextModifiers.isEmpty()) {
             self.getAttributes().addTransientAttributeModifiers(nextModifiers);
         }
-        irons_spellbooks$curioAttributeCache.put(self, ImmutableMultimap.copyOf(nextModifiers));
+        this.irons_spellbooks$curioAttributeCache = ImmutableMultimap.copyOf(nextModifiers);
     }
 
     @Inject(method = "updateFallFlying", at = @At("HEAD"))

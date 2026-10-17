@@ -22,6 +22,7 @@ public class PayloadHandler {
 
         //GENERAL
         payloadRegistrar.playToClient(AddMotionToPlayerPacket.TYPE, AddMotionToPlayerPacket.STREAM_CODEC, AddMotionToPlayerPacket::handle);
+        payloadRegistrar.playToClient(ComplexSpawnDataPacket.TYPE, ComplexSpawnDataPacket.STREAM_CODEC, ComplexSpawnDataPacket::handle);
         payloadRegistrar.playToClient(EntityEventPacket.TYPE, EntityEventPacket.STREAM_CODEC, EntityEventPacket::handle);
         payloadRegistrar.playToClient(EquipmentChangedPacket.TYPE, EquipmentChangedPacket.STREAM_CODEC, EquipmentChangedPacket::handle);
         payloadRegistrar.playToClient(OpenEldritchScreenPacket.TYPE, OpenEldritchScreenPacket.STREAM_CODEC, OpenEldritchScreenPacket::handle);

@@ -1,0 +1,36 @@
+accessWidener v2 named
+
+# Entity.level / nextEntityId style access used by ported spell and boss code
+accessible field net/minecraft/world/entity/Entity level Lnet/minecraft/world/level/Level;
+accessible field net/minecraft/world/entity/Entity ENTITY_COUNTER Ljava/util/concurrent/atomic/AtomicInteger;
+
+# Custom falling blocks
+accessible method net/minecraft/world/entity/item/FallingBlockEntity <init> (Lnet/minecraft/world/level/Level;DDDLnet/minecraft/world/level/block/state/BlockState;)V
+accessible field net/minecraft/world/entity/item/FallingBlockEntity blockState Lnet/minecraft/world/level/block/state/BlockState;
+accessible field net/minecraft/world/entity/item/FallingBlockEntity cancelDrop Z
+
+# Pathfinding / body rotation for ice spider and boss navigation
+accessible field net/minecraft/world/level/pathfinder/Path nodes Ljava/util/List;
+accessible method net/minecraft/world/entity/ai/navigation/PathNavigation shouldTargetNextNodeInDirection (Lnet/minecraft/world/phys/Vec3;)Z
+accessible field net/minecraft/world/entity/ai/control/BodyRotationControl mob Lnet/minecraft/world/entity/Mob;
+accessible method net/minecraft/world/entity/ai/control/BodyRotationControl rotateHeadTowardsFront ()V
+accessible method net/minecraft/world/entity/ai/control/BodyRotationControl rotateHeadIfNecessary ()V
+accessible method net/minecraft/world/entity/ai/control/BodyRotationControl rotateBodyIfNecessary ()V
+
+accessible field net/minecraft/world/entity/WalkAnimationState position F
+accessible field net/minecraft/world/entity/LivingEntity walkAnimation Lnet/minecraft/world/entity/WalkAnimationState;
+mutable field net/minecraft/world/entity/LivingEntity walkAnimation Lnet/minecraft/world/entity/WalkAnimationState;
+accessible field net/minecraft/world/entity/ai/goal/target/HurtByTargetGoal timestamp I
+accessible field net/minecraft/world/damagesource/CombatTracker inCombat Z
+accessible field net/minecraft/world/damagesource/DamageSource causingEntity Lnet/minecraft/world/entity/Entity;
+accessible field net/minecraft/world/damagesource/DamageSource directEntity Lnet/minecraft/world/entity/Entity;
+
+accessible method net/minecraft/world/entity/monster/hoglin/Hoglin isImmuneToZombification ()Z
+accessible field net/minecraft/client/renderer/entity/EntityRenderDispatcher renderers Ljava/util/Map;
+extendable method net/minecraft/world/entity/ai/control/BodyRotationControl rotateHeadTowardsFront ()V
+extendable method net/minecraft/world/entity/ai/control/BodyRotationControl rotateHeadIfNecessary ()V
+extendable method net/minecraft/world/entity/ai/control/BodyRotationControl rotateBodyIfNecessary ()V
+accessible class net/minecraft/client/particle/SpellParticle
+accessible method net/minecraft/client/particle/SpellParticle <init> (Lnet/minecraft/client/multiplayer/ClientLevel;DDDDDDLnet/minecraft/client/particle/SpriteSet;)V
+
+accessible method net/minecraft/world/entity/ai/village/poi/PoiTypes registerBlockStates (Lnet/minecraft/core/Holder;Ljava/util/Set;)V

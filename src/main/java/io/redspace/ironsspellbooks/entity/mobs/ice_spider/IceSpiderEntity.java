@@ -15,6 +15,7 @@ import io.redspace.ironsspellbooks.entity.spells.root.PreventDismount;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.core.BlockPos;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
@@ -29,6 +30,7 @@ import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import net.minecraft.world.entity.ai.control.BodyRotationControl;
 import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.ai.control.MoveControl;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
@@ -46,16 +48,20 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
+import net.neoforged.bus.api.SubscribeEvent;
+import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.entity.PartEntity;
+import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import org.joml.Vector3f;
-import software.bernie.geckolib.animation.AnimationState;
 import software.bernie.geckolib.animation.*;
+import software.bernie.geckolib.animation.AnimationState;
 
 import javax.annotation.Nullable;
 import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+@EventBusSubscriber
 public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, IAnimatedAttacker, PreventDismount {
 
     @Override
@@ -69,28 +75,35 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         this.yHeadRotO = y;
     }
 
-    private static final EntityDataAccessor<Boolean> DATA_IS_CLIMBING = SynchedEntityData.defineId(IceSpiderEntity.class, EntityDataSerializers.BOOLEAN);
-    private static final EntityDataAccessor<Boolean> DATA_IS_CROUCHING = SynchedEntityData.defineId(IceSpiderEntity.class, EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<Boolean> DATA_IS_CLIMBING = SynchedEntityData.defineId(IceSpiderEntity.class, EntityDataSerializers.BOOLEAN);
+    protected static final EntityDataAccessor<Boolean> DATA_IS_CROUCHING = SynchedEntityData.defineId(IceSpiderEntity.class, EntityDataSerializers.BOOLEAN);
     protected static final EntityDataAccessor<Optional<UUID>> DATA_GRAPPLE_UUID = SynchedEntityData.defineId(
             IceSpiderEntity.class, EntityDataSerializers.OPTIONAL_UUID
     );
 
-    private static final AttributeModifier CROUCH_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("crouching"), -0.30, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
+    protected static final AttributeModifier CROUCH_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("crouching"), -0.30, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
     public static final Vec3 TORSO_OFFSET = new Vec3(0, 18, 0);
-    private static final int EMERGE_TIME = 45;
+    protected static final int EMERGE_TIME = 45;
+    public static final int STOP_HUNTING_THRESHOLD = 18;
+    public static final int START_HUNGRY_THRESHOLD = 10;
+    protected static final int SATIATION_COMBAT_DELAY = 15 * 20;
+    protected static final int SATIATION_HEAL_INTERVAL = 2 * 20;
+    protected static final int SATIATION_DECAY_INTERVAL = 45 * 20;
     public final Vec3[] cornerPins = {Vec3.ZERO, Vec3.ZERO, Vec3.ZERO, Vec3.ZERO};
 
     public Vec3 normal = Vec3.ZERO, lastNormal = Vec3.ZERO;
-    private int emergeTick;
-    int crouchTick;
+    protected int emergeTick;
+    protected int crouchTick;
     public boolean wantsToLeapBack;
     public boolean wantsToCastSpells;
-    IceSpiderPartEntity[] subEntities;
-    IceSpiderAttackGoal attackGoal;
+    protected IceSpiderPartEntity[] subEntities;
+    protected IceSpiderAttackGoal attackGoal;
     @Nullable
-    int grappleTime;
+    protected int grappleTime;
     @Nullable
-    Entity cachedGrappleTarget = null;
+    protected Entity cachedGrappleTarget = null;
+    protected int satiation;
+    protected boolean isHungry;
 
     public IceSpiderEntity(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
@@ -103,7 +116,9 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
                 //abdomen
                 new IceSpiderPartEntity(this, TORSO_OFFSET.add(0, 0, -20), 1.75f, 1.5f)
         };
+        this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1); // Copy of forge fix to sub entity id's
         this.moveControl = createMoveControl();
+        setSatiation(0);
     }
 
     public IceSpiderEntity(Level level) {
@@ -136,7 +151,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
                 Vec3 vec = rotateWithBody(new Vec3((x - 0.5) * scalar, 0, (y - 0.5) * scalar));
                 int maxStep = 2;
                 int climbOffset = isClimbing() ? 4 * Mth.sign(y - 0.5) : 0;
-                cornerPins[x * 2 + y] = Utils.moveToRelativeGroundLevel(this.level(), worldpos.add(vec), maxStep + climbOffset, maxStep - climbOffset).subtract(worldpos);
+                cornerPins[x * 2 + y] = Utils.moveToRelativeGroundLevel(level, worldpos.add(vec), maxStep + climbOffset, maxStep - climbOffset).subtract(worldpos);
             }
         }
         Vec3[] vx = cornerPins;
@@ -153,7 +168,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         }
         if (emergeTick > 0) {
             emergeTick--;
-            if (!this.level().isClientSide) {
+            if (!level.isClientSide) {
                 if (emergeTick == 0) {
                     this.setPose(Pose.STANDING);
                 }
@@ -167,24 +182,90 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     protected void customServerAiStep() {
         super.customServerAiStep();
         tickGrapple();
+        tickSatiationRegen();
+        tickSatiationDecay();
         handleCrouchStatus();
         handleClimbingStatus();
     }
 
+    public int getSatiation() {
+        return satiation;
+    }
+
+    public void setSatiation(int satiation) {
+        this.satiation = Math.max(0, satiation);
+        updateHungerState();
+    }
+
+    protected void updateHungerState() {
+        if (this.satiation < START_HUNGRY_THRESHOLD) {
+            isHungry = true;
+        } else if (this.satiation >= STOP_HUNTING_THRESHOLD) {
+            isHungry = false;
+        }
+    }
+
+    public void addSatiation(int amount) {
+        setSatiation(this.satiation + amount);
+    }
+
+    public boolean canHuntAnimals() {
+        if (isHungry) {
+            return satiation < STOP_HUNTING_THRESHOLD;
+        } else {
+            return satiation < START_HUNGRY_THRESHOLD;
+        }
+    }
+
+    protected void tickSatiationDecay() {
+        if (satiation > 0 && tickCount % SATIATION_DECAY_INTERVAL == 0) {
+            setSatiation(satiation - 1);
+        }
+    }
+
+    protected void tickSatiationRegen() {
+        if (satiation <= 0 || getHealth() >= getMaxHealth()) {
+            return;
+        }
+        if (getTarget() != null || getGrappleTargetUUID() != null) {
+            return;
+        }
+        if (tickCount - getLastHurtByMobTimestamp() < SATIATION_COMBAT_DELAY) {
+            return;
+        }
+        if (tickCount % SATIATION_HEAL_INTERVAL != 0) {
+            return;
+        }
+        heal(1f);
+        setSatiation(satiation - 1);
+    }
+
+    @SubscribeEvent
+    public static void onPreyKilled(LivingDropsEvent event) {
+        if (!(event.getEntity() instanceof Animal prey)) {
+            return;
+        }
+        if (!(event.getSource().getEntity() instanceof IceSpiderEntity spider)) {
+            return;
+        }
+        spider.addSatiation(Mth.ceil(prey.getMaxHealth()));
+        event.getDrops().removeIf(itemEntity -> itemEntity.getItem().has(DataComponents.FOOD));
+    }
+
     private void handleCrouchStatus() {
-        if (this.level().isClientSide) {
+        if (level.isClientSide) {
             return;
         }
         if (isCrouching()) {
             var projection = this.getDefaultDimensions(Pose.STANDING).makeBoundingBox(this.position());
-            if (this.level().noCollision(this, projection.deflate(1.0E-7))) {
+            if (level.noCollision(this, projection.deflate(1.0E-7))) {
                 stopCrouching();
             }
         } else {
             if (horizontalCollision) {
                 var projection = this.getDefaultDimensions(Pose.CROUCHING).makeBoundingBox(this.position().add(getForward().scale(0.15)));
-                if (this.level().noCollision(this, projection.deflate(1.0E-7))
-                    /*&& !this.level().noCollision(this, this.getBoundingBox().deflate(1.0E-7))*/) {
+                if (level.noCollision(this, projection.deflate(1.0E-7))
+                    /*&& !level.noCollision(this, this.getBoundingBox().deflate(1.0E-7))*/) {
                     startCrouching();
                 }
             }
@@ -192,13 +273,13 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     }
 
     private void handleClimbingStatus() {
-        if (this.level().isClientSide || isCrouching()) {
+        if (level.isClientSide || isCrouching()) {
             return;
         }
         if (verticalCollision && !verticalCollisionBelow) {
             // try to unstuck ourselves
             var leftprojection = this.getBoundingBox().deflate(0.2).move(getForward().scale(0.5).yRot(-Mth.HALF_PI));
-            boolean strafeLeft = this.level().noCollision(this, leftprojection);
+            boolean strafeLeft = level.noCollision(this, leftprojection);
             this.getMoveControl().strafe(0, strafeLeft ? 1 : -1);
             return;
         }
@@ -210,7 +291,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
             if (horizontalCollision) {
                 float deflate = 0.75f;
                 var projection = this.getBoundingBox().deflate(deflate).move(getForward().scale(0.25 + deflate / 2));
-                if (!this.level().noCollision(this, projection)) {
+                if (!level.noCollision(this, projection)) {
                     setIsClimbing(true);
                 }
             }
@@ -218,7 +299,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     }
 
     public void setEmergeFromGround() {
-        if (!this.level().isClientSide) {
+        if (!level.isClientSide) {
             this.setPose(Pose.EMERGING);
             emergeTick = EMERGE_TIME;
         }
@@ -348,10 +429,13 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, LivingEntity.class, true, livingEntity ->
                 livingEntity instanceof Player
                         || livingEntity instanceof IronGolem));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, LivingEntity.class, true, livingEntity ->
-                livingEntity instanceof Animal
-                        || livingEntity instanceof AbstractVillager
-                        || livingEntity instanceof Raider));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, LivingEntity.class, true, livingEntity -> {
+            if (livingEntity instanceof Animal) {
+                return this.canHuntAnimals();
+            }
+            return livingEntity instanceof AbstractVillager
+                    || livingEntity instanceof Raider;
+        }));
     }
 
     @Override
@@ -376,8 +460,17 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     }
 
     @Override
-    protected net.minecraft.world.entity.ai.control.BodyRotationControl createBodyControl() {
-        return super.createBodyControl();
+    protected BodyRotationControl createBodyControl() {
+        return new BodyRotationControl(this) {
+            @Override
+            public void rotateHeadTowardsFront() {
+                float rot = mob.yBodyRot;
+                super.rotateHeadTowardsFront();
+                if (rot != mob.yBodyRot) {
+                    IceSpiderEntity.this.updateWalkAnimation(1);
+                }
+            }
+        };
     }
 
     @Override
@@ -558,7 +651,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         if (uuid == null) {
             return;
         }
-        if (!(this.level() instanceof ServerLevel serverLevel)) {
+        if (!(level instanceof ServerLevel serverLevel)) {
             return;
         }
         if (cachedGrappleTarget == null) {
@@ -611,12 +704,12 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     }
 
     public IceTombEntity entomb(Entity entity) {
-        IceTombEntity iceTombEntity = new IceTombEntity(this.level(), this);
+        IceTombEntity iceTombEntity = new IceTombEntity(level, this);
         iceTombEntity.moveTo(entity.position());
         iceTombEntity.setDeltaMovement(entity.getDeltaMovement().add(this.getForward().add(0, 1, 0).scale(0.5)));
         iceTombEntity.setEvil();
         iceTombEntity.setLifetime(20 * 5);
-        this.level().addFreshEntity(iceTombEntity);
+        level.addFreshEntity(iceTombEntity);
         entity.startRiding(iceTombEntity, true);
         playSound(SoundRegistry.ICE_SPIDER_GRAPPLE_SPIT.get());
         return iceTombEntity;
@@ -684,6 +777,8 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
             pCompound.putUUID("grappleTarget", getGrappleTargetUUID());
         }
         pCompound.putBoolean("crouching", isCrouching());
+        pCompound.putInt("satiation", satiation);
+        pCompound.putBoolean("is_hungry", isHungry);
     }
 
     @Override
@@ -696,6 +791,8 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         if (pCompound.getBoolean("crouching")) {
             startCrouching();
         }
+        isHungry = pCompound.getBoolean("is_hungry");
+        setSatiation(pCompound.getInt("satiation"));
     }
 
     RawAnimation animationToPlay = null;
@@ -728,6 +825,3 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     }
 
 }
-
-
-

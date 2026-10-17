@@ -57,6 +57,28 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
         }
     }
 
+    private class FakeWalkAnimationState extends WalkAnimationState {
+        @Override
+        public float position() {
+            return FrozenHumanoid.this.getWalkAnimPos();
+        }
+
+        @Override
+        public float position(float partialTick) {
+            return FrozenHumanoid.this.getWalkAnimPos();
+        }
+
+        @Override
+        public float speed() {
+            return FrozenHumanoid.this.getWalkAnimSpeed();
+        }
+
+        @Override
+        public float speed(float partialTick) {
+            return FrozenHumanoid.this.getWalkAnimSpeed();
+        }
+    }
+
     protected static final EntityDataAccessor<Float> DATA_ATTACK_TIME = SynchedEntityData.defineId(FrozenHumanoid.class, EntityDataSerializers.FLOAT);
     protected static final EntityDataAccessor<Boolean> DATA_IS_BABY = SynchedEntityData.defineId(FrozenHumanoid.class, EntityDataSerializers.BOOLEAN);
 
@@ -76,6 +98,7 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
 
     public FrozenHumanoid(EntityType<? extends LivingEntity> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
+        this.walkAnimation = new FakeWalkAnimationState();
     }
 
     @Override
@@ -103,6 +126,7 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
                 frozenHumanoid.getEntityData().set(DATA_IS_BABY, true);
             }
         } else if (baseEntity.level().isClientSide) {
+            baseEntity.walkAnimation = entityToCopy.walkAnimation;
             baseEntity.attackAnim = entityToCopy.attackAnim;
             baseEntity.oAttackAnim = entityToCopy.attackAnim;
             if (entityToCopy.isBaby()) {
@@ -349,5 +373,3 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
                 .add(Attributes.MOVEMENT_SPEED, 0);
     }
 }
-
-

@@ -105,7 +105,7 @@ public class FireArrowProjectile extends AbstractMagicProjectile {
             Vec3 losPoint = Utils.raycastForBlock(level(), this.position(), this.position().add(0, 2, 0), ClipContext.Fluid.NONE).getLocation();
             for (Entity entity : entities) {
                 double distanceSqr = entity.distanceToSqr(hitResult.getLocation());
-                if (ignore != entity.getUUID() && distanceSqr < explosionRadiusSqr && canHitEntity(entity) && Utils.hasLineOfSight(level, losPoint, entity.getBoundingBox().getCenter(), true)) {
+                if (ignore != entity.getUUID() && distanceSqr < explosionRadiusSqr && canHitEntity(entity) && Utils.hasLineOfSight(level(), losPoint, entity.getBoundingBox().getCenter(), true)) {
                     double p = (1 - distanceSqr / explosionRadiusSqr);
                     float damage = (float) (explosionDamage * p);
                     DamageSources.applyDamage(entity, damage, SpellRegistry.FIRE_ARROW_SPELL.get().getDamageSource(this, getOwner()));
@@ -113,7 +113,7 @@ public class FireArrowProjectile extends AbstractMagicProjectile {
             }
             if (ServerConfigs.safeGet(ServerConfigs.SPELL_GREIFING)) {
                 Explosion explosion = new Explosion(
-                        level,
+                        level(),
                         null,
                         null,
                         null,

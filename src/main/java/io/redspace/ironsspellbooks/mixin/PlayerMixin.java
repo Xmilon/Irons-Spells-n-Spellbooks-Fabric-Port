@@ -23,32 +23,37 @@ public class PlayerMixin {
         if (builder == null) {
             return;
         }
-        builder.add(AttributeRegistry.MAX_MANA)
-                .add(AttributeRegistry.MANA_REGEN)
-                .add(AttributeRegistry.COOLDOWN_REDUCTION)
-                .add(AttributeRegistry.SPELL_POWER)
-                .add(AttributeRegistry.SPELL_RESIST)
-                .add(AttributeRegistry.CAST_TIME_REDUCTION)
-                .add(AttributeRegistry.SUMMON_DAMAGE)
-                .add(AttributeRegistry.CASTING_MOVESPEED)
-                .add(AttributeRegistry.FIRE_MAGIC_RESIST)
-                .add(AttributeRegistry.ICE_MAGIC_RESIST)
-                .add(AttributeRegistry.LIGHTNING_MAGIC_RESIST)
-                .add(AttributeRegistry.HOLY_MAGIC_RESIST)
-                .add(AttributeRegistry.ENDER_MAGIC_RESIST)
-                .add(AttributeRegistry.BLOOD_MAGIC_RESIST)
-                .add(AttributeRegistry.EVOCATION_MAGIC_RESIST)
-                .add(AttributeRegistry.NATURE_MAGIC_RESIST)
-                .add(AttributeRegistry.ELDRITCH_MAGIC_RESIST)
-                .add(AttributeRegistry.FIRE_SPELL_POWER)
-                .add(AttributeRegistry.ICE_SPELL_POWER)
-                .add(AttributeRegistry.LIGHTNING_SPELL_POWER)
-                .add(AttributeRegistry.HOLY_SPELL_POWER)
-                .add(AttributeRegistry.ENDER_SPELL_POWER)
-                .add(AttributeRegistry.BLOOD_SPELL_POWER)
-                .add(AttributeRegistry.EVOCATION_SPELL_POWER)
-                .add(AttributeRegistry.NATURE_SPELL_POWER)
-                .add(AttributeRegistry.ELDRITCH_SPELL_POWER);
+        builder.add(AttributeRegistry.registered(AttributeRegistry.MAX_MANA))
+                .add(AttributeRegistry.registered(AttributeRegistry.MANA_REGEN))
+                .add(AttributeRegistry.registered(AttributeRegistry.COOLDOWN_REDUCTION))
+                .add(AttributeRegistry.registered(AttributeRegistry.SPELL_POWER))
+                .add(AttributeRegistry.registered(AttributeRegistry.SPELL_RESIST))
+                .add(AttributeRegistry.registered(AttributeRegistry.CAST_TIME_REDUCTION))
+                .add(AttributeRegistry.registered(AttributeRegistry.SUMMON_DAMAGE))
+                .add(AttributeRegistry.registered(AttributeRegistry.CASTING_MOVESPEED))
+                .add(AttributeRegistry.registered(AttributeRegistry.FIRE_MAGIC_RESIST))
+                .add(AttributeRegistry.registered(AttributeRegistry.ICE_MAGIC_RESIST))
+                .add(AttributeRegistry.registered(AttributeRegistry.LIGHTNING_MAGIC_RESIST))
+                .add(AttributeRegistry.registered(AttributeRegistry.HOLY_MAGIC_RESIST))
+                .add(AttributeRegistry.registered(AttributeRegistry.ENDER_MAGIC_RESIST))
+                .add(AttributeRegistry.registered(AttributeRegistry.BLOOD_MAGIC_RESIST))
+                .add(AttributeRegistry.registered(AttributeRegistry.EVOCATION_MAGIC_RESIST))
+                .add(AttributeRegistry.registered(AttributeRegistry.NATURE_MAGIC_RESIST))
+                .add(AttributeRegistry.registered(AttributeRegistry.ELDRITCH_MAGIC_RESIST))
+                .add(AttributeRegistry.registered(AttributeRegistry.FIRE_SPELL_POWER))
+                .add(AttributeRegistry.registered(AttributeRegistry.ICE_SPELL_POWER))
+                .add(AttributeRegistry.registered(AttributeRegistry.LIGHTNING_SPELL_POWER))
+                .add(AttributeRegistry.registered(AttributeRegistry.HOLY_SPELL_POWER))
+                .add(AttributeRegistry.registered(AttributeRegistry.ENDER_SPELL_POWER))
+                .add(AttributeRegistry.registered(AttributeRegistry.BLOOD_SPELL_POWER))
+                .add(AttributeRegistry.registered(AttributeRegistry.EVOCATION_SPELL_POWER))
+                .add(AttributeRegistry.registered(AttributeRegistry.NATURE_SPELL_POWER))
+                .add(AttributeRegistry.registered(AttributeRegistry.ELDRITCH_SPELL_POWER));
+    }
+
+    @Inject(method = "tick", at = @At("HEAD"))
+    private void irons_spellbooks$playerTickPre(org.spongepowered.asm.mixin.injection.callback.CallbackInfo ci) {
+        net.neoforged.neoforge.common.NeoForge.EVENT_BUS.post(new net.neoforged.neoforge.event.tick.PlayerTickEvent.Pre((Player) (Object) this));
     }
 
     @Inject(method = "canEat", at = @At(value = "RETURN"), cancellable = true)

@@ -65,7 +65,7 @@ public class FireBossRenderer extends AbstractSpellCastingMobRenderer {
                     true,
                     poseStack,
                     bufferSource, packedLight, packedOverlay,
-                    Minecraft.getInstance().getModelManager().getModel(new ModelResourceLocation(IronsSpellbooks.id("fiery_dagger"), "inventory"))
+                    Minecraft.getInstance().getModelManager().getModel(IronsSpellbooks.id("item/fiery_dagger"))
             );
             poseStack.popPose();
         }

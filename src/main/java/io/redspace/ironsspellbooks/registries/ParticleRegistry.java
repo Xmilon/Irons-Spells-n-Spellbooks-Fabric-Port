@@ -147,4 +147,28 @@ public class ParticleRegistry {
             super(overrideLimiter);
         }
     }
+
+    public static final Supplier<SimpleParticleType> FALLING_SPARKLE_PARTICLE = PARTICLE_TYPES.register("falling_sparkle", () -> net.fabricmc.fabric.api.particle.v1.FabricParticleTypes.simple(true));
+
+    public static final Supplier<ParticleType<SoulfireRayParticleOptions>> SOULFIRE_RAY_PARTICLE = PARTICLE_TYPES.register("soulfire_ray", () -> new ParticleType<>(false) {
+        public MapCodec<SoulfireRayParticleOptions> codec() {
+            return SoulfireRayParticleOptions.MAP_CODEC;
+        }
+
+        public StreamCodec<? super RegistryFriendlyByteBuf, SoulfireRayParticleOptions> streamCodec() {
+            return SoulfireRayParticleOptions.STREAM_CODEC;
+        }
+    });
+
+    public static final Supplier<SimpleParticleType> SOUL_FIRE_PARTICLE = PARTICLE_TYPES.register("soul_fire", () -> net.fabricmc.fabric.api.particle.v1.FabricParticleTypes.simple(false));
+
+    public static final Supplier<ParticleType<TintedBubblePopParticleOptions>> TINTED_BUBBLE_POP_PARTICLE = PARTICLE_TYPES.register("tinted_bubble_pop", () -> new ParticleType<>(false) {
+        public MapCodec<TintedBubblePopParticleOptions> codec() {
+            return TintedBubblePopParticleOptions.MAP_CODEC;
+        }
+
+        public StreamCodec<? super RegistryFriendlyByteBuf, TintedBubblePopParticleOptions> streamCodec() {
+            return TintedBubblePopParticleOptions.STREAM_CODEC;
+        }
+    });
 }

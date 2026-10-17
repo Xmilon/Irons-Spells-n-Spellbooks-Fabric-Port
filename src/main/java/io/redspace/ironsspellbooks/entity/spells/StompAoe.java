@@ -77,8 +77,8 @@ public class StompAoe extends AbstractMagicProjectile {
             Vec3 orth = new Vec3(-forward.z, 0, forward.x);
 
             Vec3 center = this.position().add(forward.scale(step));
-            Vec3 leftBound = Utils.moveToRelativeGroundLevel(level, center.subtract(orth.scale(width)), 2).add(0, 0.75, 0);
-            Vec3 rightBound = Utils.moveToRelativeGroundLevel(level, center.add(orth.scale(width)), 2).add(0, 0.75, 0);
+            Vec3 leftBound = Utils.moveToRelativeGroundLevel(level(), center.subtract(orth.scale(width)), 2).add(0, 0.75, 0);
+            Vec3 rightBound = Utils.moveToRelativeGroundLevel(level(), center.add(orth.scale(width)), 2).add(0, 0.75, 0);
 
             //MagicManager.spawnParticles(level, ParticleHelper.UNSTABLE_ENDER, center.x, center.y, center.z, 30, 0, 1, 0, 0, true);
             //MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY, leftBound.x, leftBound.y, leftBound.z, 30, 0, 1, 0, 0, true);
@@ -98,9 +98,9 @@ public class StompAoe extends AbstractMagicProjectile {
             });
             for (int i = 0; i < step; i++) {
                 Vec3 pos = leftBound.add(rightBound.subtract(leftBound).scale((i + 0.5) / (float) step));
-                var blockPos = BlockPos.containing(Utils.moveToRelativeGroundLevel(level, pos, 2)).below();
+                var blockPos = BlockPos.containing(Utils.moveToRelativeGroundLevel(level(), pos, 2)).below();
                 float impulseStrength = Utils.random.nextFloat() * .15f + 0.3f;
-                Utils.createTremorBlock(level, blockPos, impulseStrength);
+                Utils.createTremorBlock(level(), blockPos, impulseStrength);
             }
         }
     }

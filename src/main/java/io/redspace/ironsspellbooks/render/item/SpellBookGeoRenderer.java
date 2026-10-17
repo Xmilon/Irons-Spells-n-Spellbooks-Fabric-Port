@@ -64,8 +64,8 @@ public class SpellBookGeoRenderer extends GeoItemRenderer<SpellBook> {
         }
 
         var modelManager = Minecraft.getInstance().getModelManager();
-        ResourceLocation flatId = ResourceLocation.fromNamespaceAndPath(itemId.getNamespace(), itemId.getPath() + "_flat");
-        BakedModel flatModel = modelManager.getModel(ModelResourceLocation.inventory(flatId));
+        ResourceLocation flatId = ResourceLocation.fromNamespaceAndPath(itemId.getNamespace(), "item/" + itemId.getPath() + "_gui");
+        BakedModel flatModel = modelManager.getModel(flatId);
         BakedModel missingModel = modelManager.getMissingModel();
 
         if (flatModel == null || flatModel == missingModel) {

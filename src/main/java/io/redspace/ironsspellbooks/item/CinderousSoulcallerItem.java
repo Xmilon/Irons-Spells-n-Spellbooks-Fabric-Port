@@ -52,7 +52,7 @@ public class CinderousSoulcallerItem extends Item {
                     //success, consume and summon
                     if (!player.getAbilities().instabuild) {
                         Vec3 particlePos = player.getEyePosition().add(player.getForward().scale(0.6)).subtract(0, 0.3, 0);
-                        MagicManager.spawnParticles(serverlevel, new ItemParticleOption(ParticleTypes.ITEM, itemStack), particlePos.x, particlePos.y, particlePos.z, 9, .15, .15, .15, 0.08, false);
+                        MagicManager.spawnParticles(serverlevel, new ItemParticleOption(ParticleTypes.ITEM, itemStack.copyWithCount(1)), particlePos.x, particlePos.y, particlePos.z, 9, .15, .15, .15, 0.08, false);
                         itemStack.shrink(1);
                         player.setItemInHand(hand, itemStack);
                     }

@@ -1,3 +1,6 @@
 {
-  "parent": "irons_spellbooks:item/wimpy_spell_book_flat"
+  "parent": "item/generated",
+  "textures": {
+    "layer0": "irons_spellbooks:item/wimpy_spell_book"
+  }
 }

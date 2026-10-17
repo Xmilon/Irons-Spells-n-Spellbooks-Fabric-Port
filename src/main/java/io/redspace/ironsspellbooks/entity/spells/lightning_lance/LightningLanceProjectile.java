@@ -30,8 +30,8 @@ public class LightningLanceProjectile extends AbstractMagicProjectile {
 
     @Override
     public void impactParticles(double x, double y, double z) {
-        MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY, x, y, z, 75, .1, .1, .1, 2, true);
-        MagicManager.spawnParticles(level, ParticleHelper.ELECTRICITY, x, y, z, 75, .1, .1, .1, .5, false);
+        MagicManager.spawnParticles(level(), ParticleHelper.ELECTRICITY, x, y, z, 75, .1, .1, .1, 2, true);
+        MagicManager.spawnParticles(level(), ParticleHelper.ELECTRICITY, x, y, z, 75, .1, .1, .1, .5, false);
     }
 
     @Override

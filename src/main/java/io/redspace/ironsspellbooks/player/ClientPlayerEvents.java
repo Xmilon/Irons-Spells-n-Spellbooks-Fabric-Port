@@ -90,6 +90,8 @@ public class ClientPlayerEvents {
         MusicManager.clear();
         GuidingBoltManager.handleClientLogout();
         ClientMagicData.spellSelectionManager = null;
+        ClientMagicData.setMana(0);
+        ClientMagicData.setSyncedMaxMana(-1);
         FogManager.clear();
         if (event.getPlayer() != null) {
             ClientMagicData.resetClientCastState(event.getPlayer().getUUID());

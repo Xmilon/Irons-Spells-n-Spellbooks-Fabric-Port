@@ -37,6 +37,7 @@ public class ModSetup {
         Messages.register();
         CompatHandler.init();
         NeoForge.EVENT_BUS.register(ContentPackEvents.class);
+        FabricEventBridge.init();
 
         // Drive server-level magic and pocket-dimension ticking on Fabric.
         ServerTickEvents.START_WORLD_TICK.register(world -> {
@@ -47,9 +48,6 @@ public class ModSetup {
             PocketDimensionManager.INSTANCE.tick(world);
         });
 
-        // Drive summon expiration logic that previously depended on NeoForge tick events.
-        ServerTickEvents.END_SERVER_TICK.register(server -> SummonManager.levelTick(new ServerTickEvent.Post(server)));
-
         // Restore custom patrol spawner behavior.
         ServerTickEvents.END_WORLD_TICK.register(world -> {
             if (world.isClientSide) {
@@ -57,21 +55,6 @@ public class ModSetup {
             }
             boolean doMobSpawning = world.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING);
             ICE_SPIDER_PATROL_SPAWNER.tick(world, doMobSpawning, doMobSpawning);
-            GuidingBoltManager.serverTick(new LevelTickEvent.Post(world));
-        });
-
-        // Mirror entity join hooks used by summon/guiding-bolt managers.
-        ServerEntityEvents.ENTITY_LOAD.register((entity, world) -> {
-            EntityJoinLevelEvent event = new EntityJoinLevelEvent(entity, world);
-            SummonManager.onSummonerLogin(event);
-            GuidingBoltManager.onProjectileShot(event);
-        });
-
-        // Persist summon ownership when players disconnect.
-        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) -> {
-            if (handler.getPlayer() instanceof ServerPlayer serverPlayer) {
-                SummonManager.onPlayerLogout(new PlayerEvent.PlayerLoggedOutEvent(serverPlayer));
-            }
         });
 
         // Sync player-side spell/mana state and spell config when a player joins.
@@ -81,6 +64,9 @@ public class ModSetup {
                 SpellConfigManager.onDatapackSync(new OnDatapackSyncEvent(server.getPlayerList(), serverPlayer));
             }
         });
+
+        ServerPlayConnectionEvents.DISCONNECT.register((handler, server) ->
+                io.redspace.ironsspellbooks.IronsSpellbooks.MAGIC_MANAGER.forget(handler.getPlayer().getUUID()));
 
         // Preserve and resync player magic state across respawn/death.
         ServerPlayerEvents.COPY_FROM.register((oldPlayer, newPlayer, alive) -> {
@@ -92,9 +78,6 @@ public class ModSetup {
         });
         ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> syncPlayerMagicState(newPlayer));
         ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((player, origin, destination) -> syncPlayerMagicState(player));
-
-        // Persist summons on server stop.
-        ServerLifecycleEvents.SERVER_STOPPING.register(server -> SummonManager.onServerStopping(new ServerStoppingEvent(server)));
 
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
             io.redspace.ironsspellbooks.IronsSpellbooks.MCS = server;
