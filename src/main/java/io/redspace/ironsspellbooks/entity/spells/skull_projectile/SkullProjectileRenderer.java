@@ -12,16 +12,18 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import io.redspace.ironsspellbooks.render.EntityBackedRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
-public class SkullProjectileRenderer extends EntityRenderer<AbstractMagicProjectile> {
+public class SkullProjectileRenderer extends EntityBackedRenderer<AbstractMagicProjectile> {
 
     public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "skull_model"), "main");
 
@@ -42,23 +44,20 @@ public class SkullProjectileRenderer extends EntityRenderer<AbstractMagicProject
         return LayerDefinition.create(meshdefinition, 32, 32);
     }
 
-    public void render(AbstractMagicProjectile entity, float pEntityYaw, float pPartialTicks, PoseStack poseStack, MultiBufferSource pBuffer, int pPackedLight) {
+    protected void submit(AbstractMagicProjectile entity, float pPartialTicks, int pPackedLight, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
         poseStack.pushPose();
         Vec3 motion = entity.deltaMovementOld.add(entity.getDeltaMovement().subtract(entity.deltaMovementOld).scale(pPartialTicks));
         float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
         float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
-        poseStack.rotate(Axis.YP.rotationDegrees(yRot));
-        poseStack.rotate(Axis.XP.rotationDegrees(xRot));
+        poseStack.rotateDegrees(Axis.YP, yRot);
+        poseStack.rotateDegrees(Axis.XP, xRot);
         poseStack.scale(-1.0F, -1.0F, 1.0F);
 
 
-        VertexConsumer vertexconsumer = pBuffer.getBuffer(RenderType.entityCutout(getTextureLocation(entity)));
-        model.render(poseStack, vertexconsumer, pPackedLight, OverlayTexture.NO_OVERLAY);
+        collector.submitModelPart(model, poseStack, RenderTypes.entityCutout(getTextureLocation(entity)), pPackedLight, OverlayTexture.NO_OVERLAY, null);
         poseStack.popPose();
-        super.render(entity, pEntityYaw, pPartialTicks, poseStack, pBuffer, pPackedLight);
     }
 
-    @Override
     public Identifier getTextureLocation(AbstractMagicProjectile entity) {
         return textureLocation;
     }

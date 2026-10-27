@@ -5,9 +5,11 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.render.RenderHelper;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import io.redspace.ironsspellbooks.render.EntityBackedRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
@@ -20,7 +22,7 @@ import org.joml.Matrix4f;
 import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
-public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile> {
+public class ElectrocuteRenderer extends EntityBackedRenderer<ElectrocuteProjectile> {
     private static Identifier TEXTURES[] = {
             IronsSpellbooks.id("textures/entity/electric_beams/beam_1.png"),
             IronsSpellbooks.id("textures/entity/electric_beams/beam_2.png"),
@@ -34,51 +36,47 @@ public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile> {
     }
 
     @Override
-    public void render(ElectrocuteProjectile entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
+    protected void submit(ElectrocuteProjectile entity, float partialTicks, int light, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
         if (entity.getOwner() == null)
             return;
         poseStack.pushPose();
-        PoseStack.Pose pose = poseStack.last();
-        Matrix4f poseMatrix = pose.pose();
-        Matrix3f normalMatrix = pose.normal();
 
 //        RenderSystem.disableDepthTest();
 //        RenderSystem.enableBlend();
 //        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA,GlStateManager.DestFactor.ONE);
 
-        //VertexConsumer consumer = bufferSource.getBuffer(RenderType.lightning());
+        //VertexConsumer consumer = bufferSource.getBuffer(RenderTypes.lightning());
         poseStack.translate(0, entity.getEyeHeight() * .5f, 0);
-        poseStack.rotate(Axis.YP.rotationDegrees(-entity.getOwner().getYRot()));
-        poseStack.rotate(Axis.XP.rotationDegrees(entity.getOwner().getXRot()));
+        poseStack.rotateDegrees(Axis.YP, -entity.getOwner().getYRot());
+        poseStack.rotateDegrees(Axis.XP, entity.getOwner().getXRot());
         poseStack.translate(0, 0, 0.1);
 
 
         List<Vec3> segments = entity.getBeamCache();
         //irons_spellbooks.LOGGER.debug("ElectrocuteRenderer.segments.length: {}",segments.size());
 
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityTranslucentEmissive(getTextureLocation(entity)));
         float width = .3f;
         float height = width;
         Vec3 start = Vec3.ZERO;//entity.getOwner().getEyePosition().add(entity.getForward().normalize().scale(.15f));
         for (int i = 0; i < segments.size() - 1; i += 2) {
             var from = segments.get(i).add(start);
             var to = segments.get(i + 1).add(start);
-            drawHull(from, to, width, height, pose, consumer, 0, 156, 255, 30);
-            drawHull(from, to, width * .55f, height * .55f, pose, consumer, 63, 178, 255, 30);
+            collector.submitCustomGeometry(poseStack, RenderTypes.entityTranslucentEmissive(getTextureLocation(entity)), (pose, consumer) -> {
+                drawHull(from, to, width, height, pose, consumer, 0, 156, 255, 30);
+                drawHull(from, to, width * .55f, height * .55f, pose, consumer, 63, 178, 255, 30);
+            });
         }
 
-        consumer = bufferSource.getBuffer(RenderHelper.CustomerRenderType.magicNoCull(getTextureLocation(entity)));
         for (int i = 0; i < segments.size() - 1; i += 2) {
             var from = segments.get(i).add(start);
             var to = segments.get(i + 1).add(start);
-            drawHull(from, to, width * .2f, height * .2f, pose, consumer, 255, 255, 255, 255);
+            collector.submitCustomGeometry(poseStack, RenderHelper.CustomerRenderType.magicNoCull(getTextureLocation(entity)), (pose, consumer) -> {
+                drawHull(from, to, width * .2f, height * .2f, pose, consumer, 255, 255, 255, 255);
+            });
         }
 
 
-//        drawSegment(new Vec3(0, 0, 0), new Vec3(-1, 1, 3), 1, pose, consumer, entity, bufferSource, light);
-//        drawSegment(new Vec3(-1, 1, 3), new Vec3(1, 1, 5), 1, pose, consumer, entity, bufferSource, light);
         poseStack.popPose();
-        super.render(entity, yaw, partialTicks, poseStack, bufferSource, light);
     }
 
     public void drawHull(Vec3 from, Vec3 to, float width, float height, PoseStack.Pose pose, VertexConsumer consumer, int r, int g, int b, int a) {
@@ -93,20 +91,14 @@ public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile> {
     }
 
     public void drawQuad(Vec3 from, Vec3 to, float width, float height, PoseStack.Pose pose, VertexConsumer consumer, int r, int g, int b, int a) {
-        Matrix4f poseMatrix = pose.pose();
-        Matrix3f normalMatrix = pose.normal();
-
-        //to = new Vec3(1, 0, 10);
         float halfWidth = width * .5f;
         float halfHeight = height * .5f;
-        //float height = (float) (Math.random() * .25f) + .25f;
-        consumer.addVertex(poseMatrix, (float) from.x - halfWidth, (float) from.y - halfHeight, (float) from.z).setColor(r, g, b, a).setUv(0f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(240).setNormal(0f, 1f, 0f);
-        consumer.addVertex(poseMatrix, (float) from.x + halfWidth, (float) from.y + halfHeight, (float) from.z).setColor(r, g, b, a).setUv(1f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(240).setNormal(0f, 1f, 0f);
-        consumer.addVertex(poseMatrix, (float) to.x + halfWidth, (float) to.y + halfHeight, (float) to.z).setColor(r, g, b, a).setUv(1f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(240).setNormal(0f, 1f, 0f);
-        consumer.addVertex(poseMatrix, (float) to.x - halfWidth, (float) to.y - halfHeight, (float) to.z).setColor(r, g, b, a).setUv(0f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(240).setNormal(0f, 1f, 0f);
+        consumer.addVertex(pose.pose(), (float) from.x - halfWidth, (float) from.y - halfHeight, (float) from.z).setColor(r, g, b, a).setUv(0f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(240).setNormal(0f, 1f, 0f);
+        consumer.addVertex(pose.pose(), (float) from.x + halfWidth, (float) from.y + halfHeight, (float) from.z).setColor(r, g, b, a).setUv(1f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(240).setNormal(0f, 1f, 0f);
+        consumer.addVertex(pose.pose(), (float) to.x + halfWidth, (float) to.y + halfHeight, (float) to.z).setColor(r, g, b, a).setUv(1f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(240).setNormal(0f, 1f, 0f);
+        consumer.addVertex(pose.pose(), (float) to.x - halfWidth, (float) to.y - halfHeight, (float) to.z).setColor(r, g, b, a).setUv(0f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(240).setNormal(0f, 1f, 0f);
     }
 
-    @Override
     public Identifier getTextureLocation(ElectrocuteProjectile p_115264_) {
         //return TEXTURES[(int) (Math.random() * 4)];
         return SOLID;

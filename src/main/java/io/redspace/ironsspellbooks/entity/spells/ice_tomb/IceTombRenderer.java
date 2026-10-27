@@ -1,22 +1,22 @@
 package io.redspace.ironsspellbooks.entity.spells.ice_tomb;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import io.redspace.ironsspellbooks.render.EntityBackedRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 
-public class IceTombRenderer extends EntityRenderer<IceTombEntity> {
+public class IceTombRenderer extends EntityBackedRenderer<IceTombEntity> {
 
     public static final Identifier NOCULL = IronsSpellbooks.id("textures/entity/ice_tomb/ice_tomb.png");
     public static final Identifier CULL = IronsSpellbooks.id("textures/entity/ice_tomb/ice_tomb_cull.png");
@@ -27,27 +27,23 @@ public class IceTombRenderer extends EntityRenderer<IceTombEntity> {
         this.model = new IceTombModel(pContext.bakeLayer(IceTombModel.LAYER_LOCATION));
     }
 
-    public void render(IceTombEntity entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource multiBufferSource, int light) {
+    protected void submit(IceTombEntity entity, float partialTicks, int light, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
         poseStack.pushPose();
-        poseStack.rotate(Axis.YP.rotationDegrees(-entity.getYRot()));
+        poseStack.rotateDegrees(Axis.YP, -entity.getYRot());
         float xScaleFactor = entity.getBbWidth() / entity.getType().getDimensions().width();
         float yScaleFactor = entity.getBbHeight() / entity.getType().getDimensions().height();
         poseStack.scale(xScaleFactor, -yScaleFactor, -xScaleFactor);
         poseStack.translate(0, -1.501, 0);
-        this.model.setupAnim(entity, partialTicks, 0.0F, 0.0F, entity.getYRot(), entity.getXRot());
-        VertexConsumer vertexconsumer = multiBufferSource.getBuffer(RenderType.entityTranslucent(NOCULL));
-        this.model.renderToBuffer(poseStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, -1);
-        vertexconsumer = multiBufferSource.getBuffer(RenderType.entityTranslucentCull(CULL));
-        this.model.renderToBuffer(poseStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, -1);
+        collector.submitModelPart(this.model.model, poseStack, RenderTypes.entityTranslucent(NOCULL), light, OverlayTexture.NO_OVERLAY, null, -1);
+        collector.submitModelPart(this.model.model, poseStack, RenderTypes.entityTranslucentCull(CULL), light, OverlayTexture.NO_OVERLAY, null, -1);
         poseStack.popPose();
     }
 
-    @Override
     public Identifier getTextureLocation(IceTombEntity pEntity) {
         return NOCULL;
     }
 
-    public static class IceTombModel extends EntityModel<IceTombEntity> {
+    public static class IceTombModel {
         public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "ice_tomb"), "main");
         private final ModelPart model;
 
@@ -67,15 +63,6 @@ public class IceTombRenderer extends EntityRenderer<IceTombEntity> {
                     .texOffs(0, 86).addBox(-11.0F, -24.0F, 1.0F, 10.0F, 24.0F, 10.0F, new CubeDeformation(0.0F)), PartPose.offset(0.0F, 24.0F, 0.0F));
 
             return LayerDefinition.create(meshdefinition, 128, 128);
-        }
-
-        @Override
-        public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int pColor) {
-            model.render(poseStack, vertexConsumer, packedLight, packedOverlay, pColor);
-        }
-
-        @Override
-        public void setupAnim(IceTombEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
         }
     }
 }

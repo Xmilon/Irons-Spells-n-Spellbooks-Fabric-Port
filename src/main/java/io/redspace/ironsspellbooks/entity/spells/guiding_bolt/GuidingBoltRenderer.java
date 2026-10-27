@@ -11,10 +11,12 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import io.redspace.ironsspellbooks.render.EntityBackedRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
@@ -22,7 +24,7 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.phys.Vec3;
 
-public class GuidingBoltRenderer extends EntityRenderer<GuidingBoltProjectile> {
+public class GuidingBoltRenderer extends EntityBackedRenderer<GuidingBoltProjectile> {
     public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "guiding_bolt_model"), "main");
     private static final Identifier BASE_TEXTURE = IronsSpellbooks.id("textures/entity/guiding_bolt/guiding_bolt.png");
     private static final Identifier[] FIRE_TEXTURES = {
@@ -55,27 +57,22 @@ public class GuidingBoltRenderer extends EntityRenderer<GuidingBoltProjectile> {
     }
 
     @Override
-    public void render(GuidingBoltProjectile entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
+    protected void submit(GuidingBoltProjectile entity, float partialTicks, int light, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
         poseStack.pushPose();
         Vec3 motion = entity.getDeltaMovement();
         float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
         float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
-        poseStack.rotate(Axis.YP.rotationDegrees(yRot));
-        poseStack.rotate(Axis.XP.rotationDegrees(xRot));
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.energySwirl(getTextureLocation(entity), 0, 0));
-        this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+        poseStack.rotateDegrees(Axis.YP, yRot);
+        poseStack.rotateDegrees(Axis.XP, xRot);
+        collector.submitModelPart(this.body, poseStack, RenderTypes.energySwirl(getTextureLocation(entity), 0, 0), LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, null);
 
-        consumer = bufferSource.getBuffer(RenderType.energySwirl(getFireTextureLocation(entity), 0, 0));
         poseStack.scale(0.4f, 0.4f, 0.4f);
-        this.outline.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+        collector.submitModelPart(this.outline, poseStack, RenderTypes.energySwirl(getFireTextureLocation(entity), 0, 0), LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, null);
 
 
         poseStack.popPose();
-
-        super.render(entity, yaw, partialTicks, poseStack, bufferSource, light);
     }
 
-    @Override
     public Identifier getTextureLocation(GuidingBoltProjectile entity) {
         return BASE_TEXTURE;
     }

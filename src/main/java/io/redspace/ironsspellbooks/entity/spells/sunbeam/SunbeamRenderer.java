@@ -6,16 +6,18 @@ import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.render.RenderHelper;
 import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.culling.Frustum;
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import io.redspace.ironsspellbooks.render.EntityBackedRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
+import org.joml.Matrix4f;
 
-public class SunbeamRenderer extends EntityRenderer<SunbeamEntity> {
+public class SunbeamRenderer extends EntityBackedRenderer<SunbeamEntity> {
 
     public SunbeamRenderer(Context context) {
         super(context);
@@ -23,15 +25,15 @@ public class SunbeamRenderer extends EntityRenderer<SunbeamEntity> {
 
 
     @Override
-    public boolean shouldRender(SunbeamEntity pLivingEntity, Frustum pCamera, double pCamX, double pCamY, double pCamZ) {
+    public boolean shouldRender(SunbeamEntity pLivingEntity, Frustum pCamera, double pCamX, double pCamY, double pCamZ, float partialTick) {
         return true;
     }
 
     @Override
-    public void render(SunbeamEntity entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
+    protected void submit(SunbeamEntity entity, float partialTicks, int light, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
         poseStack.pushPose();
 
-        //poseStack.rotate(Axis.XP.rotationDegrees(90));
+        //poseStack.rotateDegrees(Axis.XP, 90);
         float maxRadius = 2.5f;
         float minRadius = 0.005f;
         float deltaTicks = entity.tickCount + partialTicks;
@@ -41,11 +43,11 @@ public class SunbeamRenderer extends EntityRenderer<SunbeamEntity> {
         float f = deltaTicks / SunbeamEntity.WARMUP_TIME;
         f *= f;
         float radius = Mth.clampedLerp(maxRadius, minRadius, f);
-        VertexConsumer inner = bufferSource.getBuffer(RenderHelper.CustomerRenderType.magic(SpellRenderingHelper.BEACON));
-        //SpellRenderingHelper.drawHull(Vec3.ZERO, new Vec3(0, 100, 0), radius, radius, poseStack.last(), inner, 255, 255, 255, (int) (255 * f), min, max);
         float halfRadius = radius * .5f;
         float quarterRadius = halfRadius * .5f;
         float yMin = entity.onGround() ? 0 : Utils.findRelativeGroundLevel(entity.level(), entity.position(), 8) - (float) entity.getY();
+        collector.submitCustomGeometry(poseStack, RenderHelper.CustomerRenderType.magic(SpellRenderingHelper.BEACON), (pose, inner) -> {
+        Matrix4f matrix = new Matrix4f(pose.pose());
         for (int i = 0; i < 4; i++) {
             //orange glow
             RenderHelper.quadBuilder()
@@ -54,9 +56,9 @@ public class SunbeamRenderer extends EntityRenderer<SunbeamEntity> {
                     .vertex(-halfRadius, 250, halfRadius).uv(1, max).normal(0, 1, 0)
                     .vertex(-halfRadius, 250, -halfRadius).uv(0, max).normal(0, 1, 0)
                     .color(Mth.clamp(.8f * f, 0, 1), Mth.clamp(.8f * f * f, 0, 1), Mth.clamp(.5f * f * f, 0, 1))
-                    .light(LightTexture.FULL_BRIGHT)
+                    .light(LightCoordsUtil.FULL_BRIGHT)
                     .overlay(OverlayTexture.NO_OVERLAY)
-                    .matrix(poseStack.last().pose())
+                    .matrix(matrix)
                     .build(inner);
             //yellow core
             RenderHelper.quadBuilder()
@@ -65,19 +67,17 @@ public class SunbeamRenderer extends EntityRenderer<SunbeamEntity> {
                     .vertex(-quarterRadius, 250, quarterRadius).uv(1, max).normal(0, 1, 0)
                     .vertex(-quarterRadius, 250, -quarterRadius).uv(0, max).normal(0, 1, 0)
                     .color(Mth.clamp(1f * f, 0, 1), Mth.clamp(.85f * f, 0, 1), Mth.clamp(.7f * f * f, 0, 1))
-                    .light(LightTexture.FULL_BRIGHT)
+                    .light(LightCoordsUtil.FULL_BRIGHT)
                     .overlay(OverlayTexture.NO_OVERLAY)
-                    .matrix(poseStack.last().pose())
+                    .matrix(matrix)
                     .build(inner);
-            poseStack.rotate(Axis.YP.rotationDegrees(90));
+            matrix.rotateY(Mth.HALF_PI);
         }
+        });
 
         poseStack.popPose();
-
-        super.render(entity, yaw, partialTicks, poseStack, bufferSource, light);
     }
 
-    @Override
     public Identifier getTextureLocation(SunbeamEntity entity) {
         return SpellRenderingHelper.BEACON;
     }

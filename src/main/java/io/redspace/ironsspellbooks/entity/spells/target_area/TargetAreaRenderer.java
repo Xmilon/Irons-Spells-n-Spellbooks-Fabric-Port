@@ -5,9 +5,11 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import io.redspace.ironsspellbooks.render.EntityBackedRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.particles.ParticleOptions;
@@ -18,27 +20,22 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
-public class TargetAreaRenderer extends EntityRenderer<TargetedAreaEntity> {
+public class TargetAreaRenderer extends EntityBackedRenderer<TargetedAreaEntity> {
     int fadeTick = -1;
 
     public TargetAreaRenderer(EntityRendererProvider.Context pContext) {
         super(pContext);
     }
 
-    @Override
     public Identifier getTextureLocation(TargetedAreaEntity pEntity) {
         return null;
     }
 
     @Override
-    public void render(TargetedAreaEntity entity, float pEntityYaw, float pPartialTick, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
+    protected void submit(TargetedAreaEntity entity, float pPartialTick, int light, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
 
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.energySwirl(SpellRenderingHelper.SOLID, 0, 0));
         var color = entity.getColor();
         poseStack.pushPose();
-        PoseStack.Pose pose = poseStack.last();
-        Matrix4f poseMatrix = pose.pose();
-        Matrix3f normalMatrix = pose.normal();
 
         float radius = entity.getRadius();
         int segments = (int) (5 * radius + 9);
@@ -92,10 +89,12 @@ public class TargetAreaRenderer extends EntityRenderer<TargetedAreaEntity> {
                 }
                 alpha = Mth.clampedLerp(1, 0, (entity.tickCount + pPartialTick - fadeTick) / 10f);
             }
-            consumer.addVertex(poseMatrix, x2, y2 - 0.6f, z2).setColor(color.x() * alpha, color.y() * alpha, color.z() * alpha, 1).setUv(0f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light * 4).setNormal(0f, 1f, 0f);
-            consumer.addVertex(poseMatrix, x2, y2 + 0.6f, z2).setColor(0, 0, 0, 1).setUv(0f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light * 4).setNormal(0f, 1f, 0f);
-            consumer.addVertex(poseMatrix, x1, y1 + 0.6f, z1).setColor(0, 0, 0, 1).setUv(1f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light * 4).setNormal(0f, 1f, 0f);
-            consumer.addVertex(poseMatrix, x1, y1 - 0.6f, z1).setColor(color.x() * alpha, color.y() * alpha, color.z() * alpha, 1).setUv(1f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light * 4).setNormal(0f, 1f, 0f);
+            collector.submitCustomGeometry(poseStack, RenderTypes.energySwirl(SpellRenderingHelper.SOLID, 0, 0), (pose, consumer) -> {
+                consumer.addVertex(pose.pose(), x2, y2 - 0.6f, z2).setColor(color.x() * alpha, color.y() * alpha, color.z() * alpha, 1).setUv(0f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light * 4).setNormal(0f, 1f, 0f);
+                consumer.addVertex(pose.pose(), x2, y2 + 0.6f, z2).setColor(0, 0, 0, 1).setUv(0f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light * 4).setNormal(0f, 1f, 0f);
+                consumer.addVertex(pose.pose(), x1, y1 + 0.6f, z1).setColor(0, 0, 0, 1).setUv(1f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light * 4).setNormal(0f, 1f, 0f);
+                consumer.addVertex(pose.pose(), x1, y1 - 0.6f, z1).setColor(color.x() * alpha, color.y() * alpha, color.z() * alpha, 1).setUv(1f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light * 4).setNormal(0f, 1f, 0f);
+            });
             //entity.level().addParticle(particle(j), x1 + entity.getX(), y1 + entityY + 1, z1 + entity.getZ(), 0, 0, 0);
 
         }

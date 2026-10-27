@@ -11,18 +11,20 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.culling.Frustum;
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import io.redspace.ironsspellbooks.render.EntityBackedRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 
-public class RayOfFrostRenderer extends EntityRenderer<RayOfFrostVisualEntity> {
+public class RayOfFrostRenderer extends EntityBackedRenderer<RayOfFrostVisualEntity> {
 
     public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "ray_of_frost_model"), "main");
     private static final Identifier TEXTURE_CORE = IronsSpellbooks.id("textures/entity/ray_of_frost/core.png");
@@ -44,20 +46,20 @@ public class RayOfFrostRenderer extends EntityRenderer<RayOfFrostVisualEntity> {
     }
 
     @Override
-    public boolean shouldRender(RayOfFrostVisualEntity pLivingEntity, Frustum pCamera, double pCamX, double pCamY, double pCamZ) {
+    public boolean shouldRender(RayOfFrostVisualEntity pLivingEntity, Frustum pCamera, double pCamX, double pCamY, double pCamZ, float partialTick) {
         return true;
     }
 
     @Override
-    public void render(RayOfFrostVisualEntity entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
+    protected void submit(RayOfFrostVisualEntity entity, float partialTicks, int light, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
         poseStack.pushPose();
         float lifetime = RayOfFrostVisualEntity.lifetime;
         float scalar = .25f;
         float length = 32 * scalar * scalar;
         float f = entity.tickCount + partialTicks;
         poseStack.translate(0, entity.getBoundingBox().getYsize() * .5f, 0);
-        poseStack.rotate(Axis.YP.rotationDegrees(-entity.getYRot() - 180.0F));
-        poseStack.rotate(Axis.XP.rotationDegrees(-entity.getXRot() - 90));
+        poseStack.rotateDegrees(Axis.YP, -entity.getYRot() - 180.0F);
+        poseStack.rotateDegrees(Axis.XP, -entity.getXRot() - 90);
         poseStack.scale(scalar, scalar, scalar);
 
         //float scale = Mth.lerp(Mth.clamp(f / 6f, 0, 1), 1, 2.3f);
@@ -67,36 +69,31 @@ public class RayOfFrostRenderer extends EntityRenderer<RayOfFrostVisualEntity> {
         for (float i = 0; i < entity.distance * 4; i += length) {
             poseStack.translate(0, length, 0);
             //Render overlay
-            //VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityTranslucent(TEXTURE_OVERLAY));
-            VertexConsumer consumer = bufferSource.getBuffer(RenderType.energySwirl(TEXTURE_OVERLAY, 0, 0));
+            //VertexConsumer consumer = bufferSource.getBuffer(RenderTypes.entityTranslucent(TEXTURE_OVERLAY));
             {
                 poseStack.pushPose();
                 float expansion = Mth.clampedLerp(1.2f, 0, f / (lifetime));
-                poseStack.rotate(Axis.YP.rotationDegrees(f * 5));
+                poseStack.rotateDegrees(Axis.YP, f * 5);
                 poseStack.scale(expansion, 1, expansion);
-                poseStack.rotate(Axis.YP.rotationDegrees(45));
-                this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, FastColor.ARGB32.color((int) (alpha * 255),255,255,255));
+                poseStack.rotateDegrees(Axis.YP, 45);
+                collector.submitModelPart(this.body, poseStack, RenderTypes.energySwirl(TEXTURE_OVERLAY, 0, 0), LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, null, ARGB.color((int) (alpha * 255),255,255,255));
                 poseStack.popPose();
             }
             //Render core
-            consumer = bufferSource.getBuffer(RenderType.energySwirl(TEXTURE_CORE, 0, 0));
             {
                 poseStack.pushPose();
                 float expansion = Mth.clampedLerp(1, 0, f / (lifetime - 8));
                 poseStack.scale(expansion, 1, expansion);
-                poseStack.rotate(Axis.YP.rotationDegrees(f * -10));
-                this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, -1);
+                poseStack.rotateDegrees(Axis.YP, f * -10);
+                collector.submitModelPart(this.body, poseStack, RenderTypes.energySwirl(TEXTURE_CORE, 0, 0), LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, null, -1);
                 poseStack.popPose();
             }
         }
 
 
         poseStack.popPose();
-
-        super.render(entity, yaw, partialTicks, poseStack, bufferSource, light);
     }
 
-    @Override
     public Identifier getTextureLocation(RayOfFrostVisualEntity entity) {
         return TEXTURE_CORE;
     }

@@ -68,3 +68,18 @@ Client rendering, multiplayer, equipment bonuses, hostile statue-packet cases,
 and old-save migration remain unchecked. The community dependencies log nonfatal
 empty-refmap/client-mixin warnings on a dedicated server; keep these attributable
 to their original artifacts rather than silently modifying the pinned JARs.
+
+## Main-mod migration progress
+
+Done: HUD overlays (Fabric `HudElementRegistry`, `GuiGraphicsExtractor`), container screens,
+boss-bar customization (`BossHealthOverlayMixin` + `BossbarManager`), and the non-GeckoLib
+spell-entity renderers. Those renderers extend `render/EntityBackedRenderer`, which keeps the
+entity in the render state and reads it in `submit` (shortcut: copy fields into the state if
+submission ever leaves the client thread). Shared `ModelPart`s must not be mutated per entity:
+submission is deferred, so offset through the `PoseStack` or pose inside `submitCustomGeometry`.
+
+Open in the render phase: every GeckoLib 5 renderer, model and layer (`GeoEntityRenderer` is now
+`<T, R extends EntityRenderState>` with `RenderPassInfo`), mob/humanoid renderers, block-entity
+renderers, particles (`MultiBufferSource`/`LightTexture` users), item render hooks and the
+render mixins. The heartstop vignette alpha-blends instead of adding until a GUI additive
+pipeline exists.

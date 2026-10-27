@@ -12,9 +12,11 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import io.redspace.ironsspellbooks.render.EntityBackedRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
@@ -23,7 +25,7 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
-public class AcidOrbRenderer extends EntityRenderer<AcidOrb> {
+public class AcidOrbRenderer extends EntityBackedRenderer<AcidOrb> {
 
     public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "acid_orb_model"), "main");
     private static Identifier ORB_TEXTURE = IronsSpellbooks.id("textures/entity/acid_orb/acid_orb.png");
@@ -59,7 +61,7 @@ public class AcidOrbRenderer extends EntityRenderer<AcidOrb> {
     }
 
     @Override
-    public void render(AcidOrb entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
+    protected void submit(AcidOrb entity, float partialTicks, int light, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
         poseStack.pushPose();
         poseStack.translate(0, entity.getBoundingBox().getYsize() * .5f, 0);
 
@@ -69,29 +71,24 @@ public class AcidOrbRenderer extends EntityRenderer<AcidOrb> {
         Vec3 motion = entity.getDeltaMovement();
         float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
         float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
-        poseStack.rotate(Axis.YP.rotationDegrees(yRot));
-        poseStack.rotate(Axis.XP.rotationDegrees(xRot));
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
-        this.orb.render(poseStack, consumer, light, OverlayTexture.NO_OVERLAY);
+        poseStack.rotateDegrees(Axis.YP, yRot);
+        poseStack.rotateDegrees(Axis.XP, xRot);
+        collector.submitModelPart(this.orb, poseStack, RenderTypes.entityCutout(getTextureLocation(entity)), light, OverlayTexture.NO_OVERLAY, null);
 
         float f = entity.tickCount + partialTicks;
         float swirlX = Mth.cos(.08f * f) * 180;
         float swirlY = Mth.sin(.08f * f) * 180;
         float swirlZ = Mth.cos(.08f * f + 5464) * 180;
-        poseStack.rotate(Axis.XP.rotationDegrees(swirlX));
-        poseStack.rotate(Axis.YP.rotationDegrees(swirlY));
-        poseStack.rotate(Axis.ZP.rotationDegrees(swirlZ));
-        consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getSwirlTextureLocation(entity)));
+        poseStack.rotateDegrees(Axis.XP, swirlX);
+        poseStack.rotateDegrees(Axis.YP, swirlY);
+        poseStack.rotateDegrees(Axis.ZP, swirlZ);
         poseStack.scale(1.15f, 1.15f, 1.15f);
-        this.swirl.render(poseStack, consumer, light, OverlayTexture.NO_OVERLAY);
+        collector.submitModelPart(this.swirl, poseStack, RenderTypes.entityCutout(getSwirlTextureLocation(entity)), light, OverlayTexture.NO_OVERLAY, null);
 
 
         poseStack.popPose();
-
-        super.render(entity, yaw, partialTicks, poseStack, bufferSource, light);
     }
 
-    @Override
     public Identifier getTextureLocation(AcidOrb entity) {
         return ORB_TEXTURE;
     }

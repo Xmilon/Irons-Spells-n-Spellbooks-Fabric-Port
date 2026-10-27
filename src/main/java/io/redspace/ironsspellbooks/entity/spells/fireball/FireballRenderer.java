@@ -12,17 +12,19 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import io.redspace.ironsspellbooks.render.EntityBackedRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.projectile.Projectile;
 
-public class FireballRenderer extends EntityRenderer<Projectile> {
+public class FireballRenderer extends EntityBackedRenderer<Projectile> {
 
     public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "fireball_model"), "main");
     public static final Identifier BASE_TEXTURE = IronsSpellbooks.id("textures/entity/fireball/fireball_core.png");
@@ -60,33 +62,28 @@ public class FireballRenderer extends EntityRenderer<Projectile> {
     }
 
     @Override
-    public void render(Projectile entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
+    protected void submit(Projectile entity, float partialTicks, int light, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
         poseStack.pushPose();
         poseStack.translate(0, entity.getBoundingBox().getYsize() * .5f, 0);
         poseStack.scale(scale, scale, scale);
         if (entity instanceof AbstractMagicProjectile) {
-            poseStack.rotate(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot()) + 180));
-            poseStack.rotate(Axis.XP.rotationDegrees(Mth.lerp(partialTicks, entity.xRotO, entity.getXRot())));
+            poseStack.rotateDegrees(Axis.YP, Mth.lerp(partialTicks, entity.yRotO, entity.getYRot()) + 180);
+            poseStack.rotateDegrees(Axis.XP, Mth.lerp(partialTicks, entity.xRotO, entity.getXRot()));
         } else {
             // replaced fireball renderer. these use different rules
-            poseStack.rotate(Axis.YP.rotationDegrees(-Mth.lerp(partialTicks, entity.yRotO, entity.getYRot())));
-            poseStack.rotate(Axis.XP.rotationDegrees(-Mth.lerp(partialTicks, entity.xRotO, entity.getXRot())));
+            poseStack.rotateDegrees(Axis.YP, -Mth.lerp(partialTicks, entity.yRotO, entity.getYRot()));
+            poseStack.rotateDegrees(Axis.XP, -Mth.lerp(partialTicks, entity.xRotO, entity.getXRot()));
         }
 
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
-        this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+        collector.submitModelPart(this.body, poseStack, RenderTypes.entityCutout(getTextureLocation(entity)), LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, null);
 
-        consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getFireTextureLocation(entity)));
         poseStack.scale(1.15f, 1.15f, 1.15f);
-        this.outline.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+        collector.submitModelPart(this.outline, poseStack, RenderTypes.entityCutout(getFireTextureLocation(entity)), LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, null);
 
 
         poseStack.popPose();
-
-        super.render(entity, yaw, partialTicks, poseStack, bufferSource, light);
     }
 
-    @Override
     public Identifier getTextureLocation(Projectile entity) {
         return BASE_TEXTURE;
     }

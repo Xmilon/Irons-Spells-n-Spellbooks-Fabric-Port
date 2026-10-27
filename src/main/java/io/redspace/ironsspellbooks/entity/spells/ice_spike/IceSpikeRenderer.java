@@ -1,22 +1,22 @@
 package io.redspace.ironsspellbooks.entity.spells.ice_spike;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import io.redspace.ironsspellbooks.render.EntityBackedRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 
-public class IceSpikeRenderer extends EntityRenderer<IceSpikeEntity> {
+public class IceSpikeRenderer extends EntityBackedRenderer<IceSpikeEntity> {
 
     private final IceSpikeModel model;
 
@@ -25,13 +25,13 @@ public class IceSpikeRenderer extends EntityRenderer<IceSpikeEntity> {
         this.model = new IceSpikeModel(pContext.bakeLayer(IceSpikeModel.LAYER_LOCATION));
     }
 
-    public void render(IceSpikeEntity entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource multiBufferSource, int light) {
+    protected void submit(IceSpikeEntity entity, float partialTicks, int light, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
         if (entity.tickCount < entity.getWaitTime())
             return;
         float f = entity.tickCount + partialTicks;
         poseStack.pushPose();
-        poseStack.rotate(Axis.YP.rotationDegrees(-entity.getYRot()));
-        poseStack.rotate(Axis.XP.rotationDegrees(entity.getXRot()));
+        poseStack.rotateDegrees(Axis.YP, -entity.getYRot());
+        poseStack.rotateDegrees(Axis.XP, entity.getXRot());
         float anim = entity.getPositionOffset(partialTicks);
         poseStack.scale(1, -1, 1);
         float scale = entity.getSpikeSize();
@@ -44,18 +44,15 @@ public class IceSpikeRenderer extends EntityRenderer<IceSpikeEntity> {
         poseStack.scale(scale, scale, scale);
         poseStack.translate(0, -anim * (22 + 22 + 24) / 16f, 0);
 
-        this.model.setupAnim(entity, partialTicks, 0.0F, 0.0F, entity.getYRot(), entity.getXRot());
-        VertexConsumer vertexconsumer = multiBufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
-        this.model.renderToBuffer(poseStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, -1);
+        this.model.submit(entity.getSpikeSize(), collector, poseStack, RenderTypes.entityCutout(getTextureLocation(entity)), light);
         poseStack.popPose();
     }
 
-    @Override
     public Identifier getTextureLocation(IceSpikeEntity pEntity) {
         return IronsSpellbooks.id("textures/entity/ice_spike.png");
     }
 
-    public static class IceSpikeModel extends EntityModel<IceSpikeEntity> {
+    public static class IceSpikeModel {
         public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "ice_spike"), "main");
         private final ModelPart bottom;
         private final ModelPart middle;
@@ -92,32 +89,28 @@ public class IceSpikeRenderer extends EntityRenderer<IceSpikeEntity> {
             return LayerDefinition.create(meshdefinition, 64, 64);
         }
 
-        @Override
-        public void setupAnim(IceSpikeEntity entity, float partialTicks, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-            float scale = entity.getSpikeSize();
-            top.visible = false;
-            bottom.visible = false;
-
+        /**
+         * Offsets are applied through the pose stack rather than by mutating the shared parts, because submitted parts are drawn later.
+         */
+        public void submit(float scale, SubmitNodeCollector collector, PoseStack poseStack, RenderType renderType, int light) {
             int ypos = 26;
             if (scale >= 3) {
-                bottom.visible = true;
                 ypos -= 26;
-                bottom.y = ypos;
+                submitPart(bottom, 25, ypos, collector, poseStack, renderType, light);
             }
             ypos -= 22;
-            middle.y = ypos;
+            submitPart(middle, 3, ypos, collector, poseStack, renderType, light);
             if (scale >= 2) {
-                top.visible = true;
                 ypos -= 22;
-                top.y = ypos;
+                submitPart(top, -19, ypos, collector, poseStack, renderType, light);
             }
         }
 
-        @Override
-        public void renderToBuffer(PoseStack poseStack, VertexConsumer vertexConsumer, int packedLight, int packedOverlay, int pColor) {
-            bottom.render(poseStack, vertexConsumer, packedLight, packedOverlay, pColor);
-            middle.render(poseStack, vertexConsumer, packedLight, packedOverlay, pColor);
-            top.render(poseStack, vertexConsumer, packedLight, packedOverlay, pColor);
+        private static void submitPart(ModelPart part, int initialY, int y, SubmitNodeCollector collector, PoseStack poseStack, RenderType renderType, int light) {
+            poseStack.pushPose();
+            poseStack.translate(0, (y - initialY) / 16f, 0);
+            collector.submitModelPart(part, poseStack, renderType, light, OverlayTexture.NO_OVERLAY, null);
+            poseStack.popPose();
         }
     }
 }

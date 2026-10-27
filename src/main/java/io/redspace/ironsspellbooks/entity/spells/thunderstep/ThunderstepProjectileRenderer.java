@@ -13,10 +13,12 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import io.redspace.ironsspellbooks.render.EntityBackedRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
@@ -24,7 +26,7 @@ import net.minecraft.util.Mth;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
-public class ThunderstepProjectileRenderer extends EntityRenderer<ThunderstepProjectile> {
+public class ThunderstepProjectileRenderer extends EntityBackedRenderer<ThunderstepProjectile> {
 
     public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "ball_lightning_model"), "main");
     private static final Identifier[] SWIRL_TEXTURES = {
@@ -51,14 +53,13 @@ public class ThunderstepProjectileRenderer extends EntityRenderer<ThunderstepPro
     }
 
     @Override
-    public void render(ThunderstepProjectile entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
+    protected void submit(ThunderstepProjectile entity, float partialTicks, int light, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
         poseStack.pushPose();
         poseStack.translate(0, entity.getBoundingBox().getYsize() * .5f, 0);
 
         Pose pose = poseStack.last();
         Matrix4f poseMatrix = pose.pose();
         Matrix3f normalMatrix = pose.normal();
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
         poseStack.scale(0.2f, 0.2f, 0.2f);
         for (int i = 0; i < 3; i++) {
             poseStack.pushPose();
@@ -73,21 +74,17 @@ public class ThunderstepProjectileRenderer extends EntityRenderer<ThunderstepPro
             float swirlY = Mth.sin(.065f * f) * 180;
             float swirlZ = Mth.cos(.065f * f + 5464) * 180;
             float scalePerLayer = 0.2f;
-            poseStack.rotate(Axis.XP.rotationDegrees(swirlX * (int) Math.pow(-1, i)));
-            poseStack.rotate(Axis.YP.rotationDegrees(swirlY * (int) Math.pow(-1, i)));
-            poseStack.rotate(Axis.ZP.rotationDegrees(swirlZ * (int) Math.pow(-1, i)));
-            consumer = bufferSource.getBuffer(RenderHelper.CustomerRenderType.magic(getSwirlTextureLocation(entity, i * i)));
+            poseStack.rotateDegrees(Axis.XP, swirlX * (int) Math.pow(-1, i));
+            poseStack.rotateDegrees(Axis.YP, swirlY * (int) Math.pow(-1, i));
+            poseStack.rotateDegrees(Axis.ZP, swirlZ * (int) Math.pow(-1, i));
             float scale = 2f - i * scalePerLayer;
             poseStack.scale(scale, scale, scale);
-            this.orb.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderHelper.colorf(r, g, b));
+            collector.submitModelPart(this.orb, poseStack, RenderHelper.CustomerRenderType.magic(getSwirlTextureLocation(entity, i * i)), LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, null, RenderHelper.colorf(r, g, b));
             poseStack.popPose();
         }
         poseStack.popPose();
-
-        super.render(entity, yaw, partialTicks, poseStack, bufferSource, light);
     }
 
-    @Override
     public Identifier getTextureLocation(ThunderstepProjectile entity) {
         return SWIRL_TEXTURES[0];
     }

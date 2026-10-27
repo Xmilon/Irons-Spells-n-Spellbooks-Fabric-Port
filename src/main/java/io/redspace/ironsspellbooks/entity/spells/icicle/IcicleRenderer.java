@@ -8,16 +8,18 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import io.redspace.ironsspellbooks.render.EntityBackedRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
-public class IcicleRenderer extends EntityRenderer<IcicleProjectile> {
+public class IcicleRenderer extends EntityBackedRenderer<IcicleProjectile> {
     public static final Identifier TEXTURE = IronsSpellbooks.id("textures/entity/icicle_projectile.png");
     public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "icicle_model"), "main");
 
@@ -42,24 +44,20 @@ public class IcicleRenderer extends EntityRenderer<IcicleProjectile> {
     }
 
     @Override
-    public void render(IcicleProjectile entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
+    protected void submit(IcicleProjectile entity, float partialTicks, int light, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
         poseStack.pushPose();
 
         Vec3 motion = entity.getDeltaMovement();
         float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
         float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
-        poseStack.rotate(Axis.YP.rotationDegrees(yRot));
-        poseStack.rotate(Axis.XP.rotationDegrees(xRot));
+        poseStack.rotateDegrees(Axis.YP, yRot);
+        poseStack.rotateDegrees(Axis.XP, xRot);
         poseStack.scale(1, -1, 1);
-        VertexConsumer consumer2 = bufferSource.getBuffer(RenderType.entityCutoutNoCull(TEXTURE));
-        this.body.render(poseStack, consumer2, light, OverlayTexture.NO_OVERLAY);
-        //this.tip.render(poseStack, consumer2, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
+        collector.submitModelPart(this.body, poseStack, RenderTypes.entityCutout(TEXTURE), light, OverlayTexture.NO_OVERLAY, null);
+        //this.tip.render(poseStack, consumer2, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
         poseStack.popPose();
-
-        super.render(entity, yaw, partialTicks, poseStack, bufferSource, light);
     }
 
-    @Override
     public Identifier getTextureLocation(IcicleProjectile entity) {
         return TEXTURE;
     }

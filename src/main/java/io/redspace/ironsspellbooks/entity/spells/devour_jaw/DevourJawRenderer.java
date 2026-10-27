@@ -7,15 +7,17 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.client.model.effects.EvokerFangsModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import io.redspace.ironsspellbooks.render.EntityBackedRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
-public class DevourJawRenderer extends EntityRenderer<DevourJaw> {
+public class DevourJawRenderer extends EntityBackedRenderer<DevourJaw> {
 
     private final DevourJawModel model;
 
@@ -24,42 +26,42 @@ public class DevourJawRenderer extends EntityRenderer<DevourJaw> {
         this.model = new DevourJawModel(pContext.bakeLayer(ModelLayers.EVOKER_FANGS));
     }
 
-    public void render(DevourJaw entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource multiBufferSource, int light) {
+    protected void submit(DevourJaw entity, float partialTicks, int light, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
         if (entity.tickCount < entity.waitTime)
             return;
         float f = entity.tickCount + partialTicks;
         poseStack.pushPose();
-        poseStack.rotate(Axis.YP.rotationDegrees(-entity.getYRot()));
+        poseStack.rotateDegrees(Axis.YP, -entity.getYRot());
         poseStack.scale(-1, -1, 1);
         poseStack.scale(1.85f, 1.85f, 1.85f);
-        this.model.setupAnim(entity, f, 0.0F, 0.0F, entity.getYRot(), entity.getXRot());
-        VertexConsumer vertexconsumer = multiBufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
-        this.model.renderToBuffer(poseStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, -1);
+        // the shared model parts are posed when drawn, not when submitted
+        collector.submitCustomGeometry(poseStack, RenderTypes.entityCutout(getTextureLocation(entity)), (pose, vertexconsumer) -> {
+            PoseStack drawStack = new PoseStack();
+            drawStack.last().set(pose);
+            this.model.setupAnim(entity, f);
+            this.model.root.render(drawStack, vertexconsumer, light, OverlayTexture.NO_OVERLAY, -1);
+        });
         poseStack.popPose();
-        super.render(entity, yaw, partialTicks, poseStack, multiBufferSource, light);
     }
 
-    @Override
     public Identifier getTextureLocation(DevourJaw pEntity) {
         return IronsSpellbooks.id("textures/entity/devour_jaw.png");
     }
 
-    static class DevourJawModel extends EvokerFangsModel<DevourJaw> {
+    static class DevourJawModel {
         private final ModelPart root;
         private final ModelPart base;
         private final ModelPart upperJaw;
         private final ModelPart lowerJaw;
 
         public DevourJawModel(ModelPart pRoot) {
-            super(pRoot);
             this.root = pRoot;
             this.base = pRoot.getChild("base");
             this.upperJaw = pRoot.getChild("upper_jaw");
             this.lowerJaw = pRoot.getChild("lower_jaw");
         }
 
-        @Override
-        public void setupAnim(DevourJaw entity, float time, float pLimbSwingAmount, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
+        public void setupAnim(DevourJaw entity, float time) {
             time -= entity.waitTime;
             float interval = entity.warmupTime - entity.waitTime;
 

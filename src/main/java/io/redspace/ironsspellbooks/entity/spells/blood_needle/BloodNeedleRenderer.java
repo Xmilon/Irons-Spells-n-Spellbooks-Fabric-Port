@@ -5,9 +5,11 @@ import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import io.redspace.ironsspellbooks.render.EntityBackedRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
@@ -16,7 +18,7 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
-public class BloodNeedleRenderer extends EntityRenderer<BloodNeedle> {
+public class BloodNeedleRenderer extends EntityBackedRenderer<BloodNeedle> {
     //    private static final Identifier[] TEXTURES = {
 //            IronsSpellbooks.id("textures/entity/blood_needle/needle_0.png"),
 //            IronsSpellbooks.id("textures/entity/blood_needle/needle_1.png"),
@@ -35,47 +37,41 @@ public class BloodNeedleRenderer extends EntityRenderer<BloodNeedle> {
     }
 
     @Override
-    public void render(BloodNeedle entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
+    protected void submit(BloodNeedle entity, float partialTicks, int light, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
         poseStack.pushPose();
-
-        Pose pose = poseStack.last();
         Vec3 motion = entity.getDeltaMovement();
         float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
         float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
-        poseStack.rotate(Axis.YP.rotationDegrees(yRot));
-        poseStack.rotate(Axis.XP.rotationDegrees(xRot));
-        poseStack.rotate(Axis.ZP.rotationDegrees(entity.getZRot() + (entity.tickCount + partialTicks) * 40));
+        poseStack.rotateDegrees(Axis.YP, yRot);
+        poseStack.rotateDegrees(Axis.XP, xRot);
+        poseStack.rotateDegrees(Axis.ZP, entity.getZRot() + (entity.tickCount + partialTicks) * 40);
 
-        //VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
+        //VertexConsumer consumer = bufferSource.getBuffer(RenderTypes.entityCutout(getTextureLocation(entity)));
 
         //float halfWidth = width * .5f;
         //old color: 125, 0, 10
         float width = 2.5f;
-        //drawSlash(pose, bufferSource, light, width, 2);
-        poseStack.rotate(Axis.XP.rotationDegrees(45));
+        //drawSlash(poseStack, collector, light, width, 2);
+        poseStack.rotateDegrees(Axis.XP, 45);
         float scale = entity.getScale();
         poseStack.scale(scale, scale, scale);
-        drawSlash(pose, entity, bufferSource, light, width);
+        drawSlash(poseStack, entity, collector, light, width);
 
         poseStack.popPose();
-
-        super.render(entity, yaw, partialTicks, poseStack, bufferSource, light);
     }
 
-    private void drawSlash(Pose pose, BloodNeedle entity, MultiBufferSource bufferSource, int light, float width) {
-        Matrix4f poseMatrix = pose.pose();
-        Matrix3f normalMatrix = pose.normal();
+    private void drawSlash(PoseStack poseStack, BloodNeedle entity, SubmitNodeCollector collector, int light, float width) {
 
-        VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
         float halfWidth = width * .5f;
         //old color: 125, 0, 10
-        consumer.addVertex(poseMatrix, 0, -halfWidth, -halfWidth).setColor(90, 0, 10, 255).setUv(0f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0f, 1f, 0f);
-        consumer.addVertex(poseMatrix, 0, halfWidth, -halfWidth).setColor(90, 0, 10, 255).setUv(1f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0f, 1f, 0f);
-        consumer.addVertex(poseMatrix, 0, halfWidth, halfWidth).setColor(90, 0, 10, 255).setUv(1f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0f, 1f, 0f);
-        consumer.addVertex(poseMatrix, 0, -halfWidth, halfWidth).setColor(90, 0, 10, 255).setUv(0f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0f, 1f, 0f);
+        collector.submitCustomGeometry(poseStack, RenderTypes.entityCutout(getTextureLocation(entity)), (pose, consumer) -> {
+            consumer.addVertex(pose.pose(), 0, -halfWidth, -halfWidth).setColor(90, 0, 10, 255).setUv(0f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0f, 1f, 0f);
+            consumer.addVertex(pose.pose(), 0, halfWidth, -halfWidth).setColor(90, 0, 10, 255).setUv(1f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0f, 1f, 0f);
+            consumer.addVertex(pose.pose(), 0, halfWidth, halfWidth).setColor(90, 0, 10, 255).setUv(1f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0f, 1f, 0f);
+            consumer.addVertex(pose.pose(), 0, -halfWidth, halfWidth).setColor(90, 0, 10, 255).setUv(0f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0f, 1f, 0f);
+        });
     }
 
-    @Override
     public Identifier getTextureLocation(BloodNeedle entity) {
 //        int frame = (entity.tickCount / 4) % TEXTURES.length;
 //        return TEXTURES[frame];

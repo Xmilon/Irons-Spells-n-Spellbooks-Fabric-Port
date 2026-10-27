@@ -8,7 +8,7 @@ import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.particle.TextureSheetParticle;
 import net.minecraft.core.BlockPos;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -35,9 +35,9 @@ public class TintedBubblePopParticle extends TextureSheetParticle {
     private void applyCauldronTint(ClientLevel level, BlockPos cauldronPos) {
         int color = 0xFFFFFFFF;
         float scale = 2.5f;
-        this.rCol = Mth.clamp(FastColor.ARGB32.red(color) * scale, 0, 255) / 255.0F;
-        this.gCol = Mth.clamp(FastColor.ARGB32.green(color) * scale, 0, 255) / 255.0F;
-        this.bCol = Mth.clamp(FastColor.ARGB32.blue(color) * scale, 0, 255) / 255.0F;
+        this.rCol = Mth.clamp(ARGB.red(color) * scale, 0, 255) / 255.0F;
+        this.gCol = Mth.clamp(ARGB.green(color) * scale, 0, 255) / 255.0F;
+        this.bCol = Mth.clamp(ARGB.blue(color) * scale, 0, 255) / 255.0F;
     }
 
     @Override
