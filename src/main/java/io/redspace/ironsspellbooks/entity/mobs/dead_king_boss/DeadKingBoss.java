@@ -723,7 +723,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
             if (spawnPos != null) {
                 var soul = new DeadKingSoulEntity(level, Vec3.ZERO, spawnPos);
                 soul.setRespawnPos(spawnPos);
-                soul.moveTo(this.getBoundingBox().getCenter());
+                soul.snapTo(this.getBoundingBox().getCenter());
                 level.addFreshEntity(soul);
             }
         }

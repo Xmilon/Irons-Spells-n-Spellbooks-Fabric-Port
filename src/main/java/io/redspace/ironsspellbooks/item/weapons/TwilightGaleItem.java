@@ -74,7 +74,7 @@ public class TwilightGaleItem extends MagicSwordItem {
                         }
                         ThrownSpear throwntrident = new ThrownSpear(level, stack, damage);
                         throwntrident.setOwner(player);
-                        throwntrident.moveTo(player.getEyePosition());
+                        throwntrident.snapTo(player.getEyePosition());
                         throwntrident.shootFromRotation(player, player.getXRot(), player.getYRot(), 0.0F, 2.5F, 0.5F);
                         if (player.hasInfiniteMaterials()) {
                             throwntrident.pickup = AbstractArrow.Pickup.CREATIVE_ONLY;

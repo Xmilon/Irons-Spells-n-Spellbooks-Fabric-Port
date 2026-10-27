@@ -1000,7 +1000,7 @@ public class Utils {
                     } else {
                         dz = Math.min(0, collider.minZ - riftBox.maxZ);
                     }
-                    entity.moveTo(entity.position().add(dx, dy, dz));
+                    entity.snapTo(entity.position().add(dx, dy, dz));
                 }
         );
     }
