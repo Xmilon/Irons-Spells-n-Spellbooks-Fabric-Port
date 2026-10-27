@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.gui.scroll_forge;
 
+import net.minecraft.network.chat.FontDescription;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.SpellConfigManager;
 import io.redspace.ironsspellbooks.api.config.SpellConfigParameter;

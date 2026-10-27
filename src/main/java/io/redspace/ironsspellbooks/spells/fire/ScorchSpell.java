@@ -115,7 +115,7 @@ public class ScorchSpell extends AbstractSpell {
             fire.setDamage(damage * .1f);
             fire.setRadius(radius);
             fire.setCircular();
-            fire.moveTo(targetArea);
+            fire.snapTo(targetArea);
             level.addFreshEntity(fire);
         }
 

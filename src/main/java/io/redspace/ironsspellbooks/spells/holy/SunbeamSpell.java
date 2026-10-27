@@ -86,7 +86,7 @@ public class SunbeamSpell extends AbstractSpell {
         }
 
         sunbeam.setOwner(entity);
-        sunbeam.moveTo(spawn);
+        sunbeam.snapTo(spawn);
         sunbeam.setDamage(getDamage(spellLevel, entity));
         level.addFreshEntity(sunbeam);
         level.playSound(null, sunbeam.blockPosition(), SoundRegistry.SUNBEAM_WINDUP.get(), SoundSource.NEUTRAL, 3.5f, 1);

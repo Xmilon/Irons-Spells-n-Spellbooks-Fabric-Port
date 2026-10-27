@@ -97,7 +97,7 @@ public class EarthquakeSpell extends AbstractSpell {
         float radius = getRadius(spellLevel, entity);
 
         EarthquakeAoe aoeEntity = new EarthquakeAoe(world);
-        aoeEntity.moveTo(spawn);
+        aoeEntity.snapTo(spawn);
         aoeEntity.setOwner(entity);
         aoeEntity.setCircular();
         aoeEntity.setRadius(radius);

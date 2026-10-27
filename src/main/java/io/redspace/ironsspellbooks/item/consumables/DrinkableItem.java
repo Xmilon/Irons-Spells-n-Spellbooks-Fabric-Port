@@ -1,11 +1,12 @@
 package io.redspace.ironsspellbooks.item.consumables;
 
+import net.minecraft.world.InteractionResult;
+
 import net.minecraft.ChatFormatting;
 import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.*;
@@ -72,7 +73,7 @@ public class DrinkableItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pHand) {
+    public InteractionResult use(Level pLevel, Player pPlayer, InteractionHand pHand) {
         return ItemUtils.startUsingInstantly(pLevel, pPlayer, pHand);
     }
 

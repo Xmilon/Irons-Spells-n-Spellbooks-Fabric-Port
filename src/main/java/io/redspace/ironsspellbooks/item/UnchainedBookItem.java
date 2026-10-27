@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.item;
 
+import net.minecraft.network.chat.FontDescription;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;

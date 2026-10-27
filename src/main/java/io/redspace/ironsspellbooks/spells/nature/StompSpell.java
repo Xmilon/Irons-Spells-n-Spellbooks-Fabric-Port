@@ -92,7 +92,7 @@ public class StompSpell extends AbstractSpell {
         ((ServerLevel) level).sendParticles(new BlockParticleOption(ParticleTypes.BLOCK, level.getBlockState(bpos)), spawn.x, spawn.y, spawn.z, 40, 0.0D, 0.0D, 0.0D, (double) 0.20 + 0.05F * spellLevel);
 
         var stomp = new StompAoe(level, getRange(spellLevel, entity), entity.getYRot());
-        stomp.moveTo(spawn);
+        stomp.snapTo(spawn);
         stomp.setDamage(getDamage(spellLevel, entity));
         //explosion radius used for knockback
         stomp.setExplosionRadius(getEntityPowerMultiplier(entity));

@@ -96,7 +96,7 @@ public class BlackHoleSpell extends AbstractSpell {
         BlackHole blackHole = new BlackHole(level, entity);
         blackHole.setRadius(radius);
         blackHole.setDamage(getDamage(spellLevel, entity));
-        blackHole.moveTo(center);
+        blackHole.snapTo(center);
         level.addFreshEntity(blackHole);
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }

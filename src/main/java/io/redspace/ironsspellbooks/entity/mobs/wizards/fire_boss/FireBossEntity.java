@@ -70,7 +70,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.SpawnGroupData;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
@@ -449,7 +449,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, EntitySpawnReason pReason, @Nullable SpawnGroupData pSpawnData) {
         super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData);
         RandomSource randomsource = Utils.random;
         this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
@@ -774,7 +774,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             float angle = (left ? -90 : 90) * Mth.DEG_TO_RAD;
             Vec3 offset = this.getForward().multiply(3, 0, 3).scale(this.getScale()).yRot(angle);
             Vec3 spawn = Utils.moveToRelativeGroundLevel(level, Utils.raycastForBlock(level, this.getEyePosition(), this.position().add(offset), ClipContext.Fluid.NONE).getLocation(), 4);
-            knight.moveTo(spawn.add(0, 0.1, 0));
+            knight.snapTo(spawn.add(0, 0.1, 0));
             Utils.fudgeNoCollision(level, knight);
             if (level.collidesWithSuffocatingBlock(knight, knight.getBoundingBox())) {
                 return;
@@ -785,7 +785,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             if (isSoulMode()) {
                 knight.setIsRestored();
             }
-            knight.finalizeSpawn(serverLevel, level.getCurrentDifficultyAt(this.blockPosition()), MobSpawnType.MOB_SUMMONED, null);
+            knight.finalizeSpawn(serverLevel, level.getCurrentDifficultyAt(this.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
             level.addFreshEntity(knight);
             level.playSound(null, spawn.x, spawn.y, spawn.z, SoundRegistry.FIRE_BOSS_ACCENT.get(), this.getSoundSource(), 2, .9f);
         }
@@ -802,7 +802,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         FireEruptionAoe aoe = new FireEruptionAoe(level, radius);
         aoe.setOwner(this);
         aoe.setDamage(damage);
-        aoe.moveTo(pos);
+        aoe.snapTo(pos);
         level.addFreshEntity(aoe);
         CameraShakeManager.addCameraShake(new CameraShakeData(level, 20 + (int) radius, pos, radius * 2 + 5));
     }

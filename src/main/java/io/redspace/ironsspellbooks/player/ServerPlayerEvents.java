@@ -61,7 +61,6 @@ import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.InteractionResult;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
@@ -569,7 +568,7 @@ public class ServerPlayerEvents {
                 player.level().playSound((Player) null, player.getX(), player.getY(), player.getZ(), SoundEvents.BOTTLE_FILL_DRAGONBREATH, SoundSource.NEUTRAL, 1.0F, 1.0F);
                 player.swing(hand);
                 player.setItemInHand(hand, ItemUtils.createFilledResult(useItem, player, new ItemStack(ItemRegistry.LIGHTNING_BOTTLE.get())));
-                event.setCancellationResult(InteractionResultHolder.consume(player.getItemInHand(hand)).getResult());
+                event.setCancellationResult(InteractionResult.CONSUME.getResult());
                 event.setCanceled(true);
             }
         }

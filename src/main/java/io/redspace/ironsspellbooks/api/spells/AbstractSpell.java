@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.api.spells;
 
+import net.minecraft.network.chat.FontDescription;
+
 import com.google.common.util.concurrent.AtomicDouble;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;

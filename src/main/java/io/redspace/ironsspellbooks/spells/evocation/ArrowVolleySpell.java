@@ -103,7 +103,7 @@ public class ArrowVolleySpell extends AbstractSpell {
         float arrowAngleY = entity.getX() == targetLocation.x && entity.getZ() == targetLocation.z ? (entity.getYRot() - 90) * Mth.DEG_TO_RAD : Utils.getAngle(entity.getX(), entity.getZ(), targetLocation.x, targetLocation.z);
 
         ArrowVolleyEntity arrowVolleyEntity = new ArrowVolleyEntity(EntityRegistry.ARROW_VOLLEY_ENTITY.get(), level);
-        arrowVolleyEntity.moveTo(spawnLocation);
+        arrowVolleyEntity.snapTo(spawnLocation);
         arrowVolleyEntity.setYRot(arrowAngleY * Mth.RAD_TO_DEG + 90);
         arrowVolleyEntity.setXRot(arrowAngleX + 25);
         arrowVolleyEntity.setDamage(getDamage(spellLevel, entity));

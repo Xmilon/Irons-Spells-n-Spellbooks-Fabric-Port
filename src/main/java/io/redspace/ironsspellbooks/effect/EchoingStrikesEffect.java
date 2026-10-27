@@ -76,7 +76,7 @@ public class EchoingStrikesEffect extends MagicMobEffect {
         Vec3 spawnPos = arrowPos
                 .add(right.scale((1 + level.getRandom().nextFloat() * 4) * (level.getRandom().nextBoolean() ? 1 : -1)))
                 .add(0, (level.getRandom().nextFloat() - 0.25) * 6, 0);
-        arrow.moveTo(spawnPos);
+        arrow.snapTo(spawnPos);
         arrow.setHomingTarget(target);
         arrow.setDamage(damage);
         arrow.setOwner(attacker);
@@ -86,7 +86,7 @@ public class EchoingStrikesEffect extends MagicMobEffect {
     private static void createEchoingSword(LivingEntity attacker, Level level, LivingEntity target, float damage) {
         EchoingSword echo = new EchoingSword(EntityRegistry.ECHOING_SWORD.get(), level);
         // todo: real spawn logic
-        echo.moveTo(target.getBoundingBox().getCenter().add(new Vec3(2.5, 0, 0).yRot(level.getRandom().nextFloat() * Mth.TWO_PI)).add(Utils.getRandomVec3(1.75)));
+        echo.snapTo(target.getBoundingBox().getCenter().add(new Vec3(2.5, 0, 0).yRot(level.getRandom().nextFloat() * Mth.TWO_PI)).add(Utils.getRandomVec3(1.75)));
         echo.setHomingTarget(target);
         echo.moveAndRotateTowards(target.getBoundingBox().getCenter());
         echo.setExplosionRadius(EchoingStrikesSpell.radius);

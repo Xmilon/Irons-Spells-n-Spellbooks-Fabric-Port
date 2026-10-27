@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
+import net.minecraft.world.entity.EntitySpawnReason;
+
 
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -98,7 +100,7 @@ public class SummonedZombie extends Zombie implements IMagicSummon, GeoAnimatabl
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, EntitySpawnReason pReason, @Nullable SpawnGroupData pSpawnData) {
         RandomSource randomsource = Utils.random;
         this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
         if (randomsource.nextDouble() < .25)

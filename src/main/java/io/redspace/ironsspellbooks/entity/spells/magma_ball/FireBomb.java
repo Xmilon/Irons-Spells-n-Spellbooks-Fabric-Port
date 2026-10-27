@@ -85,7 +85,7 @@ public class FireBomb extends AbstractMagicProjectile {
             fire.setDamage(aoeDamage);
             fire.setRadius(getExplosionRadius());
             fire.setCircular();
-            fire.moveTo(location);
+            fire.snapTo(location);
             level().addFreshEntity(fire);
         }
     }

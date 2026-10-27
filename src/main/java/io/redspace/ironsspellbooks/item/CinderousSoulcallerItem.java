@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.item;
 
+import net.minecraft.world.InteractionResult;
+
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.FireBossEntity;
@@ -19,8 +21,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -36,7 +37,7 @@ public class CinderousSoulcallerItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
         if (level instanceof ServerLevel serverlevel && player instanceof ServerPlayer serverPlayer) {
             player.getCooldowns().addCooldown(ItemRegistry.CINDEROUS_SOULCALLER.get(), 80);
@@ -62,7 +63,7 @@ public class CinderousSoulcallerItem extends Item {
                     fireBoss.moveTo(center);
                     fireBoss.setYRot(yRot + 90);
                     fireBoss.triggerSpawnAnim();
-                    fireBoss.finalizeSpawn(serverlevel, level.getCurrentDifficultyAt(player.blockPosition()), MobSpawnType.MOB_SUMMONED, null);
+                    fireBoss.finalizeSpawn(serverlevel, level.getCurrentDifficultyAt(player.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
                     level.addFreshEntity(fireBoss);
                     tollEffects(serverlevel, player.position(), true);
                 } else {
@@ -77,7 +78,7 @@ public class CinderousSoulcallerItem extends Item {
             }
         }
         player.swing(hand);
-        return InteractionResultHolder.consume(itemStack);
+        return InteractionResult.CONSUME;
     }
 
     public void tollEffects(ServerLevel serverLevel, Vec3 usePosition, boolean success) {

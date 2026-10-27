@@ -75,7 +75,7 @@ public class ScapegoatSpell extends AbstractSpell {
         goat.yHeadRot = y;
         goat.yHeadRotO = y;
         //todo: clip?
-        goat.moveTo(entity.getEyePosition().add(entity.getForward().scale(2)));
+        goat.snapTo(entity.getEyePosition().add(entity.getForward().scale(2)));
         goat.getAttributes().getInstance(Attributes.MAX_HEALTH).setBaseValue(getGoatHealth(spellLevel, entity));
         goat.setHealth(goat.getMaxHealth());
         goat.poofParticles(20, 1f);

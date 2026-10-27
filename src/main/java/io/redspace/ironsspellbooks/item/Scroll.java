@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.item;
 
+import net.minecraft.world.InteractionResult;
+
 
 import io.redspace.ironsspellbooks.api.item.IScroll;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
@@ -15,7 +17,6 @@ import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -59,27 +60,27 @@ public class Scroll extends Item implements IScroll {
     }
 
     @Override
-    public @NotNull InteractionResultHolder<ItemStack> use(Level level, Player player, @NotNull InteractionHand hand) {
+    public @NotNull InteractionResult use(Level level, Player player, @NotNull InteractionHand hand) {
         ItemStack stack = player.getItemInHand(hand);
         var spellSlot = getSpellSlotFromStack(stack);
         var spell = spellSlot.getSpell();
 
         if (level.isClientSide()) {
             if (ClientMagicData.isCasting()) {
-                return InteractionResultHolder.consume(stack);
+                return InteractionResult.CONSUME;
             } else if (!ClientMagicData.getSyncedSpellData(player).isSpellLearned(spell)) {
-                return InteractionResultHolder.pass(stack);
+                return InteractionResult.PASS;
             } else {
-                return InteractionResultHolder.consume(stack);
+                return InteractionResult.CONSUME;
             }
         }
 
         var castingSlot = hand.ordinal() == 0 ? SpellSelectionManager.MAINHAND : SpellSelectionManager.OFFHAND;
 
         if (spell.attemptInitiateCast(stack, spell.getLevelFor(spellSlot.getLevel(), player), level, player, CastSource.SCROLL, false, castingSlot)) {
-            return InteractionResultHolder.consume(stack);
+            return InteractionResult.CONSUME;
         } else {
-            return InteractionResultHolder.fail(stack);
+            return InteractionResult.FAIL;
         }
     }
 

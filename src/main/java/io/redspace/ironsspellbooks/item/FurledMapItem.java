@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.item;
 
+import net.minecraft.world.InteractionResult;
+
 import com.mojang.datafixers.util.Pair;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
@@ -27,7 +29,6 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -49,7 +50,7 @@ public class FurledMapItem extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         if (level instanceof ServerLevel serverlevel) {
             level.playSound(null, player, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, player.getSoundSource(), 1.0F, 1.0F);
             ItemStack itemStack = player.getItemInHand(hand);
@@ -63,7 +64,7 @@ public class FurledMapItem extends Item {
                     var dimensionRestriction = furledMapData.dimension().get();
                     if (!serverlevel.dimension().equals(dimensionRestriction)) {
                         ((ServerPlayer) player).connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("item.irons_spellbooks.furled_map.dimension_fail").withStyle(ChatFormatting.RED)));
-                        return InteractionResultHolder.fail(itemStack);
+                        return InteractionResult.FAIL;
                     }
                 }
                 if (holder.isPresent()) {
@@ -76,7 +77,7 @@ public class FurledMapItem extends Item {
                         furledMapData.descriptionOverride.ifPresent(component -> mapStack.set(DataComponents.CUSTOM_NAME, component));
 
                         replaceItem(player, mapStack, hand);
-                        return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
+                        return InteractionResult.SUCCESS;
                     }
                 }
             }

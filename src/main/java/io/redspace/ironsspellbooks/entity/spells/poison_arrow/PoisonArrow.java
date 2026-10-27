@@ -147,7 +147,7 @@ public class PoisonArrow extends AbstractMagicProjectile {
             cloud.setOwner(getOwner());
             cloud.setDuration(200);
             cloud.setDamage(aoeDamage);
-            cloud.moveTo(location);
+            cloud.snapTo(location);
             level().addFreshEntity(cloud);
             hasEmittedPoison = true;
         }

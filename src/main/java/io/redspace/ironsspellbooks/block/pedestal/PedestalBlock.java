@@ -5,7 +5,7 @@ import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -47,7 +47,7 @@ public class PedestalBlock extends BaseEntityBlock implements SimpleWaterloggedB
     }
 
     @Override
-    public ItemInteractionResult useItemOn(ItemStack pStack, BlockState state, Level pLevel, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult useItemOn(ItemStack pStack, BlockState state, Level pLevel, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (!pLevel.isClientSide()) {
             BlockEntity entity = pLevel.getBlockEntity(pos);
             //Ironsspellbooks.logger.debug("PedestalBlock.use");
@@ -80,7 +80,7 @@ public class PedestalBlock extends BaseEntityBlock implements SimpleWaterloggedB
             }
         }
 
-        return ItemInteractionResult.sidedSuccess(pLevel.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     private void dropItem(ItemStack itemstack, Player owner) {

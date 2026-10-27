@@ -72,7 +72,7 @@ public class DragonBreathProjectile extends AbstractConeProjectile {
         DragonBreathPool pool = new DragonBreathPool(level());
         pool.setOwner(getOwner());
         pool.setDamage(this.damage);
-        pool.moveTo(pos);
+        pool.snapTo(pos);
         this.level().addFreshEntity(pool);
 
     }

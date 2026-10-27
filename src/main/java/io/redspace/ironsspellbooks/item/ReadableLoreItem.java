@@ -1,12 +1,13 @@
 package io.redspace.ironsspellbooks.item;
 
+import net.minecraft.world.InteractionResult;
+
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundOpenBookPacket;
 import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -26,7 +27,7 @@ public class ReadableLoreItem extends Item implements ILecternPlaceable {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pHand) {
+    public InteractionResult use(Level pLevel, Player pPlayer, InteractionHand pHand) {
         var itemstack = pPlayer.getItemInHand(pHand);
         if (pPlayer instanceof ServerPlayer serverPlayer) {
             if (WrittenBookItem.resolveBookComponents(itemstack, serverPlayer.createCommandSourceStack(), serverPlayer)) {
@@ -36,7 +37,7 @@ public class ReadableLoreItem extends Item implements ILecternPlaceable {
 
             serverPlayer.connection.send(new ClientboundOpenBookPacket(pHand));
         }
-        return InteractionResultHolder.sidedSuccess(itemstack, pLevel.isClientSide());
+        return InteractionResult.SUCCESS;
     }
 
     @Override

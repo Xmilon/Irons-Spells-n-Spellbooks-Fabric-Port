@@ -146,14 +146,14 @@ public class IceSpiderEggBlock extends Block {
         var level = spider.level();
         Vec3 originalPos = spider.position();
         pos = Utils.moveToRelativeGroundLevel(level, pos, 2);
-        spider.moveTo(pos);
+        spider.snapTo(pos);
         Vec3 adjustedPos = level.findFreePosition(spider, Shapes.create(spider.getBoundingBox()), pos, 0.25, 0.25, 0.25).orElse(pos);
-        spider.moveTo(adjustedPos);
+        spider.snapTo(adjustedPos);
         var bb = spider.getBoundingBox();
         if (level.noCollision(bb) && !level.containsAnyLiquid(bb)) {
             return true;
         }
-        spider.moveTo(originalPos);
+        spider.snapTo(originalPos);
         return false;
     }
 

@@ -107,7 +107,7 @@ public class BlizzardSpell extends AbstractSpell {
         float radius = getRadius(spellLevel, entity);
 
         BlizzardAoe aoe = new BlizzardAoe(EntityRegistry.BLIZZARD_AOE.get(), level);
-        aoe.moveTo(spawn);
+        aoe.snapTo(spawn);
         aoe.setOwner(entity);
         aoe.setRadius(radius);
         aoe.setDuration(duration);

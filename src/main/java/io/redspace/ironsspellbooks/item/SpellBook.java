@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.item;
 
+import net.minecraft.network.chat.FontDescription;
+
 import io.redspace.ironsspellbooks.api.item.ISpellbook;
 import io.redspace.ironsspellbooks.api.magic.SpellSelectionManager;
 import io.redspace.ironsspellbooks.api.spells.CastSource;

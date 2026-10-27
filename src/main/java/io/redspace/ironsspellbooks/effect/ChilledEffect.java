@@ -25,7 +25,7 @@ public class ChilledEffect extends MagicMobEffect {
         }
         if (pLivingEntity.isFullyFrozen()) {
             IceTombEntity iceTombEntity = new IceTombEntity(pLivingEntity.level(), null);
-            iceTombEntity.moveTo(pLivingEntity.position());
+            iceTombEntity.snapTo(pLivingEntity.position());
             iceTombEntity.setDeltaMovement(pLivingEntity.getDeltaMovement());
             iceTombEntity.setEvil();
             iceTombEntity.setLifetime(20 * 5);

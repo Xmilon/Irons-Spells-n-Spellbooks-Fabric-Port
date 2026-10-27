@@ -109,7 +109,7 @@ public class IceSpikesSpell extends AbstractSpell {
                     spike.setSilent(true);
                 }
                 spike.setSpikeSize(scale);
-                spike.moveTo(spawn.add(0, 0, 0));
+                spike.snapTo(spawn.add(0, 0, 0));
                 spike.setWaitTime(delay);
                 spike.setDamage(damage * (isFinalSpike ? 1 : 0.5f));
                 spike.setYRot((entity.getYRot() - 45 + Utils.random.nextIntBetweenInclusive(-20, 20)));

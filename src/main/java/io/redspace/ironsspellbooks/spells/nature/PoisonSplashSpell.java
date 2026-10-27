@@ -98,7 +98,7 @@ public class PoisonSplashSpell extends AbstractSpell {
 
         PoisonSplash poisonSplash = new PoisonSplash(level);
         poisonSplash.setOwner(entity);
-        poisonSplash.moveTo(spawn);
+        poisonSplash.snapTo(spawn);
         poisonSplash.setDamage(getDamage(spellLevel, entity));
         poisonSplash.setEffectDuration(getDuration(spellLevel, entity));
         level.addFreshEntity(poisonSplash);

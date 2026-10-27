@@ -84,7 +84,7 @@ public class DeadKingSoulEntity extends Entity implements AntiMagicSusceptible {
                 MagicManager.spawnParticles(level(), ParticleTypes.SCULK_SOUL, getX(), getY(), getZ(), 50, .1, .1, .1, 0.3, false);
 
                 DeadKingCorpseEntity deadKingCorpseEntity = new DeadKingCorpseEntity(EntityRegistry.DEAD_KING_CORPSE.get(), serverLevel);
-                deadKingCorpseEntity.moveTo(this.position());
+                deadKingCorpseEntity.snapTo(this.position());
                 float f = player.getYRot() + 180;
                 // set the y rot dammit
                 deadKingCorpseEntity.setYRot(f);

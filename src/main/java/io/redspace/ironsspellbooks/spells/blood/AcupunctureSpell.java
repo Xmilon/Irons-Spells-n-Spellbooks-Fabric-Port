@@ -78,7 +78,7 @@ public class AcupunctureSpell extends AbstractSpell {
                     Vec3 motion = center.subtract(spawn).normalize();
 
                     BloodNeedle needle = new BloodNeedle(world, entity);
-                    needle.moveTo(spawn);
+                    needle.snapTo(spawn);
                     needle.shoot(motion.scale(.35f));
                     needle.setDamage(damage);
                     needle.setScale(.4f);

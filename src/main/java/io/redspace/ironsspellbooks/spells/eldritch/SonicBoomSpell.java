@@ -105,7 +105,7 @@ public class SonicBoomSpell extends AbstractSpell {
     @Override
     public void playSound(Optional<SoundEvent> sound, Entity entity) {
         if (sound == getCastFinishSound()) {
-            entity.playSound(sound.get(), 3.5f, .9f + entity.level().random.nextFloat() * .2f);
+            entity.playSound(sound.get(), 3.5f, .9f + entity.level().getRandom().nextFloat() * .2f);
         } else {
             super.playSound(sound, entity);
         }

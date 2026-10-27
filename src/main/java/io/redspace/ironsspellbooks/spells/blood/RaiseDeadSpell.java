@@ -26,7 +26,7 @@ import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -134,7 +134,7 @@ public class RaiseDeadSpell extends AbstractSpell {
                     zombie.triggerRiseAnimation();
                     undead = zombie;
                 }
-                undead.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(undead.getOnPos()), MobSpawnType.MOB_SUMMONED, null);
+                undead.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(undead.getOnPos()), EntitySpawnReason.MOB_SUMMONED, null);
                 equip(undead, equipment);
                 var yrot = 6.281f / count * i + entity.getYRot() * Mth.DEG_TO_RAD;
                 Vec3 spawn = Utils.moveToRelativeGroundLevel(world, Utils.getSpellCastStart(entity).add(new Vec3(radius * Mth.cos(yrot), 0, radius * Mth.sin(yrot))), 10);

@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.alchemist;
 
+import net.minecraft.world.entity.EntitySpawnReason;
+
 import net.minecraft.world.level.storage.ValueOutput;
 
 import net.minecraft.world.level.storage.ValueInput;
@@ -103,7 +105,7 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, EntitySpawnReason pReason, @Nullable SpawnGroupData pSpawnData) {
         RandomSource randomsource = Utils.random;
         this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
         return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData);

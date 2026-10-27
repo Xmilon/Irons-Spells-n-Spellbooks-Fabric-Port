@@ -84,7 +84,7 @@ public class Snowball extends AbstractMagicProjectile {
             fire.setDuration((int) getDamage());
             fire.setRadius(getExplosionRadius());
             fire.setCircular();
-            fire.moveTo(location);
+            fire.snapTo(location);
             level().addFreshEntity(fire);
         }
     }

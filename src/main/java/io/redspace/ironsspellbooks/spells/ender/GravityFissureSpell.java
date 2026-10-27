@@ -82,7 +82,7 @@ public class GravityFissureSpell extends AbstractSpell {
         BlackHole blackHole = new BlackHole(level, entity);
         blackHole.setRadius(radius);
         blackHole.setDamage(0);
-        blackHole.moveTo(spawn);
+        blackHole.snapTo(spawn);
         blackHole.setDuration(getDurationTicks(spellLevel, entity));
         blackHole.setDeltaMovement(entity.getForward().normalize().scale(.2));
         level.addFreshEntity(blackHole);

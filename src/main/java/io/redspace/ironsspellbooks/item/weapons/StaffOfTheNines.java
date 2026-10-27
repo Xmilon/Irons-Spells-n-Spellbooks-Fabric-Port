@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.item.weapons;
 
+import net.minecraft.world.InteractionResult;
+
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.util.CameraShakeData;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
@@ -14,7 +16,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -31,7 +32,7 @@ public class StaffOfTheNines extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand pUsedHand) {
+    public InteractionResult use(Level level, Player player, InteractionHand pUsedHand) {
         if (!level.isClientSide()) {
             var pos = getPosition(player.getEyePosition(), 0.425f, .275f, 0.1775f, player.getRotationVector());
             MagicManager.spawnParticles(level, ParticleTypes.CAMPFIRE_COSY_SMOKE, pos.x, pos.y, pos.z, 5, .1, .1, .1, 0.01, false);

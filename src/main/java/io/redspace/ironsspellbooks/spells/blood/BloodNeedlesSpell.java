@@ -70,7 +70,7 @@ public class BloodNeedlesSpell extends AbstractSpell {
             needle.setDamage(damage);
             needle.setZRot(rotation);
             Vec3 spawn = Utils.getSpellCastStart(entity).add(new Vec3(0, 1.5, 0).zRot(rotation * Mth.DEG_TO_RAD).xRot(-entity.getXRot() * Mth.DEG_TO_RAD).yRot(-entity.getYRot() * Mth.DEG_TO_RAD));
-            needle.moveTo(spawn);
+            needle.snapTo(spawn);
             needle.shoot(raycast.getLocation().subtract(spawn).normalize());
             world.addFreshEntity(needle);
         }

@@ -135,7 +135,7 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
                 dagger.delay = this.delay + Utils.random.nextInt(20);
                 dagger.setDeltaMovement(0, getSpeed(), 0);
                 dagger.deltaMovementOld = dagger.getDeltaMovement();
-                dagger.moveTo(pos);
+                dagger.snapTo(pos);
                 dagger.isGrounded = true;
                 level().addFreshEntity(dagger);
             }

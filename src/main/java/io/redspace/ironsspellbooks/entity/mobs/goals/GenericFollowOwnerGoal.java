@@ -128,7 +128,7 @@ public class GenericFollowOwnerGoal extends Goal {
         if (!this.canTeleportTo(new BlockPos(pX, pY, pZ))) {
             return false;
         } else {
-            mob.moveTo((double) pX + 0.5, (double) pY, (double) pZ + 0.5, mob.getYRot(), mob.getXRot());
+            mob.snapTo((double) pX + 0.5, (double) pY, (double) pZ + 0.5, mob.getYRot(), mob.getXRot());
             this.navigation.stop();
             return true;
         }

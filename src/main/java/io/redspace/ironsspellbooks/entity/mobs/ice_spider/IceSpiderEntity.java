@@ -714,7 +714,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
 
     public IceTombEntity entomb(Entity entity) {
         IceTombEntity iceTombEntity = new IceTombEntity(level, this);
-        iceTombEntity.moveTo(entity.position());
+        iceTombEntity.snapTo(entity.position());
         iceTombEntity.setDeltaMovement(entity.getDeltaMovement().add(this.getForward().add(0, 1, 0).scale(0.5)));
         iceTombEntity.setEvil();
         iceTombEntity.setLifetime(20 * 5);

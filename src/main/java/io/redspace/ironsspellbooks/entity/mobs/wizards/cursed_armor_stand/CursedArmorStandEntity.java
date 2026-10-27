@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.cursed_armor_stand;
 
+import net.minecraft.world.entity.EntitySpawnReason;
+
 import net.minecraft.world.level.storage.ValueOutput;
 
 import net.minecraft.world.level.storage.ValueInput;
@@ -356,8 +358,8 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData) {
-        if (pReason.equals(MobSpawnType.STRUCTURE)) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, EntitySpawnReason pReason, @Nullable SpawnGroupData pSpawnData) {
+        if (pReason.equals(EntitySpawnReason.STRUCTURE)) {
             this.originalYRot = getYRot();
             this.spawn = null;
             this.setPersistenceRequired();

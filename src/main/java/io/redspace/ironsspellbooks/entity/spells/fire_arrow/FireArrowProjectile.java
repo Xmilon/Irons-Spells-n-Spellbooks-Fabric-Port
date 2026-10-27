@@ -128,7 +128,7 @@ public class FireArrowProjectile extends AbstractMagicProjectile {
                 explosion.finalizeExplosion(false);
             }
             PacketDistributor.sendToPlayersTrackingEntity(this, new FieryExplosionParticlesPacket(hitResult.getLocation().subtract(getDeltaMovement().scale(0.25)), getExplosionRadius() * .7f));
-            playSound(SoundEvents.GENERIC_EXPLODE.value(), 4.0F, (1.0F + (this.level().random.nextFloat() - this.level().random.nextFloat()) * 0.2F) * 0.7F);
+            playSound(SoundEvents.GENERIC_EXPLODE.value(), 4.0F, (1.0F + (this.level().getRandom().nextFloat() - this.level().getRandom().nextFloat()) * 0.2F) * 0.7F);
             this.discardHelper(hitResult);
         }
     }

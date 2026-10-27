@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.undead_spawner;
 
+import net.minecraft.world.entity.EntitySpawnReason;
+
 import net.minecraft.world.level.storage.ValueOutput;
 
 import net.minecraft.world.level.storage.ValueInput;
@@ -95,7 +97,7 @@ public class UndeadRiftEntity extends Entity implements IMagicSummon {
         equip(undead, generateEquipment());
         undead.moveTo(this.position().add(0, 0.1, 0));
         undead.setYRot(this.getYRot());
-        undead.finalizeSpawn((ServerLevel) level(), level().getCurrentDifficultyAt(undead.getOnPos()), MobSpawnType.MOB_SUMMONED, null);
+        undead.finalizeSpawn((ServerLevel) level(), level().getCurrentDifficultyAt(undead.getOnPos()), EntitySpawnReason.MOB_SUMMONED, null);
         SummonManager.setDuration(undead, 5 * 60 * 20);
         var owner = getSummoner();
         if (owner != null) {

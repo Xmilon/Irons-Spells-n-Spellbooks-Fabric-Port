@@ -199,7 +199,7 @@ public class PortalSpell extends AbstractSpell {
     private PortalEntity setupPortalEntity(Level level, PortalData portalData, Player owner, Vec3 spawnPos, float rotation) {
         var portalEntity = new PortalEntity(level, portalData);
         portalEntity.setOwnerUUID(owner.getUUID());
-        portalEntity.moveTo(spawnPos);
+        portalEntity.snapTo(spawnPos);
         portalEntity.setYRot(rotation);
         level.addFreshEntity(portalEntity);
         return portalEntity;

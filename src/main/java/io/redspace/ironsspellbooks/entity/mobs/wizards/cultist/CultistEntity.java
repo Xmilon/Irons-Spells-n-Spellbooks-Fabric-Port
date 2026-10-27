@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.cultist;
 
+import net.minecraft.world.entity.EntitySpawnReason;
+
 import com.geckolib.animation.object.PlayState;
 import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.animation.RawAnimation;
@@ -117,7 +119,7 @@ public class CultistEntity extends NeutralWizard implements Enemy, IAnimatedAtta
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, EntitySpawnReason pReason, @Nullable SpawnGroupData pSpawnData) {
         RandomSource randomsource = Utils.random;
         this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
         return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData);

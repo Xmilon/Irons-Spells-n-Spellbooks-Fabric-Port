@@ -114,7 +114,7 @@ public class FangSwirlSpell extends AbstractSpell {
         int delay = Math.max(8, Math.min(40, Mth.ceil(horizontalDist * 1.5f))) * 2/ 3;
 
         FangSwirlEntity swirl = new FangSwirlEntity(EntityRegistry.FANG_SWIRL.get(), level);
-        swirl.moveTo(dest.x, dest.y, dest.z);
+        swirl.snapTo(dest.x, dest.y, dest.z);
         swirl.setStartPos(start);
         swirl.setDelay(delay);
         swirl.setRadius(getSwirlRadius(spellLevel, entity));

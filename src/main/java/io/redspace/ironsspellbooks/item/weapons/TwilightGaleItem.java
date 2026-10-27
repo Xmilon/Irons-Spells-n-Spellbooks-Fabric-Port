@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.item.weapons;
 
+import net.minecraft.world.InteractionResult;
+
 import io.redspace.ironsspellbooks.api.item.weapons.MagicSwordItem;
 import io.redspace.ironsspellbooks.api.registry.SpellDataRegistryHolder;
 import io.redspace.ironsspellbooks.entity.spells.thrown_spear.ThrownSpear;
@@ -9,7 +11,6 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.stats.Stats;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
@@ -39,13 +40,13 @@ public class TwilightGaleItem extends MagicSwordItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack itemstack = player.getItemInHand(hand);
         if (isTooDamagedToUse(itemstack)) {
-            return InteractionResultHolder.fail(itemstack);
+            return InteractionResult.FAIL;
         } else {
             player.startUsingItem(hand);
-            return InteractionResultHolder.consume(itemstack);
+            return InteractionResult.CONSUME;
         }
     }
 

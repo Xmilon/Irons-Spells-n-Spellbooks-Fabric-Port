@@ -112,7 +112,7 @@ public class RootSpell extends AbstractSpell {
                 RootEntity rootEntity = new RootEntity(level, entity);
                 rootEntity.setDuration(getDuration(spellLevel, entity));
                 rootEntity.setTarget(target);
-                rootEntity.moveTo(spawn);
+                rootEntity.snapTo(spawn);
                 level.addFreshEntity(rootEntity);
                 target.stopRiding();
                 target.startRiding(rootEntity, true);

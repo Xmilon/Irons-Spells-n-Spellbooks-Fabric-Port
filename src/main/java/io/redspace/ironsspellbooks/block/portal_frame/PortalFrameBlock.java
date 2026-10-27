@@ -10,7 +10,7 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.ItemInteractionResult;
+import net.minecraft.world.InteractionResult;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
@@ -160,7 +160,7 @@ public class PortalFrameBlock extends BaseEntityBlock {
         return true;
     }
     @Override
-    public ItemInteractionResult useItemOn(ItemStack pStack, BlockState state, Level pLevel, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
+    public InteractionResult useItemOn(ItemStack pStack, BlockState state, Level pLevel, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
         if (pStack.getItem() instanceof DyeItem dyeItem) {
             var portal = pLevel.getBlockEntity(pos, BlockRegistry.PORTAL_FRAME_BLOCK_ENTITY.get());
             if (portal.isPresent()) {
@@ -172,7 +172,7 @@ public class PortalFrameBlock extends BaseEntityBlock {
                             pStack.shrink(1);
                         }
                         tile.setColor(color);
-                        return ItemInteractionResult.SUCCESS;
+                        return InteractionResult.SUCCESS;
                     } else {
                         if (player instanceof ServerPlayer serverPlayer) {
                             serverPlayer.connection.send(new ClientboundSetActionBarTextPacket(Component.translatable("ui.irons_spellbooks.portal_dye_failure").withStyle(ChatFormatting.RED)));

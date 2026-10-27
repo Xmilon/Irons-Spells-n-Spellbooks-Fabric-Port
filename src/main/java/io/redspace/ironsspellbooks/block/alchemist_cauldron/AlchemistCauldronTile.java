@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.block.alchemist_cauldron;
 
+import net.minecraft.world.InteractionResult;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
@@ -384,7 +386,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         return ItemStack.EMPTY;
     }
 
-    public ItemInteractionResult handleUse(BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand hand) {
+    public InteractionResult handleUse(BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
         boolean isBucketInteraction = itemStack.is(Items.WATER_BUCKET) || itemStack.is(Items.BUCKET);
         if (!level.isClientSide()) {
@@ -392,15 +394,15 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
             if (!recipeResult.isEmpty()) {
                 player.setItemInHand(hand, ItemUtils.createFilledResult(player.getItemInHand(hand), player, recipeResult));
                 flushClientSync();
-                return ItemInteractionResult.sidedSuccess(false);
+                return InteractionResult.SUCCESS;
             }
             if (isBucketInteraction) {
                 // Do not pass through to default bucket behavior; keep interaction bound to cauldron.
-                return ItemInteractionResult.sidedSuccess(false);
+                return InteractionResult.SUCCESS;
             }
         }
         if (isBucketInteraction) {
-            return ItemInteractionResult.sidedSuccess(true);
+            return InteractionResult.SUCCESS;
         }
         // item inputting
         if (isValidInput(itemStack)) {
@@ -418,7 +420,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                     }
                 }
             }
-            return ItemInteractionResult.sidedSuccess(level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
         // item taking
         //fixme: players cannot trigger block interactions while crouching
@@ -437,11 +439,11 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                         this.setChanged();
                         flushClientSync();
                     }
-                    return ItemInteractionResult.sidedSuccess(level.isClientSide());
+                    return InteractionResult.SUCCESS;
                 }
             }
         }
-        return ItemInteractionResult.PASS_TO_DEFAULT_BLOCK_INTERACTION;
+        return InteractionResult.TRY_WITH_EMPTY_HAND;
     }
 
     public void tryMeltInput(ItemStack itemStack) {

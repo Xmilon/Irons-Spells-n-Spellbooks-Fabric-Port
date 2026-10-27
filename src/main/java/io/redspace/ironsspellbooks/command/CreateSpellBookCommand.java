@@ -50,8 +50,8 @@ public class CreateSpellBookCommand {
             for (int i = 0; i < slots; i++) {
                 AbstractSpell spell;
                 do {
-                    spell = new SpellFilter().getRandomSpell(source.getLevel().random);
-                } while (!spellContainer.addSpell(spell, source.getLevel().random.nextIntBetweenInclusive(1, spell.getMaxLevel()), false));
+                    spell = new SpellFilter().getRandomSpell(source.getLevel().getRandom());
+                } while (!spellContainer.addSpell(spell, source.getLevel().getRandom().nextIntBetweenInclusive(1, spell.getMaxLevel()), false));
             }
             ISpellContainer.set(itemstack, spellContainer.toImmutable());
             if (serverPlayer.getInventory().add(itemstack)) {

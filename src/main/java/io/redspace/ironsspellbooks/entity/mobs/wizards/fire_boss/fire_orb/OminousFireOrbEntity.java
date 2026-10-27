@@ -195,7 +195,7 @@ public class OminousFireOrbEntity extends Entity implements AntiMagicSusceptible
         }
         PacketDistributor.sendToPlayersTrackingEntity(this, new FieryExplosionParticlesPacket(this.getBoundingBox().getCenter(), radius));
         CameraShakeManager.addCameraShake(new CameraShakeData(level(),20 + (int) radius / 3, this.position(), this.radius + 15));
-        level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE.value(), this.getSoundSource(), 4.0F, (1.0F + (level().random.nextFloat() - level().random.nextFloat()) * 0.2F) * 0.7F);
+        level().playSound(null, this.getX(), this.getY(), this.getZ(), SoundEvents.GENERIC_EXPLODE.value(), this.getSoundSource(), 4.0F, (1.0F + (level().getRandom().nextFloat() - level().getRandom().nextFloat()) * 0.2F) * 0.7F);
         discard();
     }
 

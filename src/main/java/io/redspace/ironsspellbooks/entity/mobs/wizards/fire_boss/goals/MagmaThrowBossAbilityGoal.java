@@ -91,7 +91,7 @@ public class MagmaThrowBossAbilityGoal<T extends Mob & IMagicEntity & IAnimatedA
 
     protected FireBomb fireBomb() {
         FireBomb fireBomb = new FireBomb(mob.level(), mob);
-        fireBomb.moveTo(mob.getEyePosition());
+        fireBomb.snapTo(mob.getEyePosition());
         fireBomb.setDamage(20);
         fireBomb.setAoeDamage(5);
         fireBomb.setExplosionRadius(4);

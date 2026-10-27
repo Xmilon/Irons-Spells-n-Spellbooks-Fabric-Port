@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.priest;
 
+import net.minecraft.world.entity.EntitySpawnReason;
+
 import net.minecraft.world.level.storage.ValueOutput;
 
 import net.minecraft.world.level.storage.ValueInput;
@@ -124,10 +126,10 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     }
 
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pReason, @Nullable SpawnGroupData pSpawnData) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, EntitySpawnReason pReason, @Nullable SpawnGroupData pSpawnData) {
         RandomSource randomsource = Utils.random;
         this.populateDefaultEquipmentSlots(randomsource, pDifficulty);
-        if (pReason == MobSpawnType.STRUCTURE) {
+        if (pReason == EntitySpawnReason.STRUCTURE) {
             this.shouldLookForPoi = true;
         }
         return super.finalizeSpawn(pLevel, pDifficulty, pReason, pSpawnData);

@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.summoned_weapons;
 
+import net.minecraft.world.entity.EntitySpawnReason;
+
 import net.minecraft.world.level.storage.ValueOutput;
 
 import net.minecraft.world.level.storage.ValueInput;
@@ -63,7 +65,7 @@ public abstract class SummonedWeaponEntity extends AbstractSpellCastingMob imple
 
     @org.jetbrains.annotations.Nullable
     @Override
-    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, MobSpawnType pSpawnType, @org.jetbrains.annotations.Nullable SpawnGroupData pSpawnGroupData) {
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, EntitySpawnReason pSpawnType, @org.jetbrains.annotations.Nullable SpawnGroupData pSpawnGroupData) {
         this.setNoGravity(true);
         return super.finalizeSpawn(pLevel, pDifficulty, pSpawnType, pSpawnGroupData);
     }

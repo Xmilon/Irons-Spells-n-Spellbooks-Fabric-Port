@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.item.curios;
 
+import net.minecraft.world.InteractionResult;
+
 import com.google.common.collect.ImmutableMultimap;
 import com.google.common.collect.Multimap;
 import io.redspace.ironsspellbooks.compat.TrinketsSlots;
@@ -9,7 +11,6 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
@@ -75,7 +76,7 @@ public class CurioBaseItem extends Item implements ITrinketItem {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand hand) {
+    public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack heldStack = player.getItemInHand(hand);
         if (heldStack.isEmpty()) {
             return super.use(level, player, hand);
@@ -116,7 +117,7 @@ public class CurioBaseItem extends Item implements ITrinketItem {
                 }
             }
 
-            return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());
+            return InteractionResult.SUCCESS;
         }
 
         return super.use(level, player, hand);

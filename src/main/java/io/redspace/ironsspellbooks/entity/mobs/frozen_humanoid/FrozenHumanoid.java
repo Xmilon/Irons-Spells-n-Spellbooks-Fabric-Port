@@ -115,7 +115,7 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
     private HumanoidArm mainArm = HumanoidArm.RIGHT;
 
     protected static void copyEntityVisualProperties(LivingEntity baseEntity, LivingEntity entityToCopy) {
-        baseEntity.moveTo(entityToCopy.getX(), entityToCopy.getY(), entityToCopy.getZ(), entityToCopy.getYRot(), entityToCopy.getXRot());
+        baseEntity.snapTo(entityToCopy.getX(), entityToCopy.getY(), entityToCopy.getZ(), entityToCopy.getYRot(), entityToCopy.getXRot());
 
         baseEntity.setYBodyRot(entityToCopy.yBodyRot);
         baseEntity.yBodyRotO = baseEntity.yBodyRot;
@@ -312,7 +312,7 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
             Vec3 spawn = origin.add(motion.multiply(1, 0, 1).normalize().scale(.5f));
             var angle = Utils.rotationFromDirection(motion);
 
-            shard.moveTo(spawn.x, spawn.y - shard.getBoundingBox().getYsize() / 2, spawn.z, angle.y, angle.x);
+            shard.snapTo(spawn.x, spawn.y - shard.getBoundingBox().getYsize() / 2, spawn.z, angle.y, angle.x);
             level().addFreshEntity(shard);
         }
     }

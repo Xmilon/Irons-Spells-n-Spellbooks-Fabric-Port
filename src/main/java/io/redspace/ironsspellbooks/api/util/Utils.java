@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.api.util;
 
+import net.minecraft.world.entity.EntitySpawnReason;
+
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffect;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
@@ -668,7 +670,7 @@ public class Utils {
         return level.clip(new ClipContext(start, start.add(0, -maxStepsDown, 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty())).getLocation();
     }
 
-    public static boolean checkMonsterSpawnRules(ServerLevelAccessor pLevel, MobSpawnType pSpawnType, BlockPos pPos, RandomSource pRandom) {
+    public static boolean checkMonsterSpawnRules(ServerLevelAccessor pLevel, EntitySpawnReason pSpawnType, BlockPos pPos, RandomSource pRandom) {
         //Omits monster from spawn where monsters are not allowed, as well as default monster spawning conditions
         return !pLevel.getBiome(pPos).is(Tags.Biomes.NO_DEFAULT_MONSTERS) && pLevel.getDifficulty() != Difficulty.PEACEFUL && Monster.isDarkEnoughToSpawn(pLevel, pPos, pRandom) && Monster.checkMobSpawnRules(EntityRegistry.NECROMANCER.get(), pLevel, pSpawnType, pPos, pRandom);
     }

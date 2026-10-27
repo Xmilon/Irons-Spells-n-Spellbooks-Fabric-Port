@@ -21,7 +21,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.NeoForge;
@@ -111,8 +111,8 @@ public class SummonVexSpell extends AbstractSpell {
             for (int i = 0; i < count; i++) {
                 SummonedVex vex = new SummonedVex(EntityRegistry.SUMMONED_VEX.get(), world);
                 SummonManager.setOwner(vex, entity);
-                vex.moveTo(Utils.getSpellCastStart(entity).add(new Vec3(Utils.getRandomScaled(2), 1, Utils.getRandomScaled(2))));
-                vex.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(vex.getOnPos()), MobSpawnType.MOB_SUMMONED, null);
+                vex.snapTo(Utils.getSpellCastStart(entity).add(new Vec3(Utils.getRandomScaled(2), 1, Utils.getRandomScaled(2))));
+                vex.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(vex.getOnPos()), EntitySpawnReason.MOB_SUMMONED, null);
                 var creature = NeoForge.EVENT_BUS.post(new SpellSummonEvent<>(entity, vex, this.spellId, spellLevel)).getCreature();
                 world.addFreshEntity(creature);
                 SummonManager.initSummon(entity, creature, summonTime, summonedEntitiesCastData);

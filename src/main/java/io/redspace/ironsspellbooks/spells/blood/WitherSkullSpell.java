@@ -72,7 +72,7 @@ public class WitherSkullSpell extends AbstractSpell {
         float damage = getDamage(spellLevel, entity);
         var skull = new WitherSkullProjectile(entity, level, speed, damage);
         Vec3 spawn = Utils.getSpellCastStart(entity).add(entity.getForward());
-        skull.moveTo(spawn.x, spawn.y - skull.getBoundingBox().getYsize() * .35f, spawn.z, entity.getYRot() + 180, entity.getXRot());
+        skull.snapTo(spawn.x, spawn.y - skull.getBoundingBox().getYsize() * .35f, spawn.z, entity.getYRot() + 180, entity.getXRot());
         level.addFreshEntity(skull);
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }

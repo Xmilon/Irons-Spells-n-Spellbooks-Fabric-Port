@@ -106,7 +106,7 @@ public class SculkTentaclesSpell extends AbstractSpell {
                 spawn = Utils.moveToRelativeGroundLevel(level, spawn, 8);
                 if (!level.getBlockState(BlockPos.containing(spawn).below()).isAir()) {
                     VoidTentacle tentacle = new VoidTentacle(level, entity, getDamage(spellLevel, entity));
-                    tentacle.moveTo(spawn);
+                    tentacle.snapTo(spawn);
                     tentacle.setYRot(Utils.random.nextInt(360));
                     level.addFreshEntity(tentacle);
                 }

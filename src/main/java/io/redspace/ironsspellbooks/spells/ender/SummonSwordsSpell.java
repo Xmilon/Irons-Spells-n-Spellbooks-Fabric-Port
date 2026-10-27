@@ -125,7 +125,7 @@ public class SummonSwordsSpell extends AbstractSpell {
 
             List<SummonedWeaponEntity> weapons = List.of(claymore, rapier, sword);
             weapons.forEach(weapon -> {
-                weapon.moveTo(entity.position().add(0, 1.2, 0).add(Utils.getRandomVec3(1)));
+                weapon.snapTo(entity.position().add(0, 1.2, 0).add(Utils.getRandomVec3(1)));
                 weapon.getAttribute(Attributes.ATTACK_DAMAGE).addPermanentModifier(damageModifier);
                 weapon.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(healthModifier);
                 weapon.setHealth(weapon.getMaxHealth());

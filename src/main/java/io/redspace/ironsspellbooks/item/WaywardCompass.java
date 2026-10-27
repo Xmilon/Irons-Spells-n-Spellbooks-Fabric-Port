@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.item;
 
+import net.minecraft.world.InteractionResult;
+
 import io.redspace.ironsspellbooks.api.item.WaywardCompassData;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -12,7 +14,6 @@ import net.minecraft.core.GlobalPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
@@ -53,12 +54,12 @@ public class WaywardCompass extends Item {
     }
 
     @Override
-    public InteractionResultHolder<ItemStack> use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
+    public InteractionResult use(Level pLevel, Player pPlayer, InteractionHand pUsedHand) {
         ItemStack itemStack = pPlayer.getItemInHand(pUsedHand);
         if (missingWarning(itemStack)) {
             findCatacombs(itemStack, pLevel, pPlayer);
             pPlayer.getCooldowns().addCooldown(ItemRegistry.WAYWARD_COMPASS.get(), 200);
-            return InteractionResultHolder.sidedSuccess(itemStack, pLevel.isClientSide());
+            return InteractionResult.SUCCESS;
         }
         return super.use(pLevel, pPlayer, pUsedHand);
     }

@@ -83,7 +83,7 @@ public class ThunderStepSpell extends AbstractSpell {
              */
             ThunderstepProjectile orb = new ThunderstepProjectile(level, entity);
             orb.shoot(entity.getLookAngle());
-            orb.moveTo(Utils.getSpellCastStart(entity));
+            orb.snapTo(Utils.getSpellCastStart(entity));
             level.addFreshEntity(orb);
             var recast = new RecastInstance(getSpellId(), spellLevel, 2, 100, castSource, new MultiTargetEntityCastData(orb));
             playerMagicData.getPlayerRecasts().addRecast(recast, playerMagicData);

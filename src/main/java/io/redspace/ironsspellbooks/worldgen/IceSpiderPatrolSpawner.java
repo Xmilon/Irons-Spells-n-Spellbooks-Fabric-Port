@@ -16,7 +16,7 @@ import net.minecraft.world.Difficulty;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.monster.PatrollingMonster;
 import net.minecraft.world.entity.player.Player;
@@ -45,7 +45,7 @@ public class IceSpiderPatrolSpawner implements CustomSpawner {
         if (playercount < 1) {
             return 0;
         }
-        RandomSource randomsource = level.random;
+        RandomSource randomsource = level.getRandom();
         this.tickDelay--;
         if (this.tickDelay > 0) {
             return 0;
@@ -85,7 +85,7 @@ public class IceSpiderPatrolSpawner implements CustomSpawner {
                     return false;
                 }
             }
-            var randomsource = level.random;
+            var randomsource = level.getRandom();
             int k = (24 + randomsource.nextInt(24)) * (randomsource.nextBoolean() ? -1 : 1);
             int l = (24 + randomsource.nextInt(24)) * (randomsource.nextBoolean() ? -1 : 1);
             BlockPos.MutableBlockPos blockpos$mutableblockpos = targetEntity.blockPosition().mutable().move(k, 0, l);
@@ -128,21 +128,21 @@ public class IceSpiderPatrolSpawner implements CustomSpawner {
         BlockState blockstate = level.getBlockState(pos);
         if (!NaturalSpawner.isValidEmptySpawnBlock(level, pos, blockstate, blockstate.getFluidState(), EntityRegistry.ICE_SPIDER.get())) {
             return false;
-        } else if (!checkPatrollingMonsterSpawnRules(EntityRegistry.ICE_SPIDER.get(), level, MobSpawnType.PATROL, pos, level.random)) {
+        } else if (!checkPatrollingMonsterSpawnRules(EntityRegistry.ICE_SPIDER.get(), level, EntitySpawnReason.PATROL, pos, level.getRandom())) {
             return false;
         }
         IceSpiderEntity iceSpider = new IceSpiderEntity(level);
-        iceSpider.moveTo(pos.immutable(), 0, 0);
+        iceSpider.snapTo(pos.immutable(), 0, 0);
         iceSpider.setTarget(targetEntity);
         level.playSound(null, iceSpider.blockPosition(), SoundRegistry.ICE_SPIDER_HOWL.get(), SoundSource.HOSTILE, 4, 1f);
         iceSpider.setEmergeFromGround();
         level.addFreshEntity(iceSpider);
-        iceSpider.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), MobSpawnType.PATROL, null);
+        iceSpider.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), EntitySpawnReason.PATROL, null);
         return true;
     }
 
     public static boolean checkPatrollingMonsterSpawnRules(
-            EntityType<? extends Mob> mob, LevelAccessor level, MobSpawnType spawnType, BlockPos pos, RandomSource random
+            EntityType<? extends Mob> mob, LevelAccessor level, EntitySpawnReason spawnType, BlockPos pos, RandomSource random
     ) {
         return level.getBrightness(LightLayer.BLOCK, pos) <= 8 && level.getDifficulty() != Difficulty.PEACEFUL && Monster.checkMobSpawnRules(mob, level, spawnType, pos, random);
     }

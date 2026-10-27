@@ -61,7 +61,7 @@ public class IceTombSpell extends AbstractSpell {
     @Override
     public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         IceTombEntity iceTombEntity = new IceTombEntity(world, entity);
-        iceTombEntity.moveTo(entity.position());
+        iceTombEntity.snapTo(entity.position());
         iceTombEntity.setDeltaMovement(entity.getDeltaMovement());
         iceTombEntity.setHealing(getHealing(spellLevel, entity));
         iceTombEntity.setLifetime((int) getDuration(spellLevel, entity));

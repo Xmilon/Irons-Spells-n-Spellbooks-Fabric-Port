@@ -25,7 +25,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
@@ -78,7 +78,7 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
             if (!level().isClientSide()) {
                 if (currentAnimTime > animLength) {
                     DeadKingBoss boss = new DeadKingBoss(level());
-                    boss.moveTo(this.position().add(0, 1, 0));
+                    boss.snapTo(this.position().add(0, 1, 0));
                     float f = this.getYRot();
                     boss.setYRot(f);
                     boss.yRotO = f;
@@ -87,7 +87,7 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
                     boss.yBodyRot = f;
                     boss.yBodyRotO = f;
                     boss.setSpawnPos(boss.position());
-                    boss.finalizeSpawn((ServerLevel) level(), level().getCurrentDifficultyAt(boss.getOnPos()), MobSpawnType.TRIGGERED, null);
+                    boss.finalizeSpawn((ServerLevel) level(), level().getCurrentDifficultyAt(boss.getOnPos()), EntitySpawnReason.TRIGGERED, null);
                     boss.setPersistenceRequired();
                     level.addFreshEntity(boss);
                     MagicManager.spawnParticles(level(), ParticleTypes.SCULK_SOUL, position().x, position().y + 2.5, position().z, 80, .2, .2, .2, .25, true);

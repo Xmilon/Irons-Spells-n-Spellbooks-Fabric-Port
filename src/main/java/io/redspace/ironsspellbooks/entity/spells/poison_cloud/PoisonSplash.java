@@ -70,7 +70,7 @@ public class PoisonSplash extends AoeEntity {
             cloud.setOwner(getOwner());
             cloud.setDuration(getEffectDuration());
             cloud.setDamage(getDamage() * .1f);
-            cloud.moveTo(this.position());
+            cloud.snapTo(this.position());
             level().addFreshEntity(cloud);
         }
     }

@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.item.weapons;
 
+import net.minecraft.world.InteractionResult;
+
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
@@ -11,7 +13,6 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
-import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.item.ItemEntity;
@@ -36,7 +37,7 @@ public class AutoloaderCrossbow extends CrossbowItem {
         super(pProperties);
     }
 
-    public InteractionResultHolder<ItemStack> use(Level pLevel, Player player, InteractionHand pHand) {
+    public InteractionResult use(Level pLevel, Player player, InteractionHand pHand) {
         ItemStack itemstack = player.getItemInHand(pHand);
         //If we are charged, shoot.
         if (isCharged(itemstack)) {
@@ -47,19 +48,19 @@ public class AutoloaderCrossbow extends CrossbowItem {
             } else {
                 player.playSound(SoundEvents.ITEM_BREAK, 0.75f, 1.5f);
             }
-            return InteractionResultHolder.consume(itemstack);
+            return InteractionResult.CONSUME;
         } else if (isLoading(itemstack)) {
             if (player.isCrouching()) {
                 setLoadingTicks(itemstack, 0);
                 setLoading(itemstack, false);
-                return InteractionResultHolder.consume(itemstack);
+                return InteractionResult.CONSUME;
             }
-            return InteractionResultHolder.pass(itemstack);
+            return InteractionResult.PASS;
         } else if (!player.getProjectile(itemstack).isEmpty()) {
             // Use vanilla crossbow loading so pull/charged model predicates animate correctly.
             return super.use(pLevel, player, pHand);
         } else {
-            return InteractionResultHolder.fail(itemstack);
+            return InteractionResult.FAIL;
         }
     }
 

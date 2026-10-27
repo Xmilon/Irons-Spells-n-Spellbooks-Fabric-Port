@@ -93,7 +93,7 @@ public final class FabricEventBridge {
             NeoForge.EVENT_BUS.post(event);
             return event.isCanceled()
                     ? new net.minecraft.world.InteractionResultHolder<>(event.getCancellationResult(), stack)
-                    : net.minecraft.world.InteractionResultHolder.pass(stack);
+                    : net.minecraft.world.InteractionResult.PASS;
         });
         net.fabricmc.fabric.api.event.player.UseEntityCallback.EVENT.register((player, level, hand, entity, hit) -> {
             var event = new PlayerInteractEvent.EntityInteractSpecific(player, entity, hand);

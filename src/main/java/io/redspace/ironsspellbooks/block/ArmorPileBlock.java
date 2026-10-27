@@ -9,7 +9,7 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.entity.MobSpawnType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.context.BlockPlaceContext;
 import net.minecraft.world.level.BlockGetter;
@@ -73,8 +73,8 @@ public class ArmorPileBlock extends Block implements SimpleWaterloggedBlock {
     public void spawnAfterBreak(BlockState pState, ServerLevel level, BlockPos pos, ItemStack pStack, boolean pDropExperience) {
         super.spawnAfterBreak(pState, level, pos, pStack, pDropExperience);
         KeeperEntity keeper = new KeeperEntity(level);
-        keeper.moveTo(Vec3.atCenterOf(pos));
-        keeper.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), MobSpawnType.TRIGGERED, null);
+        keeper.snapTo(Vec3.atCenterOf(pos));
+        keeper.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), EntitySpawnReason.TRIGGERED, null);
         level.addFreshEntity(keeper);
         MagicManager.spawnParticles(level, ParticleTypes.SOUL, pos.getX(), pos.getY(), pos.getZ(), 20, .1, .1, .1, .05, false);
         level.playSound(null, pos, SoundEvents.SOUL_ESCAPE.value(), SoundSource.BLOCKS, 1f, 1f);

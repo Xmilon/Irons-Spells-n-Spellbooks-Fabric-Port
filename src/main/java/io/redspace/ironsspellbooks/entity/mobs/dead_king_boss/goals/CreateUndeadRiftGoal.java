@@ -84,7 +84,7 @@ public class CreateUndeadRiftGoal extends Goal {
                 target.getBoundingBox().getCenter(), target.getBoundingBox().getCenter().add(dir.scale(4.5 + target.getBbWidth())),
                 ClipContext.Block.COLLIDER, ClipContext.Fluid.ANY, CollisionContext.empty())).getLocation();
         targetPos = Utils.moveToRelativeGroundLevel(level, targetPos.subtract(dir), 3, 10);
-        rift.moveTo(targetPos);
+        rift.snapTo(targetPos);
         Utils.fudgeNoCollision(level, rift);
         rift.setYRot(Utils.getAngle(targetPos.x, targetPos.z, target.getX(), target.getZ()) * Mth.RAD_TO_DEG + 90);
         rift.setForcedTarget((LivingEntity) target); // safe cast because the entities of class must extend living entity by proxy of getTarget returning a living entity
