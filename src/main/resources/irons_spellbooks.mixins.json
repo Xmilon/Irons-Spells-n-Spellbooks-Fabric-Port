@@ -6,6 +6,7 @@
   "mixins": [
     "Compat$apothic_attributes$AttributeHandler",
     "AnvilMenuMixin",
+    "BlockBehaviourMixin",
     "AttributeSupplierAccessor",
     "CreeperMixin",
     "DefaultAttributesMixin",

@@ -49,6 +49,8 @@ public class DeferredRegister<T> {
         for (DeferredHolder<T, ? extends T> entry : entries) {
             if (registryKey.equals(net.minecraft.core.registries.Registries.ITEM)) {
                 io.redspace.ironsspellbooks.util.ItemIdContext.set(entry.getLocation());
+            } else if (registryKey.equals(net.minecraft.core.registries.Registries.BLOCK)) {
+                io.redspace.ironsspellbooks.util.ItemIdContext.setBlock(entry.getLocation());
             }
             T value;
             try {

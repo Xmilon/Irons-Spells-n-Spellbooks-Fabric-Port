@@ -19,11 +19,22 @@ public final class ItemIdContext {
         CURRENT.set(ResourceKey.create(Registries.ITEM, id));
     }
 
+    private static final ThreadLocal<ResourceKey<net.minecraft.world.level.block.Block>> CURRENT_BLOCK = new ThreadLocal<>();
+
+    public static void setBlock(Identifier id) {
+        CURRENT_BLOCK.set(ResourceKey.create(Registries.BLOCK, id));
+    }
+
+    public static ResourceKey<net.minecraft.world.level.block.Block> currentBlock() {
+        return CURRENT_BLOCK.get();
+    }
+
     public static ResourceKey<Item> current() {
         return CURRENT.get();
     }
 
     public static void clear() {
         CURRENT.remove();
+        CURRENT_BLOCK.remove();
     }
 }

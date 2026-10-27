@@ -56,11 +56,11 @@ public class DeferredHolder<R, T extends R> implements Supplier<T>, Holder<R> {
         if (key == null) {
             return Optional.empty();
         }
-        return resolveRegistry().flatMap(registry -> registry.getHolder(key).map(holder -> (Holder.Reference<R>) holder));
+        return resolveRegistry().flatMap(registry -> registry.get(key).map(holder -> (Holder.Reference<R>) holder));
     }
 
     private Optional<R> resolveRegisteredValue() {
-        return resolveRegistry().flatMap(registry -> registry.containsKey(id) ? Optional.ofNullable(registry.get(id)) : Optional.empty());
+        return resolveRegistry().flatMap(registry -> registry.containsKey(id) ? Optional.ofNullable(registry.getValue(id)) : Optional.empty());
     }
 
     @Override
