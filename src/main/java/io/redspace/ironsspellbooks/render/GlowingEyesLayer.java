@@ -1,5 +1,14 @@
 package io.redspace.ironsspellbooks.render;
 
+import com.geckolib.renderer.base.GeoRenderer;
+import com.geckolib.renderer.base.PerBoneRender;
+import java.util.function.BiConsumer;
+import com.geckolib.cache.model.GeoBone;
+import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import com.geckolib.renderer.base.RenderPassInfo;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
@@ -10,7 +19,6 @@ import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.EyesLayer;
@@ -25,7 +33,7 @@ import com.geckolib.renderer.layer.GeoRenderLayer;
 
 public class GlowingEyesLayer {
     public static final Identifier EYE_TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/purple_eyes.png");
-    public static final RenderType EYES = RenderType.eyes(EYE_TEXTURE);
+    public static final RenderType EYES = RenderTypes.eyes(EYE_TEXTURE);
 
     public static class Vanilla<T extends LivingEntity, M extends HumanoidModel<T>> extends EyesLayer<T, M> {
 
@@ -52,22 +60,32 @@ public class GlowingEyesLayer {
         }
     }
 
-    public static class Geo extends GeoRenderLayer<AbstractSpellCastingMob> {
-        public Geo(GeoEntityRenderer<AbstractSpellCastingMob> entityRendererIn) {
-            super(entityRendererIn);
+    public static class Geo extends GeoRenderLayer<AbstractSpellCastingMob, Void, EntityRenderState> {
+        public Geo(GeoRenderer<AbstractSpellCastingMob, Void, EntityRenderState> renderer) {
+            super(renderer);
         }
 
+        // unverified: relies on GeoBone#render drawing the bone and its children at the pose GeckoLib leaves in the pass.
         @Override
-        public void render(PoseStack poseStack, AbstractSpellCastingMob animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
-            var eye = getEyeType(animatable);
-            if (eye != EyeType.None) {
-                bakedModel.getBone("head").ifPresent((headBone) -> {
-                    var scale = getEyeScale(animatable);
-                    headBone.updateScale(scale, scale, scale);
-
-                    this.getRenderer().renderChildBones(poseStack, animatable, headBone, EYES, bufferSource, buffer, true, partialTick, packedLight, packedOverlay, Utils.packRGB(new Vector3f(eye.r, eye.g, eye.b)) | 0xFF000000);
-                });
+        public void addPerBoneRender(RenderPassInfo<EntityRenderState> info, BiConsumer<GeoBone, PerBoneRender<EntityRenderState>> consumer) {
+            var mob = (AbstractSpellCastingMob) info.renderState().getGeckolibData(IronsGeoEntityRenderer.ENTITY);
+            var eye = getEyeType(mob);
+            if (eye == EyeType.None) {
+                return;
             }
+            int color = Utils.packRGB(new Vector3f(eye.r, eye.g, eye.b)) | 0xFF000000;
+            float scale = getEyeScale(mob);
+            info.model().getBone("head").ifPresent(head -> consumer.accept(head, (renderInfo, bone, collector) -> {
+                var poseStack = renderInfo.poseStack();
+                poseStack.pushPose();
+                poseStack.scale(scale, scale, scale);
+                collector.submitCustomGeometry(poseStack, EYES, (pose, vertexConsumer) -> {
+                    var drawStack = new PoseStack();
+                    drawStack.last().set(pose);
+                    bone.render(renderInfo, drawStack, vertexConsumer, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, color);
+                });
+                poseStack.popPose();
+            }));
         }
     }
 

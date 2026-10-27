@@ -10,7 +10,8 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.spells.CastingMobAimingData;
 import io.redspace.ironsspellbooks.spells.blood.RayOfSiphoningSpell;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
@@ -30,13 +31,13 @@ public class SpellRenderingHelper {
     public static final Identifier STRAIGHT_GLOW = IronsSpellbooks.id("textures/entity/ray/ribbon_glow.png");
     public static final Identifier TWISTING_GLOW = IronsSpellbooks.id("textures/entity/ray/twisting_glow.png");
 
-    public static void renderSpellHelper(SyncedSpellData spellData, LivingEntity castingMob, PoseStack poseStack, MultiBufferSource bufferSource, float partialTicks) {
+    public static void renderSpellHelper(SyncedSpellData spellData, LivingEntity castingMob, PoseStack poseStack, SubmitNodeCollector collector, float partialTicks) {
         if (SpellRegistry.RAY_OF_SIPHONING_SPELL.get().getSpellId().equals(spellData.getCastingSpellId())) {
-            renderRayOfSiphoning(castingMob, poseStack, bufferSource, partialTicks);
+            renderRayOfSiphoning(castingMob, poseStack, collector, partialTicks);
         }
     }
 
-    public static void renderRayOfSiphoning(LivingEntity entity, PoseStack poseStack, MultiBufferSource bufferSource, float partialTicks) {
+    public static void renderRayOfSiphoning(LivingEntity entity, PoseStack poseStack, SubmitNodeCollector collector, float partialTicks) {
 
         poseStack.pushPose();
         poseStack.translate(0, entity.getEyeHeight() * .8f, 0);
@@ -76,8 +77,8 @@ public class SpellRenderingHelper {
         //angle = atan o/a
         float xRot = (float) Mth.atan2(dy, dxz);
         //IronsSpellbooks.LOGGER.debug("xRot: {}", xRot);
-        poseStack.rotate(Axis.YP.rotation(-yRot));
-        poseStack.rotate(Axis.XP.rotation(-xRot));
+        poseStack.rotate(Axis.YP, -yRot);
+        poseStack.rotate(Axis.XP, -xRot);
         for (float j = 1; j <= distance; j += .5f) {
             Vec3 wiggle = new Vec3(
                     Mth.sin(deltaTicks * .8f) * .02f,

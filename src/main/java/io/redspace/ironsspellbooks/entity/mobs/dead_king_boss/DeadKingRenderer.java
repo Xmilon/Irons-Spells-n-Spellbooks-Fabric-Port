@@ -18,7 +18,7 @@ public class DeadKingRenderer extends AbstractSpellCastingMobRenderer {
 
     public DeadKingRenderer(EntityRendererProvider.Context renderManager) {
         super(renderManager, new DeadKingModel());
-        this.addRenderLayer((new DeadKingEmissiveLayer(this)));
+        this.withRenderLayer((new DeadKingEmissiveLayer(this)));
     }
 
     @Override

@@ -1,182 +1,138 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
-import net.minecraft.client.renderer.entity.state.EntityRenderState;
-
+import com.geckolib.animatable.GeoAnimatable;
+import com.geckolib.cache.model.GeoBone;
+import com.geckolib.model.GeoModel;
+import com.geckolib.renderer.base.RenderPassInfo;
+import com.geckolib.renderer.layer.builtin.BlockAndItemGeoLayer;
+import com.geckolib.renderer.layer.builtin.ItemArmorGeoLayer;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMobRenderer;
-import io.redspace.ironsspellbooks.render.ArmorCapeLayer;
+import io.redspace.ironsspellbooks.render.IronsGeoEntityRenderer;
 import io.redspace.ironsspellbooks.util.DefaultBipedBoneIdents;
-import net.minecraft.client.model.HumanoidModel;
-import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
-import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShieldItem;
-import net.minecraft.world.item.SwordItem;
-import com.geckolib.animatable.GeoAnimatable;
-import com.geckolib.cache.model.GeoBone;
-import com.geckolib.model.GeoModel;
-import io.redspace.ironsspellbooks.render.IronsGeoEntityRenderer;
-import com.geckolib.renderer.layer.builtin.BlockAndItemGeoLayer;
-import com.geckolib.renderer.layer.builtin.ItemArmorGeoLayer;
-import com.geckolib.util.ClientUtil;
-import com.geckolib.util.RenderUtil;
+import net.minecraft.tags.ItemTags;
 
-import javax.annotation.Nonnull;
-import javax.annotation.Nullable;
+import java.util.ArrayList;
+import java.util.List;
 
+/**
+ * Humanoid GeckoLib renderer: worn armor and held items attach to the standard biped bones.
+ * Known gap: the hard-coded cape layer is not ported yet (see ArmorCapeLayer).
+ */
 public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends IronsGeoEntityRenderer<T> {
     private static final String LEFT_HAND = DefaultBipedBoneIdents.LEFT_HAND_BONE_IDENT;
     private static final String RIGHT_HAND = DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT;
-    private static final String LEFT_BOOT = DefaultBipedBoneIdents.LEFT_FOOT_ARMOR_BONE_IDENT;
-    private static final String RIGHT_BOOT = DefaultBipedBoneIdents.RIGHT_FOOT_ARMOR_BONE_IDENT;
-    private static final String LEFT_BOOT_2 = DefaultBipedBoneIdents.LEFT_FOOT_ARMOR_BONE_2_IDENT;
-    private static final String RIGHT_BOOT_2 = DefaultBipedBoneIdents.RIGHT_FOOT_ARMOR_BONE_2_IDENT;
-    private static final String LEFT_ARMOR_LEG = DefaultBipedBoneIdents.LEFT_LEG_ARMOR_BONE_IDENT;
-    private static final String RIGHT_ARMOR_LEG = DefaultBipedBoneIdents.RIGHT_LEG_ARMOR_BONE_IDENT;
-    private static final String LEFT_ARMOR_LEG_2 = DefaultBipedBoneIdents.LEFT_LEG_ARMOR_BONE_2_IDENT;
-    private static final String RIGHT_ARMOR_LEG_2 = DefaultBipedBoneIdents.RIGHT_LEG_ARMOR_BONE_2_IDENT;
-    private static final String CHESTPLATE = DefaultBipedBoneIdents.BODY_ARMOR_BONE_IDENT;
-    private static final String RIGHT_SLEEVE = DefaultBipedBoneIdents.RIGHT_ARM_ARMOR_BONE_IDENT;
-    private static final String LEFT_SLEEVE = DefaultBipedBoneIdents.LEFT_ARM_ARMOR_BONE_IDENT;
-    private static final String HELMET = DefaultBipedBoneIdents.HEAD_ARMOR_BONE_IDENT;
+    private static final String TORSO = "torso";
 
-    private final RenderLayer hardCodedCapeLayer;
-
-    public HumanoidRenderer(EntityRendererProvider.Context renderManager, GeoModel<T> model) {
-        super(renderManager, model);
-        this.hardCodedCapeLayer = new ArmorCapeLayer(null, (poseStack) -> {
-        });
-        addRenderLayer(new ItemArmorGeoLayer<>(this) {
-            @Nullable
+    public HumanoidRenderer(EntityRendererProvider.Context context, GeoModel<T> model) {
+        super(context, model);
+        withRenderLayer(new ItemArmorGeoLayer<T, Void, EntityRenderState>(this, context) {
             @Override
-            protected ItemStack getArmorItemForBone(GeoBone bone, T animatable) {
-                // Return the items relevant to the bones being rendered for additional rendering
-                return switch (bone.getName()) {
-                    case LEFT_BOOT, RIGHT_BOOT, LEFT_BOOT_2, RIGHT_BOOT_2 -> this.bootsStack;
-                    case LEFT_ARMOR_LEG, RIGHT_ARMOR_LEG, LEFT_ARMOR_LEG_2, RIGHT_ARMOR_LEG_2 -> this.leggingsStack;
-                    case CHESTPLATE, RIGHT_SLEEVE, LEFT_SLEEVE -> this.chestplateStack;
-                    case HELMET -> this.helmetStack;
-                    default -> null;
-                };
+            protected List<RenderData> getRelevantBones(RenderPassInfo<EntityRenderState> info) {
+                return List.of(
+                        RenderData.head(DefaultBipedBoneIdents.HEAD_ARMOR_BONE_IDENT),
+                        RenderData.body(DefaultBipedBoneIdents.BODY_ARMOR_BONE_IDENT),
+                        RenderData.leftArm(DefaultBipedBoneIdents.LEFT_ARM_ARMOR_BONE_IDENT),
+                        RenderData.rightArm(DefaultBipedBoneIdents.RIGHT_ARM_ARMOR_BONE_IDENT),
+                        RenderData.leftLeg(DefaultBipedBoneIdents.LEFT_LEG_ARMOR_BONE_IDENT),
+                        RenderData.leftLeg(DefaultBipedBoneIdents.LEFT_LEG_ARMOR_BONE_2_IDENT),
+                        RenderData.rightLeg(DefaultBipedBoneIdents.RIGHT_LEG_ARMOR_BONE_IDENT),
+                        RenderData.rightLeg(DefaultBipedBoneIdents.RIGHT_LEG_ARMOR_BONE_2_IDENT),
+                        RenderData.leftFoot(DefaultBipedBoneIdents.LEFT_FOOT_ARMOR_BONE_IDENT),
+                        RenderData.leftFoot(DefaultBipedBoneIdents.LEFT_FOOT_ARMOR_BONE_2_IDENT),
+                        RenderData.rightFoot(DefaultBipedBoneIdents.RIGHT_FOOT_ARMOR_BONE_IDENT),
+                        RenderData.rightFoot(DefaultBipedBoneIdents.RIGHT_FOOT_ARMOR_BONE_2_IDENT));
             }
-
-            // Return the equipment slot relevant to the bone we're using
-            @Nonnull
-            @Override
-            protected EquipmentSlot getEquipmentSlotForBone(GeoBone bone, ItemStack stack, T animatable) {
-                return switch (bone.getName()) {
-                    case LEFT_BOOT, RIGHT_BOOT, LEFT_BOOT_2, RIGHT_BOOT_2 -> EquipmentSlot.FEET;
-                    case LEFT_ARMOR_LEG, RIGHT_ARMOR_LEG, LEFT_ARMOR_LEG_2, RIGHT_ARMOR_LEG_2 -> EquipmentSlot.LEGS;
-                    case RIGHT_SLEEVE -> !animatable.isLeftHanded() ? EquipmentSlot.MAINHAND : EquipmentSlot.OFFHAND;
-                    case LEFT_SLEEVE -> animatable.isLeftHanded() ? EquipmentSlot.OFFHAND : EquipmentSlot.MAINHAND;
-                    case CHESTPLATE -> EquipmentSlot.CHEST;
-                    case HELMET -> EquipmentSlot.HEAD;
-                    default -> super.getEquipmentSlotForBone(bone, stack, animatable);
-                };
-            }
-
-            // Return the ModelPart responsible for the armor pieces we want to render
-            @Nonnull
-            @Override
-            protected ModelPart getModelPartForBone(GeoBone bone, EquipmentSlot slot, ItemStack stack, T animatable, HumanoidModel<?> baseModel) {
-                return switch (bone.getName()) {
-                    case LEFT_BOOT, LEFT_BOOT_2, LEFT_ARMOR_LEG, LEFT_ARMOR_LEG_2 -> baseModel.leftLeg;
-                    case RIGHT_BOOT, RIGHT_BOOT_2, RIGHT_ARMOR_LEG, RIGHT_ARMOR_LEG_2 -> baseModel.rightLeg;
-                    case RIGHT_SLEEVE -> baseModel.rightArm;
-                    case LEFT_SLEEVE -> baseModel.leftArm;
-                    case CHESTPLATE -> baseModel.body;
-                    case HELMET -> baseModel.head;
-                    default -> super.getModelPartForBone(bone, slot, stack, animatable, baseModel);
-                };
-            }
-
         });
 
-        // Add some held item rendering
-        addRenderLayer(new BlockAndItemGeoLayer<>(this) {
-            @Nullable
+        withRenderLayer(new BlockAndItemGeoLayer<T, Void, EntityRenderState>(context, this) {
             @Override
-            protected ItemStack getStackForBone(GeoBone bone, T animatable) {
-                if (animatable instanceof AbstractSpellCastingMob castingMob) {
-                    var boneName = bone.getName();
-                    if (isBoneMainHand(castingMob, boneName)) {
-                        if (castingMob.isDrinkingPotion()) {
-                            return AbstractSpellCastingMobRenderer.makePotion(castingMob);
-                        }
-                        if (shouldWeaponBeSheathed(castingMob) && castingMob.getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof SwordItem) {
-                            return ItemStack.EMPTY;
-                        }
-                    }
-                    if (boneName.equals("torso")) {
-                        if (shouldWeaponBeSheathed(castingMob) && castingMob.getItemBySlot(EquipmentSlot.MAINHAND).getItem() instanceof SwordItem) {
-                            return castingMob.getItemBySlot(EquipmentSlot.MAINHAND);
-                        }
-                    }
+            protected List<RenderData> getRelevantBones(T animatable, Void relatedObject, EntityRenderState renderState, float partialTick) {
+                List<RenderData> bones = new ArrayList<>(3);
+                addItem(bones, animatable, LEFT_HAND, ItemDisplayContext.THIRD_PERSON_LEFT_HAND);
+                addItem(bones, animatable, RIGHT_HAND, ItemDisplayContext.THIRD_PERSON_RIGHT_HAND);
+                addItem(bones, animatable, TORSO, ItemDisplayContext.THIRD_PERSON_RIGHT_HAND);
+                return bones;
+            }
+
+            private void addItem(List<RenderData> bones, T animatable, String bone, ItemDisplayContext context) {
+                ItemStack stack = stackForBone(animatable, bone);
+                if (stack != null && !stack.isEmpty()) {
+                    var state = new ItemStackRenderState();
+                    this.itemModelResolver.updateForLiving(state, stack, context, animatable);
+                    bones.add(RenderData.item(bone, context, state));
                 }
-                // Retrieve the items in the entity's hands for the relevant bone
-                return switch (bone.getName()) {
-                    case LEFT_HAND -> animatable.isLeftHanded() ?
-                            animatable.getMainHandItem() : animatable.getOffhandItem();
-                    case RIGHT_HAND -> animatable.isLeftHanded() ?
-                            animatable.getOffhandItem() : animatable.getMainHandItem();
-                    default -> null;
-                };
             }
 
             @Override
-            protected ItemDisplayContext getTransformTypeForStack(GeoBone bone, ItemStack stack, T animatable) {
-                // Apply the camera transform for the given hand
-                return switch (bone.getName()) {
-                    case RIGHT_HAND, "torso" -> ItemDisplayContext.THIRD_PERSON_RIGHT_HAND;
-                    case LEFT_HAND -> ItemDisplayContext.THIRD_PERSON_LEFT_HAND;
-                    default -> ItemDisplayContext.NONE;
-                };
+            public void addRenderData(T animatable, Void relatedObject, EntityRenderState renderState, float partialTick) {
+                renderState.addGeckolibData(CONTENTS, getRelevantBones(animatable, relatedObject, renderState, partialTick));
             }
 
-            // Do some quick render modifications depending on what the item is
             @Override
-            protected void renderStackForBone(PoseStack poseStack, GeoBone bone, ItemStack stack, T animatable,
-                                              MultiBufferSource bufferSource, float partialTick, int packedLight, int packedOverlay) {
+            protected void submitItemStackRender(PoseStack poseStack, GeoBone bone, ItemStackRenderState itemRenderState, ItemDisplayContext displayContext, EntityRenderState renderState, SubmitNodeCollector collector, int packedLight) {
+                T animatable = entity(renderState);
+                ItemStack stack = stackForBone(animatable, bone.name());
+                poseStack.pushPose();
                 poseStack.translate(0, 0, -0.0625);
                 poseStack.translate(0, -0.0625, 0);
                 boolean offhand = stack == animatable.getOffhandItem();
-
-                if (!offhand) {
-                    poseStack.rotate(Axis.XP.rotationDegrees(-90f));
-
-                    if (stack.getItem() instanceof ShieldItem)
-                        poseStack.translate(0, 0.125, -0.25);
-                } else {
-                    poseStack.rotate(Axis.XP.rotationDegrees(-90f));
-
-                    if (stack.getItem() instanceof ShieldItem) {
-                        poseStack.translate(0, 0.125, 0.25);
-                        poseStack.rotate(Axis.YP.rotationDegrees(180));
+                poseStack.rotateDegrees(Axis.XP, -90f);
+                if (stack != null && stack.getItem() instanceof ShieldItem) {
+                    poseStack.translate(0, 0.125, offhand ? 0.25 : -0.25);
+                    if (offhand) {
+                        poseStack.rotateDegrees(Axis.YP, 180);
                     }
                 }
-                if (animatable instanceof AbstractSpellCastingMob mob && bone.getName().equals("torso")) {
-                    if (shouldWeaponBeSheathed(mob)) {
-                        float hipOffset = animatable.getItemBySlot(EquipmentSlot.CHEST).isEmpty() ? .25f : .325f;
-                        poseStack.translate(animatable.isLeftHanded() ? hipOffset : -hipOffset, 0, -.4);
-
-                        poseStack.rotate(Axis.XP.rotationDegrees(215f));
-                        poseStack.scale(.85f, .85f, .85f);
-                    }
+                if (animatable instanceof AbstractSpellCastingMob mob && bone.name().equals(TORSO) && shouldWeaponBeSheathed(mob)) {
+                    float hipOffset = animatable.getItemBySlot(EquipmentSlot.CHEST).isEmpty() ? .25f : .325f;
+                    poseStack.translate(animatable.isLeftHanded() ? hipOffset : -hipOffset, 0, -.4);
+                    poseStack.rotateDegrees(Axis.XP, 215f);
+                    poseStack.scale(.85f, .85f, .85f);
                 }
-                adjustHandItemRendering(poseStack, stack, animatable, partialTick, offhand);
-                super.renderStackForBone(poseStack, bone, stack, animatable, bufferSource, partialTick, packedLight, packedOverlay);
+                adjustHandItemRendering(poseStack, stack, animatable, renderState.getGeckolibData(PARTIAL_TICK), offhand);
+                super.submitItemStackRender(poseStack, bone, itemRenderState, displayContext, renderState, collector, packedLight);
+                poseStack.popPose();
             }
         });
+    }
+
+    protected ItemStack stackForBone(T animatable, String bone) {
+        if (animatable instanceof AbstractSpellCastingMob castingMob) {
+            if (isBoneMainHand(castingMob, bone)) {
+                if (castingMob.isDrinkingPotion()) {
+                    return AbstractSpellCastingMobRenderer.makePotion(castingMob);
+                }
+                if (shouldWeaponBeSheathed(castingMob) && castingMob.getItemBySlot(EquipmentSlot.MAINHAND).is(ItemTags.SWORDS)) {
+                    return ItemStack.EMPTY;
+                }
+            }
+            if (bone.equals(TORSO)) {
+                if (shouldWeaponBeSheathed(castingMob) && castingMob.getItemBySlot(EquipmentSlot.MAINHAND).is(ItemTags.SWORDS)) {
+                    return castingMob.getItemBySlot(EquipmentSlot.MAINHAND);
+                }
+                return null;
+            }
+        }
+        return switch (bone) {
+            case LEFT_HAND -> animatable.isLeftHanded() ? animatable.getMainHandItem() : animatable.getOffhandItem();
+            case RIGHT_HAND -> animatable.isLeftHanded() ? animatable.getOffhandItem() : animatable.getMainHandItem();
+            default -> null;
+        };
     }
 
     protected boolean isBoneMainHand(AbstractSpellCastingMob entity, String boneName) {
@@ -192,31 +148,8 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends IronsGeoEnt
     }
 
     @Override
-    public void render(T entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
-        if (entity.isInvisible() && entity.isInvisibleTo(ClientUtil.getClientPlayer())) {
-            return;
-        }
-        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
-        poseStack.pushPose();
-        float f = Mth.rotLerp(partialTick, entity.yBodyRotO, entity.yBodyRot);
-        poseStack.rotate(Axis.YP.rotationDegrees(180.0F - f));
-        if (entity.deathTime > 0) {
-            float deathRotation = (entity.deathTime + partialTick - 1f) / 20f * 1.6f;
-            poseStack.rotate(Axis.ZP.rotationDegrees(Math.min(Mth.sqrt(deathRotation), 1) * getDeathMaxRotation(entity)));
-        }
-        model.getBone("torso").ifPresent(bone -> {
-            RenderUtil.prepMatrixForBone(poseStack, bone);
-        });
-        poseStack.scale(-1.0F, -1.0F, 1.0F);
-        poseStack.translate(0.0F, -1.501F, 0.0F);
-        this.hardCodedCapeLayer.render(poseStack, bufferSource, packedLight, entity, 0, 0, partialTick, 0, 0, 0);
-        poseStack.popPose();
-    }
-
-    @Override
     public RenderType getRenderType(EntityRenderState state, Identifier texture) {
         var animatable = entity(state);
-        float partialTick = state.getGeckolibData(PARTIAL_TICK);
-        return animatable.isInvisible() ? RenderType.itemEntityTranslucentCull(texture) : RenderType.entityCutoutNoCull(texture, false);
+        return animatable.isInvisible() ? RenderTypes.entityTranslucentCull(texture) : RenderTypes.entityCutout(texture, false);
     }
 }

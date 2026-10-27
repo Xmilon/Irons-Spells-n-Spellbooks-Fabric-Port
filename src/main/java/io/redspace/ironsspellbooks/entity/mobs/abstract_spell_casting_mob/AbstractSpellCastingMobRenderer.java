@@ -1,6 +1,10 @@
 package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
 
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import com.mojang.blaze3d.vertex.PoseStack;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
@@ -8,7 +12,6 @@ import io.redspace.ironsspellbooks.entity.mobs.HumanoidRenderer;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.render.*;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.Identifier;
@@ -27,12 +30,12 @@ public abstract class AbstractSpellCastingMobRenderer extends HumanoidRenderer<A
         super(renderManager, model);
         this.shadowRadius = 0.5f;
         //this.addLayer(new GeoEvasionLayer(this));
-        addRenderLayer(new EnergySwirlLayer.Geo(this, EVASION_TEXTURE, MobEffectRegistry.EVASION));
-        addRenderLayer(new EnergySwirlLayer.Geo(this, CHARGE_TEXTURE, MobEffectRegistry.CHARGED));
-        addRenderLayer(new ChargeSpellLayer.Geo(this));
-        addRenderLayer(new GlowingEyesLayer.Geo(this));
-        addRenderLayer(new SpellTargetingLayer.Geo(this));
-        addRenderLayer(new GeoSpinAttackLayer(this));
+        withRenderLayer(new EnergySwirlLayer.Geo(this, EVASION_TEXTURE, MobEffectRegistry.EVASION));
+        withRenderLayer(new EnergySwirlLayer.Geo(this, CHARGE_TEXTURE, MobEffectRegistry.CHARGED));
+        withRenderLayer(new ChargeSpellLayer.Geo(this));
+        withRenderLayer(new GlowingEyesLayer.Geo(this));
+        withRenderLayer(new SpellTargetingLayer.Geo(this));
+        withRenderLayer(new GeoSpinAttackLayer(this));
     }
 
     public static ItemStack makePotion(AbstractSpellCastingMob entity) {
@@ -41,18 +44,14 @@ public abstract class AbstractSpellCastingMobRenderer extends HumanoidRenderer<A
     }
 
     @Override
-    public void render(AbstractSpellCastingMob entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
-        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
-
-        //poseStack.pushPose();
-        //poseStack.rotate(Axis.YP.rotationDegrees(90));
-        SpellRenderingHelper.renderSpellHelper(ClientMagicData.getSyncedSpellData(entity), entity, poseStack, bufferSource, partialTick);
-        //poseStack.popPose();
-
+    public void submit(EntityRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
+        super.submit(state, poseStack, collector, camera);
+        var entity = entity(state);
+        SpellRenderingHelper.renderSpellHelper(ClientMagicData.getSyncedSpellData(entity), entity, poseStack, collector, state.getGeckolibData(PARTIAL_TICK));
     }
 
     @Override
-    public RenderType getRenderType(AbstractSpellCastingMob animatable, Identifier texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
-        return animatable.isInvisible() ? RenderType.entityTranslucent(texture) : super.getRenderType(animatable, texture, bufferSource, partialTick);
+    public RenderType getRenderType(EntityRenderState state, Identifier texture) {
+        return entity(state).isInvisible() ? RenderTypes.entityTranslucent(texture) : super.getRenderType(state, texture);
     }
 }

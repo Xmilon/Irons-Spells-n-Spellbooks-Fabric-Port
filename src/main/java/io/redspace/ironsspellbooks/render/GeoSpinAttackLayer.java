@@ -1,5 +1,10 @@
 package io.redspace.ironsspellbooks.render;
 
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import com.geckolib.renderer.base.RenderPassInfo;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -17,33 +22,31 @@ import com.geckolib.renderer.base.GeoRenderer;
 import com.geckolib.renderer.layer.GeoRenderLayer;
 
 @OnlyIn(Dist.CLIENT)
-public class GeoSpinAttackLayer extends GeoRenderLayer<AbstractSpellCastingMob> {
-    public GeoSpinAttackLayer(GeoRenderer<AbstractSpellCastingMob> entityRendererIn) {
-        super(entityRendererIn);
+public class GeoSpinAttackLayer extends GeoRenderLayer<AbstractSpellCastingMob, Void, EntityRenderState> {
+    private final GeoModel<AbstractSpellCastingMob> modelProvider = new SpinAttackModel();
+
+    public GeoSpinAttackLayer(GeoRenderer<AbstractSpellCastingMob, Void, EntityRenderState> renderer) {
+        super(renderer);
     }
 
-    private GeoModel<AbstractSpellCastingMob> modelProvider;
-
-    public GeoSpinAttackLayer(AbstractSpellCastingMobRenderer entityRendererIn) {
-        super(entityRendererIn);
-        modelProvider = new SpinAttackModel();
-    }
-
+    // unverified: re-submits the spin model through the main renderer's pass.
     @Override
-    public void render(PoseStack poseStack, AbstractSpellCastingMob animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
-        if (animatable.isAutoSpinAttack()) {
+    public void submitRenderTask(RenderPassInfo<EntityRenderState> info, SubmitNodeCollector collector) {
+        var mob = (AbstractSpellCastingMob) info.renderState().getGeckolibData(IronsGeoEntityRenderer.ENTITY);
+        if (!info.willRender() || !mob.isAutoSpinAttack()) {
+            return;
+        }
+        float partialTick = info.renderState().getGeckolibData(IronsGeoEntityRenderer.PARTIAL_TICK);
+        var poseStack = info.poseStack();
+        for (int i = 0; i < 3; ++i) {
             poseStack.pushPose();
-            for (int i = 0; i < 3; ++i) {
-                poseStack.pushPose();
-                float f = (animatable.tickCount + partialTick) + (float) (-(45 + i * 5));
-                poseStack.rotate(Axis.YP.rotationDegrees(f));
-                float f1 = 0.75F * (float) i;
-                poseStack.scale(f1, f1, f1);
-                poseStack.translate(0, -1 + (double) (-0.2F + 0.6F * (float) i), 0);
-                var rendertype = RenderType.entityCutoutNoCull(modelProvider.getTextureResource(animatable));
-                getRenderer().actuallyRender(poseStack, animatable, modelProvider.getBakedModel(modelProvider.getModelResource(animatable)), rendertype, bufferSource, bufferSource.getBuffer(rendertype), true, partialTick, LightTexture.FULL_BRIGHT, packedOverlay, -1);
-                poseStack.popPose();
-            }
+            float f = (mob.tickCount + partialTick) + (float) (-(45 + i * 5));
+            poseStack.rotateDegrees(Axis.YP, f);
+            float f1 = 0.75F * (float) i;
+            poseStack.scale(f1, f1, f1);
+            poseStack.translate(0, -1 + (double) (-0.2F + 0.6F * (float) i), 0);
+            var renderType = RenderTypes.entityCutout(modelProvider.getTextureResource(info.renderState()));
+            getRenderer().submitRenderTasks(info, collector.order(1), renderType);
             poseStack.popPose();
         }
     }

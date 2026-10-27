@@ -8,7 +8,7 @@ public class VoidTentacleRenderer extends GeoLivingEntityRenderer<VoidTentacle> 
 
     public VoidTentacleRenderer(EntityRendererProvider.Context context) {
         super(context, new VoidTentacleModel());
-        addRenderLayer(new VoidTentacleEmissiveLayer(this));
+        withRenderLayer(new VoidTentacleEmissiveLayer(this));
         this.shadowRadius = 1f;
     }
 

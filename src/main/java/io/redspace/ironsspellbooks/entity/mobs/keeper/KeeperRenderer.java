@@ -21,7 +21,7 @@ public class KeeperRenderer extends AbstractSpellCastingMobRenderer {
 
     public KeeperRenderer(EntityRendererProvider.Context context) {
         super(context, new KeeperModel());
-        addRenderLayer(new GeoKeeperGhostLayer(this));
+        withRenderLayer(new GeoKeeperGhostLayer(this));
         this.shadowRadius = 0.65f;
     }
 
