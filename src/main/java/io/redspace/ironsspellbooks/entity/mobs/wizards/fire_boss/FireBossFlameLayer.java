@@ -1,57 +1,59 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.geckolib.cache.model.GeoBone;
+import com.geckolib.renderer.base.GeoRenderer;
+import com.geckolib.renderer.base.PerBoneRender;
+import com.geckolib.renderer.base.RenderPassInfo;
+import com.geckolib.renderer.layer.GeoRenderLayer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
-import net.minecraft.client.model.geom.PartNames;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import io.redspace.ironsspellbooks.render.IronsGeoEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import org.joml.Matrix4f;
-import com.geckolib.cache.model.GeoBone;
-import com.geckolib.renderer.GeoEntityRenderer;
-import com.geckolib.renderer.layer.GeoRenderLayer;
-import com.geckolib.util.RenderUtil;
+import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.client.model.geom.PartNames;
 
-@OnlyIn(Dist.CLIENT)
-public class FireBossFlameLayer extends GeoRenderLayer<AbstractSpellCastingMob> {
+import java.util.function.BiConsumer;
+
+public class FireBossFlameLayer extends GeoRenderLayer<AbstractSpellCastingMob, Void, EntityRenderState> {
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/fire_boss/tyros_flame.png");
+    static int frameCount = 8;
+    static int ticksPerFrame = 1;
 
-    public FireBossFlameLayer(GeoEntityRenderer entityRendererIn) {
-        super(entityRendererIn);
+    public FireBossFlameLayer(GeoRenderer<AbstractSpellCastingMob, Void, EntityRenderState> renderer) {
+        super(renderer);
     }
 
+    // unverified: assumes the pose stack handed to a per-bone task is positioned at that bone.
     @Override
-    public void renderForBone(PoseStack poseStack, AbstractSpellCastingMob animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
-        if (bone.getName().equals(PartNames.HEAD) && animatable instanceof FireBossEntity fireBossEntity && fireBossEntity.isSoulMode()) {
+    public void addPerBoneRender(RenderPassInfo<EntityRenderState> info, BiConsumer<GeoBone, PerBoneRender<EntityRenderState>> consumer) {
+        if (!(IronsGeoEntityRenderer.entityOf(info.renderState()) instanceof FireBossEntity boss) || !boss.isSoulMode()) {
+            return;
+        }
+        info.model().getBone(PartNames.HEAD).ifPresent(head -> consumer.accept(head, (renderInfo, bone, collector) -> {
+            var poseStack = renderInfo.poseStack();
             poseStack.pushPose();
-            poseStack.rotate(Axis.YP.rotationDegrees(45f));
-            RenderUtil.translateToPivotPoint(poseStack, bone);
+            poseStack.rotateDegrees(Axis.YP, 45f);
+            bone.translateToPivotPoint(poseStack);
             poseStack.scale(1 / 2f, 1 / 2f, 1 / 2f);
-            VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutout(TEXTURE));
-            Matrix4f poseMatrix = poseStack.last().pose();
-
-            int anim = (animatable.tickCount / ticksPerFrame) % frameCount;
+            int anim = (boss.tickCount / ticksPerFrame) % frameCount;
             float uvMin = anim / (float) frameCount;
             float uvMax = (anim + 1) / (float) frameCount;
             float halfsqrt2 = 0.7071f;
             for (int i = 0; i < 4; i++) {
-                poseStack.rotate(Axis.YP.rotationDegrees(90f));
-                consumer.addVertex(poseMatrix, 0, 0, -halfsqrt2).setColor(255, 255, 255, 255).setUv(0f, uvMax).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
-                consumer.addVertex(poseMatrix, 0, 1, -halfsqrt2).setColor(255, 255, 255, 255).setUv(0f, uvMin).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
-                consumer.addVertex(poseMatrix, 0, 1, halfsqrt2).setColor(255, 255, 255, 255).setUv(1f, uvMin).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
-                consumer.addVertex(poseMatrix, 0, 0, halfsqrt2).setColor(255, 255, 255, 255).setUv(1f, uvMax).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
+                poseStack.rotateDegrees(Axis.YP, 90f);
+                collector.submitCustomGeometry(poseStack, RenderTypes.entityCutout(TEXTURE), (pose, consumer2) -> {
+                    consumer2.addVertex(pose.pose(), 0, 0, -halfsqrt2).setColor(255, 255, 255, 255).setUv(0f, uvMax).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightCoordsUtil.FULL_BRIGHT).setNormal(0f, 1f, 0f);
+                    consumer2.addVertex(pose.pose(), 0, 1, -halfsqrt2).setColor(255, 255, 255, 255).setUv(0f, uvMin).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightCoordsUtil.FULL_BRIGHT).setNormal(0f, 1f, 0f);
+                    consumer2.addVertex(pose.pose(), 0, 1, halfsqrt2).setColor(255, 255, 255, 255).setUv(1f, uvMin).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightCoordsUtil.FULL_BRIGHT).setNormal(0f, 1f, 0f);
+                    consumer2.addVertex(pose.pose(), 0, 0, halfsqrt2).setColor(255, 255, 255, 255).setUv(1f, uvMax).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightCoordsUtil.FULL_BRIGHT).setNormal(0f, 1f, 0f);
+                });
             }
             poseStack.popPose();
-        }
+        }));
     }
-
-    static int frameCount = 8;
-    static int ticksPerFrame = 1;
 }

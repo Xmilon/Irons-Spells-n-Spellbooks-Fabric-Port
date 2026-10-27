@@ -1,24 +1,21 @@
 package io.redspace.ironsspellbooks.entity.mobs.keeper;
 
-
+import com.geckolib.renderer.base.RenderPassInfo;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMobRenderer;
 import io.redspace.ironsspellbooks.render.RenderHelper;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import org.jetbrains.annotations.Nullable;
-import com.geckolib.cache.model.BakedGeoModel;
-import com.geckolib.util.Color;
 
 public class KeeperRenderer extends AbstractSpellCastingMobRenderer {
-
     public KeeperRenderer(EntityRendererProvider.Context context) {
         super(context, new KeeperModel());
         withRenderLayer(new GeoKeeperGhostLayer(this));
@@ -26,35 +23,36 @@ public class KeeperRenderer extends AbstractSpellCastingMobRenderer {
     }
 
     @Override
-    public void render(AbstractSpellCastingMob entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
+    public void submit(EntityRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
         // let there be extra light during bossfight for visual clarity
-        int light = entity instanceof KeeperEntity keeper && keeper.isSummoned() ? Math.clamp(packedLight + 100, 0, LightTexture.FULL_BLOCK) : packedLight;
-        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, light);
+        if (entity(state) instanceof KeeperEntity keeper && keeper.isSummoned()) {
+            state.lightCoords = Math.clamp(state.lightCoords + 100, 0, 240);
+        }
+        super.submit(state, poseStack, collector, camera);
     }
 
     @Override
-    public void preRender(PoseStack poseStack, AbstractSpellCastingMob animatable, BakedGeoModel model, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
-        poseStack.scale(1.3f, 1.3f, 1.3f);
-        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
+    public void adjustRenderPose(RenderPassInfo<EntityRenderState> info) {
+        info.poseStack().scale(1.3f, 1.3f, 1.3f);
+        super.adjustRenderPose(info);
     }
 
     @Override
-    public RenderType getRenderType(AbstractSpellCastingMob animatable, Identifier texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
-        return RenderType.entityTranslucent(texture);
+    public RenderType getRenderType(EntityRenderState state, Identifier texture) {
+        return RenderTypes.entityTranslucent(texture);
     }
 
     @Override
-    public int getPackedOverlay(AbstractSpellCastingMob animatable, float u, float partialTick) {
+    public int getPackedOverlay(AbstractSpellCastingMob animatable, Void relatedObject, float u, float partialTick) {
         return OverlayTexture.pack(OverlayTexture.u(u), OverlayTexture.v(animatable.deathTime > 0));
     }
 
     @Override
-    public Color getRenderColor(AbstractSpellCastingMob animatable, float partialTick, int packedLight) {
-        Color color = super.getRenderColor(animatable, partialTick, packedLight);
+    public int getRenderColor(AbstractSpellCastingMob animatable, Void relatedObject, float partialTick) {
+        int color = super.getRenderColor(animatable, relatedObject, partialTick);
         if (animatable instanceof KeeperEntity keeper && keeper.isRising()) {
-            color = new Color(RenderHelper.colorf(1f, 1f, 1f, Mth.clamp((KeeperEntity.RISE_ANIM_TIME - keeper.riseAnimTick + 1) / (float) KeeperEntity.RISE_ANIM_TIME, 0, 1f)));
+            color = RenderHelper.colorf(1f, 1f, 1f, Mth.clamp((KeeperEntity.RISE_ANIM_TIME - keeper.riseAnimTick + 1) / (float) KeeperEntity.RISE_ANIM_TIME, 0, 1f));
         }
-
         return color;
     }
 }

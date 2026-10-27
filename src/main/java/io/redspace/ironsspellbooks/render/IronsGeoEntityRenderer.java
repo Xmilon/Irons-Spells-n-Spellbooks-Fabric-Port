@@ -5,6 +5,7 @@ import com.geckolib.constant.dataticket.DataTicket;
 import com.geckolib.model.GeoModel;
 import com.geckolib.renderer.GeoEntityRenderer;
 import com.geckolib.renderer.base.BoneSnapshots;
+import com.geckolib.renderer.base.GeoRenderState;
 import com.geckolib.renderer.base.RenderPassInfo;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.TransformStack;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -29,6 +30,18 @@ public class IronsGeoEntityRenderer<T extends Entity & GeoAnimatable> extends Ge
         super.addRenderData(animatable, relatedObject, renderState, partialTick);
         renderState.addGeckolibData(ENTITY, animatable);
         renderState.addGeckolibData(PARTIAL_TICK, partialTick);
+    }
+
+    /**
+     * The entity a render state was extracted from; for layers, which are not generic over the entity.
+     */
+    @SuppressWarnings("unchecked")
+    public static <E extends Entity> E entityOf(GeoRenderState state) {
+        return (E) state.getGeckolibData(ENTITY);
+    }
+
+    public static float partialTickOf(GeoRenderState state) {
+        return state.getGeckolibData(PARTIAL_TICK);
     }
 
     @SuppressWarnings("unchecked")

@@ -1,23 +1,22 @@
 package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+import com.geckolib.renderer.base.GeoRenderer;
+import com.geckolib.renderer.base.RenderPassInfo;
+import com.geckolib.renderer.layer.GeoRenderLayer;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
+import io.redspace.ironsspellbooks.render.IronsGeoEntityRenderer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
-import com.geckolib.cache.model.BakedGeoModel;
-import com.geckolib.renderer.GeoEntityRenderer;
-import com.geckolib.renderer.layer.GeoRenderLayer;
 
-public class DeadKingEmissiveLayer extends GeoRenderLayer<AbstractSpellCastingMob> {
+public class DeadKingEmissiveLayer extends GeoRenderLayer<AbstractSpellCastingMob, Void, EntityRenderState> {
     public static final Identifier TEXTURE_NORMAL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king_glowing.png");
     public static final Identifier TEXTURE_ENRAGED = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king_enraged_glowing.png");
 
-    public DeadKingEmissiveLayer(GeoEntityRenderer renderer) {
+    public DeadKingEmissiveLayer(GeoRenderer<AbstractSpellCastingMob, Void, EntityRenderState> renderer) {
         super(renderer);
     }
 
@@ -30,21 +29,15 @@ public class DeadKingEmissiveLayer extends GeoRenderLayer<AbstractSpellCastingMo
     }
 
     public static RenderType renderType(Identifier resourceLocation) {
-        return RenderType.energySwirl(resourceLocation, 0, 0);
+        return RenderTypes.energySwirl(resourceLocation, 0, 0);
     }
 
-
     @Override
-    public void render(PoseStack poseStack, AbstractSpellCastingMob animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
-        if (animatable instanceof DeadKingCorpseEntity || animatable.isInvisible())
+    public void submitRenderTask(RenderPassInfo<EntityRenderState> info, SubmitNodeCollector collector) {
+        AbstractSpellCastingMob mob = IronsGeoEntityRenderer.entityOf(info.renderState());
+        if (!info.willRender() || mob instanceof DeadKingCorpseEntity || mob.isInvisible()) {
             return;
-        var model = this.getGeoModel().getBakedModel(currentModel(animatable));
-
-        poseStack.pushPose();
-        renderType = renderType(currentTexture(animatable));
-        VertexConsumer vertexconsumer = bufferSource.getBuffer(renderType);
-        this.getRenderer().actuallyRender(poseStack, animatable, model, renderType, bufferSource, vertexconsumer, true, partialTick,
-                LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY,-1);
-        poseStack.popPose();
+        }
+        getRenderer().submitRenderTasks(info, collector.order(1), renderType(currentTexture(mob)));
     }
 }
