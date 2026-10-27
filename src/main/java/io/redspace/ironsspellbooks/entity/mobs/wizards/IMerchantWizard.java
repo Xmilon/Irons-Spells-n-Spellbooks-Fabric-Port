@@ -1,5 +1,11 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards;
 
+import io.redspace.ironsspellbooks.util.ValueIO;
+
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.util.Util;
 import net.minecraft.nbt.CompoundTag;
@@ -16,6 +22,14 @@ import java.util.function.Consumer;
  * collection of common implementations and helpers for wizards with trades
  */
 public interface IMerchantWizard extends Merchant {
+
+    default void serializeMerchant(ValueOutput out, @Nullable MerchantOffers offers, long lastRestockGameTime, int numberOfRestocksToday) {
+        ValueIO.write(out, "merchant", tag -> serializeMerchant(tag, offers, lastRestockGameTime, numberOfRestocksToday));
+    }
+
+    default void deserializeMerchant(ValueInput in, Consumer<MerchantOffers> setOffers) {
+        ValueIO.read(in, "merchant", tag -> deserializeMerchant(tag, setOffers));
+    }
 
     default void serializeMerchant(CompoundTag pCompound, @Nullable MerchantOffers offers, long lastRestockGameTime, int numberOfRestocksToday) {
         if (offers != null && !offers.isEmpty()) {

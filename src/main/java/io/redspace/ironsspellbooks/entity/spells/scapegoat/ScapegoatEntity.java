@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.spells.scapegoat;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -204,7 +208,7 @@ public class ScapegoatEntity extends PathfinderMob implements AntiMagicSusceptib
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compound) {
+    public void addAdditionalSaveData(ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         if (this.ownerUUID != null) {
             compound.store("Owner", net.minecraft.core.UUIDUtil.CODEC, this.ownerUUID);
@@ -218,7 +222,7 @@ public class ScapegoatEntity extends PathfinderMob implements AntiMagicSusceptib
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compound) {
+    public void readAdditionalSaveData(ValueInput compound) {
         super.readAdditionalSaveData(compound);
         if (compound.contains("Owner")) {
             this.ownerUUID = compound.read("Owner", net.minecraft.core.UUIDUtil.CODEC).orElse(null);

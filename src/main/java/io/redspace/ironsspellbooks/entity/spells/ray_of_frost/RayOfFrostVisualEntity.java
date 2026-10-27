@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.spells.ray_of_frost;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.RegistryFriendlyByteBuf;
@@ -51,12 +55,12 @@ public class RayOfFrostVisualEntity extends Entity implements IEntityWithComplex
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag pCompound) {
+    protected void readAdditionalSaveData(ValueInput pCompound) {
 
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag pCompound) {
+    protected void addAdditionalSaveData(ValueOutput pCompound) {
 
     }
 

@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import io.netty.util.internal.UnstableApi;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
@@ -321,7 +325,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag tag) {
+    protected void addAdditionalSaveData(ValueOutput tag) {
         super.addAdditionalSaveData(tag);
         tag.putFloat("Damage", this.getDamage());
         if (explosionRadius != 0) {
@@ -340,7 +344,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag tag) {
+    protected void readAdditionalSaveData(ValueInput tag) {
         super.readAdditionalSaveData(tag);
         this.damage = tag.getFloatOr("Damage", 0f);
         if (tag.contains("ExplosionRadius")) {

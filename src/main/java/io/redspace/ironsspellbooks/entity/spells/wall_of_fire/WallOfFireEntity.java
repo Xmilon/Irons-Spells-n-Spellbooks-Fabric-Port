@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.spells.wall_of_fire;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -155,7 +159,7 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityWit
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compoundTag) {
+    protected void addAdditionalSaveData(ValueOutput compoundTag) {
         if (this.ownerUUID != null) {
             compoundTag.store("Owner", net.minecraft.core.UUIDUtil.CODEC, this.ownerUUID);
         }
@@ -175,7 +179,7 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityWit
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compoundTag) {
+    protected void readAdditionalSaveData(ValueInput compoundTag) {
         if (compoundTag.contains("Owner")) {
             this.ownerUUID = compoundTag.read("Owner", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
         }

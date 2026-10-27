@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity;
 
+import net.minecraft.world.level.storage.ValueInput;
+
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import net.minecraft.core.BlockPos;
@@ -87,7 +89,7 @@ public class VisualFallingBlockEntity extends FallingBlockEntity {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag pCompound) {
+    protected void readAdditionalSaveData(ValueInput pCompound) {
         super.readAdditionalSaveData(pCompound);
         this.dropItem = false;
         this.cancelDrop = true;

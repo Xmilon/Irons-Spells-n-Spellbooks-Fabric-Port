@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.spells.ice_spike;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
@@ -130,13 +134,13 @@ public class IceSpikeEntity extends AoeEntity {
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag pCompound) {
+    protected void addAdditionalSaveData(ValueOutput pCompound) {
         super.addAdditionalSaveData(pCompound);
         pCompound.putInt("waitTime", this.getWaitTime());
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag pCompound) {
+    protected void readAdditionalSaveData(ValueInput pCompound) {
         super.readAdditionalSaveData(pCompound);
         this.setWaitTime(pCompound.getIntOr("waitTime", 0));
     }

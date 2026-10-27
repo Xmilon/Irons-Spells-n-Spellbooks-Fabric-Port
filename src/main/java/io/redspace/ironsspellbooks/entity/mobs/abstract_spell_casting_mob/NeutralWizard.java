@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
@@ -64,7 +68,7 @@ public class NeutralWizard extends AbstractSpellCastingMob implements NeutralMob
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag pCompound) {
+    public void addAdditionalSaveData(ValueOutput pCompound) {
         this.addPersistentAngerSaveData(pCompound);
         if (!angerLevels.isEmpty()) {
             ListTag levels = new ListTag();
@@ -80,7 +84,7 @@ public class NeutralWizard extends AbstractSpellCastingMob implements NeutralMob
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag pCompound) {
+    public void readAdditionalSaveData(ValueInput pCompound) {
         this.readPersistentAngerSaveData(this.level(), pCompound);
         if (pCompound.contains("angerLevels")) {
             ListTag entries = pCompound.getListOrEmpty("angerLevels");

@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.util;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
@@ -34,6 +38,14 @@ public class OwnerHelper {
         return null;
     }
 
+
+    public static void serializeOwner(ValueOutput out, UUID ownerUUID) {
+        if (ownerUUID != null) {
+            out.store("Summoner", net.minecraft.core.UUIDUtil.CODEC, ownerUUID);
+        }
+    }
+
+    public static UUID deserializeOwner(ValueInput in) {
+        return in.read("Summoner", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
+    }
 }
-
-

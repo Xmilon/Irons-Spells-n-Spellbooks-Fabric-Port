@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IOminousEntity;
 import io.redspace.ironsspellbooks.api.network.IClientEventEntity;
@@ -1079,7 +1083,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag pCompound) {
+    public void addAdditionalSaveData(ValueOutput pCompound) {
         super.addAdditionalSaveData(pCompound);
         pCompound.putInt("stanceBreakCount", stanceBreakCounter);
         pCompound.putInt("playerScale", playerScale);
@@ -1099,7 +1103,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag pCompound) {
+    public void readAdditionalSaveData(ValueInput pCompound) {
         super.readAdditionalSaveData(pCompound);
         this.stanceBreakCounter = pCompound.getIntOr("stanceBreakCount", 0);
         this.playerScale = pCompound.getIntOr("playerScale", 0);
@@ -1122,14 +1126,14 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.hasPerformedHalfHealthAttack = pCompound.getBooleanOr("halfHealthAttack", false);
         setIsOminous(pCompound.getBooleanOr("ominous", false));
         if (pCompound.contains("SpawnPos")) {
-            this.spawnPos = NBT.readVec3(pCompound.getCompoundOrEmpty("SpawnPos"));
+            this.spawnPos = NBT.readVec3(pCompound.childOrEmpty("SpawnPos"));
         } else {
             this.spawnPos = null;
         }
     }
 
     @Override
-    public void load(CompoundTag pCompound) {
+    public void load(ValueInput pCompound) {
         if (pCompound.contains("unloadedGametime")) {
             var unloadTimestamp = pCompound.getLong("unloadedGametime");
             var delta = level.getGameTime() - unloadTimestamp;

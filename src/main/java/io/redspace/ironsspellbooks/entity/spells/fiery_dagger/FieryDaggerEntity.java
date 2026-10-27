@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.spells.fiery_dagger;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.ISSDamageTypes;
@@ -243,7 +247,7 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag tag) {
+    protected void addAdditionalSaveData(ValueOutput tag) {
         super.addAdditionalSaveData(tag);
         tag.putInt("delay", delay);
         if (ownerTrack != null) {
@@ -256,11 +260,11 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag tag) {
+    protected void readAdditionalSaveData(ValueInput tag) {
         super.readAdditionalSaveData(tag);
         this.delay = tag.getIntOr("delay", 0);
         if (tag.contains("ownerTrack")) {
-            this.ownerTrack = NBT.readVec3(tag.getCompoundOrEmpty("ownerTrack"));
+            this.ownerTrack = NBT.readVec3(tag.childOrEmpty("ownerTrack"));
         }
         if (tag.contains("target")) {
             this.targetEntity = tag.read("target", net.minecraft.core.UUIDUtil.CODEC).orElse(null);

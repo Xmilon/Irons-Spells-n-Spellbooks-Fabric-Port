@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.spells.ice_block;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
@@ -82,7 +86,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag tag) {
+    protected void addAdditionalSaveData(ValueOutput tag) {
         super.addAdditionalSaveData(tag);
         if (this.targetUUID != null) {
             tag.store("Target", net.minecraft.core.UUIDUtil.CODEC, this.targetUUID);
@@ -92,7 +96,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
         }
     }
 
-    protected void readAdditionalSaveData(CompoundTag tag) {
+    protected void readAdditionalSaveData(ValueInput tag) {
         super.readAdditionalSaveData(tag);
         if (tag.contains("Target")) {
             this.targetUUID = tag.read("Target", net.minecraft.core.UUIDUtil.CODEC).orElse(null);

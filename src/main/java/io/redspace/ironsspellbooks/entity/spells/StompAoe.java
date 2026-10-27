@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -106,14 +110,14 @@ public class StompAoe extends AbstractMagicProjectile {
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag pCompound) {
+    protected void addAdditionalSaveData(ValueOutput pCompound) {
         super.addAdditionalSaveData(pCompound);
         pCompound.putInt("stompStep", step);
         pCompound.putInt("maxSteps", maxSteps);
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag pCompound) {
+    protected void readAdditionalSaveData(ValueInput pCompound) {
         super.readAdditionalSaveData(pCompound);
         this.step = pCompound.getIntOr("stompStep", 0);
         this.maxSteps = pCompound.getIntOr("maxSteps", 0);

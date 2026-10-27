@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.spells.ender_chain;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
@@ -259,7 +263,7 @@ public class EnderChain extends Entity implements AntiMagicSusceptible, IEntityW
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag tag) {
+    protected void addAdditionalSaveData(ValueOutput tag) {
         if (ownerUUID != null) {
             tag.store("Owner", net.minecraft.core.UUIDUtil.CODEC, ownerUUID);
         }
@@ -273,7 +277,7 @@ public class EnderChain extends Entity implements AntiMagicSusceptible, IEntityW
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag tag) {
+    protected void readAdditionalSaveData(ValueInput tag) {
         if (tag.contains("Owner")) {
             this.ownerUUID = tag.read("Owner", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
             this.cachedOwner = null;

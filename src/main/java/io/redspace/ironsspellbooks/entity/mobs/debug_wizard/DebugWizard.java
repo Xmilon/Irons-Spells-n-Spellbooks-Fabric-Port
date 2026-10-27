@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.mobs.debug_wizard;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
@@ -73,7 +77,7 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag pCompound) {
+    public void addAdditionalSaveData(ValueOutput pCompound) {
         super.addAdditionalSaveData(pCompound);
         pCompound.putString("spellId", spell.getSpellId());
         pCompound.putInt("spellLevel", spellLevel);
@@ -82,9 +86,9 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag pCompound) {
+    public void readAdditionalSaveData(ValueInput pCompound) {
         super.readAdditionalSaveData(pCompound);
-        spell = SpellRegistry.getSpell(pCompound.getString("spellId"));
+        spell = SpellRegistry.getSpell(pCompound.getStringOr("spellId", ""));
         spellLevel = pCompound.getIntOr("spellLevel", 0);
         targetsPlayer = pCompound.getBooleanOr("targetsPlayer", false);
         cancelCastAfterTicks = pCompound.getIntOr("cancelCastAfterTicks", 0);

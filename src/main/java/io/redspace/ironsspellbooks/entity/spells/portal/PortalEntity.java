@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.spells.portal;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
@@ -218,7 +222,7 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compoundTag) {
+    protected void readAdditionalSaveData(ValueInput compoundTag) {
         if (compoundTag.contains("ownerUUID")) {
             setOwnerUUID(compoundTag.read("ownerUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
         }
@@ -239,7 +243,7 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compoundTag) {
+    protected void addAdditionalSaveData(ValueOutput compoundTag) {
         compoundTag.putLong("ticksToLive", ticksToLive);
         compoundTag.store("ownerUUID", net.minecraft.core.UUIDUtil.CODEC, getOwnerUUID());
     }

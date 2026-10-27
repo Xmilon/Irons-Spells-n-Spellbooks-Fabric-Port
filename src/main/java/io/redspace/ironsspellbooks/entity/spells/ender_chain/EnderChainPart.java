@@ -53,11 +53,11 @@ public class EnderChainPart extends PartEntity<EnderChain> implements AntiMagicS
     }
 
     @Override
-    protected void readAdditionalSaveData(@NotNull CompoundTag tag) {
+    protected void readAdditionalSaveData(net.minecraft.world.level.storage.@NotNull ValueInput tag) {
     }
 
     @Override
-    protected void addAdditionalSaveData(@NotNull CompoundTag tag) {
+    protected void addAdditionalSaveData(net.minecraft.world.level.storage.@NotNull ValueOutput tag) {
     }
 
     @Override

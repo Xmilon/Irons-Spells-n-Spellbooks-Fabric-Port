@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.cursed_armor_stand;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import com.geckolib.animation.object.PlayState;
 import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.animation.RawAnimation;
@@ -252,7 +256,7 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag pCompound) {
+    public void addAdditionalSaveData(ValueOutput pCompound) {
         super.addAdditionalSaveData(pCompound);
         pCompound.putFloat("originalYRot", originalYRot);
         pCompound.putBoolean("armorStandFrozen", isArmorStandFrozen());
@@ -264,11 +268,11 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag pCompound) {
+    public void readAdditionalSaveData(ValueInput pCompound) {
         super.readAdditionalSaveData(pCompound);
         this.originalYRot = pCompound.getFloatOr("originalYRot", 0f);
         if (pCompound.contains("spawnPos")) {
-            this.spawn = NBT.readVec3(pCompound.getCompoundOrEmpty("spawnPos"));
+            this.spawn = NBT.readVec3(pCompound.childOrEmpty("spawnPos"));
         }
         this.setArmorStandFrozen(pCompound.getBooleanOr("armorStandFrozen", false));
         String pose = pCompound.getStringOr("armorStandPose", "");

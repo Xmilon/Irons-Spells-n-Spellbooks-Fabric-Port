@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.spells.target_area;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import net.minecraft.nbt.CompoundTag;
@@ -187,7 +191,7 @@ public class TargetedAreaEntity extends Entity {
         this.setPos(d0, d1, d2);
     }
 
-    protected void addAdditionalSaveData(CompoundTag tag) {
+    protected void addAdditionalSaveData(ValueOutput tag) {
         tag.putFloat("Radius", this.getRadius());
         tag.putInt("Color", this.getColorRaw());
         tag.putInt("Age", this.tickCount);
@@ -198,7 +202,7 @@ public class TargetedAreaEntity extends Entity {
             tag.store("Owner", net.minecraft.core.UUIDUtil.CODEC, ownerUUID);
     }
 
-    protected void readAdditionalSaveData(CompoundTag tag) {
+    protected void readAdditionalSaveData(ValueInput tag) {
         this.setRadius(tag.getFloatOr("Radius", 0f));
         this.setColor(tag.getIntOr("Color", 0));
         this.tickCount = (tag.getIntOr("Age", 0));

@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.spells.thrown_item;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -65,7 +69,7 @@ public class ThrownItemProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag tag) {
+    protected void addAdditionalSaveData(ValueOutput tag) {
         super.addAdditionalSaveData(tag);
         var item = getThrownItem();
         if (!item.isEmpty()) {
@@ -74,10 +78,10 @@ public class ThrownItemProjectile extends AbstractMagicProjectile {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag tag) {
+    protected void readAdditionalSaveData(ValueInput tag) {
         super.readAdditionalSaveData(tag);
         if (tag.contains("item")) {
-            this.setThrownItem(ItemStack.parseOptional(level().registryAccess(), tag.getCompound("item")));
+            this.setThrownItem(ItemStack.parseOptional(level().registryAccess(), tag.childOrEmpty("item")));
         }
     }
 

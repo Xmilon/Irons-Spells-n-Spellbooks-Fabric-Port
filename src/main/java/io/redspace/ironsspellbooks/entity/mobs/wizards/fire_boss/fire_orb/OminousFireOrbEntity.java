@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.fire_orb;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.util.CameraShakeData;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
@@ -240,7 +244,7 @@ public class OminousFireOrbEntity extends Entity implements AntiMagicSusceptible
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compound) {
+    protected void readAdditionalSaveData(ValueInput compound) {
         this.health = compound.getFloatOr("Health", 0f);
         this.damage = compound.getFloatOr("Damage", 0f);
         this.radius = compound.getFloatOr("Radius", 0f);
@@ -258,7 +262,7 @@ public class OminousFireOrbEntity extends Entity implements AntiMagicSusceptible
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compound) {
+    protected void addAdditionalSaveData(ValueOutput compound) {
         compound.putFloat("Health", this.health);
         compound.putFloat("Damage", this.damage);
         compound.putFloat("Radius", this.radius);

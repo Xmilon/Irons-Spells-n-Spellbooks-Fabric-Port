@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.undead_spawner;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
@@ -175,14 +179,14 @@ public class UndeadRiftEntity extends Entity implements IMagicSummon {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compound) {
+    protected void readAdditionalSaveData(ValueInput compound) {
         this.summonedCount = compound.getIntOr("SummonedCount", 0);
         this.summonsToSpawn = compound.getIntOr("SummonsToSpawn", 0);
         this.delay = compound.getIntOr("Delay", 0);
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compound) {
+    protected void addAdditionalSaveData(ValueOutput compound) {
         compound.putInt("SummonedCount", this.summonedCount);
         compound.putInt("SummonsToSpawn", this.summonsToSpawn);
         compound.putInt("Delay", this.delay);

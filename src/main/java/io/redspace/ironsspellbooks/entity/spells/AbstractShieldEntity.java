@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
@@ -114,14 +118,14 @@ public abstract class AbstractShieldEntity extends Entity implements AntiMagicSu
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag pCompound) {
+    protected void readAdditionalSaveData(ValueInput pCompound) {
         if (pCompound.contains("Health")) {
             this.setHealth(pCompound.getFloatOr("Health", 0f));
         }
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag pCompound) {
+    protected void addAdditionalSaveData(ValueOutput pCompound) {
         pCompound.putFloat("Health", this.getHealth());
 
     }

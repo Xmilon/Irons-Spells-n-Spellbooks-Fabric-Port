@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import io.redspace.ironsspellbooks.api.entity.NoKnockbackProjectile;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.core.particles.ParticleOptions;
@@ -287,7 +291,7 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
         return EntityDimensions.scalable(this.getRadius() * 2.0F, 1.2F);
     }
 
-    protected void addAdditionalSaveData(CompoundTag pCompound) {
+    protected void addAdditionalSaveData(ValueOutput pCompound) {
         pCompound.putInt("Age", this.tickCount);
         pCompound.putInt("Duration", this.duration);
         pCompound.putInt("ReapplicationDelay", this.reapplicationDelay);
@@ -303,23 +307,23 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
 
     }
 
-    protected void readAdditionalSaveData(CompoundTag pCompound) {
+    protected void readAdditionalSaveData(ValueInput pCompound) {
         this.tickCount = pCompound.getIntOr("Age", 0);
-        if (pCompound.getInt("Duration") > 0)
+        if (pCompound.getIntOr("Duration", 0) > 0)
             this.duration = pCompound.getIntOr("Duration", 0);
-        if (pCompound.getInt("ReapplicationDelay") > 0)
+        if (pCompound.getIntOr("ReapplicationDelay", 0) > 0)
             this.reapplicationDelay = pCompound.getIntOr("ReapplicationDelay", 0);
-        if (pCompound.getInt("Radius") > 0)
+        if (pCompound.getIntOr("Radius", 0) > 0)
             this.setRadius(pCompound.getFloatOr("Radius", 0f));
-        if (pCompound.getInt("DurationOnUse") > 0)
+        if (pCompound.getIntOr("DurationOnUse", 0) > 0)
             this.durationOnUse = pCompound.getIntOr("DurationOnUse", 0);
-        if (pCompound.getInt("RadiusOnUse") > 0)
+        if (pCompound.getIntOr("RadiusOnUse", 0) > 0)
             this.radiusOnUse = pCompound.getFloatOr("RadiusOnUse", 0f);
-        if (pCompound.getInt("RadiusPerTick") > 0)
+        if (pCompound.getIntOr("RadiusPerTick", 0) > 0)
             this.radiusPerTick = pCompound.getFloatOr("RadiusPerTick", 0f);
-        if (pCompound.getInt("EffectDuration") > 0)
+        if (pCompound.getIntOr("EffectDuration", 0) > 0)
             this.effectDuration = pCompound.getIntOr("EffectDuration", 0);
-        if (pCompound.getInt("Delay") > 0)
+        if (pCompound.getIntOr("Delay", 0) > 0)
             setDelay(pCompound.getIntOr("Delay", 0));
         this.setDamage(pCompound.getFloatOr("Damage", 0f));
         if (pCompound.getBooleanOr("Circular", false))

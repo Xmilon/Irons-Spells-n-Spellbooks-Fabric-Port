@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.spells.firefly_swarm;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -179,7 +183,7 @@ public class FireflySwarmProjectile extends PathfinderMob implements AntiMagicSu
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag pCompound) {
+    public void addAdditionalSaveData(ValueOutput pCompound) {
         super.addAdditionalSaveData(pCompound);
         if (this.targetUUID != null) {
             pCompound.store("Target", net.minecraft.core.UUIDUtil.CODEC, this.targetUUID);
@@ -191,7 +195,7 @@ public class FireflySwarmProjectile extends PathfinderMob implements AntiMagicSu
         pCompound.putFloat("Damage", this.damage);
     }
 
-    public void readAdditionalSaveData(CompoundTag pCompound) {
+    public void readAdditionalSaveData(ValueInput pCompound) {
         if (pCompound.contains("Target")) {
             this.targetUUID = pCompound.read("Target", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
         }

@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.spells.summoned_weapons;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import com.geckolib.animation.object.PlayState;
 import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.animation.RawAnimation;
@@ -200,13 +204,13 @@ public abstract class SummonedWeaponEntity extends AbstractSpellCastingMob imple
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag compoundTag) {
+    public void readAdditionalSaveData(ValueInput compoundTag) {
         super.readAdditionalSaveData(compoundTag);
         this.summonerUUID = OwnerHelper.deserializeOwner(compoundTag);
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag compoundTag) {
+    public void addAdditionalSaveData(ValueOutput compoundTag) {
         super.addAdditionalSaveData(compoundTag);
         OwnerHelper.serializeOwner(compoundTag, summonerUUID);
     }

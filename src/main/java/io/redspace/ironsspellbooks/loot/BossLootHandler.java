@@ -131,6 +131,14 @@ public class BossLootHandler {
         preparedDrops.clear();
     }
 
+    public void save(net.minecraft.world.level.storage.ValueOutput out, HolderLookup.Provider registries) {
+        io.redspace.ironsspellbooks.util.ValueIO.write(out, "boss_loot", tag -> save(tag, registries));
+    }
+
+    public void load(net.minecraft.world.level.storage.ValueInput in, HolderLookup.Provider registries) {
+        io.redspace.ironsspellbooks.util.ValueIO.read(in, "boss_loot", tag -> load(tag, registries));
+    }
+
     public void save(CompoundTag tag, HolderLookup.Provider registries) {
         ListTag participants = new ListTag();
         for (UUID participantId : participantIds) {

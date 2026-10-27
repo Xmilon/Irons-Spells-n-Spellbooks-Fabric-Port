@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.mobs.ice_spider;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -75,11 +79,11 @@ public class IceSpiderPartEntity extends PartEntity<IceSpiderEntity> implements 
      * (abstract) Protected helper method to read subclass entity data from NBT.
      */
     @Override
-    protected void readAdditionalSaveData(CompoundTag pCompound) {
+    protected void readAdditionalSaveData(ValueInput pCompound) {
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag pCompound) {
+    protected void addAdditionalSaveData(ValueOutput pCompound) {
     }
 
     @Override

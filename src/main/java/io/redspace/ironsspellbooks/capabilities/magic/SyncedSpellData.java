@@ -113,6 +113,14 @@ public class SyncedSpellData {
 //        }
 //    };
 
+    public void saveNBTData(net.minecraft.world.level.storage.ValueOutput out, HolderLookup.Provider provider) {
+        io.redspace.ironsspellbooks.util.ValueIO.write(out, "synced_spell_data", tag -> saveNBTData(tag, provider));
+    }
+
+    public void loadNBTData(net.minecraft.world.level.storage.ValueInput in, HolderLookup.Provider provider) {
+        io.redspace.ironsspellbooks.util.ValueIO.read(in, "synced_spell_data", tag -> loadNBTData(tag, provider));
+    }
+
     public void saveNBTData(CompoundTag compound, HolderLookup.Provider provider) {
         compound.putBoolean("isCasting", this.isCasting);
         compound.putString("castingSpellId", this.castingSpellId);

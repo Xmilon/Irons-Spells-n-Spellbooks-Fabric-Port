@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.spells.blood_needle;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
@@ -67,7 +71,7 @@ public class BloodNeedle extends AbstractMagicProjectile {
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag tag) {
+    protected void addAdditionalSaveData(ValueOutput tag) {
         super.addAdditionalSaveData(tag);
         tag.putFloat("zRot", getZRot());
         if (getScale() != 1)
@@ -75,7 +79,7 @@ public class BloodNeedle extends AbstractMagicProjectile {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag tag) {
+    protected void readAdditionalSaveData(ValueInput tag) {
         super.readAdditionalSaveData(tag);
         setZRot(tag.getFloatOr("zRot", 0f));
         if (tag.contains("Scale"))

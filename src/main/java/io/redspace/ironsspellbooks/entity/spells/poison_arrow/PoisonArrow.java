@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.spells.poison_arrow;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -130,7 +134,7 @@ public class PoisonArrow extends AbstractMagicProjectile {
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag tag) {
+    protected void addAdditionalSaveData(ValueOutput tag) {
         super.addAdditionalSaveData(tag);
         tag.putBoolean("inGround", this.inGround);
         tag.putBoolean("hasEmittedPoison", hasEmittedPoison);
@@ -150,7 +154,7 @@ public class PoisonArrow extends AbstractMagicProjectile {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag tag) {
+    protected void readAdditionalSaveData(ValueInput tag) {
         super.readAdditionalSaveData(tag);
         this.inGround = tag.getBooleanOr("inGround", false);
         this.hasEmittedPoison = tag.getBooleanOr("hasEmittedPoison", false);

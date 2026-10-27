@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.spells.magma_ball;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
@@ -97,7 +101,7 @@ public class FireBomb extends AbstractMagicProjectile {
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag tag) {
+    protected void addAdditionalSaveData(ValueOutput tag) {
         super.addAdditionalSaveData(tag);
         tag.putFloat("AoeDamage", aoeDamage);
 
@@ -105,7 +109,7 @@ public class FireBomb extends AbstractMagicProjectile {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag tag) {
+    protected void readAdditionalSaveData(ValueInput tag) {
         super.readAdditionalSaveData(tag);
         this.aoeDamage = tag.getFloatOr("AoeDamage", 0f);
 

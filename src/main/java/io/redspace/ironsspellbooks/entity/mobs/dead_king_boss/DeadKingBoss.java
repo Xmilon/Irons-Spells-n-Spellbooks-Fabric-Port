@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import com.geckolib.animation.object.PlayState;
 import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.animation.RawAnimation;
@@ -537,7 +541,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag pCompound) {
+    public void addAdditionalSaveData(ValueOutput pCompound) {
         super.addAdditionalSaveData(pCompound);
         pCompound.putInt("phase", getPhase());
         pCompound.putInt("playerScale", playerScale);
@@ -551,20 +555,20 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag pCompound) {
+    public void readAdditionalSaveData(ValueInput pCompound) {
         super.readAdditionalSaveData(pCompound);
         if (this.hasCustomName()) {
             this.bossEvent.setName(this.getDisplayName());
         }
-        setPhase(pCompound.getInt("phase"));
+        setPhase(pCompound.getIntOr("phase", 0));
         if (isPhase(Phases.FinalPhase)) {
             setFinalPhaseGoals();
         }
-        entityData.set(IS_OMINOUS, pCompound.getBoolean("ominous"));
+        entityData.set(IS_OMINOUS, pCompound.getBooleanOr("ominous", false));
         this.playerScale = pCompound.getIntOr("playerScale", 0);
         bossLoot.load(pCompound, this.registryAccess());
         if (pCompound.contains("SpawnPos")) {
-            this.spawnPos = NBT.readVec3(pCompound.getCompoundOrEmpty("SpawnPos"));
+            this.spawnPos = NBT.readVec3(pCompound.childOrEmpty("SpawnPos"));
         } else {
             this.spawnPos = null;
         }
@@ -691,7 +695,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     }
 
     @Override
-    public void load(CompoundTag compound) {
+    public void load(ValueInput compound) {
         super.load(compound);
         if (!level.isClientSide()) {
             createBossEvent();

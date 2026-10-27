@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.spells.void_tentacle;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -150,7 +154,7 @@ public class VoidTentacle extends LivingEntity implements GeoEntity, AntiMagicSu
     /**
      * (abstract) Protected helper method to read subclass entity data from NBT.
      */
-    public void readAdditionalSaveData(CompoundTag pCompound) {
+    public void readAdditionalSaveData(ValueInput pCompound) {
         super.readAdditionalSaveData(pCompound);
         this.age = pCompound.getIntOr("Age", 0);
         if (pCompound.contains("Owner")) {
@@ -173,7 +177,7 @@ public class VoidTentacle extends LivingEntity implements GeoEntity, AntiMagicSu
 
     }
 
-    public void addAdditionalSaveData(CompoundTag pCompound) {
+    public void addAdditionalSaveData(ValueOutput pCompound) {
         super.addAdditionalSaveData(pCompound);
         pCompound.putInt("Age", this.age);
         if (this.ownerUUID != null) {

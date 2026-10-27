@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.spells.ice_tomb;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import io.redspace.ironsspellbooks.api.events.SpellHealEvent;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
@@ -207,7 +211,7 @@ public class IceTombEntity extends Entity implements PreventDismount, AntiMagicS
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compound) {
+    protected void addAdditionalSaveData(ValueOutput compound) {
         if (this.ownerUUID != null) {
             compound.store("Owner", net.minecraft.core.UUIDUtil.CODEC, this.ownerUUID);
         }
@@ -228,7 +232,7 @@ public class IceTombEntity extends Entity implements PreventDismount, AntiMagicS
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compound) {
+    protected void readAdditionalSaveData(ValueInput compound) {
         if (compound.contains("Owner")) {
             this.ownerUUID = compound.read("Owner", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
             this.cachedOwner = null;

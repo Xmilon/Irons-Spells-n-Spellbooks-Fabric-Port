@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.spells.black_hole;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -108,7 +112,7 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
         return this.getEntityData().get(DATA_RADIUS);
     }
 
-    protected void addAdditionalSaveData(CompoundTag pCompound) {
+    protected void addAdditionalSaveData(ValueOutput pCompound) {
         pCompound.putFloat("Radius", this.getRadius());
         pCompound.putInt("Age", this.tickCount);
         pCompound.putFloat("Damage", this.getDamage());
@@ -117,13 +121,13 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
         super.addAdditionalSaveData(pCompound);
     }
 
-    protected void readAdditionalSaveData(CompoundTag pCompound) {
+    protected void readAdditionalSaveData(ValueInput pCompound) {
         this.tickCount = pCompound.getIntOr("Age", 0);
         this.damage = pCompound.getFloatOr("Damage", 0f);
         this.duration = pCompound.getIntOr("Duration", 0);
         if (damage == 0)
             damage = 1;
-        if (pCompound.getInt("Radius") > 0)
+        if (pCompound.getIntOr("Radius", 0) > 0)
             this.setRadius(pCompound.getFloatOr("Radius", 0f));
 
         super.readAdditionalSaveData(pCompound);

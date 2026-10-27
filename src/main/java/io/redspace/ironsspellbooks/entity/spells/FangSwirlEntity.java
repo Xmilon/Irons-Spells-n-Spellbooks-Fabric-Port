@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.util.NBT;
 import net.minecraft.core.BlockPos;
@@ -98,15 +102,15 @@ public class FangSwirlEntity extends AoeEntity {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compound) {
+    protected void readAdditionalSaveData(ValueInput compound) {
         super.readAdditionalSaveData(compound);
         if (compound.contains("startPos")) {
-            this.startPos = NBT.readVec3(compound.getCompoundOrEmpty("startPos"));
+            this.startPos = NBT.readVec3(compound.childOrEmpty("startPos"));
         }
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compound) {
+    protected void addAdditionalSaveData(ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.put("startPos", NBT.writeVec3Pos(startPos));
     }

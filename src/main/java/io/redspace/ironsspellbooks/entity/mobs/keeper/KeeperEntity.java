@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.mobs.keeper;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import com.geckolib.animation.object.PlayState;
 import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.animation.RawAnimation;
@@ -332,7 +336,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag pCompound) {
+    public void addAdditionalSaveData(ValueOutput pCompound) {
         super.addAdditionalSaveData(pCompound);
         if (isSummoned()) {
             pCompound.putBoolean("summoned", true);
@@ -343,7 +347,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag pCompound) {
+    public void readAdditionalSaveData(ValueInput pCompound) {
         super.readAdditionalSaveData(pCompound);
         if (pCompound.getBooleanOr("summoned", false)) {
             setIsSummoned();

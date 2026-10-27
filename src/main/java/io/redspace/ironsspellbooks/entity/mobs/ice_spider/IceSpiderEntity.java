@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.mobs.ice_spider;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import com.geckolib.animation.object.PlayState;
 import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.animation.RawAnimation;
@@ -775,7 +779,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     }
 
     @Override
-    public void addAdditionalSaveData(CompoundTag pCompound) {
+    public void addAdditionalSaveData(ValueOutput pCompound) {
         super.addAdditionalSaveData(pCompound);
         if (getGrappleTargetUUID() != null) {
             pCompound.putInt("grappleTime", grappleTime);
@@ -787,7 +791,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     }
 
     @Override
-    public void readAdditionalSaveData(CompoundTag pCompound) {
+    public void readAdditionalSaveData(ValueInput pCompound) {
         super.readAdditionalSaveData(pCompound);
         if (pCompound.contains("grappleTarget")) {
             setGrappleTargetUUID(pCompound.read("grappleTarget", net.minecraft.core.UUIDUtil.CODEC).orElse(null));

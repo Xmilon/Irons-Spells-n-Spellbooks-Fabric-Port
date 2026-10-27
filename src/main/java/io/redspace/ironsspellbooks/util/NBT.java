@@ -47,6 +47,10 @@ public class NBT {
         return PortalPos.of(resourceKey, pos, rotation);
     }
 
+    public static Vec3 readVec3(net.minecraft.world.level.storage.ValueInput in) {
+        return new Vec3(in.getDoubleOr("X", 0d), in.getDoubleOr("Y", 0d), in.getDoubleOr("Z", 0d));
+    }
+
     public static Vec3 readVec3(CompoundTag pTag) {
         return new Vec3(pTag.getDoubleOr("X", 0d), pTag.getDoubleOr("Y", 0d), pTag.getDoubleOr("Z", 0d));
     }

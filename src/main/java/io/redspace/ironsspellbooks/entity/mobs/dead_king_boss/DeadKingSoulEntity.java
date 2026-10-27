@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
@@ -141,14 +145,14 @@ public class DeadKingSoulEntity extends Entity implements AntiMagicSusceptible {
     }
 
     @Override
-    protected void readAdditionalSaveData(CompoundTag compound) {
+    protected void readAdditionalSaveData(ValueInput compound) {
         if (compound.contains("RespawnPos")) {
-            this.setRespawnPos(NBT.readVec3(compound.getCompoundOrEmpty("RespawnPos")));
+            this.setRespawnPos(NBT.readVec3(compound.childOrEmpty("RespawnPos")));
         }
     }
 
     @Override
-    protected void addAdditionalSaveData(CompoundTag compound) {
+    protected void addAdditionalSaveData(ValueOutput compound) {
         if(!getRespawnPos().equals(Vec3.ZERO)) {
             compound.put("RespawnPos", NBT.writeVec3Pos(getRespawnPos()));
         }

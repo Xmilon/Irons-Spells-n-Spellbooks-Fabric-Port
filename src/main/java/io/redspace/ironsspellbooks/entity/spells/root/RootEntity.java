@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.spells.root;
 
+import net.minecraft.world.level.storage.ValueOutput;
+
+import net.minecraft.world.level.storage.ValueInput;
+
 import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.AntiMagicSusceptible;
@@ -200,7 +204,7 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
         this.discard();
     }
 
-    public void addAdditionalSaveData(CompoundTag pCompound) {
+    public void addAdditionalSaveData(ValueOutput pCompound) {
         super.addAdditionalSaveData(pCompound);
         pCompound.putInt("Age", this.tickCount);
         if (this.ownerUUID != null) {
@@ -212,7 +216,7 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
     /**
      * (abstract) Protected helper method to read subclass entity data from NBT.
      */
-    public void readAdditionalSaveData(CompoundTag pCompound) {
+    public void readAdditionalSaveData(ValueInput pCompound) {
         super.readAdditionalSaveData(pCompound);
         this.tickCount = pCompound.getIntOr("Age", 0);
         if (pCompound.contains("Owner")) {
