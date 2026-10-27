@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.thrown_spear;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.entity.spells.lightning_lance.LightningLanceRenderer;
 import net.minecraft.client.renderer.item.ItemModelResolver;

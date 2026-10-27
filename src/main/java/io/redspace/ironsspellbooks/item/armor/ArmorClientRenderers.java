@@ -15,7 +15,7 @@ public final class ArmorClientRenderers {
     private ArmorClientRenderers() {
     }
 
-    public static GeoArmorRenderer<?> create(ExtendedArmorItem item) {
+    public static GeoArmorRenderer<?, ?> create(ExtendedArmorItem item) {
         return switch (item.getClass().getSimpleName()) {
             case "ArchevokerArmorItem" -> new GenericCustomArmorRenderer<>(new ArchevokerArmorModel());
             case "BootsOfSpeedArmorItem" -> new GenericCustomArmorRenderer<>(new BootsOfSpeedArmorModel());

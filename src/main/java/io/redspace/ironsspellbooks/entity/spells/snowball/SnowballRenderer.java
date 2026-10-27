@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.snowball;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.entity.spells.AbstractMagicProjectile;
 import io.redspace.ironsspellbooks.entity.spells.acid_orb.AcidOrbRenderer;

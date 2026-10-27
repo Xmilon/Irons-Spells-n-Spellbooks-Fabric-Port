@@ -4,7 +4,6 @@ import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import com.geckolib.renderer.base.RenderPassInfo;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.render.RenderHelper;
 import net.minecraft.client.renderer.SubmitNodeCollector;

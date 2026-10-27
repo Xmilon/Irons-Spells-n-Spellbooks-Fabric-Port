@@ -83,3 +83,11 @@ Open in the render phase: every GeckoLib 5 renderer, model and layer (`GeoEntity
 renderers, particles (`MultiBufferSource`/`LightTexture` users), item render hooks and the
 render mixins. The heartstop vignette alpha-blends instead of adding until a GUI additive
 pipeline exists.
+
+GeckoLib 5 status: animation API, model resources, procedural bone animation (`TransformStack` over
+`BoneSnapshots`), `IronsGeoEntityRenderer`, the Geo render layers, `HumanoidRenderer`, the Dead King,
+Keeper and Tyros renderers, and the armor renderers are ported. Marked `unverified` in code: bone position
+listeners (Tyros particles), per-bone layer poses (eyes, charge, flame), and armor async-bone conventions.
+Known gaps: re-draw layers (swirl, ghost, soul) cannot tint per pass; the hard-coded mob cape layer and the
+Summoned Skeleton/Zombie vanilla-fallback renderers are not ported; player render layers (`*Layer.Vanilla`)
+and the GeckoLib armor item registration (`ExtendedArmorItem`) wait for the item/API phase.

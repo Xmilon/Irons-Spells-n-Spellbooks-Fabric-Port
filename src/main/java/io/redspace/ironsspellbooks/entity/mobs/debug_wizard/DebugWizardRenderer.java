@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.debug_wizard;
 
+import com.geckolib.renderer.base.GeoRenderState;
+
 
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMobModel;
@@ -17,7 +19,7 @@ public class DebugWizardRenderer extends AbstractSpellCastingMobRenderer {
     public DebugWizardRenderer(EntityRendererProvider.Context context) {
         super(context, new AbstractSpellCastingMobModel() {
             @Override
-            public Identifier getTextureResource(AbstractSpellCastingMob mob) {
+            public Identifier getTextureResource(GeoRenderState state) {
                 return AbstractSpellCastingMob.textureResource;
             }
         });

@@ -1,12 +1,12 @@
 package io.redspace.ironsspellbooks.entity.mobs.ice_spider;
 
+import com.geckolib.renderer.base.GeoRenderState;
+
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import com.geckolib.renderer.base.RenderPassInfo;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
@@ -26,11 +26,11 @@ public class IceSpiderRenderer extends IronsGeoEntityRenderer<IceSpiderEntity> {
         float partialTick = info.renderState().getGeckolibData(PARTIAL_TICK);
         super.adjustRenderPose(info);
         Vec3 normal = Utils.lerp(partialTick, entity.lastNormal, entity.normal);
-        poseStack.mulPose(Utils.rotationBetweenVectors(new Vector3f(0, 1, 0), cast(normal)));
+        poseStack.rotate(Utils.rotationBetweenVectors(new Vector3f(0, 1, 0), cast(normal)));
     }
 
     @Override
-    protected float getDeathMaxRotation(IceSpiderEntity animatable) {
+    protected float getDeathMaxRotation(GeoRenderState state) {
         return 180f;
     }
 
