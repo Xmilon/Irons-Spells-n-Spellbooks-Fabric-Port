@@ -16,13 +16,19 @@
 
 ## Requirements
 
-Minecraft 1.21.1 (Fabric)
+Minecraft 26.3 (Fabric), Java 25, Fabric Loader 0.19.5 or newer
 
-- Fabric API: [Modrinth](https://modrinth.com/mod/fabric-api) | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/fabric-api)
-- GeckoLib: [Modrinth](https://modrinth.com/mod/geckolib) | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/geckolib)
-- Player Animation Library: [Modrinth](https://modrinth.com/mod/playeranimator) | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/playeranimator)
-- Accessories: [Modrinth](https://modrinth.com/mod/accessories) | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/accessories)
-- owo-lib: [Modrinth](https://modrinth.com/mod/owo-lib) | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/owo-lib)
+This branch is a work-in-progress port and does not run yet (see [PORTING.md](PORTING.md)). Official builds of some
+dependencies do not exist for 26.3, so the Accessories and owo-lib links below are **unofficial community ports**.
+The exact artifacts this branch is built and tested against (with SHA-256 hashes) are listed in `PORTING.md`.
+
+- Fabric API 0.162.0+26.3: [Modrinth](https://modrinth.com/mod/fabric-api/version/0.162.0+26.3) | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/fabric-api)
+- GeckoLib 5.5.7: [Modrinth](https://modrinth.com/mod/geckolib/version/kSxHvs99) | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/geckolib)
+- Player Animation Library 1.2.8+mc.26.3 (beta): [Modrinth](https://modrinth.com/mod/player-animation-library/version/xJ30QmpE)
+- Accessories 1.4.3-beta (unofficial 26.3 port): [GitHub release](https://github.com/roggy666/accessories-26.3/releases/tag/Fabric-26.3) | upstream: [Modrinth](https://modrinth.com/mod/accessories) | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/accessories)
+- owo-lib 0.13.1+26.3 (unofficial 26.3 port): [GitHub release](https://github.com/roggy666/owo-lib-26.3/releases/tag/Fabric-26.3) | upstream: [Modrinth](https://modrinth.com/mod/owo-lib) | [CurseForge](https://www.curseforge.com/minecraft/mc-mods/owo-lib)
+
+Accessories and owo-lib are bundled as nested mods in the built jar; installing a compatible separate copy is also supported.
 
 ## General
 
