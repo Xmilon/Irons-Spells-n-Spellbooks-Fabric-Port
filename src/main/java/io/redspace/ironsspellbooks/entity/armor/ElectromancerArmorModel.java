@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.armor;
 
+import com.geckolib.renderer.base.GeoRenderState;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.ElectromancerArmorItem;
 import net.minecraft.resources.Identifier;
@@ -12,12 +14,12 @@ public class ElectromancerArmorModel extends DefaultedItemGeoModel<Electromancer
     }
 
     @Override
-    public Identifier getModelResource(ElectromancerArmorItem object) {
+    public Identifier getModelResource(GeoRenderState state) {
         return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/electromancer_armor.geo.json");
     }
 
     @Override
-    public Identifier getTextureResource(ElectromancerArmorItem object) {
+    public Identifier getTextureResource(GeoRenderState state) {
         return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/electromancer.png");
     }
 

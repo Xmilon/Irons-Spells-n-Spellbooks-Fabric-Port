@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.wisp;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
@@ -8,9 +10,9 @@ import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
-import com.geckolib.renderer.GeoEntityRenderer;
+import io.redspace.ironsspellbooks.render.IronsGeoEntityRenderer;
 
-public class WispRenderer extends GeoEntityRenderer<WispEntity> {
+public class WispRenderer extends GeoEntityRenderer<WispEntity, EntityRenderState> {
     public static final Identifier textureLocation = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/wisp/wisp.png");
 
     public WispRenderer(EntityRendererProvider.Context renderManager) {
@@ -19,12 +21,7 @@ public class WispRenderer extends GeoEntityRenderer<WispEntity> {
     }
 
     @Override
-    public Identifier getTextureLocation(WispEntity animatable) {
-        return textureLocation;
-    }
-
-    @Override
-    public RenderType getRenderType(WispEntity animatable, Identifier texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
+    public RenderType getRenderType(EntityRenderState state, Identifier texture) {
         return RenderTypes.energySwirl(texture, 0, 0);
     }
 }

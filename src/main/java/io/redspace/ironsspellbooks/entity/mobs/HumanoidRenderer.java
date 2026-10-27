@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
@@ -23,7 +25,7 @@ import net.minecraft.world.item.SwordItem;
 import com.geckolib.animatable.GeoAnimatable;
 import com.geckolib.cache.model.GeoBone;
 import com.geckolib.model.GeoModel;
-import com.geckolib.renderer.GeoEntityRenderer;
+import io.redspace.ironsspellbooks.render.IronsGeoEntityRenderer;
 import com.geckolib.renderer.layer.builtin.BlockAndItemGeoLayer;
 import com.geckolib.renderer.layer.builtin.ItemArmorGeoLayer;
 import com.geckolib.util.ClientUtil;
@@ -32,7 +34,7 @@ import com.geckolib.util.RenderUtil;
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
 
-public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRenderer<T> {
+public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends IronsGeoEntityRenderer<T> {
     private static final String LEFT_HAND = DefaultBipedBoneIdents.LEFT_HAND_BONE_IDENT;
     private static final String RIGHT_HAND = DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT;
     private static final String LEFT_BOOT = DefaultBipedBoneIdents.LEFT_FOOT_ARMOR_BONE_IDENT;
@@ -212,7 +214,9 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
     }
 
     @Override
-    public @org.jetbrains.annotations.Nullable RenderType getRenderType(T animatable, Identifier texture, @org.jetbrains.annotations.Nullable MultiBufferSource bufferSource, float partialTick) {
+    public RenderType getRenderType(EntityRenderState state, Identifier texture) {
+        var animatable = entity(state);
+        float partialTick = state.getGeckolibData(PARTIAL_TICK);
         return animatable.isInvisible() ? RenderType.itemEntityTranslucentCull(texture) : RenderType.entityCutoutNoCull(texture, false);
     }
 }

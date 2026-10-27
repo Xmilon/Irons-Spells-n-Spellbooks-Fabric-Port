@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.keeper;
 
+import com.geckolib.cache.model.GeoBone;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.redspace.ironsspellbooks.IronsSpellbooks;

@@ -1,5 +1,8 @@
 package io.redspace.ironsspellbooks.entity.spells.summoned_weapons;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import com.geckolib.renderer.base.RenderPassInfo;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.redspace.ironsspellbooks.render.RenderHelper;
@@ -11,29 +14,33 @@ import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 import com.geckolib.cache.model.BakedGeoModel;
 import com.geckolib.model.GeoModel;
-import com.geckolib.renderer.GeoEntityRenderer;
-import com.geckolib.util.Color;
+import io.redspace.ironsspellbooks.render.IronsGeoEntityRenderer;
 
 import java.util.function.Supplier;
 
-public class SummonedSwordRenderer extends GeoEntityRenderer<SummonedWeaponEntity> {
+public class SummonedSwordRenderer extends IronsGeoEntityRenderer<SummonedWeaponEntity> {
     public SummonedSwordRenderer(EntityRendererProvider.Context renderManager, Supplier<GeoModel<SummonedWeaponEntity>> model) {
         super(renderManager, model.get());
     }
 
     @Override
-    public void preRender(PoseStack poseStack, SummonedWeaponEntity entity, BakedGeoModel model, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, boolean isReRender, float partialTicks, int packedLight, int packedOverlay, int colour) {
-        super.preRender(poseStack, entity, model, bufferSource, buffer, isReRender, partialTicks, packedLight, packedOverlay, colour);
+    public void adjustRenderPose(RenderPassInfo<EntityRenderState> info) {
+        var entity = entity(info);
+        var poseStack = info.poseStack();
+        float partialTicks = info.renderState().getGeckolibData(PARTIAL_TICK);
+        super.adjustRenderPose(info);
         poseStack.translate(0, entity.getBbHeight() * .5f, 0);
     }
 
     @Override
-    public @Nullable RenderType getRenderType(SummonedWeaponEntity animatable, Identifier texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
+    public RenderType getRenderType(EntityRenderState state, Identifier texture) {
+        var animatable = entity(state);
+        float partialTick = state.getGeckolibData(PARTIAL_TICK);
         return RenderHelper.CustomerRenderType.magic(texture);
     }
 
     @Override
-    public Color getRenderColor(SummonedWeaponEntity animatable, float partialTick, int packedLight) {
-        return Color.LIGHT_GRAY;
+    public int getRenderColor(SummonedWeaponEntity animatable, Void relatedObject, float partialTick) {
+        return 0xFFC0C0C0;
     }
 }

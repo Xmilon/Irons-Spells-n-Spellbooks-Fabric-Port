@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.armor;
 
+import com.geckolib.renderer.base.GeoRenderState;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.ShadowwalkerArmorItem;
 import net.minecraft.resources.Identifier;
@@ -13,12 +15,12 @@ public class ShadowwalkerArmorModel extends GeoModel<ShadowwalkerArmorItem> {
     }
 
     @Override
-    public Identifier getModelResource(ShadowwalkerArmorItem object) {
+    public Identifier getModelResource(GeoRenderState state) {
         return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/shadowwalker_armor.geo.json");
     }
 
     @Override
-    public Identifier getTextureResource(ShadowwalkerArmorItem object) {
+    public Identifier getTextureResource(GeoRenderState state) {
         return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/shadowwalker.png");
     }
 

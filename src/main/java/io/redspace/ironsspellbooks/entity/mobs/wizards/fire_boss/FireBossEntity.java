@@ -89,8 +89,8 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import net.neoforged.neoforge.network.PacketDistributor;
 import com.geckolib.animatable.manager.AnimatableManager;
-import com.geckolib.cache.animation.AnimationController;
-import com.geckolib.cache.animation.AnimationState;
+import com.geckolib.animation.AnimationController;
+import com.geckolib.animation.state.AnimationTest;
 import com.geckolib.animation.object.PlayState;
 import com.geckolib.animation.RawAnimation;
 
@@ -936,7 +936,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     RawAnimation animationToPlay = null;
-    private final AnimationController<FireBossEntity> meleeController = new AnimationController<>(this, "melee_animations", 0, this::predicate);
+    private final AnimationController<FireBossEntity> meleeController = new AnimationController<>("melee_animations", 0, this::predicate);
 
     @Override
     public void playAnimation(String animationId) {
@@ -953,8 +953,8 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         return !stopHeadAnimation;
     }
 
-    private PlayState predicate(AnimationState<FireBossEntity> animationEvent) {
-        var controller = animationEvent.getController();
+    private PlayState predicate(AnimationTest<FireBossEntity> animationEvent) {
+        var controller = animationEvent.controller();
 
         if (this.animationToPlay != null) {
             controller.forceAnimationReset();

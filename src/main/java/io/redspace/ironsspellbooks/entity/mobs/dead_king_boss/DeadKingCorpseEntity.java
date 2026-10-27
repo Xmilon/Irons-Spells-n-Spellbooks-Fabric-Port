@@ -1,5 +1,10 @@
 package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 
+import com.geckolib.animation.object.PlayState;
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.animation.RawAnimation;
+import com.geckolib.animation.AnimationController;
+
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
@@ -182,14 +187,14 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
-        controllerRegistrar.add(new AnimationController(this, "idle", 0, this::idlePredicate));
+        controllerRegistrar.add(new AnimationController<>("idle", 0, this::idlePredicate));
     }
 
     private PlayState idlePredicate(AnimationState event) {
         if (triggered()) {
-            event.getController().setAnimation(rise);
+            event.controller().setAnimation(rise);
         } else {
-            event.getController().setAnimation(idle);
+            event.controller().setAnimation(idle);
         }
         return PlayState.CONTINUE;
     }

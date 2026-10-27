@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.root;
 
+import com.geckolib.renderer.base.GeoRenderState;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.resources.Identifier;
 import com.geckolib.model.GeoModel;
@@ -13,12 +15,12 @@ public class RootModel extends GeoModel<RootEntity> {
     }
 
     @Override
-    public Identifier getTextureResource(RootEntity object) {
+    public Identifier getTextureResource(GeoRenderState state) {
         return TEXTURE;
     }
 
     @Override
-    public Identifier getModelResource(RootEntity object) {
+    public Identifier getModelResource(GeoRenderState state) {
         return MODEL;
     }
 

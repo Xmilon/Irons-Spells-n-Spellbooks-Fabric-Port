@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.scapegoat;
 
+import com.geckolib.renderer.base.GeoRenderState;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.TransformStack;
 import net.minecraft.resources.Identifier;
@@ -9,7 +11,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.WalkAnimationState;
 import org.joml.Vector2f;
 import com.geckolib.animatable.GeoReplacedEntity;
-import com.geckolib.cache.animation.AnimationState;
+import com.geckolib.animation.state.AnimationTest;
 import com.geckolib.constant.DataTickets;
 import com.geckolib.model.DefaultedEntityGeoModel;
 
@@ -24,12 +26,12 @@ public class ScapegoatModel extends DefaultedEntityGeoModel<ScapegoatEntity> {
 
 
     @Override
-    public Identifier getTextureResource(ScapegoatEntity object) {
+    public Identifier getTextureResource(GeoRenderState state) {
         return TEXTURE;
     }
 
     @Override
-    public Identifier getModelResource(ScapegoatEntity object) {
+    public Identifier getModelResource(GeoRenderState state) {
         return MODEL;
     }
 
@@ -42,7 +44,7 @@ public class ScapegoatModel extends DefaultedEntityGeoModel<ScapegoatEntity> {
     protected TransformStack transformStack = new TransformStack();
 
     @Override
-    public void handleAnimations(ScapegoatEntity entity, long instanceId, AnimationState<ScapegoatEntity> animationState, float partialTick) {
+    public void handleAnimations(ScapegoatEntity entity, long instanceId, AnimationTest<ScapegoatEntity> animationState, float partialTick) {
         var manager = entity.getAnimatableInstanceCache().getManagerForId(instanceId);
         Double currentTick = animationState.getData(DataTickets.TICK);
         double currentFrameTime = entity instanceof Entity || entity instanceof GeoReplacedEntity ? currentTick + partialTick : currentTick - manager.getFirstTickTime();
@@ -56,7 +58,7 @@ public class ScapegoatModel extends DefaultedEntityGeoModel<ScapegoatEntity> {
     }
 
     @Override
-    public void setCustomAnimations(ScapegoatEntity entity, long instanceId, AnimationState<ScapegoatEntity> animationState) {
+    public void setCustomAnimations(ScapegoatEntity entity, long instanceId, AnimationTest<ScapegoatEntity> animationState) {
         super.setCustomAnimations(entity, instanceId, animationState);
         var partialTick = animationState.getPartialTick();
 

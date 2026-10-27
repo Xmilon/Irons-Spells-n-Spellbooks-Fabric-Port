@@ -1,5 +1,10 @@
 package io.redspace.ironsspellbooks.entity.mobs.keeper;
 
+import com.geckolib.animation.object.PlayState;
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.animation.RawAnimation;
+import com.geckolib.animation.AnimationController;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
@@ -47,7 +52,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
-import com.geckolib.cache.animation.AnimationState;
+import com.geckolib.animation.state.AnimationTest;
 import com.geckolib.animation.*;
 
 import javax.annotation.Nullable;
@@ -285,7 +290,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
         return super.isInvulnerableTo(pSource) || pSource.is(DamageTypeTags.IS_FALL);
     }
 
-    private final AnimationController<KeeperEntity> meleeController = new AnimationController<>(this, "keeper_animations", 0, this::predicate);
+    private final AnimationController<KeeperEntity> meleeController = new AnimationController<>("keeper_animations", 0, this::predicate);
     RawAnimation animationToPlay = null;
 
     @Override
@@ -298,8 +303,8 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
         }
     }
 
-    private PlayState predicate(AnimationState<KeeperEntity> animationEvent) {
-        var controller = animationEvent.getController();
+    private PlayState predicate(AnimationTest<KeeperEntity> animationEvent) {
+        var controller = animationEvent.controller();
 
         if (this.animationToPlay != null) {
             controller.forceAnimationReset();

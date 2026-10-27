@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.api.util;
 
+import com.geckolib.animation.object.LoopType;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.resources.Identifier;
 import com.geckolib.cache.animation.Animation;

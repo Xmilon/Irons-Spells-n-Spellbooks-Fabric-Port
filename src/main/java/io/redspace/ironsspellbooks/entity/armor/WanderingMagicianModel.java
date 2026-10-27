@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.armor;
 
+import com.geckolib.renderer.base.GeoRenderState;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.WanderingMagicianArmorItem;
 import net.minecraft.resources.Identifier;
@@ -13,12 +15,12 @@ public class WanderingMagicianModel extends GeoModel<WanderingMagicianArmorItem>
     }
 
     @Override
-    public Identifier getModelResource(WanderingMagicianArmorItem object) {
+    public Identifier getModelResource(GeoRenderState state) {
         return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/wandering_magician_armor.geo.json");
     }
 
     @Override
-    public Identifier getTextureResource(WanderingMagicianArmorItem object) {
+    public Identifier getTextureResource(GeoRenderState state) {
         return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/wandering_magician.png");
     }
 

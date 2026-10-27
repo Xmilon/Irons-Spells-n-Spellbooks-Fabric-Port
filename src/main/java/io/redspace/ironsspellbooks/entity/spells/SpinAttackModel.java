@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
+import com.geckolib.renderer.base.GeoRenderState;
+
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
@@ -30,7 +32,7 @@ public class SpinAttackModel extends GeoModel<AbstractSpellCastingMob> {
     }
 
     @Override
-    public Identifier getModelResource(AbstractSpellCastingMob object) {
+    public Identifier getModelResource(GeoRenderState state) {
         return MODEL;
     }
 

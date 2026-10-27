@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.necromancer;
 
+import com.geckolib.renderer.base.GeoRenderState;
+
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
@@ -11,12 +13,14 @@ public class NecromancerModel extends AbstractSpellCastingMobModel {
     private static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/skeleton_mob.geo.json");
 
     @Override
-    public Identifier getTextureResource(AbstractSpellCastingMob object) {
+    public Identifier getTextureResource(GeoRenderState state) {
+        var object = mob(state);
         return TEXTURE;
     }
 
     @Override
-    public Identifier getModelResource(AbstractSpellCastingMob object) {
+    public Identifier getModelResource(GeoRenderState state) {
+        var object = mob(state);
         return MODEL;
     }
 }

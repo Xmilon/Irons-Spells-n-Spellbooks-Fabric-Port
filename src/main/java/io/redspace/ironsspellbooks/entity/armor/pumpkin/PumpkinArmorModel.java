@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.armor.pumpkin;
 
+import com.geckolib.renderer.base.GeoRenderState;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.PumpkinArmorItem;
 import net.minecraft.resources.Identifier;
@@ -13,12 +15,12 @@ public class PumpkinArmorModel extends GeoModel<PumpkinArmorItem> {
     }
 
     @Override
-    public Identifier getModelResource(PumpkinArmorItem object) {
+    public Identifier getModelResource(GeoRenderState state) {
         return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/pumpkin_armor.geo.json");
     }
 
     @Override
-    public Identifier getTextureResource(PumpkinArmorItem object) {
+    public Identifier getTextureResource(GeoRenderState state) {
         return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/pumpkin.png");
     }
 

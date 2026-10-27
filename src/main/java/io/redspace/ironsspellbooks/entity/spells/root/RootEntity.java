@@ -26,7 +26,7 @@ import org.jetbrains.annotations.NotNull;
 import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
 import com.geckolib.animatable.manager.AnimatableManager;
-import com.geckolib.cache.animation.AnimationController;
+import com.geckolib.animation.AnimationController;
 import com.geckolib.animation.object.PlayState;
 import com.geckolib.animation.RawAnimation;
 import com.geckolib.util.GeckoLibUtil;
@@ -320,7 +320,7 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
     private boolean played = false;
 
     private PlayState animationPredicate(com.geckolib.cache.animation.AnimationState event) {
-        var controller = event.getController();
+        var controller = event.controller();
 
         if (!played && controller.getAnimationState() == AnimationController.State.STOPPED) {
             controller.forceAnimationReset();
@@ -333,7 +333,7 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
 
     private final RawAnimation ANIMATION = RawAnimation.begin().thenPlay("emerge");
 
-    private final AnimationController controller = new AnimationController(this, "root_controller", 0, this::animationPredicate);
+    private final AnimationController controller = new AnimationController<>("root_controller", 0, this::animationPredicate);
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {

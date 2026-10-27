@@ -1,5 +1,8 @@
 package io.redspace.ironsspellbooks.entity.spells.root;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import com.geckolib.renderer.base.RenderPassInfo;
+
 
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
@@ -16,13 +19,16 @@ public class RootRenderer extends GeoLivingEntityRenderer<RootEntity> {
     }
 
     @Override
-    public void preRender(PoseStack poseStack, RootEntity animatable, BakedGeoModel model, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
+    public void adjustRenderPose(RenderPassInfo<EntityRenderState> info) {
+        var animatable = entity(info);
+        var poseStack = info.poseStack();
+        float partialTick = info.renderState().getGeckolibData(PARTIAL_TICK);
         var rooted = animatable.getFirstPassenger();
 
         if (rooted != null) {
             float scale = rooted.getBbWidth() / 0.6f; //.6 is the default player bb width
             poseStack.scale(scale, scale, scale);
         }
-        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
+        super.adjustRenderPose(info);
     }
 }

@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.armor;
 
+import com.geckolib.renderer.base.GeoRenderState;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.GoldCrownArmorItem;
 import net.minecraft.resources.Identifier;
@@ -13,12 +15,12 @@ public class GoldCrownModel extends GeoModel<GoldCrownArmorItem> {
     }
 
     @Override
-    public Identifier getModelResource(GoldCrownArmorItem object) {
+    public Identifier getModelResource(GeoRenderState state) {
         return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/tarnished_armor.geo.json");
     }
 
     @Override
-    public Identifier getTextureResource(GoldCrownArmorItem object) {
+    public Identifier getTextureResource(GeoRenderState state) {
         return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/gold_crown.png");
     }
 

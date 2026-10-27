@@ -28,8 +28,8 @@ import org.jetbrains.annotations.NotNull;
 import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
 import com.geckolib.animatable.manager.AnimatableManager;
-import com.geckolib.cache.animation.AnimationController;
-import com.geckolib.cache.animation.AnimationState;
+import com.geckolib.animation.AnimationController;
+import com.geckolib.animation.state.AnimationTest;
 import com.geckolib.animation.object.PlayState;
 import com.geckolib.animation.RawAnimation;
 import com.geckolib.util.GeckoLibUtil;
@@ -243,8 +243,8 @@ public class ScapegoatEntity extends PathfinderMob implements AntiMagicSusceptib
      */
     RawAnimation animationToPlay = null;
 
-    private PlayState animationPredicate(AnimationState<ScapegoatEntity> event) {
-        var controller = event.getController();
+    private PlayState animationPredicate(AnimationTest<ScapegoatEntity> event) {
+        var controller = event.controller();
         if (this.animationToPlay != null) {
             controller.forceAnimationReset();
             controller.setAnimation(animationToPlay);
@@ -255,7 +255,7 @@ public class ScapegoatEntity extends PathfinderMob implements AntiMagicSusceptib
 
     private final RawAnimation ANIMATION = RawAnimation.begin().thenPlay("emerge");
 
-    private final AnimationController controller = new AnimationController(this, "controller", 0, this::animationPredicate);
+    private final AnimationController controller = new AnimationController<>("controller", 0, this::animationPredicate);
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {

@@ -1,5 +1,10 @@
 package io.redspace.ironsspellbooks.entity.mobs.ice_spider;
 
+import com.geckolib.animation.object.PlayState;
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.animation.RawAnimation;
+import com.geckolib.animation.AnimationController;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
@@ -54,7 +59,7 @@ import net.neoforged.neoforge.entity.PartEntity;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import org.joml.Vector3f;
 import com.geckolib.animation.*;
-import com.geckolib.cache.animation.AnimationState;
+import com.geckolib.animation.state.AnimationTest;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -796,15 +801,15 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     }
 
     RawAnimation animationToPlay = null;
-    private final AnimationController<IceSpiderEntity> meleeController = new AnimationController<>(this, "melee_animations", 0, this::predicate);
+    private final AnimationController<IceSpiderEntity> meleeController = new AnimationController<>("melee_animations", 0, this::predicate);
 
     @Override
     public void playAnimation(String animationId) {
         animationToPlay = RawAnimation.begin().thenPlay(animationId);
     }
 
-    private PlayState predicate(AnimationState<IceSpiderEntity> animationEvent) {
-        var controller = animationEvent.getController();
+    private PlayState predicate(AnimationTest<IceSpiderEntity> animationEvent) {
+        var controller = animationEvent.controller();
 
         if (this.animationToPlay != null) {
             controller.forceAnimationReset();

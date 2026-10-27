@@ -1,5 +1,8 @@
 package io.redspace.ironsspellbooks.entity.spells.spectral_hammer;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import com.geckolib.renderer.base.RenderPassInfo;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.redspace.ironsspellbooks.render.GeoLivingEntityRenderer;
@@ -25,13 +28,18 @@ public class SpectralHammerRenderer extends GeoLivingEntityRenderer<SpectralHamm
     }
 
     @Override
-    public void preRender(PoseStack poseStack, SpectralHammer animatable, BakedGeoModel model, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, boolean isReRender, float partialTick, int packedLight, int packedOverlay, int colour) {
+    public void adjustRenderPose(RenderPassInfo<EntityRenderState> info) {
+        var animatable = entity(info);
+        var poseStack = info.poseStack();
+        float partialTick = info.renderState().getGeckolibData(PARTIAL_TICK);
         poseStack.scale(2, 2, 2);
-        super.preRender(poseStack, animatable, model, bufferSource, buffer, isReRender, partialTick, packedLight, packedOverlay, colour);
+        super.adjustRenderPose(info);
     }
 
     @Override
-    public RenderType getRenderType(SpectralHammer animatable, Identifier texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
+    public RenderType getRenderType(EntityRenderState state, Identifier texture) {
+        var animatable = entity(state);
+        float partialTick = state.getGeckolibData(PARTIAL_TICK);
         Vec2 vec2 = getEnergySwirlOffset(animatable, partialTick);
         return RenderTypes.energySwirl(texture, vec2.x, vec2.y);
     }

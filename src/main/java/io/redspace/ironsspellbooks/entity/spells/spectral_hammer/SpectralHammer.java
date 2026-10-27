@@ -29,7 +29,7 @@ import net.neoforged.neoforge.event.level.BlockEvent;
 import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
 import com.geckolib.animatable.manager.AnimatableManager;
-import com.geckolib.cache.animation.AnimationController;
+import com.geckolib.animation.AnimationController;
 import com.geckolib.animation.object.PlayState;
 import com.geckolib.animation.RawAnimation;
 import com.geckolib.util.GeckoLibUtil;
@@ -321,13 +321,13 @@ public class SpectralHammer extends LivingEntity implements GeoEntity {
 
 
     private final RawAnimation animationBuilder = RawAnimation.begin().thenPlay("hammer_swing");
-    private final AnimationController animationController = new AnimationController(this, "controller", 0, this::predicate);
+    private final AnimationController animationController = new AnimationController<>("controller", 0, this::predicate);
 
     private PlayState predicate(com.geckolib.cache.animation.AnimationState event) {
 
-        if (event.getController().getAnimationState() == AnimationController.State.STOPPED) {
+        if (event.controller().getAnimationState() == AnimationController.State.STOPPED) {
             if (playSwingAnimation) {
-                event.getController().setAnimation(animationBuilder);
+                event.controller().setAnimation(animationBuilder);
                 playSwingAnimation = false;
             }
         }

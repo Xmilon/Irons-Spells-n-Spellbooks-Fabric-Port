@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.armor;
 
+import com.geckolib.renderer.base.GeoRenderState;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.ExtendedArmorItem;
 import net.minecraft.resources.Identifier;
@@ -29,12 +31,12 @@ public class GenericArmorModel<T extends ExtendedArmorItem> extends DefaultedIte
     }
 
     @Override
-    public Identifier getModelResource(T animatable) {
+    public Identifier getModelResource(GeoRenderState state) {
         return model;
     }
 
     @Override
-    public Identifier getTextureResource(T animatable) {
+    public Identifier getTextureResource(GeoRenderState state) {
         return texture;
     }
 

@@ -33,7 +33,7 @@ import net.minecraft.world.level.block.state.BlockState;
 import com.geckolib.animatable.GeoAnimatable;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
 import com.geckolib.animatable.manager.AnimatableManager;
-import com.geckolib.cache.animation.AnimationController;
+import com.geckolib.animation.AnimationController;
 import com.geckolib.animation.object.PlayState;
 import com.geckolib.animation.RawAnimation;
 import com.geckolib.util.GeckoLibUtil;
@@ -219,7 +219,7 @@ public class SummonedSkeleton extends Skeleton implements IMagicSummon, GeoAnima
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
-        controllerRegistrar.add(new AnimationController(this, "rise", 0, this::risePredicate));
+        controllerRegistrar.add(new AnimationController<>("rise", 0, this::risePredicate));
     }
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
@@ -237,9 +237,9 @@ public class SummonedSkeleton extends Skeleton implements IMagicSummon, GeoAnima
     private PlayState risePredicate(com.geckolib.cache.animation.AnimationState event) {
         if (!isAnimatingRise())
             return PlayState.STOP;
-        if (event.getController().getAnimationState() == AnimationController.State.STOPPED) {
+        if (event.controller().getAnimationState() == AnimationController.State.STOPPED) {
             String animation = new String[]{"rise_from_ground_01", "rise_from_ground_02", "rise_from_ground_03", "rise_from_ground_04"}[random.nextIntBetweenInclusive(0, 3)];
-            event.getController().setAnimation(RawAnimation.begin().thenPlay(animation));
+            event.controller().setAnimation(RawAnimation.begin().thenPlay(animation));
         }
         return PlayState.CONTINUE;
     }

@@ -1,5 +1,10 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.cursed_armor_stand;
 
+import com.geckolib.animation.object.PlayState;
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.animation.RawAnimation;
+import com.geckolib.animation.AnimationController;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
@@ -39,7 +44,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
-import com.geckolib.cache.animation.AnimationState;
+import com.geckolib.animation.state.AnimationTest;
 import com.geckolib.animation.*;
 
 import javax.annotation.Nullable;
@@ -379,7 +384,7 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
     }
 
     RawAnimation animationToPlay = null;
-    private final AnimationController<CursedArmorStandEntity> meleeController = new AnimationController<>(this, "keeper_animations", 0, this::predicate);
+    private final AnimationController<CursedArmorStandEntity> meleeController = new AnimationController<>("keeper_animations", 0, this::predicate);
 
     @Override
     public void playAnimation(String animationId) {
@@ -390,8 +395,8 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
         }
     }
 
-    private PlayState predicate(AnimationState<CursedArmorStandEntity> animationEvent) {
-        var controller = animationEvent.getController();
+    private PlayState predicate(AnimationTest<CursedArmorStandEntity> animationEvent) {
+        var controller = animationEvent.controller();
 
         if (this.animationToPlay != null) {
             controller.forceAnimationReset();

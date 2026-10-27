@@ -36,8 +36,8 @@ import net.minecraft.world.phys.Vec3;
 import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
 import com.geckolib.animatable.manager.AnimatableManager;
-import com.geckolib.cache.animation.AnimationController;
-import com.geckolib.cache.animation.AnimationState;
+import com.geckolib.animation.AnimationController;
+import com.geckolib.animation.state.AnimationTest;
 import com.geckolib.animation.object.PlayState;
 import com.geckolib.util.GeckoLibUtil;
 
@@ -415,9 +415,9 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     private AbstractSpell instantCastSpellType = SpellRegistry.none();
     private boolean cancelCastAnimation = false;
     private boolean animatingLegs = false;
-    private final AnimationController animationControllerOtherCast = new AnimationController(this, "other_casting", 0, this::otherCastingPredicate);
-    private final AnimationController animationControllerInstantCast = new AnimationController(this, "instant_casting", 0, this::instantCastingPredicate);
-    private final AnimationController animationControllerLongCast = new AnimationController(this, "long_casting", 0, this::longCastingPredicate);
+    private final AnimationController animationControllerOtherCast = new AnimationController<>("other_casting", 0, this::otherCastingPredicate);
+    private final AnimationController animationControllerInstantCast = new AnimationController<>("instant_casting", 0, this::instantCastingPredicate);
+    private final AnimationController animationControllerLongCast = new AnimationController<>("long_casting", 0, this::longCastingPredicate);
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
@@ -439,15 +439,15 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         controllerRegistrar.add(animationControllerOtherCast);
         controllerRegistrar.add(animationControllerInstantCast);
         controllerRegistrar.add(animationControllerLongCast);
-        //controllerRegistrar.add(new AnimationController(this, "idle", 0, this::idlePredicate));
+        //controllerRegistrar.add(new AnimationController<>("idle", 0, this::idlePredicate));
     }
 
-    private PlayState instantCastingPredicate(AnimationState event) {
+    private PlayState instantCastingPredicate(AnimationTest event) {
         if (cancelCastAnimation) {
             return PlayState.STOP;
         }
 
-        var controller = event.getController();
+        var controller = event.controller();
         if (instantCastSpellType != SpellRegistry.none() && controller.getAnimationState() == AnimationController.State.STOPPED) {
             setStartAnimationFromSpell(controller, instantCastSpellType);
             instantCastSpellType = SpellRegistry.none();
@@ -455,8 +455,8 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         return PlayState.CONTINUE;
     }
 
-    private PlayState longCastingPredicate(AnimationState event) {
-        var controller = event.getController();
+    private PlayState longCastingPredicate(AnimationTest event) {
+        var controller = event.controller();
 
         if (cancelCastAnimation || (controller.getAnimationState() == AnimationController.State.STOPPED && !(isCasting() && castingSpell != null && castingSpell.getSpell().getCastType() == CastType.LONG))) {
             return PlayState.STOP;
@@ -473,12 +473,12 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         return PlayState.CONTINUE;
     }
 
-    private PlayState otherCastingPredicate(AnimationState event) {
+    private PlayState otherCastingPredicate(AnimationTest event) {
         if (cancelCastAnimation) {
             return PlayState.STOP;
         }
 
-        var controller = event.getController();
+        var controller = event.controller();
         if (isCasting() && castingSpell != null && controller.getAnimationState() == AnimationController.State.STOPPED) {
             if (castingSpell.getSpell().getCastType() == CastType.CONTINUOUS) {
                 setStartAnimationFromSpell(controller, castingSpell.getSpell());

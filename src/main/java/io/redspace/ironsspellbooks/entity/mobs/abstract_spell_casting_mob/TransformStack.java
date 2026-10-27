@@ -1,77 +1,64 @@
 package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
-
+import com.geckolib.renderer.base.BoneSnapshots;
+import com.geckolib.renderer.base.RenderPassInfo;
 import net.minecraft.util.Mth;
-import org.joml.Vector3f;
-import com.geckolib.cache.model.GeoBone;
 
-import java.util.*;
-
+/**
+ * Adds procedural offsets onto the bone snapshots of one GeckoLib render pass. Bones are addressed by name;
+ * missing bones are ignored.
+ */
 public class TransformStack {
-    private final Map<GeoBone, Stack<Vector3f>> positionStack = new HashMap<>();
-    private final Map<GeoBone, Stack<Vector3f>> rotationStack = new HashMap<>();
-    private final Set<GeoBone> toReset = new HashSet<>();
+    private final BoneSnapshots snapshots;
+    private final RenderPassInfo<?> pass;
 
-    public void pushPosition(GeoBone bone, Vector3f appendVec) {
-        var stack = positionStack.getOrDefault(bone, new Stack<>());
-        stack.push(appendVec);
-        positionStack.put(bone, stack);
+    public TransformStack(BoneSnapshots snapshots, RenderPassInfo<?> pass) {
+        this.snapshots = snapshots;
+        this.pass = pass;
     }
 
-    public void resetDirty() {
-        toReset.forEach(bone -> {
-            var snapshot = bone.getInitialSnapshot();
-            bone.updatePosition(snapshot.getOffsetX(), snapshot.getOffsetY(), snapshot.getOffsetZ());
-            bone.updateRotation(snapshot.getRotX(), snapshot.getRotY(), snapshot.getRotZ());
-            bone.resetStateChanges();
-        });
-        toReset.clear();
+    /**
+     * Calls back once this pass has placed the bone, with its world position.
+     * unverified: assumes GeckoLib reports world position as the listener's third vector.
+     */
+    public void listenBoneWorldPosition(String bone, java.util.function.Consumer<net.minecraft.world.phys.Vec3> listener) {
+        pass.addBonePositionListener(bone, (modelPos, localPos, worldPos) -> listener.accept(worldPos));
     }
 
-    public void pushPosition(GeoBone bone, float x, float y, float z) {
-        pushPosition(bone, new Vector3f(x, y, z));
+    public BoneSnapshots snapshots() {
+        return snapshots;
     }
 
-    public void pushRotation(GeoBone bone, Vector3f appendVec) {
-        var stack = rotationStack.getOrDefault(bone, new Stack<>());
-        stack.push(appendVec);
-        rotationStack.put(bone, stack);
+    public void pushPosition(String bone, float x, float y, float z) {
+        snapshots.ifPresent(bone, snapshot -> snapshot.setTranslation(snapshot.getTranslateX() + x, snapshot.getTranslateY() + y, snapshot.getTranslateZ() + z));
     }
 
-    public void pushRotation(GeoBone bone, float x, float y, float z) {
-        pushRotation(bone, new Vector3f(x, y, z));
+    public void pushPosition(String bone, org.joml.Vector3f v) {
+        pushPosition(bone, v.x, v.y, v.z);
     }
 
-    public void pushRotationDegrees(GeoBone bone, float x, float y, float z) {
-        pushRotation(bone, new Vector3f(x * Mth.DEG_TO_RAD, y * Mth.DEG_TO_RAD, z * Mth.DEG_TO_RAD));
+    public void pushRotation(String bone, org.joml.Vector3f v) {
+        pushRotation(bone, v.x, v.y, v.z);
     }
 
-    public void popStack() {
-        positionStack.forEach((bone, stack) -> {
-            toReset.add(bone);
-            Vector3f position = bone.getPositionVector().get(new Vector3f());
-            stack.forEach(position::add);
-            setPosImpl(bone, position);
-        });
-        rotationStack.forEach((bone, stack) -> {
-            toReset.add(bone);
-            Vector3f rotation = bone.getRotationVector().get(new Vector3f(0, 0, 0));
-            stack.forEach(rotation::add);
-            setRotImpl(bone, rotation);
-        });
-        positionStack.clear();
-        rotationStack.clear();
+    public void pushRotation(String bone, float x, float y, float z) {
+        snapshots.ifPresent(bone, snapshot -> snapshot.setRotation(wrapRadians(snapshot.getRotX() + x), wrapRadians(snapshot.getRotY() + y), wrapRadians(snapshot.getRotZ() + z)));
     }
 
-    public void setRotImpl(GeoBone bone, Vector3f vector3f) {
-        bone.updateRotation(
-                wrapRadians(vector3f.x()),
-                wrapRadians(vector3f.y()),
-                wrapRadians(vector3f.z()));
+    public void pushRotationDegrees(String bone, float x, float y, float z) {
+        pushRotation(bone, x * Mth.DEG_TO_RAD, y * Mth.DEG_TO_RAD, z * Mth.DEG_TO_RAD);
     }
 
-    public void setPosImpl(GeoBone bone, Vector3f vector3f) {
-        bone.updatePosition(vector3f.x, vector3f.y, vector3f.z);
+    public void setRotX(String bone, float value) {
+        snapshots.ifPresent(bone, snapshot -> snapshot.setRotX(value));
+    }
+
+    public void setRotY(String bone, float value) {
+        snapshots.ifPresent(bone, snapshot -> snapshot.setRotY(value));
+    }
+
+    public void setRotZ(String bone, float value) {
+        snapshots.ifPresent(bone, snapshot -> snapshot.setRotZ(value));
     }
 
     public static float wrapRadians(float pValue) {

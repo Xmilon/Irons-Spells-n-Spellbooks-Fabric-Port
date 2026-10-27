@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.armor;
 
+import com.geckolib.renderer.base.GeoRenderState;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.PaladinArmorItem;
 import net.minecraft.resources.Identifier;
@@ -12,12 +14,12 @@ public class PaladinArmorModel extends DefaultedItemGeoModel<PaladinArmorItem> {
     }
 
     @Override
-    public Identifier getModelResource(PaladinArmorItem object) {
+    public Identifier getModelResource(GeoRenderState state) {
         return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/paladin_chestplate.geo.json");
     }
 
     @Override
-    public Identifier getTextureResource(PaladinArmorItem object) {
+    public Identifier getTextureResource(GeoRenderState state) {
         return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/paladin_chestplate.png");
     }
 

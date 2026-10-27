@@ -1,5 +1,8 @@
 package io.redspace.ironsspellbooks.entity.spells.fiery_dagger;
 
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import com.geckolib.renderer.base.RenderPassInfo;
+
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
@@ -13,17 +16,19 @@ import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 import com.geckolib.cache.model.BakedGeoModel;
-import com.geckolib.renderer.GeoEntityRenderer;
-import com.geckolib.util.Color;
+import io.redspace.ironsspellbooks.render.IronsGeoEntityRenderer;
 
-public class FieryDaggerRenderer extends GeoEntityRenderer<FieryDaggerEntity> {
+public class FieryDaggerRenderer extends IronsGeoEntityRenderer<FieryDaggerEntity> {
     public FieryDaggerRenderer(EntityRendererProvider.Context renderManager) {
         super(renderManager, new FieryDaggerModel());
     }
 
     @Override
-    public void preRender(PoseStack poseStack, FieryDaggerEntity entity, BakedGeoModel model, @Nullable MultiBufferSource bufferSource, @Nullable VertexConsumer buffer, boolean isReRender, float partialTicks, int packedLight, int packedOverlay, int colour) {
-        super.preRender(poseStack, entity, model, bufferSource, buffer, isReRender, partialTicks, packedLight, packedOverlay, colour);
+    public void adjustRenderPose(RenderPassInfo<EntityRenderState> info) {
+        var entity = entity(info);
+        var poseStack = info.poseStack();
+        float partialTicks = info.renderState().getGeckolibData(PARTIAL_TICK);
+        super.adjustRenderPose(info);
         Vec3 motion = entity.deltaMovementOld.add(entity.getDeltaMovement().subtract(entity.deltaMovementOld).scale(partialTicks));
         float xRot = ((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
         float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) - 90.0F);
@@ -35,7 +40,7 @@ public class FieryDaggerRenderer extends GeoEntityRenderer<FieryDaggerEntity> {
 
 
     @Override
-    public Color getRenderColor(FieryDaggerEntity animatable, float partialTick, int packedLight) {
-        return Color.LIGHT_GRAY;
+    public int getRenderColor(FieryDaggerEntity animatable, Void relatedObject, float partialTick) {
+        return 0xFFC0C0C0;
     }
 }

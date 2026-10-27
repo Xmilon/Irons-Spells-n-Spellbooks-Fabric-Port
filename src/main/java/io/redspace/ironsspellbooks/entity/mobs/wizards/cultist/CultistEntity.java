@@ -1,5 +1,10 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.cultist;
 
+import com.geckolib.animation.object.PlayState;
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.animation.RawAnimation;
+import com.geckolib.animation.AnimationController;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
@@ -32,7 +37,7 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import com.geckolib.cache.animation.AnimationState;
+import com.geckolib.animation.state.AnimationTest;
 import com.geckolib.animation.*;
 
 import javax.annotation.Nullable;
@@ -144,7 +149,7 @@ public class CultistEntity extends NeutralWizard implements Enemy, IAnimatedAtta
     }
 
     RawAnimation animationToPlay = null;
-    private final AnimationController<CultistEntity> meleeController = new AnimationController<>(this, "keeper_animations", 0, this::predicate);
+    private final AnimationController<CultistEntity> meleeController = new AnimationController<>("keeper_animations", 0, this::predicate);
 
     @Override
     public void playAnimation(String animationId) {
@@ -155,8 +160,8 @@ public class CultistEntity extends NeutralWizard implements Enemy, IAnimatedAtta
         }
     }
 
-    private PlayState predicate(AnimationState<CultistEntity> animationEvent) {
-        var controller = animationEvent.getController();
+    private PlayState predicate(AnimationTest<CultistEntity> animationEvent) {
+        var controller = animationEvent.controller();
 
         if (this.animationToPlay != null) {
             controller.forceAnimationReset();

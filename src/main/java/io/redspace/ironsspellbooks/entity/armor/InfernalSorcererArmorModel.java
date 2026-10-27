@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.armor;
 
+import com.geckolib.renderer.base.GeoRenderState;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.InfernalSorcererArmorItem;
 import net.minecraft.resources.Identifier;
@@ -12,12 +14,12 @@ public class InfernalSorcererArmorModel extends DefaultedItemGeoModel<InfernalSo
     }
 
     @Override
-    public Identifier getModelResource(InfernalSorcererArmorItem object) {
+    public Identifier getModelResource(GeoRenderState state) {
         return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/infernal_sorcerer.geo.json");
     }
 
     @Override
-    public Identifier getTextureResource(InfernalSorcererArmorItem object) {
+    public Identifier getTextureResource(GeoRenderState state) {
         return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/infernal_sorcerer.png");
     }
 

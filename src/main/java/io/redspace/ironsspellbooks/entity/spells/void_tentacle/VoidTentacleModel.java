@@ -1,9 +1,11 @@
 package io.redspace.ironsspellbooks.entity.spells.void_tentacle;
 
+import com.geckolib.renderer.base.GeoRenderState;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import com.geckolib.cache.animation.AnimationState;
+import com.geckolib.animation.state.AnimationTest;
 import com.geckolib.cache.model.GeoBone;
 import com.geckolib.model.GeoModel;
 
@@ -15,12 +17,12 @@ public class VoidTentacleModel extends GeoModel<VoidTentacle> {
     public static final Identifier animationResource = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/void_tentacle_animations.json");
 
     @Override
-    public Identifier getModelResource(VoidTentacle object) {
+    public Identifier getModelResource(GeoRenderState state) {
         return modelResource;
     }
 
     @Override
-    public Identifier getTextureResource(VoidTentacle mob) {
+    public Identifier getTextureResource(GeoRenderState state) {
         return textureResource;
     }
 
@@ -30,7 +32,7 @@ public class VoidTentacleModel extends GeoModel<VoidTentacle> {
     }
 
     @Override
-    public void setCustomAnimations(VoidTentacle animatable, long instanceId, AnimationState<VoidTentacle> animationState) {
+    public void setCustomAnimations(VoidTentacle animatable, long instanceId, AnimationTest<VoidTentacle> animationState) {
         super.setCustomAnimations(animatable, instanceId, animationState);
         float seed = (float) (animatable.getX() * animatable.getZ()) % 173;
         float speed = .55f;

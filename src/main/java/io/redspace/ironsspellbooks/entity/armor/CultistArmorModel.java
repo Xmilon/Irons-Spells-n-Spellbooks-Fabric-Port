@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.armor;
 
+import com.geckolib.renderer.base.GeoRenderState;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.CultistArmorItem;
 import net.minecraft.resources.Identifier;
@@ -12,12 +14,12 @@ public class CultistArmorModel extends DefaultedItemGeoModel<CultistArmorItem> {
     }
 
     @Override
-    public Identifier getModelResource(CultistArmorItem object) {
+    public Identifier getModelResource(GeoRenderState state) {
         return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/cultist_armor.geo.json");
     }
 
     @Override
-    public Identifier getTextureResource(CultistArmorItem object) {
+    public Identifier getTextureResource(GeoRenderState state) {
         return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/cultist.png");
     }
 

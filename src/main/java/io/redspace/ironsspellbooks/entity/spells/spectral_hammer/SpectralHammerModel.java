@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.spectral_hammer;
 
+import com.geckolib.renderer.base.GeoRenderState;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.spells.shield.ShieldRenderer;
 import net.minecraft.resources.Identifier;
@@ -11,12 +13,12 @@ public class SpectralHammerModel extends GeoModel<SpectralHammer> {
     public static final Identifier animationResource = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/spectral_hammer.animation.json");
 
     @Override
-    public Identifier getModelResource(SpectralHammer object) {
+    public Identifier getModelResource(GeoRenderState state) {
         return modelResource;
     }
 
     @Override
-    public Identifier getTextureResource(SpectralHammer object) {
+    public Identifier getTextureResource(GeoRenderState state) {
         return textureResource;
     }
 

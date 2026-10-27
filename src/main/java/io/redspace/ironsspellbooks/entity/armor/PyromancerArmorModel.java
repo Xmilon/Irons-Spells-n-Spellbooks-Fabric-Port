@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.armor;
 
+import com.geckolib.renderer.base.GeoRenderState;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.PyromancerArmorItem;
 import net.minecraft.resources.Identifier;
@@ -13,12 +15,12 @@ public class PyromancerArmorModel extends GeoModel<PyromancerArmorItem> {
     }
 
     @Override
-    public Identifier getModelResource(PyromancerArmorItem object) {
+    public Identifier getModelResource(GeoRenderState state) {
         return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/pyromancer_armor.geo.json");
     }
 
     @Override
-    public Identifier getTextureResource(PyromancerArmorItem object) {
+    public Identifier getTextureResource(GeoRenderState state) {
         return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/pyromancer.png");
     }
 

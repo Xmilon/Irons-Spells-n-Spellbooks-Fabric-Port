@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.armor.priest;
 
+import com.geckolib.renderer.base.GeoRenderState;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.PriestArmorItem;
 import net.minecraft.resources.Identifier;
@@ -12,12 +14,12 @@ public class PriestArmorModel extends DefaultedItemGeoModel<PriestArmorItem> {
     }
 
     @Override
-    public Identifier getModelResource(PriestArmorItem object) {
+    public Identifier getModelResource(GeoRenderState state) {
         return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/priest_armor.geo.json");
     }
 
     @Override
-    public Identifier getTextureResource(PriestArmorItem object) {
+    public Identifier getTextureResource(GeoRenderState state) {
         return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/priest.png");
     }
 

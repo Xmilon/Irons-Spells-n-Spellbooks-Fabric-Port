@@ -2,9 +2,9 @@ package io.redspace.ironsspellbooks.entity.spells.ice_block;
 
 
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import com.geckolib.renderer.GeoEntityRenderer;
+import io.redspace.ironsspellbooks.render.IronsGeoEntityRenderer;
 
-public class IceBlockRenderer extends GeoEntityRenderer<IceBlockProjectile> {
+public class IceBlockRenderer extends IronsGeoEntityRenderer<IceBlockProjectile> {
 
     public IceBlockRenderer(EntityRendererProvider.Context context) {
         super(context, new IceBlockModel());

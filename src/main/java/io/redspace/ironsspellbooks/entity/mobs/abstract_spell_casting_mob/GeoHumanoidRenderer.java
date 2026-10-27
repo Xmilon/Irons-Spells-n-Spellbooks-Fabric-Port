@@ -22,7 +22,7 @@
 //import software.bernie.example.client.EntityResources;
 //import com.geckolib.animatable.GeoAnimatable;
 //import com.geckolib.model.GeoModel;
-//import com.geckolib.renderer.GeoEntityRenderer;
+//import io.redspace.ironsspellbooks.render.IronsGeoEntityRenderer;
 //import com.geckolib3.core.IAnimatable;
 //import com.geckolib3.core.processor.IBone;
 //import com.geckolib3.geo.render.built.GeoBone;
@@ -33,7 +33,7 @@
 //
 //import java.util.List;
 //
-//public class GeoHumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRenderer<T> {
+//public class GeoHumanoidRenderer<T extends Mob & GeoAnimatable> extends IronsGeoEntityRenderer<T> {
 //    private Identifier textureResource;
 //
 //    public GeoHumanoidRenderer(EntityRendererProvider.Context renderManager, GeoModel<T> model) {

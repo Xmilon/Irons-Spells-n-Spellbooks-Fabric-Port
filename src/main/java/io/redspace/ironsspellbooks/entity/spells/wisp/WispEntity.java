@@ -1,5 +1,10 @@
 package io.redspace.ironsspellbooks.entity.spells.wisp;
 
+import com.geckolib.animation.object.PlayState;
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.animation.RawAnimation;
+import com.geckolib.animation.AnimationController;
+
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -25,7 +30,7 @@ import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
-import com.geckolib.cache.animation.AnimationState;
+import com.geckolib.animation.state.AnimationTest;
 import com.geckolib.animation.*;
 import com.geckolib.util.GeckoLibUtil;
 
@@ -190,14 +195,14 @@ public class WispEntity extends PathfinderMob implements GeoEntity {
         }
     }
 
-    private PlayState predicate(AnimationState event) {
-        event.getController().setAnimation(animation);
+    private PlayState predicate(AnimationTest event) {
+        event.controller().setAnimation(animation);
         return PlayState.CONTINUE;
     }
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
-        controllerRegistrar.add(new AnimationController(this, "controller", 0, this::predicate));
+        controllerRegistrar.add(new AnimationController<>("controller", 0, this::predicate));
     }
 
     @Override

@@ -1,5 +1,10 @@
 package io.redspace.ironsspellbooks.item.armor;
 
+import com.geckolib.animation.object.PlayState;
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.animation.RawAnimation;
+import com.geckolib.animation.AnimationController;
+
 import com.google.common.base.Suppliers;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import net.fabricmc.loader.api.FabricLoader;
@@ -88,11 +93,11 @@ public abstract class ExtendedArmorItem extends ArmorItem implements GeoItem {
 
     @Override
     public void registerControllers(AnimatableManager.ControllerRegistrar controllerRegistrar) {
-        controllerRegistrar.add(new AnimationController<ExtendedArmorItem>(this, "controller", 20, this::predicate));
+        controllerRegistrar.add(new AnimationController<>("controller", 20, this::predicate));
     }
 
     private PlayState predicate(AnimationState<ExtendedArmorItem> extendedArmorItemAnimationState) {
-        extendedArmorItemAnimationState.getController().setAnimation(RawAnimation.begin().thenLoop("idle"));
+        extendedArmorItemAnimationState.controller().setAnimation(RawAnimation.begin().thenLoop("idle"));
         return PlayState.CONTINUE;
     }
 

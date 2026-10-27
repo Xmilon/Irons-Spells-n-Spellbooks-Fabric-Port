@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.render.item;
 
+import com.geckolib.renderer.base.GeoRenderState;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import net.minecraft.resources.Identifier;
@@ -11,12 +13,12 @@ public class SpellBookGeoModel extends GeoModel<SpellBook> {
     private static final Identifier TEXTURE = IronsSpellbooks.id("textures/item/temp_spellbook.png");
 
     @Override
-    public Identifier getModelResource(SpellBook animatable) {
+    public Identifier getModelResource(GeoRenderState state) {
         return MODEL;
     }
 
     @Override
-    public Identifier getTextureResource(SpellBook animatable) {
+    public Identifier getTextureResource(GeoRenderState state) {
         return TEXTURE;
     }
 

@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.armor;
 
+import com.geckolib.renderer.base.GeoRenderState;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.BootsOfSpeedArmorItem;
 import net.minecraft.resources.Identifier;
@@ -12,12 +14,12 @@ public class BootsOfSpeedArmorModel extends DefaultedItemGeoModel<BootsOfSpeedAr
     }
 
     @Override
-    public Identifier getModelResource(BootsOfSpeedArmorItem object) {
+    public Identifier getModelResource(GeoRenderState state) {
         return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/boots_of_speed.geo.json");
     }
 
     @Override
-    public Identifier getTextureResource(BootsOfSpeedArmorItem object) {
+    public Identifier getTextureResource(GeoRenderState state) {
         return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/boots_of_speed.png");
     }
 

@@ -22,7 +22,7 @@ import net.minecraft.world.level.Level;
 import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
 import com.geckolib.animatable.manager.AnimatableManager;
-import com.geckolib.cache.animation.AnimationController;
+import com.geckolib.animation.AnimationController;
 import com.geckolib.animation.object.PlayState;
 import com.geckolib.animation.RawAnimation;
 import com.geckolib.util.GeckoLibUtil;
@@ -201,7 +201,7 @@ public class VoidTentacle extends LivingEntity implements GeoEntity, AntiMagicSu
 
     private PlayState animationPredicate(com.geckolib.cache.animation.AnimationState event) {
         //if (age >= getDelay()) {
-        var controller = event.getController();
+        var controller = event.controller();
         //if (controller.getAnimationState() == AnimationState.Stopped) {
         //}
         //IronsSpellbooks.LOGGER.debug("TentacleAnimOffset: {}", controller.tickOffset);
@@ -227,7 +227,7 @@ public class VoidTentacle extends LivingEntity implements GeoEntity, AntiMagicSu
 
     private PlayState risePredicate(com.geckolib.cache.animation.AnimationState event) {
         //if (age >= getDelay()) {
-        var controller = event.getController();
+        var controller = event.controller();
         //if (controller.getAnimationState() == AnimationState.Stopped) {
         //}
         //IronsSpellbooks.LOGGER.debug("TentacleAnimOffset: {}", controller.tickOffset);
@@ -248,8 +248,8 @@ public class VoidTentacle extends LivingEntity implements GeoEntity, AntiMagicSu
     private final RawAnimation ANIMATION_FLAIL3 = RawAnimation.begin().thenPlay("flail3");
     private final RawAnimation ANIMATION_IDLE = RawAnimation.begin().thenLoop("idle");
 
-    private final AnimationController controller = new AnimationController(this, "void_tentacle_controller", 20, this::animationPredicate);
-    private final AnimationController riseController = new AnimationController(this, "void_tentacle_rise_controller", 0, this::risePredicate);
+    private final AnimationController controller = new AnimationController<>("void_tentacle_controller", 20, this::animationPredicate);
+    private final AnimationController riseController = new AnimationController<>("void_tentacle_rise_controller", 0, this::risePredicate);
 
 
     @Override

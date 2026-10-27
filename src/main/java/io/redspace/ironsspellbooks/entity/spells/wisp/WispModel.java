@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.entity.spells.wisp;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.resources.Identifier;
 import com.geckolib.model.GeoModel;
+import com.geckolib.renderer.base.GeoRenderState;
 
 public class WispModel extends GeoModel<WispEntity> {
     public static final Identifier modelResource = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/wisp.geo.json");
@@ -11,12 +12,12 @@ public class WispModel extends GeoModel<WispEntity> {
 
 
     @Override
-    public Identifier getModelResource(WispEntity object) {
+    public Identifier getModelResource(GeoRenderState state) {
         return modelResource;
     }
 
     @Override
-    public Identifier getTextureResource(WispEntity object) {
+    public Identifier getTextureResource(GeoRenderState state) {
         return textureResource;
     }
 

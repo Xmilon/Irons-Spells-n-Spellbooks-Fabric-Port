@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.armor;
 
+import com.geckolib.renderer.base.GeoRenderState;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.PlaguedArmorItem;
 import net.minecraft.resources.Identifier;
@@ -13,12 +15,12 @@ public class PlaguedArmorModel extends GeoModel<PlaguedArmorItem> {
     }
 
     @Override
-    public Identifier getModelResource(PlaguedArmorItem object) {
+    public Identifier getModelResource(GeoRenderState state) {
         return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/plagued_armor.geo.json");
     }
 
     @Override
-    public Identifier getTextureResource(PlaguedArmorItem object) {
+    public Identifier getTextureResource(GeoRenderState state) {
         return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/plagued.png");
     }
 

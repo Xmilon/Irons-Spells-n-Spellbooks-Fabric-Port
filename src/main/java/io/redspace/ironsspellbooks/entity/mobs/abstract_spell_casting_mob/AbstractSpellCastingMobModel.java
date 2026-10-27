@@ -1,6 +1,10 @@
 package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
+import com.geckolib.renderer.base.GeoRenderState;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.render.IronsGeoEntityRenderer;
+import io.redspace.ironsspellbooks.render.ProceduralBoneAnimation;
 import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
@@ -9,27 +13,30 @@ import net.minecraft.world.entity.WalkAnimationState;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector2f;
 import com.geckolib.animatable.GeoReplacedEntity;
-import com.geckolib.cache.animation.AnimationState;
+import com.geckolib.animation.state.AnimationTest;
 import com.geckolib.cache.model.GeoBone;
 import com.geckolib.constant.DataTickets;
 import com.geckolib.model.DefaultedEntityGeoModel;
 
-public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoModel<AbstractSpellCastingMob> {
+public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoModel<AbstractSpellCastingMob> implements ProceduralBoneAnimation<AbstractSpellCastingMob> {
 
     public AbstractSpellCastingMobModel(/*Identifier assetSubpath*/) {
         super(IronsSpellbooks.id("spellcastingmob"));
     }
 
-    protected TransformStack transformStack = new TransformStack();
-    private long lastRenderedInstance = -1;
+    protected TransformStack transformStack;
+
+    protected static AbstractSpellCastingMob mob(GeoRenderState state) {
+        return (AbstractSpellCastingMob) state.getGeckolibData(IronsGeoEntityRenderer.ENTITY);
+    }
 
     @Override
-    public Identifier getModelResource(AbstractSpellCastingMob object) {
+    public Identifier getModelResource(GeoRenderState state) {
         return AbstractSpellCastingMob.modelResource;
     }
 
     @Override
-    public abstract Identifier getTextureResource(AbstractSpellCastingMob mob);
+    public abstract Identifier getTextureResource(GeoRenderState state);
 
     @Override
     public Identifier getAnimationResource(AbstractSpellCastingMob animatable) {
@@ -37,33 +44,18 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
     }
 
     @Override
-    public void handleAnimations(AbstractSpellCastingMob entity, long instanceId, AnimationState<AbstractSpellCastingMob> animationState, float partialTick) {
-        var manager = entity.getAnimatableInstanceCache().getManagerForId(instanceId);
-        Double currentTick = animationState.getData(DataTickets.TICK);
-        double currentFrameTime = entity instanceof Entity || entity instanceof GeoReplacedEntity ? currentTick + partialTick : currentTick - manager.getFirstTickTime();
-        boolean isReRender = !manager.isFirstTick() && currentFrameTime == manager.getLastUpdateTime();
-        if (isReRender && instanceId == this.lastRenderedInstance)
-            return;
-        this.lastRenderedInstance = instanceId;
-        transformStack.resetDirty();
-        super.handleAnimations(entity, instanceId, animationState, partialTick);
-        transformStack.popStack();
-    }
-
-    @Override
-    public void setCustomAnimations(AbstractSpellCastingMob entity, long instanceId, AnimationState<AbstractSpellCastingMob> animationState) {
-        super.setCustomAnimations(entity, instanceId, animationState);
+    public void animateBones(AbstractSpellCastingMob entity, float partialTick, TransformStack transformStack) {
+        this.transformStack = transformStack;
         if (!entity.shouldBeExtraAnimated()) {
             return;
         }
-        var partialTick = animationState.getPartialTick();
-        GeoBone head = this.getAnimationProcessor().getBone(PartNames.HEAD);
-        GeoBone body = this.getAnimationProcessor().getBone(PartNames.BODY);
-        GeoBone torso = this.getAnimationProcessor().getBone("torso");
-        GeoBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
-        GeoBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
-        GeoBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
-        GeoBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
+        String head = PartNames.HEAD;
+        String body = PartNames.BODY;
+        String torso = "torso";
+        String rightArm = PartNames.RIGHT_ARM;
+        String leftArm = PartNames.LEFT_ARM;
+        String rightLeg = PartNames.RIGHT_LEG;
+        String leftLeg = PartNames.LEFT_LEG;
 
         /*
             Head Controls
@@ -133,7 +125,7 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
         }
     }
 
-    protected void bobBone(GeoBone bone, float offset, float multiplier) {
+    protected void bobBone(String bone, float offset, float multiplier) {
         float z = multiplier * (Mth.cos(offset * 0.09F) * 0.05F + 0.05F);
         float x = multiplier * Mth.sin(offset * 0.067F) * 0.05F;
         transformStack.pushRotation(bone, x, 0, z);

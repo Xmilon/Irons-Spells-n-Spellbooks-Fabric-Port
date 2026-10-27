@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.armor.netherite;
 
+import com.geckolib.renderer.base.GeoRenderState;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.NetheriteMageArmorItem;
 import net.minecraft.resources.Identifier;
@@ -12,12 +14,12 @@ public class NetheriteMageArmorModel extends DefaultedItemGeoModel<NetheriteMage
     }
 
     @Override
-    public Identifier getModelResource(NetheriteMageArmorItem object) {
+    public Identifier getModelResource(GeoRenderState state) {
         return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/netherite_armor.geo.json");
     }
 
     @Override
-    public Identifier getTextureResource(NetheriteMageArmorItem object) {
+    public Identifier getTextureResource(GeoRenderState state) {
         return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/netherite.png");
     }
 

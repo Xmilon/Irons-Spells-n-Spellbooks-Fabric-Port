@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.raise_dead_summons;
 
+import com.geckolib.renderer.base.GeoRenderState;
+
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedZombie;
@@ -13,12 +15,12 @@ public class SummonedZombieModel extends GeoModel<SummonedZombie> {
 
 
     @Override
-    public Identifier getTextureResource(SummonedZombie object) {
+    public Identifier getTextureResource(GeoRenderState state) {
         return TEXTURE;
     }
 
     @Override
-    public Identifier getModelResource(SummonedZombie object) {
+    public Identifier getModelResource(GeoRenderState state) {
         return MODEL;
     }
 

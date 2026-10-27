@@ -22,8 +22,8 @@ import net.minecraft.world.phys.Vec3;
 import com.geckolib.animatable.GeoEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
 import com.geckolib.animatable.manager.AnimatableManager;
-import com.geckolib.cache.animation.AnimationController;
-import com.geckolib.cache.animation.AnimationState;
+import com.geckolib.animation.AnimationController;
+import com.geckolib.animation.state.AnimationTest;
 import com.geckolib.animation.object.PlayState;
 import com.geckolib.animation.RawAnimation;
 import com.geckolib.util.GeckoLibUtil;
@@ -133,7 +133,7 @@ public class EchoingSword extends AbstractMagicProjectile implements IAnimatedAt
     }
 
     RawAnimation animationToPlay = null;
-    private final AnimationController<EchoingSword> meleeController = new AnimationController<>(this, "keeper_animations", 0, this::predicate);
+    private final AnimationController<EchoingSword> meleeController = new AnimationController<>("keeper_animations", 0, this::predicate);
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
@@ -145,8 +145,8 @@ public class EchoingSword extends AbstractMagicProjectile implements IAnimatedAt
         animationToPlay = RawAnimation.begin().thenPlay(animationId);
     }
 
-    private PlayState predicate(AnimationState<EchoingSword> animationEvent) {
-        var controller = animationEvent.getController();
+    private PlayState predicate(AnimationTest<EchoingSword> animationEvent) {
+        var controller = animationEvent.controller();
 
         if (this.animationToPlay != null) {
             controller.forceAnimationReset();

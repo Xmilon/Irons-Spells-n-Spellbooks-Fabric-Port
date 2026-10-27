@@ -1,5 +1,10 @@
 package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 
+import com.geckolib.animation.object.PlayState;
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.animation.RawAnimation;
+import com.geckolib.animation.AnimationController;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.entity.IOminousEntity;
@@ -82,7 +87,7 @@ import net.neoforged.bus.api.SubscribeEvent;
 import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.network.PacketDistributor;
 import com.geckolib.animation.*;
-import com.geckolib.cache.animation.AnimationState;
+import com.geckolib.animation.state.AnimationTest;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -576,8 +581,8 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     private final RawAnimation melee = RawAnimation.begin().thenPlay("dead_king_melee");
     private final RawAnimation slam = RawAnimation.begin().thenPlay("dead_king_slam");
 
-    private final AnimationController<DeadKingBoss> transitionController = new AnimationController<>(this, "dead_king_transition", 0, this::transitionPredicate);
-    private final AnimationController<DeadKingBoss> meleeController = new AnimationController<>(this, "dead_king_animations", 0, this::meleePredicate);
+    private final AnimationController<DeadKingBoss> transitionController = new AnimationController<>("dead_king_transition", 0, this::transitionPredicate);
+    private final AnimationController<DeadKingBoss> meleeController = new AnimationController<>("dead_king_animations", 0, this::meleePredicate);
     RawAnimation animationToPlay = null;
 
     @Override
@@ -590,8 +595,8 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         }
     }
 
-    private PlayState meleePredicate(AnimationState<DeadKingBoss> animationEvent) {
-        var controller = animationEvent.getController();
+    private PlayState meleePredicate(AnimationTest<DeadKingBoss> animationEvent) {
+        var controller = animationEvent.controller();
         if (this.animationToPlay != null) {
             controller.forceAnimationReset();
             controller.setAnimation(animationToPlay);
@@ -600,8 +605,8 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         return transitionController.getAnimationState() == AnimationController.State.STOPPED ? PlayState.CONTINUE : PlayState.STOP;
     }
 
-    private PlayState transitionPredicate(AnimationState animationEvent) {
-        var controller = animationEvent.getController();
+    private PlayState transitionPredicate(AnimationTest animationEvent) {
+        var controller = animationEvent.controller();
         if (isPhaseTransitioning()) {
             controller.setAnimation(phase_transition_animation);
             return PlayState.CONTINUE;

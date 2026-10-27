@@ -1,5 +1,10 @@
 package io.redspace.ironsspellbooks.entity.spells.summoned_weapons;
 
+import com.geckolib.animation.object.PlayState;
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.animation.RawAnimation;
+import com.geckolib.animation.AnimationController;
+
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -29,7 +34,7 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.neoforge.fluids.FluidType;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
-import com.geckolib.cache.animation.AnimationState;
+import com.geckolib.animation.state.AnimationTest;
 import com.geckolib.animation.*;
 import com.geckolib.util.GeckoLibUtil;
 
@@ -170,7 +175,7 @@ public abstract class SummonedWeaponEntity extends AbstractSpellCastingMob imple
     }
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
-    private final AnimationController<SummonedWeaponEntity> meleeController = new AnimationController<>(this, "animations", 0, this::predicate);
+    private final AnimationController<SummonedWeaponEntity> meleeController = new AnimationController<>("animations", 0, this::predicate);
     RawAnimation animationToPlay = null;
 
     @Override
@@ -183,8 +188,8 @@ public abstract class SummonedWeaponEntity extends AbstractSpellCastingMob imple
         animationToPlay = RawAnimation.begin().thenPlay(animationId);
     }
 
-    private PlayState predicate(AnimationState<SummonedWeaponEntity> animationEvent) {
-        var controller = animationEvent.getController();
+    private PlayState predicate(AnimationTest<SummonedWeaponEntity> animationEvent) {
+        var controller = animationEvent.controller();
 
         if (this.animationToPlay != null) {
             controller.forceAnimationReset();

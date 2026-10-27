@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.ice_block;
 
+import com.geckolib.renderer.base.GeoRenderState;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.resources.Identifier;
 import com.geckolib.model.GeoModel;
@@ -14,12 +16,12 @@ public class IceBlockModel extends GeoModel<IceBlockProjectile> {
     }
 
     @Override
-    public Identifier getTextureResource(IceBlockProjectile object) {
+    public Identifier getTextureResource(GeoRenderState state) {
         return TEXTURE;
     }
 
     @Override
-    public Identifier getModelResource(IceBlockProjectile object) {
+    public Identifier getModelResource(GeoRenderState state) {
         return MODEL;
     }
 

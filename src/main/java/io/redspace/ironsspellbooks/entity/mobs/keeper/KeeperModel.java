@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.keeper;
 
+import com.geckolib.renderer.base.GeoRenderState;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMobModel;
@@ -11,12 +13,14 @@ public class KeeperModel extends AbstractSpellCastingMobModel {
     public static final Identifier modelResource = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/citadel_keeper.geo.json");
 
     @Override
-    public Identifier getTextureResource(AbstractSpellCastingMob object) {
+    public Identifier getTextureResource(GeoRenderState state) {
+        var object = mob(state);
         return object instanceof KeeperEntity keeper && keeper.isRestored() ? TEXTURE_RESTORED : TEXTURE;
     }
 
     @Override
-    public Identifier getModelResource(AbstractSpellCastingMob object) {
+    public Identifier getModelResource(GeoRenderState state) {
+        var object = mob(state);
         return modelResource;
     }
 }

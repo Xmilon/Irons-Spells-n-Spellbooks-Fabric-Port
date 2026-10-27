@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.armor;
 
+import com.geckolib.renderer.base.GeoRenderState;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.ArchevokerArmorItem;
 import net.minecraft.resources.Identifier;
@@ -12,12 +14,12 @@ public class ArchevokerArmorModel extends DefaultedItemGeoModel<ArchevokerArmorI
     }
 
     @Override
-    public Identifier getModelResource(ArchevokerArmorItem object) {
+    public Identifier getModelResource(GeoRenderState state) {
         return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/archevoker_armor.geo.json");
     }
 
     @Override
-    public Identifier getTextureResource(ArchevokerArmorItem object) {
+    public Identifier getTextureResource(GeoRenderState state) {
         return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/archevoker.png");
     }
 

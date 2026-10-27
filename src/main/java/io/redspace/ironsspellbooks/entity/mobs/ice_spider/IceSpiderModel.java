@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.ice_spider;
 
+import com.geckolib.renderer.base.GeoRenderState;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
@@ -15,14 +17,14 @@ import org.joml.Vector2f;
 import org.joml.Vector3f;
 import com.geckolib.animatable.GeoReplacedEntity;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
-import com.geckolib.cache.animation.AnimationState;
+import com.geckolib.animation.state.AnimationTest;
 import com.geckolib.constant.DataTickets;
 import com.geckolib.constant.dataticket.DataTicket;
 import com.geckolib.model.DefaultedEntityGeoModel;
 
 import java.util.Objects;
 
-public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
+public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> implements io.redspace.ironsspellbooks.render.ProceduralBoneAnimation<IceSpiderEntity> {
     static final String[] SIDES = {"right", "left"};
     static final String[] LEGS = {"Fore", "ForeMiddle", "BackMiddle", "Back"};
     static final String SHOULDER = "Shoulder";
@@ -34,20 +36,19 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
         super(IronsSpellbooks.id("spellcastingmob"));
     }
 
-    protected TransformStack transformStack = new TransformStack();
+    protected TransformStack transformStack;
 
     public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/ice_spider/ice_spider.png");
     public static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/ice_spider.geo.json");
     public static final Identifier ANIMATION = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/ice_spider.animation.json");
-    public static final DataTicket<TransformStack> STACK_TICKET = new DataTicket<>("irons_spellbooks:transform_stack", TransformStack.class);
 
     @Override
-    public Identifier getModelResource(IceSpiderEntity object) {
+    public Identifier getModelResource(GeoRenderState state) {
         return MODEL;
     }
 
     @Override
-    public Identifier getTextureResource(IceSpiderEntity object) {
+    public Identifier getTextureResource(GeoRenderState state) {
         return TEXTURE;
     }
 
@@ -56,36 +57,12 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
         return ANIMATION;
     }
 
-    private long lastRenderedInstance = -1;
-
     @Override
-    public void handleAnimations(IceSpiderEntity entity, long instanceId, AnimationState<IceSpiderEntity> animationState, float partialTick) {
-        var manager = entity.getAnimatableInstanceCache().getManagerForId(instanceId);
-        Double currentTick = animationState.getData(DataTickets.TICK);
-        double currentFrameTime = entity instanceof Entity || entity instanceof GeoReplacedEntity ? currentTick + partialTick : currentTick - manager.getFirstTickTime();
-        boolean isReRender = !manager.isFirstTick() && currentFrameTime == manager.getLastUpdateTime();
-        if (isReRender && instanceId == this.lastRenderedInstance)
-            return;
-        this.lastRenderedInstance = instanceId;
-
-//        TransformStack transformStack = manager.getData(STACK_TICKET);
-//        if (transformStack == null) {
-//            transformStack = new TransformStack();
-//            manager.setData(STACK_TICKET, transformStack);
-//        }
-//        animationState.setData(STACK_TICKET, transformStack);
-        transformStack.resetDirty();
-        super.handleAnimations(entity, instanceId, animationState, partialTick);
-        transformStack.popStack();
-    }
-
-    @Override
-    public void setCustomAnimations(IceSpiderEntity entity, long instanceId, AnimationState<IceSpiderEntity> animationState) {
-        super.setCustomAnimations(entity, instanceId, animationState);
-//        TransformStack transformStack = animationState.getData(STACK_TICKET);
+    public void animateBones(IceSpiderEntity entity, float partialTick, TransformStack transformStack) {
+        this.transformStack = transformStack;
+        //        TransformStack transformStack = animationState.getData(STACK_TICKET);
 //        assert transformStack != null;
-        var partialTick = animationState.getPartialTick();
-        transformStack.pushPosition(getAnimationProcessor().getBone("torso"),
+        transformStack.pushPosition("torso",
                 (float) IceSpiderEntity.TORSO_OFFSET.x,
                 (float) IceSpiderEntity.TORSO_OFFSET.y * entity.getCrouchHeightMultiplier(partialTick),
                 (float) IceSpiderEntity.TORSO_OFFSET.z);
@@ -99,7 +76,7 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
                         Mth.wrapDegrees(entity.yHeadRot - entity.yBodyRot) * Mth.DEG_TO_RAD
                 ), 0);
         normalRotation.invert().transform(headRotation); // undo body rotation and apply to head rotation to normalize
-        var head = getAnimationProcessor().getBone("head");
+        var head = "head";
         transformStack.pushRotation(head, -headRotation.x, -headRotation.y, -headRotation.z);
 
         Vector2f limbSwingVec = getLimbSwing(entity, entity.walkAnimation, partialTick);
@@ -126,8 +103,8 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
                 String legBone = String.format("%s%s%s", SIDES[i], LEGS[j], LEG);
                 boolean primary = j % 2 == 0;
                 try {
-                    transformStack.pushRotation(Objects.requireNonNull(getAnimationProcessor().getBone(shoulderBone)), 0, ((primary ? primaryY : secondaryY) + baseY) * sideSign, 0);
-                    transformStack.pushRotation(Objects.requireNonNull(getAnimationProcessor().getBone(legBone)), 0, 0, ((primary ? primaryZ : secondaryZ) + baseZ) * -sideSign);
+                    transformStack.pushRotation(shoulderBone, 0, ((primary ? primaryY : secondaryY) + baseY) * sideSign, 0);
+                    transformStack.pushRotation(legBone, 0, 0, ((primary ? primaryZ : secondaryZ) + baseZ) * -sideSign);
                 } catch (Exception e) {
                     IronsSpellbooks.LOGGER.error("beep");
                 }

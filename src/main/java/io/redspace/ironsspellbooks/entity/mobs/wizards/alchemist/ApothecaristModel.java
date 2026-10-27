@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.alchemist;
 
+import com.geckolib.renderer.base.GeoRenderState;
+
+import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.TransformStack;
+
 import com.google.common.collect.Streams;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
@@ -8,7 +12,7 @@ import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.joml.Vector3f;
-import com.geckolib.cache.animation.AnimationState;
+import com.geckolib.animation.state.AnimationTest;
 import com.geckolib.cache.model.GeoBone;
 
 import java.util.stream.Stream;
@@ -20,28 +24,30 @@ public class ApothecaristModel extends AbstractSpellCastingMobModel {
     private static final Vector3f forward = new Vector3f(0, 0, Mth.sin(tilt) * -12);
 
     @Override
-    public Identifier getModelResource(AbstractSpellCastingMob object) {
+    public Identifier getModelResource(GeoRenderState state) {
+        var object = mob(state);
         return MODEL;
     }
 
     @Override
-    public Identifier getTextureResource(AbstractSpellCastingMob object) {
+    public Identifier getTextureResource(GeoRenderState state) {
+        var object = mob(state);
         return TEXTURE;
     }
 
 
     @Override
-    public void setCustomAnimations(AbstractSpellCastingMob entity, long instanceId, AnimationState<AbstractSpellCastingMob> animationState) {
-        float partialTick = animationState.getPartialTick();
-        GeoBone leftEar = this.getAnimationProcessor().getBone("left_ear");
-        GeoBone rightEar = this.getAnimationProcessor().getBone("right_ear");
-        GeoBone head = this.getAnimationProcessor().getBone(PartNames.HEAD);
-        GeoBone body = this.getAnimationProcessor().getBone(PartNames.BODY);
-        GeoBone torso = this.getAnimationProcessor().getBone("torso");
-        GeoBone rightArm = this.getAnimationProcessor().getBone(PartNames.RIGHT_ARM);
-        GeoBone leftArm = this.getAnimationProcessor().getBone(PartNames.LEFT_ARM);
-        GeoBone rightLeg = this.getAnimationProcessor().getBone(PartNames.RIGHT_LEG);
-        GeoBone leftLeg = this.getAnimationProcessor().getBone(PartNames.LEFT_LEG);
+    public void animateBones(AbstractSpellCastingMob entity, float partialTick, TransformStack transformStack) {
+        this.transformStack = transformStack;
+        String leftEar = "left_ear";
+        String rightEar = "right_ear";
+        String head = PartNames.HEAD;
+        String body = PartNames.BODY;
+        String torso = "torso";
+        String rightArm = PartNames.RIGHT_ARM;
+        String leftArm = PartNames.LEFT_ARM;
+        String rightLeg = PartNames.RIGHT_LEG;
+        String leftLeg = PartNames.LEFT_LEG;
 
         //Limb Offsets
         transformStack.pushPosition(head, forward);
@@ -66,6 +72,6 @@ public class ApothecaristModel extends AbstractSpellCastingMobModel {
             transformStack.pushRotation(rightEar, 0, 0, r);
 
         }
-        super.setCustomAnimations(entity, instanceId, animationState);
+        super.animateBones(entity, partialTick, transformStack);
     }
 }
