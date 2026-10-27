@@ -6,7 +6,7 @@ import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.CastSource;
 import io.redspace.ironsspellbooks.api.spells.CastType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
@@ -14,7 +14,7 @@ import net.minecraft.world.level.Level;
 import java.util.Optional;
 
 public class NoneSpell extends AbstractSpell {
-    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "none");
+    private final Identifier spellId = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "none");
 
     public NoneSpell() {
         this.baseManaCost = 0;
@@ -24,7 +24,7 @@ public class NoneSpell extends AbstractSpell {
     }
 
     @Override
-    public ResourceLocation getSpellResource() {
+    public Identifier getSpellResource() {
         return spellId;
     }
 

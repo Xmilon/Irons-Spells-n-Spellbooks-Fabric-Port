@@ -19,7 +19,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
 import net.minecraft.server.level.ServerPlayer;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
@@ -41,7 +41,7 @@ public class ModSetup {
 
         // Drive server-level magic and pocket-dimension ticking on Fabric.
         ServerTickEvents.START_WORLD_TICK.register(world -> {
-            if (world.isClientSide) {
+            if (world.isClientSide()) {
                 return;
             }
             io.redspace.ironsspellbooks.IronsSpellbooks.MAGIC_MANAGER.tick(world);
@@ -50,7 +50,7 @@ public class ModSetup {
 
         // Restore custom patrol spawner behavior.
         ServerTickEvents.END_WORLD_TICK.register(world -> {
-            if (world.isClientSide) {
+            if (world.isClientSide()) {
                 return;
             }
             boolean doMobSpawning = world.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING);

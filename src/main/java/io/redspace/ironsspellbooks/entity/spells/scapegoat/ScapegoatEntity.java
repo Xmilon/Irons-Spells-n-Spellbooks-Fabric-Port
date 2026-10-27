@@ -25,14 +25,14 @@ import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimatableManager;
-import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.animation.PlayState;
-import software.bernie.geckolib.animation.RawAnimation;
-import software.bernie.geckolib.util.GeckoLibUtil;
+import com.geckolib.animatable.GeoEntity;
+import com.geckolib.animatable.instance.AnimatableInstanceCache;
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.cache.animation.AnimationController;
+import com.geckolib.cache.animation.AnimationState;
+import com.geckolib.animation.object.PlayState;
+import com.geckolib.animation.RawAnimation;
+import com.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 import java.util.UUID;
@@ -124,7 +124,7 @@ public class ScapegoatEntity extends PathfinderMob implements AntiMagicSusceptib
         } else if (jumpDelay == 0) {
             jumpDelay = 20;
             this.playSound(SoundEvents.GOAT_DEATH, 2f, 1f + random.nextFloat() * .2f);
-            if (level().isClientSide) {
+            if (level().isClientSide()) {
                 animationToPlay = RawAnimation.begin().thenPlay("scapegoat_run_accent");
             }
         }
@@ -184,7 +184,7 @@ public class ScapegoatEntity extends PathfinderMob implements AntiMagicSusceptib
     }
 
     public void poofParticles(int amount, float strength) {
-        if (level().isClientSide) return;
+        if (level().isClientSide()) return;
         Vec3 pos = this.getBoundingBox().getCenter();
         MagicManager.spawnParticles(level(), ParticleRegistry.FALLING_SPARKLE_PARTICLE.get(), pos.x, pos.y + 0.5, pos.z, amount, .1, .1, .1, .3 * strength, false);
     }

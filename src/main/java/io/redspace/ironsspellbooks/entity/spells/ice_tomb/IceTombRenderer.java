@@ -10,16 +10,16 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class IceTombRenderer extends EntityRenderer<IceTombEntity> {
 
-    public static final ResourceLocation NOCULL = IronsSpellbooks.id("textures/entity/ice_tomb/ice_tomb.png");
-    public static final ResourceLocation CULL = IronsSpellbooks.id("textures/entity/ice_tomb/ice_tomb_cull.png");
+    public static final Identifier NOCULL = IronsSpellbooks.id("textures/entity/ice_tomb/ice_tomb.png");
+    public static final Identifier CULL = IronsSpellbooks.id("textures/entity/ice_tomb/ice_tomb_cull.png");
     private final IceTombModel model;
 
     public IceTombRenderer(EntityRendererProvider.Context pContext) {
@@ -29,7 +29,7 @@ public class IceTombRenderer extends EntityRenderer<IceTombEntity> {
 
     public void render(IceTombEntity entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource multiBufferSource, int light) {
         poseStack.pushPose();
-        poseStack.mulPose(Axis.YP.rotationDegrees(-entity.getYRot()));
+        poseStack.rotate(Axis.YP.rotationDegrees(-entity.getYRot()));
         float xScaleFactor = entity.getBbWidth() / entity.getType().getDimensions().width();
         float yScaleFactor = entity.getBbHeight() / entity.getType().getDimensions().height();
         poseStack.scale(xScaleFactor, -yScaleFactor, -xScaleFactor);
@@ -43,12 +43,12 @@ public class IceTombRenderer extends EntityRenderer<IceTombEntity> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(IceTombEntity pEntity) {
+    public Identifier getTextureLocation(IceTombEntity pEntity) {
         return NOCULL;
     }
 
     public static class IceTombModel extends EntityModel<IceTombEntity> {
-        public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "ice_tomb"), "main");
+        public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "ice_tomb"), "main");
         private final ModelPart model;
 
         public IceTombModel(ModelPart root) {

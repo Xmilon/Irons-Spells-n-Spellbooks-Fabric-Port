@@ -32,8 +32,8 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.animation.*;
+import com.geckolib.cache.animation.AnimationState;
+import com.geckolib.animation.*;
 
 import javax.annotation.Nullable;
 import java.util.List;

@@ -58,7 +58,7 @@ public class WaywardCompass extends Item {
         if (missingWarning(itemStack)) {
             findCatacombs(itemStack, pLevel, pPlayer);
             pPlayer.getCooldowns().addCooldown(ItemRegistry.WAYWARD_COMPASS.get(), 200);
-            return InteractionResultHolder.sidedSuccess(itemStack, pLevel.isClientSide);
+            return InteractionResultHolder.sidedSuccess(itemStack, pLevel.isClientSide());
         }
         return super.use(pLevel, pPlayer, pUsedHand);
     }

@@ -32,7 +32,7 @@ public class StaffOfTheNines extends Item {
 
     @Override
     public InteractionResultHolder<ItemStack> use(Level level, Player player, InteractionHand pUsedHand) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             var pos = getPosition(player.getEyePosition(), 0.425f, .275f, 0.1775f, player.getRotationVector());
             MagicManager.spawnParticles(level, ParticleTypes.CAMPFIRE_COSY_SMOKE, pos.x, pos.y, pos.z, 5, .1, .1, .1, 0.01, false);
             level.playSound(null, player.blockPosition(), SoundEvents.FIREWORK_ROCKET_BLAST, SoundSource.PLAYERS, 4, 1.5f);

@@ -151,7 +151,7 @@ public class OminousFireOrbEntity extends Entity implements AntiMagicSusceptible
     public void tick() {
         super.tick();
         travel();
-        if (level().isClientSide) {
+        if (level().isClientSide()) {
             Vec3 motion = Utils.getRandomVec3(0.08);
             Vec3 movement = getDeltaMovement();
             level().addParticle(ParticleHelper.SOUL_FIRE, getX() - movement.x, getY() + 2 - movement.y, getZ() - movement.z, motion.x, motion.y, motion.z);
@@ -166,7 +166,7 @@ public class OminousFireOrbEntity extends Entity implements AntiMagicSusceptible
             if (fuseProgress == fuse - 20) {
                 this.playSound(SoundRegistry.HEAT_SURGE_PREPARE.get(), 4, 1);
             }
-            if (!level().isClientSide && fuseProgress >= fuse) {
+            if (!level().isClientSide() && fuseProgress >= fuse) {
                 doExplosion();
             }
         }
@@ -223,7 +223,7 @@ public class OminousFireOrbEntity extends Entity implements AntiMagicSusceptible
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        if (level().isClientSide || getFuseProgressTicks() == 0 || this.isInvulnerableTo(source) || DamageSources.isFriendlyFireBetween(source.getEntity(), this)) {
+        if (level().isClientSide() || getFuseProgressTicks() == 0 || this.isInvulnerableTo(source) || DamageSources.isFriendlyFireBetween(source.getEntity(), this)) {
             return false;
         } else {
             this.markHurt();

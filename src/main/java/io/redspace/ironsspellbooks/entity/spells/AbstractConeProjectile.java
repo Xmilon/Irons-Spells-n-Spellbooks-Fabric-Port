@@ -147,7 +147,7 @@ public abstract class AbstractConeProjectile extends Projectile implements NoKno
         }
 
         /* Hit Detection */
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             if (dealDamageActive) {
                 for (Entity entity : getSubEntityCollisions()) {
                     //irons_spellbooks.LOGGER.debug("ConeOfColdHit : {}", entity.getName().getString());

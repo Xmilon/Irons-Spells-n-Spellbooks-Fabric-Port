@@ -86,7 +86,7 @@ public class SmallMagicArrow extends AbstractMagicProjectile {
 
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
-        if (level().isClientSide)
+        if (level().isClientSide())
             return;
         Entity entity = entityHitResult.getEntity();
         boolean hit = DamageSources.applyDamage(entity, getDamage(), SpellRegistry.ARROW_VOLLEY_SPELL.get().getDamageSource(this, getOwner()));

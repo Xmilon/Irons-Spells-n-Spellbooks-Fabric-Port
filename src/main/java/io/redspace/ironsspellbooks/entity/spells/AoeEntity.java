@@ -97,7 +97,7 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
     public void tick() {
         super.tick();
         if (tickCount > getDelay()) {
-            if (!level().isClientSide) {
+            if (!level().isClientSide()) {
                 if (tickCount > duration + getDelay()) {
                     discard();
                     return;
@@ -114,7 +114,7 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
     }
 
     protected void checkHits() {
-        if (level().isClientSide)
+        if (level().isClientSide())
             return;
         List<LivingEntity> targets = this.level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(this.getInflation().x, this.getInflation().y, this.getInflation().z));
         boolean hit = false;
@@ -196,7 +196,7 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
     }
 
     public void ambientParticles() {
-        if (!level().isClientSide)
+        if (!level().isClientSide())
             return;
         getParticle().ifPresent(this::ambientParticles);
     }
@@ -233,13 +233,13 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
     }
 
     public void setRadius(float pRadius) {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.getEntityData().set(DATA_RADIUS, Mth.clamp(pRadius, 0.0F, 32.0F));
         }
     }
 
     public void setDuration(int duration) {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.duration = duration;
         }
     }
@@ -249,7 +249,7 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
     }
 
     public void setDelay(int delay) {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.entityData.set(DATA_DELAY, delay);
         }
     }

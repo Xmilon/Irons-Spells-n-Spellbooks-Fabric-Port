@@ -6,7 +6,7 @@ import io.redspace.ironsspellbooks.entity.spells.magic_arrow.MagicArrowRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
@@ -27,8 +27,8 @@ public class EchoingMagicArrowRenderer extends EntityRenderer<EchoingArrowProjec
         Vec3 motion = entity.getDeltaMovement();
         float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
         float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
-        poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
-        poseStack.mulPose(Axis.XP.rotationDegrees(xRot));
+        poseStack.rotate(Axis.YP.rotationDegrees(yRot));
+        poseStack.rotate(Axis.XP.rotationDegrees(xRot));
         poseStack.scale(MODEL_SCALE / 0.065f, MODEL_SCALE / 0.065f, MODEL_SCALE / 0.065f);
         MagicArrowRenderer.renderModel(poseStack, bufferSource);
         poseStack.popPose();
@@ -37,7 +37,7 @@ public class EchoingMagicArrowRenderer extends EntityRenderer<EchoingArrowProjec
     }
 
     @Override
-    public ResourceLocation getTextureLocation(EchoingArrowProjectile entity) {
+    public Identifier getTextureLocation(EchoingArrowProjectile entity) {
         return MagicArrowRenderer.getTextureLocation();
     }
 }

@@ -89,7 +89,7 @@ public class FireArrowProjectile extends AbstractMagicProjectile {
 
     @Override
     protected void onHit(HitResult hitResult) {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             float directDamage = this.damage;
             float explosionDamage = directDamage * .5f;
             UUID ignore = null;

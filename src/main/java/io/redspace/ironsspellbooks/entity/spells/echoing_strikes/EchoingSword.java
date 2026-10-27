@@ -19,14 +19,14 @@ import net.minecraft.world.entity.MoverType;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimatableManager;
-import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.animation.PlayState;
-import software.bernie.geckolib.animation.RawAnimation;
-import software.bernie.geckolib.util.GeckoLibUtil;
+import com.geckolib.animatable.GeoEntity;
+import com.geckolib.animatable.instance.AnimatableInstanceCache;
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.cache.animation.AnimationController;
+import com.geckolib.cache.animation.AnimationState;
+import com.geckolib.animation.object.PlayState;
+import com.geckolib.animation.RawAnimation;
+import com.geckolib.util.GeckoLibUtil;
 
 import java.util.Optional;
 
@@ -77,7 +77,7 @@ public class EchoingSword extends AbstractMagicProjectile implements IAnimatedAt
     }
 
     private void die() {
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             MagicManager.spawnParticles(level(), ParticleHelper.ENDER_SPARKS, getX(), getY(), getZ(), 25, .1, .1, .1, 0.25, false);
         }
         this.discard();
@@ -85,7 +85,7 @@ public class EchoingSword extends AbstractMagicProjectile implements IAnimatedAt
 
     private void performHit() {
         this.playSound(SoundRegistry.ECHOING_STRIKE.get(), 1.5f, Utils.random.nextIntBetweenInclusive(8, 12) * .1f);
-        if (level().isClientSide) {
+        if (level().isClientSide()) {
             return;
         }
         Vec3 vec3 = lastHomingPos.subtract(this.position()).normalize();

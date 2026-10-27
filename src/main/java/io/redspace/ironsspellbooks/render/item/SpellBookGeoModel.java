@@ -2,26 +2,26 @@ package io.redspace.ironsspellbooks.render.item;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.SpellBook;
-import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.model.GeoModel;
+import net.minecraft.resources.Identifier;
+import com.geckolib.model.GeoModel;
 
 public class SpellBookGeoModel extends GeoModel<SpellBook> {
-    private static final ResourceLocation MODEL = IronsSpellbooks.id("geo/spell_book.geo.json");
-    private static final ResourceLocation ANIMATION = IronsSpellbooks.id("animations/spell_book.animation.json");
-    private static final ResourceLocation TEXTURE = IronsSpellbooks.id("textures/item/temp_spellbook.png");
+    private static final Identifier MODEL = IronsSpellbooks.id("geo/spell_book.geo.json");
+    private static final Identifier ANIMATION = IronsSpellbooks.id("animations/spell_book.animation.json");
+    private static final Identifier TEXTURE = IronsSpellbooks.id("textures/item/temp_spellbook.png");
 
     @Override
-    public ResourceLocation getModelResource(SpellBook animatable) {
+    public Identifier getModelResource(SpellBook animatable) {
         return MODEL;
     }
 
     @Override
-    public ResourceLocation getTextureResource(SpellBook animatable) {
+    public Identifier getTextureResource(SpellBook animatable) {
         return TEXTURE;
     }
 
     @Override
-    public ResourceLocation getAnimationResource(SpellBook animatable) {
+    public Identifier getAnimationResource(SpellBook animatable) {
         return ANIMATION;
     }
 }

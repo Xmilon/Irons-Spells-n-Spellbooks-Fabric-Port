@@ -8,13 +8,13 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class SelectSpellPacket implements CustomPacketPayload {
     private final SpellSelection spellSelection;
-    public static final CustomPacketPayload.Type<SelectSpellPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "select_spell"));
+    public static final CustomPacketPayload.Type<SelectSpellPacket> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "select_spell"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SelectSpellPacket> STREAM_CODEC = CustomPacketPayload.codec(SelectSpellPacket::write, SelectSpellPacket::new);
 
     public SelectSpellPacket(SpellSelection spellSelection) {

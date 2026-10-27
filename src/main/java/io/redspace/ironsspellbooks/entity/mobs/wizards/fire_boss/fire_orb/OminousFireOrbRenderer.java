@@ -9,11 +9,11 @@ import io.redspace.ironsspellbooks.entity.spells.fireball.FireballRenderer;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 
@@ -21,8 +21,8 @@ public class OminousFireOrbRenderer extends EntityRenderer<OminousFireOrbEntity>
     protected final ModelPart fireball;
     protected final ModelPart outline;
 
-    public static final ResourceLocation BASE_TEXTURE = IronsSpellbooks.id("textures/entity/fireball/fireball_core_soul.png");
-    public static ResourceLocation[] SWIRL_TEXTURES = {
+    public static final Identifier BASE_TEXTURE = IronsSpellbooks.id("textures/entity/fireball/fireball_core_soul.png");
+    public static Identifier[] SWIRL_TEXTURES = {
             IronsSpellbooks.id("textures/entity/fireball/soul_swirl_0.png"),
             IronsSpellbooks.id("textures/entity/fireball/soul_swirl_1.png"),
             IronsSpellbooks.id("textures/entity/fireball/soul_swirl_2.png"),
@@ -63,9 +63,9 @@ public class OminousFireOrbRenderer extends EntityRenderer<OminousFireOrbEntity>
         float swirlX = Mth.cos(.08f * f) * 180;
         float swirlY = Mth.sin(.08f * f) * 180;
         float swirlZ = Mth.cos(.08f * f + 5464) * 180;
-        poseStack.mulPose(Axis.XP.rotationDegrees(swirlX));
-        poseStack.mulPose(Axis.YP.rotationDegrees(swirlY));
-        poseStack.mulPose(Axis.ZP.rotationDegrees(swirlZ));
+        poseStack.rotate(Axis.XP.rotationDegrees(swirlX));
+        poseStack.rotate(Axis.YP.rotationDegrees(swirlY));
+        poseStack.rotate(Axis.ZP.rotationDegrees(swirlZ));
 
         if (entity.getFuseProgressTicks() > 0) {
             VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(BASE_TEXTURE));
@@ -77,9 +77,9 @@ public class OminousFireOrbRenderer extends EntityRenderer<OminousFireOrbEntity>
             float outlineScale = Mth.lerp(percent, 0.8f, 2.5f) + Mth.sin(f * intensity) * .4f * intensity;
             poseStack.scale(outlineScale, outlineScale, outlineScale);
             VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getSwirlTextureLocation(entity)));
-            poseStack.mulPose(Axis.XP.rotationDegrees(swirlX));
-            poseStack.mulPose(Axis.YP.rotationDegrees(swirlY));
-            poseStack.mulPose(Axis.ZP.rotationDegrees(swirlZ));
+            poseStack.rotate(Axis.XP.rotationDegrees(swirlX));
+            poseStack.rotate(Axis.YP.rotationDegrees(swirlY));
+            poseStack.rotate(Axis.ZP.rotationDegrees(swirlZ));
 
             outline.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, -1);
         }
@@ -87,13 +87,13 @@ public class OminousFireOrbRenderer extends EntityRenderer<OminousFireOrbEntity>
 
     }
 
-    private static ResourceLocation getSwirlTextureLocation(Entity entity) {
+    private static Identifier getSwirlTextureLocation(Entity entity) {
         int frame = (entity.tickCount) % SWIRL_TEXTURES.length;
         return SWIRL_TEXTURES[frame];
     }
 
     @Override
-    public ResourceLocation getTextureLocation(OminousFireOrbEntity entity) {
+    public Identifier getTextureLocation(OminousFireOrbEntity entity) {
         return BASE_TEXTURE;
     }
 }

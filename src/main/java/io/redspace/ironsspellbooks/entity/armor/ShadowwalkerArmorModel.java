@@ -2,8 +2,8 @@ package io.redspace.ironsspellbooks.entity.armor;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.ShadowwalkerArmorItem;
-import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.model.GeoModel;
+import net.minecraft.resources.Identifier;
+import com.geckolib.model.GeoModel;
 
 public class ShadowwalkerArmorModel extends GeoModel<ShadowwalkerArmorItem> {
 
@@ -13,17 +13,17 @@ public class ShadowwalkerArmorModel extends GeoModel<ShadowwalkerArmorItem> {
     }
 
     @Override
-    public ResourceLocation getModelResource(ShadowwalkerArmorItem object) {
-        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/shadowwalker_armor.geo.json");
+    public Identifier getModelResource(ShadowwalkerArmorItem object) {
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/shadowwalker_armor.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureResource(ShadowwalkerArmorItem object) {
-        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/shadowwalker.png");
+    public Identifier getTextureResource(ShadowwalkerArmorItem object) {
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/shadowwalker.png");
     }
 
     @Override
-    public ResourceLocation getAnimationResource(ShadowwalkerArmorItem animatable) {
-        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
+    public Identifier getAnimationResource(ShadowwalkerArmorItem animatable) {
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
     }
 }

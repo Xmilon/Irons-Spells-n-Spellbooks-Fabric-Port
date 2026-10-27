@@ -136,7 +136,7 @@ public class IceTombEntity extends Entity implements PreventDismount, AntiMagicS
 
     @Override
     public boolean hurt(DamageSource source, float amount) {
-        if (!this.level().isClientSide && health > 0) {
+        if (!this.level().isClientSide() && health > 0) {
             if (DamageSources.isFriendlyFireBetween(source.getEntity(), this.getFirstPassenger())) {
                 return false;
             }
@@ -182,7 +182,7 @@ public class IceTombEntity extends Entity implements PreventDismount, AntiMagicS
     }
 
     public void destroyTomb() {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.ejectPassengers();
             this.playSound(SoundEvents.GLASS_BREAK, 2, 1);
             MagicManager.spawnParticles(this.level(), ParticleHelper.SNOW_DUST, getX(), getY() + 1, getZ(), 50, 0.2, 0.2, 0.2, 0.2, false);

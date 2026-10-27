@@ -39,9 +39,9 @@ import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.animal.Animal;
-import net.minecraft.world.entity.animal.IronGolem;
+import net.minecraft.world.entity.animal.golem.IronGolem;
 import net.minecraft.world.entity.monster.Enemy;
-import net.minecraft.world.entity.npc.AbstractVillager;
+import net.minecraft.world.entity.npc.villager.AbstractVillager;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.raid.Raider;
 import net.minecraft.world.level.Level;
@@ -53,8 +53,8 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.entity.PartEntity;
 import net.neoforged.neoforge.event.entity.living.LivingDropsEvent;
 import org.joml.Vector3f;
-import software.bernie.geckolib.animation.*;
-import software.bernie.geckolib.animation.AnimationState;
+import com.geckolib.animation.*;
+import com.geckolib.cache.animation.AnimationState;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -168,7 +168,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         }
         if (emergeTick > 0) {
             emergeTick--;
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 if (emergeTick == 0) {
                     this.setPose(Pose.STANDING);
                 }
@@ -253,7 +253,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     }
 
     private void handleCrouchStatus() {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
         if (isCrouching()) {
@@ -273,7 +273,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     }
 
     private void handleClimbingStatus() {
-        if (level.isClientSide || isCrouching()) {
+        if (level.isClientSide() || isCrouching()) {
             return;
         }
         if (verticalCollision && !verticalCollisionBelow) {
@@ -299,7 +299,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     }
 
     public void setEmergeFromGround() {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             this.setPose(Pose.EMERGING);
             emergeTick = EMERGE_TIME;
         }

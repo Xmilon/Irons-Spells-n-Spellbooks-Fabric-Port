@@ -37,7 +37,7 @@ public class EldritchBlastVisualEntity extends Entity implements IEntityWithComp
     @Override
     public void tick() {
         if (tickCount == 1) {
-            if (level().isClientSide) {
+            if (level().isClientSide()) {
                 var forward = getForward();
                 for (float i = 1; i < distance; i += .5f) {
                     Vec3 pos = position().add(forward.scale(i));

@@ -8,20 +8,20 @@ import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.Abstra
 import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Matrix4f;
-import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
-import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
-import software.bernie.geckolib.util.RenderUtil;
+import com.geckolib.cache.model.GeoBone;
+import com.geckolib.renderer.GeoEntityRenderer;
+import com.geckolib.renderer.layer.GeoRenderLayer;
+import com.geckolib.util.RenderUtil;
 
 @OnlyIn(Dist.CLIENT)
 public class FireBossFlameLayer extends GeoRenderLayer<AbstractSpellCastingMob> {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/fire_boss/tyros_flame.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/fire_boss/tyros_flame.png");
 
     public FireBossFlameLayer(GeoEntityRenderer entityRendererIn) {
         super(entityRendererIn);
@@ -31,7 +31,7 @@ public class FireBossFlameLayer extends GeoRenderLayer<AbstractSpellCastingMob> 
     public void renderForBone(PoseStack poseStack, AbstractSpellCastingMob animatable, GeoBone bone, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
         if (bone.getName().equals(PartNames.HEAD) && animatable instanceof FireBossEntity fireBossEntity && fireBossEntity.isSoulMode()) {
             poseStack.pushPose();
-            poseStack.mulPose(Axis.YP.rotationDegrees(45f));
+            poseStack.rotate(Axis.YP.rotationDegrees(45f));
             RenderUtil.translateToPivotPoint(poseStack, bone);
             poseStack.scale(1 / 2f, 1 / 2f, 1 / 2f);
             VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutout(TEXTURE));
@@ -42,7 +42,7 @@ public class FireBossFlameLayer extends GeoRenderLayer<AbstractSpellCastingMob> 
             float uvMax = (anim + 1) / (float) frameCount;
             float halfsqrt2 = 0.7071f;
             for (int i = 0; i < 4; i++) {
-                poseStack.mulPose(Axis.YP.rotationDegrees(90f));
+                poseStack.rotate(Axis.YP.rotationDegrees(90f));
                 consumer.addVertex(poseMatrix, 0, 0, -halfsqrt2).setColor(255, 255, 255, 255).setUv(0f, uvMax).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
                 consumer.addVertex(poseMatrix, 0, 1, -halfsqrt2).setColor(255, 255, 255, 255).setUv(0f, uvMin).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
                 consumer.addVertex(poseMatrix, 0, 1, halfsqrt2).setColor(255, 255, 255, 255).setUv(1f, uvMin).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);

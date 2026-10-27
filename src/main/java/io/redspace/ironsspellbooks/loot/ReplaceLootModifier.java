@@ -8,7 +8,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
@@ -40,7 +40,7 @@ public class ReplaceLootModifier extends LootModifier {
         double roll = context.getRandom().nextDouble();
         IronsSpellbooks.LOGGER.debug("InjectPoolLootModifier.doApply {}: {} < {}", resourceLocationKey, roll, chanceToReplace);
         if (roll < chanceToReplace) {
-            ResourceLocation path = ResourceLocation.parse(resourceLocationKey);
+            Identifier path = Identifier.parse(resourceLocationKey);
             var lootTable = context.getLevel().getServer().reloadableRegistries().getLootTable(ResourceKey.create(Registries.LOOT_TABLE, path));
             ObjectArrayList<ItemStack> objectarraylist = new ObjectArrayList<>();
             //use raw to avoid stack overflow/recursively adding all global loot modifiers

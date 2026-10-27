@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.item.consumables;
 
 import net.minecraft.ChatFormatting;
-import net.minecraft.advancements.CriteriaTriggers;
+import net.minecraft.advancements.triggers.CriteriaTriggers;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
@@ -39,7 +39,7 @@ public class DrinkableItem extends Item {
             CriteriaTriggers.CONSUME_ITEM.trigger((ServerPlayer) player, pStack);
         }
 
-        if (!pLevel.isClientSide) {
+        if (!pLevel.isClientSide()) {
             this.drinkAction.accept(pStack, pEntityLiving);
         }
 

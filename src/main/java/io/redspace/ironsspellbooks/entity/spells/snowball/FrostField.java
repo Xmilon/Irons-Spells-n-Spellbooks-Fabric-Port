@@ -53,7 +53,7 @@ public class FrostField extends AoeEntity {
     }
 
     public void ambientParticles() {
-        if (!level().isClientSide)
+        if (!level().isClientSide())
             return;
         ambientParticles(ParticleHelper.SNOWFLAKE);
         ambientParticles(ParticleHelper.SNOW_DUST);

@@ -1,10 +1,10 @@
 package io.redspace.ironsspellbooks.item.armor;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 
 public interface IArmorCapeProvider {
-    ResourceLocation getCapeResourceLocation();
+    Identifier getCapeIdentifier();
 
     class CapeData {
         public double xCloakO;

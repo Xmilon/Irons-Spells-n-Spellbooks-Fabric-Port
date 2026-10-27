@@ -1,15 +1,15 @@
 package io.redspace.ironsspellbooks.api.events;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.neoforge.event.entity.living.LivingEvent;
 
 public class SpellSummonEvent<K extends LivingEntity> extends LivingEvent {
     private LivingEntity caster = null;
     private K creature = null;
-    private final ResourceLocation spellId;
+    private final Identifier spellId;
     private int spellLevel = 0;
-    public SpellSummonEvent(LivingEntity caster, K creature, ResourceLocation spellId, int spellLevel) {
+    public SpellSummonEvent(LivingEntity caster, K creature, Identifier spellId, int spellLevel) {
         super(caster);
         this.caster = caster;
         this.creature= creature;
@@ -29,7 +29,7 @@ public class SpellSummonEvent<K extends LivingEntity> extends LivingEvent {
         return caster;
     }
 
-    public ResourceLocation getSpellId() {
+    public Identifier getSpellId() {
         return spellId;
     }
 

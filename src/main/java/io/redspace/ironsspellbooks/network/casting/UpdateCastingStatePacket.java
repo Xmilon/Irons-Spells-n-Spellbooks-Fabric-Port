@@ -7,7 +7,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class UpdateCastingStatePacket implements CustomPacketPayload {
@@ -18,7 +18,7 @@ public class UpdateCastingStatePacket implements CustomPacketPayload {
     private final CastSource castSource;
     private final String castingEquipmentSlot;
 
-    public static final CustomPacketPayload.Type<UpdateCastingStatePacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "update_casting_state"));
+    public static final CustomPacketPayload.Type<UpdateCastingStatePacket> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "update_casting_state"));
     public static final StreamCodec<RegistryFriendlyByteBuf, UpdateCastingStatePacket> STREAM_CODEC = CustomPacketPayload.codec(UpdateCastingStatePacket::write, UpdateCastingStatePacket::new);
 
     public UpdateCastingStatePacket(String spellId, int spellLevel, int castTime, CastSource castSource, String castingEquipmentSlot) {

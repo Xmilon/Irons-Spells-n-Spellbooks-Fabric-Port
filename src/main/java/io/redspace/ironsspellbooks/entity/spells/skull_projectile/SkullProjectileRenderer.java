@@ -13,22 +13,22 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
 public class SkullProjectileRenderer extends EntityRenderer<AbstractMagicProjectile> {
 
-    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "skull_model"), "main");
+    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "skull_model"), "main");
 
     private final ModelPart model;
-    private final ResourceLocation textureLocation;
+    private final Identifier textureLocation;
 
-    public SkullProjectileRenderer(Context context, ResourceLocation textureLocation) {
+    public SkullProjectileRenderer(Context context, Identifier textureLocation) {
         super(context);
         ModelPart modelpart = context.bakeLayer(MODEL_LAYER_LOCATION);
         this.model = modelpart.getChild("head");
@@ -47,8 +47,8 @@ public class SkullProjectileRenderer extends EntityRenderer<AbstractMagicProject
         Vec3 motion = entity.deltaMovementOld.add(entity.getDeltaMovement().subtract(entity.deltaMovementOld).scale(pPartialTicks));
         float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
         float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
-        poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
-        poseStack.mulPose(Axis.XP.rotationDegrees(xRot));
+        poseStack.rotate(Axis.YP.rotationDegrees(yRot));
+        poseStack.rotate(Axis.XP.rotationDegrees(xRot));
         poseStack.scale(-1.0F, -1.0F, 1.0F);
 
 
@@ -59,7 +59,7 @@ public class SkullProjectileRenderer extends EntityRenderer<AbstractMagicProject
     }
 
     @Override
-    public ResourceLocation getTextureLocation(AbstractMagicProjectile entity) {
+    public Identifier getTextureLocation(AbstractMagicProjectile entity) {
         return textureLocation;
     }
 }

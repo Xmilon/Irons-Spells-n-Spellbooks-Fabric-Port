@@ -22,7 +22,7 @@ import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -76,7 +76,7 @@ public class FurledMapItem extends Item {
                         furledMapData.descriptionOverride.ifPresent(component -> mapStack.set(DataComponents.CUSTOM_NAME, component));
 
                         replaceItem(player, mapStack, hand);
-                        return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide);
+                        return InteractionResultHolder.sidedSuccess(itemStack, level.isClientSide());
                     }
                 }
             }
@@ -95,21 +95,21 @@ public class FurledMapItem extends Item {
         }
     }
 
-    public static final ResourceKey<Level> OVERWORLD = ResourceKey.create(Registries.DIMENSION, ResourceLocation.withDefaultNamespace("overworld"));
-    public static final ResourceKey<Level> NETHER = ResourceKey.create(Registries.DIMENSION, ResourceLocation.withDefaultNamespace("the_nether"));
+    public static final ResourceKey<Level> OVERWORLD = ResourceKey.create(Registries.DIMENSION, Identifier.withDefaultNamespace("overworld"));
+    public static final ResourceKey<Level> NETHER = ResourceKey.create(Registries.DIMENSION, Identifier.withDefaultNamespace("the_nether"));
 
-    public static ItemStack of(ResourceLocation structure, MutableComponent descriptor) {
+    public static ItemStack of(Identifier structure, MutableComponent descriptor) {
         ItemStack itemStack = new ItemStack(ItemRegistry.FURLED_MAP.get());
         FurledMapData.set(itemStack, new FurledMapData(structure, Optional.empty(), Optional.of(descriptor)));
         FurledMapData.setLoreHelper(itemStack, Component.translatable("item.irons_spellbooks.furled_map_descriptor_framing", descriptor).setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD)));
         return itemStack;
     }
 
-    public static ItemStack of(ResourceLocation structure, ResourceKey<Level> exclusiveDimension, MutableComponent descriptor) {
+    public static ItemStack of(Identifier structure, ResourceKey<Level> exclusiveDimension, MutableComponent descriptor) {
         return of(structure, exclusiveDimension, descriptor, false);
     }
 
-    public static ItemStack of(ResourceLocation structure, ResourceKey<Level> exclusiveDimension, MutableComponent descriptor, boolean ancient) {
+    public static ItemStack of(Identifier structure, ResourceKey<Level> exclusiveDimension, MutableComponent descriptor, boolean ancient) {
         ItemStack itemStack = new ItemStack(ancient ? ItemRegistry.ANCIENT_FURLED_MAP.get() : ItemRegistry.FURLED_MAP.get());
         FurledMapData.set(itemStack, new FurledMapData(structure, Optional.of(exclusiveDimension), Optional.of(descriptor)));
         FurledMapData.setLoreHelper(itemStack, Component.translatable("item.irons_spellbooks.furled_map_descriptor_framing", descriptor).setStyle(Style.EMPTY.withColor(ChatFormatting.GOLD)));
@@ -117,15 +117,15 @@ public class FurledMapItem extends Item {
     }
 
 
-    public record FurledMapData(ResourceLocation destinationResource, Optional<ResourceKey<Level>> dimension,
+    public record FurledMapData(Identifier destinationResource, Optional<ResourceKey<Level>> dimension,
                                 Optional<Component> descriptionOverride) {
         public static final Codec<FurledMapData> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-                ResourceLocation.CODEC.fieldOf("destination").forGetter(FurledMapData::destinationResource),
+                Identifier.CODEC.fieldOf("destination").forGetter(FurledMapData::destinationResource),
                 ResourceKey.codec(Registries.DIMENSION).optionalFieldOf("dimension").forGetter(FurledMapData::dimension),
                 ComponentSerialization.CODEC.optionalFieldOf("descriptionOverride").forGetter(FurledMapData::descriptionOverride)
         ).apply(builder, FurledMapData::new));
 
-        public static final StreamCodec<RegistryFriendlyByteBuf, ResourceLocation> RESOURCELOCATION_STREAM_CODEC = StreamCodec.of((buf, loc) -> buf.writeUtf(loc.toString()), (buf) -> ResourceLocation.parse(buf.readUtf()));
+        public static final StreamCodec<RegistryFriendlyByteBuf, Identifier> RESOURCELOCATION_STREAM_CODEC = StreamCodec.of((buf, loc) -> buf.writeUtf(loc.toString()), (buf) -> Identifier.parse(buf.readUtf()));
         public static final StreamCodec<RegistryFriendlyByteBuf, FurledMapData> STREAM_CODEC = StreamCodec.composite(
                 RESOURCELOCATION_STREAM_CODEC,
                 FurledMapData::destinationResource,

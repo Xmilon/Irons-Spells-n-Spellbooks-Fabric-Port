@@ -50,7 +50,7 @@ public class EchoingStrikeEntity extends AoeEntity {
             this.setPos(toTrack.position());
         } else if (tickCount == waitTime) {
             this.playSound(SoundRegistry.ECHOING_STRIKE.get(), 1, Utils.random.nextIntBetweenInclusive(8, 12) * .1f);
-            if (!level().isClientSide) {
+            if (!level().isClientSide()) {
                 var center = this.getBoundingBox().getCenter();
                 MagicManager.spawnParticles(level(), ParticleHelper.UNSTABLE_ENDER, center.x, center.y, center.z, 25, 0, 0, 0, .18, false);
                 MagicManager.spawnParticles(level(), new BlastwaveParticleOptions(SpellRegistry.ECHOING_STRIKES_SPELL.get().getSchoolType().getTargetingColor(), this.getRadius() * .9f), center.x, center.y, center.z, 1, 0, 0, 0, 0, true);
@@ -71,7 +71,7 @@ public class EchoingStrikeEntity extends AoeEntity {
         } else if (tickCount > waitTime) {
             discard();
         }
-        if (level().isClientSide && tickCount < waitTime / 2) {
+        if (level().isClientSide() && tickCount < waitTime / 2) {
             Vec3 position = this.getBoundingBox().getCenter();
             for (int i = 0; i < 3; i++) {
                 Vec3 vec3 = Utils.getRandomVec3(1f);

@@ -17,7 +17,7 @@ import io.redspace.ironsspellbooks.network.SyncJsonConfigPacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.RegistryOps;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
@@ -74,7 +74,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
      */
     private final Gson gson;
     @Nullable
-    private Map<ResourceLocation, JsonElement> datapackOverride = null;
+    private Map<Identifier, JsonElement> datapackOverride = null;
     /**
      * A non-sparse map containing all spells and their fully defined config holders
      */
@@ -86,15 +86,15 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     }
 
     @Override
-    protected void apply(Map<ResourceLocation, JsonElement> object, ResourceManager resourceManager, ProfilerFiller profiler) {
+    protected void apply(Map<Identifier, JsonElement> object, ResourceManager resourceManager, ProfilerFiller profiler) {
         if (!object.isEmpty()) {
-            Map<ResourceLocation, JsonElement> data = new HashMap<>(object.size());
+            Map<Identifier, JsonElement> data = new HashMap<>(object.size());
             for (var entry : object.entrySet()) {
                 // Map file ids to spell ids by omitting intermediary directories
-                ResourceLocation key = entry.getKey();
+                Identifier key = entry.getKey();
                 if (key.getPath().contains("/")) {
                     var path = key.getPath().split("/");
-                    key = ResourceLocation.fromNamespaceAndPath(key.getNamespace(), path[path.length - 1]);
+                    key = Identifier.fromNamespaceAndPath(key.getNamespace(), path[path.length - 1]);
                 }
                 data.put(key, entry.getValue());
             }
@@ -189,8 +189,8 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         return files;
     }
 
-    private static Map<ResourceLocation, byte[]> getConfigFiles(File directory) {
-        HashMap<ResourceLocation, byte[]> files = new HashMap<>();
+    private static Map<Identifier, byte[]> getConfigFiles(File directory) {
+        HashMap<Identifier, byte[]> files = new HashMap<>();
         long milis = System.currentTimeMillis();
         File[] namespacedDirectories = directory.listFiles();
         if (namespacedDirectories != null) {
@@ -201,7 +201,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
                     List<File> entries = expandAllJsonFiles(namespacedDir);
                     for (File entry : entries) {
                         String spellName = entry.getName().split("\\.")[0];
-                        ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(namespace, spellName);
+                        Identifier spellId = Identifier.fromNamespaceAndPath(namespace, spellName);
                         if (SpellRegistry.REGISTRY.containsKey(spellId)) {
                             if (files.containsKey(spellId)) {
                                 IronsSpellbooks.LOGGER.warn("Duplicate spell config for spell {}! Overriding config.", spellId);
@@ -222,8 +222,8 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         return files;
     }
 
-    private Map<ResourceLocation, byte[]> createNetworkData() {
-        Map<ResourceLocation, byte[]> data = new HashMap<>();
+    private Map<Identifier, byte[]> createNetworkData() {
+        Map<Identifier, byte[]> data = new HashMap<>();
         for (var entry : config.entrySet()) {
             JsonObject json = entry.getValue().toJson(gson);
             if (!json.isEmpty()) {
@@ -254,8 +254,8 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     }
 
 
-    private Map<ResourceLocation, JsonElement> toJson(Map<ResourceLocation, byte[]> filestreams) {
-        Map<ResourceLocation, JsonElement> configEntries = new HashMap<>();
+    private Map<Identifier, JsonElement> toJson(Map<Identifier, byte[]> filestreams) {
+        Map<Identifier, JsonElement> configEntries = new HashMap<>();
         for (var entry : filestreams.entrySet()/*JsonElement elem : array*/) {
             var id = entry.getKey();
             var file = entry.getValue();
@@ -272,7 +272,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     /**
      * @return <code>true</code> if all entries loaded successfully. <code>false</code> if any entries had errors loading
      */
-    private boolean buildConfigManager(Map<ResourceLocation, JsonElement> configEntries) {
+    private boolean buildConfigManager(Map<Identifier, JsonElement> configEntries) {
         boolean hasErrors = false;
         ImmutableMap.Builder<AbstractSpell, SpellConfigHolder> builder = ImmutableMap.builder();
         var registryops = JsonOps.INSTANCE;
@@ -287,7 +287,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
             config.setDefaultValue(SpellConfigParameter.COOLDOWN_IN_SECONDS, raw.cooldownInSeconds);
             config.setDefaultValue(SpellConfigParameter.ALLOW_CRAFTING, raw.allowCrafting);
             // Handle user-specified Overrides
-            ResourceLocation spellId = spell.getSpellResource();
+            Identifier spellId = spell.getSpellResource();
             if (configEntries.containsKey(spellId)) {
                 try {
                     JsonObject json = configEntries.get(spellId).getAsJsonObject();
@@ -338,7 +338,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
         return spellbookDir;
     }
 
-    private static Optional<JsonElement> resolveJsonElement(ResourceLocation spellId, SpellConfigParameter<?> dataType, JsonObject parent) {
+    private static Optional<JsonElement> resolveJsonElement(Identifier spellId, SpellConfigParameter<?> dataType, JsonObject parent) {
         if (parent.has(dataType.key().toString())) {
             return Optional.of(parent.get(dataType.key().toString()));
         } else if (parent.has(dataType.key().getPath())) {
@@ -374,7 +374,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     }
 
     public static <T> Pair<Boolean, File> generateSpellConfigFile(Gson gson, AbstractSpell spell, boolean full, boolean override) {
-        ResourceLocation resourceLocation = spell.getSpellResource();
+        Identifier resourceLocation = spell.getSpellResource();
         try {
             File spellConfigDir = getSpellConfigDir();
             File modDir = spellConfigDir.toPath().resolve(resourceLocation.getNamespace()).toFile();

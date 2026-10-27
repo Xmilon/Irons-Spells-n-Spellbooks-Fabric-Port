@@ -6,30 +6,30 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.cache.object.BakedGeoModel;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
-import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
+import net.minecraft.resources.Identifier;
+import com.geckolib.cache.model.BakedGeoModel;
+import com.geckolib.renderer.GeoEntityRenderer;
+import com.geckolib.renderer.layer.GeoRenderLayer;
 
 public class DeadKingEmissiveLayer extends GeoRenderLayer<AbstractSpellCastingMob> {
-    public static final ResourceLocation TEXTURE_NORMAL = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king_glowing.png");
-    public static final ResourceLocation TEXTURE_ENRAGED = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king_enraged_glowing.png");
+    public static final Identifier TEXTURE_NORMAL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king_glowing.png");
+    public static final Identifier TEXTURE_ENRAGED = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/dead_king/dead_king_enraged_glowing.png");
 
     public DeadKingEmissiveLayer(GeoEntityRenderer renderer) {
         super(renderer);
     }
 
-    public static ResourceLocation currentTexture(AbstractSpellCastingMob entity) {
+    public static Identifier currentTexture(AbstractSpellCastingMob entity) {
         return entity instanceof DeadKingBoss boss && boss.isPhase(DeadKingBoss.Phases.FinalPhase) ? TEXTURE_ENRAGED : TEXTURE_NORMAL;
     }
 
-    public static ResourceLocation currentModel(AbstractSpellCastingMob deadKingBoss) {
+    public static Identifier currentModel(AbstractSpellCastingMob deadKingBoss) {
         return DeadKingModel.MODEL;
     }
 
-    public static RenderType renderType(ResourceLocation resourceLocation) {
+    public static RenderType renderType(Identifier resourceLocation) {
         return RenderType.energySwirl(resourceLocation, 0, 0);
     }
 

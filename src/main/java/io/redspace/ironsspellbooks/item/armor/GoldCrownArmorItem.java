@@ -7,7 +7,7 @@ import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ArmorItem;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import software.bernie.geckolib.renderer.GeoArmorRenderer;
+import com.geckolib.renderer.GeoArmorRenderer;
 
 public class GoldCrownArmorItem extends ExtendedArmorItem {
     public GoldCrownArmorItem(ArmorItem.Type slot, Properties settings) {

@@ -1,41 +1,41 @@
 package io.redspace.ironsspellbooks.api.util;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.animation.Animation;
-import software.bernie.geckolib.animation.RawAnimation;
+import net.minecraft.resources.Identifier;
+import com.geckolib.cache.animation.Animation;
+import com.geckolib.animation.RawAnimation;
 
 import java.util.Optional;
 
 public class AnimationHolder {
     private final RawAnimation geckoAnimation;
-    private final ResourceLocation playerAnimation;
+    private final Identifier playerAnimation;
     public final boolean isPass;
     public final boolean animatesLegs;
 
     /**
-     * Use resource-location sensitive {@link AnimationHolder#AnimationHolder(ResourceLocation, boolean, boolean)}
+     * Use resource-location sensitive {@link AnimationHolder#AnimationHolder(Identifier, boolean, boolean)}
      */
     @Deprecated(forRemoval = true)
     public AnimationHolder(String path, boolean playOnce, boolean animatesLegs) {
-        this(path.contains(":") ? ResourceLocation.parse(path) : IronsSpellbooks.id(path), playOnce, animatesLegs);
+        this(path.contains(":") ? Identifier.parse(path) : IronsSpellbooks.id(path), playOnce, animatesLegs);
     }
 
-    public AnimationHolder(ResourceLocation animation, boolean playOnce, boolean animatesLegs) {
+    public AnimationHolder(Identifier animation, boolean playOnce, boolean animatesLegs) {
         this.playerAnimation = animation;
         this.geckoAnimation = RawAnimation.begin().then(playerAnimation.getPath(), playOnce ? Animation.LoopType.PLAY_ONCE : Animation.LoopType.HOLD_ON_LAST_FRAME);
         this.isPass = false;
         this.animatesLegs = animatesLegs;
     }
     /**
-     * Use resource-location sensitive {@link AnimationHolder#AnimationHolder(ResourceLocation, boolean, boolean)}
+     * Use resource-location sensitive {@link AnimationHolder#AnimationHolder(Identifier, boolean, boolean)}
      */
     @Deprecated(forRemoval = true)
     public AnimationHolder(String path, boolean playOnce) {
         this(path, playOnce, false);
     }
 
-    public AnimationHolder(ResourceLocation path, boolean playOnce) {
+    public AnimationHolder(Identifier path, boolean playOnce) {
         this(path, playOnce, false);
     }
 
@@ -67,7 +67,7 @@ public class AnimationHolder {
         return geckoAnimation == null ? Optional.empty() : Optional.of(geckoAnimation);
     }
 
-    public Optional<ResourceLocation> getForPlayer() {
+    public Optional<Identifier> getForPlayer() {
         return playerAnimation == null ? Optional.empty() : Optional.of(playerAnimation);
 
     }

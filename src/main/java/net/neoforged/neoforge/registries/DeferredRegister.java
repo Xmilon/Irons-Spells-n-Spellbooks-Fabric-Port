@@ -3,7 +3,7 @@ package net.neoforged.neoforge.registries;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.IEventBus;
 
 import java.util.ArrayList;
@@ -31,7 +31,7 @@ public class DeferredRegister<T> {
     }
 
     public <I extends T> DeferredHolder<T, I> register(String path, Supplier<I> supplier) {
-        DeferredHolder<T, I> holder = new DeferredHolder<>(registryKey, ResourceLocation.fromNamespaceAndPath(modId, path), supplier);
+        DeferredHolder<T, I> holder = new DeferredHolder<>(registryKey, Identifier.fromNamespaceAndPath(modId, path), supplier);
         entries.add(holder);
         return holder;
     }
@@ -49,7 +49,7 @@ public class DeferredRegister<T> {
         for (DeferredHolder<T, ? extends T> entry : entries) {
             T value = entry.get();
             if (registry != null) {
-                ResourceLocation id = entry.getLocation();
+                Identifier id = entry.getLocation();
                 if (!registry.containsKey(id)) {
                     Registry.register(registry, id, value);
                 }
@@ -61,6 +61,6 @@ public class DeferredRegister<T> {
     @SuppressWarnings("unchecked")
     private Registry<T> resolveRegistry() {
         Registry<? extends Registry<?>> root = BuiltInRegistries.REGISTRY;
-        return (Registry<T>) root.get(registryKey.location());
+        return (Registry<T>) root.get(registryKey.identifier());
     }
 }

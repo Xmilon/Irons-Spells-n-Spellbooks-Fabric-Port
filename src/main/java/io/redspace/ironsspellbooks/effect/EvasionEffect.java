@@ -39,7 +39,7 @@ public class EvasionEffect extends CustomDescriptionMobEffect implements ISynced
     }
 
     public static boolean doEffect(LivingEntity livingEntity, DamageSource damageSource) {
-        if (livingEntity.level().isClientSide
+        if (livingEntity.level().isClientSide()
                 || damageSource.is(DamageTypeTags.IS_FALL)
                 || damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)
                 || damageSource.is(DamageTypeTagsCompat.BYPASS_EVASION)) {

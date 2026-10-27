@@ -81,7 +81,7 @@ public class ElectrocuteProjectile extends AbstractConeProjectile {
     @Override
     public void tick() {
         super.tick();
-        if (level().isClientSide) {
+        if (level().isClientSide()) {
             generateLightningBeams();
         }
     }
@@ -102,7 +102,7 @@ public class ElectrocuteProjectile extends AbstractConeProjectile {
     @Override
     public void spawnParticles() {
 //        var owner = getOwner();
-//        if (!level().isClientSide || owner == null) {
+//        if (!level().isClientSide() || owner == null) {
 //            return;
 //        }
 //        Vec3 rotation = owner.getLookAngle().normalize();

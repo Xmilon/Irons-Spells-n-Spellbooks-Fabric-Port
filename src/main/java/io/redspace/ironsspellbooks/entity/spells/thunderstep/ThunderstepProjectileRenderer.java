@@ -15,19 +15,19 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 public class ThunderstepProjectileRenderer extends EntityRenderer<ThunderstepProjectile> {
 
-    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "ball_lightning_model"), "main");
-    private static final ResourceLocation[] SWIRL_TEXTURES = {
+    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "ball_lightning_model"), "main");
+    private static final Identifier[] SWIRL_TEXTURES = {
             IronsSpellbooks.id("textures/entity/ball_lightning/ball_lightning_0.png"),
             IronsSpellbooks.id("textures/entity/ball_lightning/ball_lightning_1.png"),
             IronsSpellbooks.id("textures/entity/ball_lightning/ball_lightning_2.png"),
@@ -73,9 +73,9 @@ public class ThunderstepProjectileRenderer extends EntityRenderer<ThunderstepPro
             float swirlY = Mth.sin(.065f * f) * 180;
             float swirlZ = Mth.cos(.065f * f + 5464) * 180;
             float scalePerLayer = 0.2f;
-            poseStack.mulPose(Axis.XP.rotationDegrees(swirlX * (int) Math.pow(-1, i)));
-            poseStack.mulPose(Axis.YP.rotationDegrees(swirlY * (int) Math.pow(-1, i)));
-            poseStack.mulPose(Axis.ZP.rotationDegrees(swirlZ * (int) Math.pow(-1, i)));
+            poseStack.rotate(Axis.XP.rotationDegrees(swirlX * (int) Math.pow(-1, i)));
+            poseStack.rotate(Axis.YP.rotationDegrees(swirlY * (int) Math.pow(-1, i)));
+            poseStack.rotate(Axis.ZP.rotationDegrees(swirlZ * (int) Math.pow(-1, i)));
             consumer = bufferSource.getBuffer(RenderHelper.CustomerRenderType.magic(getSwirlTextureLocation(entity, i * i)));
             float scale = 2f - i * scalePerLayer;
             poseStack.scale(scale, scale, scale);
@@ -88,11 +88,11 @@ public class ThunderstepProjectileRenderer extends EntityRenderer<ThunderstepPro
     }
 
     @Override
-    public ResourceLocation getTextureLocation(ThunderstepProjectile entity) {
+    public Identifier getTextureLocation(ThunderstepProjectile entity) {
         return SWIRL_TEXTURES[0];
     }
 
-    private ResourceLocation getSwirlTextureLocation(ThunderstepProjectile entity, int offset) {
+    private Identifier getSwirlTextureLocation(ThunderstepProjectile entity, int offset) {
         int frame = (entity.tickCount + offset) % SWIRL_TEXTURES.length;
         return SWIRL_TEXTURES[frame];
     }

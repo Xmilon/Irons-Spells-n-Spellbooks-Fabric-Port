@@ -13,7 +13,7 @@ import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.TargetedTargetAreaCastData;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -27,7 +27,7 @@ import java.util.Optional;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class SlowSpell extends AbstractSpell {
-    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "slow");
+    private final Identifier spellId = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "slow");
     private static final int MAX_TARGETS = 5;
 
     @Override
@@ -65,7 +65,7 @@ public class SlowSpell extends AbstractSpell {
     }
 
     @Override
-    public ResourceLocation getSpellResource() {
+    public Identifier getSpellResource() {
         return spellId;
     }
 

@@ -23,7 +23,7 @@ public class DragonskinItem extends Item {
     public Entity createEntity(Level world, Entity entity, ItemStack itemstack) {
         if (!world.getEntitiesOfClass(EnderDragon.class, entity.getBoundingBox().inflate(5)).isEmpty()) {
             entity.setNoGravity(true);
-            if (!world.isClientSide)
+            if (!world.isClientSide())
                 MagicManager.spawnParticles(world, ParticleHelper.UNSTABLE_ENDER, entity.getX(), entity.getY(), entity.getZ(), 100, 0, 0, 0, 2, true);
             entity.setDeltaMovement(0, -.01f, 0);
             entity.setGlowingTag(true);

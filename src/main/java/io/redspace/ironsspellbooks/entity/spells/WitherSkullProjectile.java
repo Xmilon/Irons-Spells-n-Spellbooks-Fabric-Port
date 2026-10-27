@@ -57,7 +57,7 @@ public class WitherSkullProjectile extends AbstractMagicProjectile {
     @Override
     protected void onHit(HitResult hitResult) {
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             var entities = level().getEntities(this, this.getBoundingBox().inflate(explosionRadius));
             for (Entity entity : entities) {
                 double distance = entity.distanceToSqr(hitResult.getLocation());

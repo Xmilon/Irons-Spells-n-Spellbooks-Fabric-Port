@@ -35,7 +35,7 @@ public class GustCollider extends AbstractConeProjectile {
 
     @Override
     public void spawnParticles() {
-        if (!level().isClientSide || tickCount > 2) {
+        if (!level().isClientSide() || tickCount > 2) {
             return;
         }
         Vec3 rotation = this.getLookAngle().normalize();

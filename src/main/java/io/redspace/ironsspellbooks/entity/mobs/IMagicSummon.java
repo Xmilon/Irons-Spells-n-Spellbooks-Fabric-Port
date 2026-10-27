@@ -17,7 +17,7 @@ import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.OwnableEntity;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.Level;
 import net.neoforged.neoforge.registries.DeferredHolder;
 
@@ -61,14 +61,14 @@ public interface IMagicSummon extends AntiMagicSusceptible {
             Level level = entity.level();
             var deathMessage = entity.getCombatTracker().getDeathMessage();
 
-            if (!level.isClientSide && level.getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES) && getSummoner() instanceof ServerPlayer player) {
+            if (!level.isClientSide() && level.getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES) && getSummoner() instanceof ServerPlayer player) {
                 player.sendSystemMessage(deathMessage);
             }
         }
     }
 
     default void onRemovedHelper(Entity entity) {
-        if (entity.level().isClientSide) {
+        if (entity.level().isClientSide()) {
             return;
         }
         var reason = entity.getRemovalReason();

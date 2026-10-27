@@ -8,7 +8,7 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.player.AbstractClientPlayer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
@@ -22,7 +22,7 @@ public class AngelWingsModel<T extends LivingEntity> extends AgeableListModel<T>
 
     public static final String MAIN = "main";
     public static final String ANGEL_WINGS = "angel_wings";
-    public static ModelLayerLocation ANGEL_WINGS_LAYER = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, ANGEL_WINGS), MAIN);
+    public static ModelLayerLocation ANGEL_WINGS_LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, ANGEL_WINGS), MAIN);
 
     public AngelWingsModel(ModelPart pRoot) {
         this.leftWing = pRoot.getChild("left_wing");

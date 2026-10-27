@@ -9,10 +9,10 @@ import io.redspace.ironsspellbooks.util.DefaultBipedBoneIdents;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
@@ -20,14 +20,14 @@ import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.ShieldItem;
 import net.minecraft.world.item.SwordItem;
-import software.bernie.geckolib.animatable.GeoAnimatable;
-import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
-import software.bernie.geckolib.renderer.layer.BlockAndItemGeoLayer;
-import software.bernie.geckolib.renderer.layer.ItemArmorGeoLayer;
-import software.bernie.geckolib.util.ClientUtil;
-import software.bernie.geckolib.util.RenderUtil;
+import com.geckolib.animatable.GeoAnimatable;
+import com.geckolib.cache.model.GeoBone;
+import com.geckolib.model.GeoModel;
+import com.geckolib.renderer.GeoEntityRenderer;
+import com.geckolib.renderer.layer.builtin.BlockAndItemGeoLayer;
+import com.geckolib.renderer.layer.builtin.ItemArmorGeoLayer;
+import com.geckolib.util.ClientUtil;
+import com.geckolib.util.RenderUtil;
 
 import javax.annotation.Nonnull;
 import javax.annotation.Nullable;
@@ -150,16 +150,16 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
                 boolean offhand = stack == animatable.getOffhandItem();
 
                 if (!offhand) {
-                    poseStack.mulPose(Axis.XP.rotationDegrees(-90f));
+                    poseStack.rotate(Axis.XP.rotationDegrees(-90f));
 
                     if (stack.getItem() instanceof ShieldItem)
                         poseStack.translate(0, 0.125, -0.25);
                 } else {
-                    poseStack.mulPose(Axis.XP.rotationDegrees(-90f));
+                    poseStack.rotate(Axis.XP.rotationDegrees(-90f));
 
                     if (stack.getItem() instanceof ShieldItem) {
                         poseStack.translate(0, 0.125, 0.25);
-                        poseStack.mulPose(Axis.YP.rotationDegrees(180));
+                        poseStack.rotate(Axis.YP.rotationDegrees(180));
                     }
                 }
                 if (animatable instanceof AbstractSpellCastingMob mob && bone.getName().equals("torso")) {
@@ -167,7 +167,7 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
                         float hipOffset = animatable.getItemBySlot(EquipmentSlot.CHEST).isEmpty() ? .25f : .325f;
                         poseStack.translate(animatable.isLeftHanded() ? hipOffset : -hipOffset, 0, -.4);
 
-                        poseStack.mulPose(Axis.XP.rotationDegrees(215f));
+                        poseStack.rotate(Axis.XP.rotationDegrees(215f));
                         poseStack.scale(.85f, .85f, .85f);
                     }
                 }
@@ -197,10 +197,10 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
         super.render(entity, entityYaw, partialTick, poseStack, bufferSource, packedLight);
         poseStack.pushPose();
         float f = Mth.rotLerp(partialTick, entity.yBodyRotO, entity.yBodyRot);
-        poseStack.mulPose(Axis.YP.rotationDegrees(180.0F - f));
+        poseStack.rotate(Axis.YP.rotationDegrees(180.0F - f));
         if (entity.deathTime > 0) {
             float deathRotation = (entity.deathTime + partialTick - 1f) / 20f * 1.6f;
-            poseStack.mulPose(Axis.ZP.rotationDegrees(Math.min(Mth.sqrt(deathRotation), 1) * getDeathMaxRotation(entity)));
+            poseStack.rotate(Axis.ZP.rotationDegrees(Math.min(Mth.sqrt(deathRotation), 1) * getDeathMaxRotation(entity)));
         }
         model.getBone("torso").ifPresent(bone -> {
             RenderUtil.prepMatrixForBone(poseStack, bone);
@@ -212,7 +212,7 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRe
     }
 
     @Override
-    public @org.jetbrains.annotations.Nullable RenderType getRenderType(T animatable, ResourceLocation texture, @org.jetbrains.annotations.Nullable MultiBufferSource bufferSource, float partialTick) {
+    public @org.jetbrains.annotations.Nullable RenderType getRenderType(T animatable, Identifier texture, @org.jetbrains.annotations.Nullable MultiBufferSource bufferSource, float partialTick) {
         return animatable.isInvisible() ? RenderType.itemEntityTranslucentCull(texture) : RenderType.entityCutoutNoCull(texture, false);
     }
 }

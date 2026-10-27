@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.compat.trinkets;
 import com.google.common.collect.Multimap;
 import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
@@ -12,7 +12,7 @@ import net.minecraft.world.item.ItemStack;
 import java.util.List;
 
 public interface ITrinketItem {
-    default Multimap<Holder<Attribute>, AttributeModifier> getAttributeModifiers(TrinketSlotContext TrinketSlotContext, ResourceLocation id, ItemStack stack) {
+    default Multimap<Holder<Attribute>, AttributeModifier> getAttributeModifiers(TrinketSlotContext TrinketSlotContext, Identifier id, ItemStack stack) {
         return com.google.common.collect.ImmutableMultimap.of();
     }
 

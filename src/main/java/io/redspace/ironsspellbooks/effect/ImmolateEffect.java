@@ -89,7 +89,7 @@ public class ImmolateEffect extends MagicMobEffect implements ISyncedMobEffect {
         }
         float explosionRadius = 6;
         var level = livingEntity.level();
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return true;
         }
         @Nullable Entity attacker = EFFECT_CREDIT.remove(livingEntity);

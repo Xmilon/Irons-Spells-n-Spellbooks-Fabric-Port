@@ -2,8 +2,8 @@ package io.redspace.ironsspellbooks.entity.armor.pumpkin;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.PumpkinArmorItem;
-import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.model.GeoModel;
+import net.minecraft.resources.Identifier;
+import com.geckolib.model.GeoModel;
 
 public class PumpkinArmorModel extends GeoModel<PumpkinArmorItem> {
 
@@ -13,18 +13,18 @@ public class PumpkinArmorModel extends GeoModel<PumpkinArmorItem> {
     }
 
     @Override
-    public ResourceLocation getModelResource(PumpkinArmorItem object) {
-        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/pumpkin_armor.geo.json");
+    public Identifier getModelResource(PumpkinArmorItem object) {
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/pumpkin_armor.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureResource(PumpkinArmorItem object) {
-        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/pumpkin.png");
+    public Identifier getTextureResource(PumpkinArmorItem object) {
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/pumpkin.png");
     }
 
     @Override
-    public ResourceLocation getAnimationResource(PumpkinArmorItem animatable) {
-        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
+    public Identifier getAnimationResource(PumpkinArmorItem animatable) {
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
     }
 //    public static String listOfBonesToString(List<IBone> list){
 //        String s = "";

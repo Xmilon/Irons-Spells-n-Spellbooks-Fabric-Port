@@ -100,7 +100,7 @@ public class VisualFallingBlockEntity extends FallingBlockEntity {
 
     @Override
     public void callOnBrokenAfterFall(Block pBlock, BlockPos pPos) {
-        if (!level().isClientSide && particlesOnImpact) {
+        if (!level().isClientSide() && particlesOnImpact) {
             MagicManager.spawnParticles(level(), new BlockParticleOption(ParticleTypes.BLOCK, this.blockState), getX(), getY(), getZ(), 25, .25, .25, .25, .04, false);
         }
     }

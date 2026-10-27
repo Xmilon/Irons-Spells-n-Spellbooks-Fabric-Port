@@ -25,10 +25,10 @@ import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
-import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimatableManager;
-import software.bernie.geckolib.util.GeckoLibUtil;
+import com.geckolib.animatable.GeoEntity;
+import com.geckolib.animatable.instance.AnimatableInstanceCache;
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 import java.util.ArrayList;
@@ -115,7 +115,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
     }
 
     private void doFallingDamage(Entity target) {
-        if (level().isClientSide)
+        if (level().isClientSide())
             return;
         if (!canHitEntity(target) || victims.contains(target))
             return;
@@ -201,7 +201,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
     private void handleFalling() {
         this.setDeltaMovement(getDeltaMovement().add(0, -.15, 0));
         //server logic only
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             if (onGround()) {
                 doImpactDamage();
                 playSound(SoundRegistry.ICE_BLOCK_IMPACT.get(), 2.5f, .8f + random.nextFloat() * .4f);

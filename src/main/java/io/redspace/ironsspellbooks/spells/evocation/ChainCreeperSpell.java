@@ -10,7 +10,7 @@ import io.redspace.ironsspellbooks.capabilities.magic.TargetEntityCastData;
 import io.redspace.ironsspellbooks.entity.spells.creeper_head.CreeperHeadProjectile;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class ChainCreeperSpell extends AbstractSpell {
-    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "chain_creeper");
+    private final Identifier spellId = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "chain_creeper");
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
@@ -59,7 +59,7 @@ public class ChainCreeperSpell extends AbstractSpell {
     }
 
     @Override
-    public ResourceLocation getSpellResource() {
+    public Identifier getSpellResource() {
         return spellId;
     }
 

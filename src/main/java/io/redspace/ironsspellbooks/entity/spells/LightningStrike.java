@@ -35,7 +35,7 @@ public class LightningStrike extends AoeEntity {
 
     @Override
     public void tick() {
-        if (level().isClientSide) {
+        if (level().isClientSide()) {
             return;
         }
         if (tickCount == 1) {

@@ -39,7 +39,7 @@ public class CurioAttributeModifierEvent {
         modifiers.put(attribute, modifier);
     }
 
-    public void removeModifier(Holder<Attribute> attribute, net.minecraft.resources.ResourceLocation id) {
+    public void removeModifier(Holder<Attribute> attribute, net.minecraft.resources.Identifier id) {
         modifiers.entries().removeIf(entry -> entry.getKey().equals(attribute) && entry.getValue().id().equals(id));
     }
 }

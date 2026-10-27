@@ -12,18 +12,18 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 
 public class GustRenderer extends EntityRenderer<GustCollider> {
 
-    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "gust_model"), "main");
-    private static ResourceLocation TEXTURE = IronsSpellbooks.id("textures/entity/trident_riptide.png");
+    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "gust_model"), "main");
+    private static Identifier TEXTURE = IronsSpellbooks.id("textures/entity/trident_riptide.png");
 
     private final ModelPart body;
 
@@ -44,8 +44,8 @@ public class GustRenderer extends EntityRenderer<GustCollider> {
     public void render(GustCollider entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
         poseStack.pushPose();
         poseStack.translate(0, entity.getBoundingBox().getYsize() * .5f, 0);
-        poseStack.mulPose(Axis.YP.rotationDegrees(-entity.getYRot() - 180.0F));
-        poseStack.mulPose(Axis.XP.rotationDegrees(-entity.getXRot() - 90));
+        poseStack.rotate(Axis.YP.rotationDegrees(-entity.getYRot() - 180.0F));
+        poseStack.rotate(Axis.XP.rotationDegrees(-entity.getXRot() - 90));
         poseStack.scale(.25f, .25f, .25f);
 
         float f = entity.tickCount + partialTicks;
@@ -54,7 +54,7 @@ public class GustRenderer extends EntityRenderer<GustCollider> {
         float alpha = 1f - f / 10f;
 
         for (int i = 0; i < 3; i++) {
-            poseStack.mulPose(Axis.YP.rotationDegrees(f * 10));
+            poseStack.rotate(Axis.YP.rotationDegrees(f * 10));
             poseStack.scale(scale, scale, scale);
             poseStack.translate(0, scale - 1, 0);
             this.body.render(poseStack, consumer, light, OverlayTexture.NO_OVERLAY, FastColor.ARGB32.color((int) (alpha * 255),255,255,255));
@@ -67,7 +67,7 @@ public class GustRenderer extends EntityRenderer<GustCollider> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(GustCollider entity) {
+    public Identifier getTextureLocation(GustCollider entity) {
         return TEXTURE;
     }
 

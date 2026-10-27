@@ -88,7 +88,7 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
     @Override
     public void tick() {
         super.tick();
-        if (level().isClientSide && swingTime > 0) {
+        if (level().isClientSide() && swingTime > 0) {
             swingTime--;
         }
     }
@@ -165,15 +165,15 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
 
     @Override
     protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
-        boolean preventTrade = isAggressive() || (!this.level().isClientSide && this.getOffers().isEmpty());
+        boolean preventTrade = isAggressive() || (!this.level().isClientSide() && this.getOffers().isEmpty());
         if (!preventTrade) {
-            if (!this.level().isClientSide && !this.getOffers().isEmpty()) {
+            if (!this.level().isClientSide() && !this.getOffers().isEmpty()) {
                 if (shouldRestock()) {
                     restock();
                 }
                 this.startTrading(pPlayer);
             }
-            return InteractionResult.sidedSuccess(this.level().isClientSide);
+            return InteractionResult.sidedSuccess(this.level().isClientSide());
         }
         return super.mobInteract(pPlayer, pHand);
     }
@@ -455,7 +455,7 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
 
     @Override
     public void notifyTradeUpdated(ItemStack pStack) {
-        if (!this.level().isClientSide && this.ambientSoundTime > -this.getAmbientSoundInterval() + 20) {
+        if (!this.level().isClientSide() && this.ambientSoundTime > -this.getAmbientSoundInterval() + 20) {
             this.ambientSoundTime = -this.getAmbientSoundInterval();
             this.playSound(this.getTradeUpdatedSound(!pStack.isEmpty()), this.getSoundVolume(), this.getVoicePitch());
         }

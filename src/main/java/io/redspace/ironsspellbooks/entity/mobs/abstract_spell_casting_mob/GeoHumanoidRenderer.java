@@ -10,7 +10,7 @@
 //import net.minecraft.client.model.HumanoidModel;
 //import net.minecraft.client.model.geom.ModelPart;
 //import net.minecraft.client.renderer.entity.EntityRendererProvider;
-//import net.minecraft.resources.ResourceLocation;
+//import net.minecraft.resources.Identifier;
 //import net.minecraft.world.entity.EquipmentSlot;
 //import net.minecraft.world.entity.Mob;
 //import net.minecraft.world.item.ItemDisplayContext;
@@ -20,21 +20,21 @@
 //import org.jetbrains.annotations.Nullable;
 //import software.bernie.example.client.DefaultBipedBoneIdents;
 //import software.bernie.example.client.EntityResources;
-//import software.bernie.geckolib.animatable.GeoAnimatable;
-//import software.bernie.geckolib.model.GeoModel;
-//import software.bernie.geckolib.renderer.GeoEntityRenderer;
-//import software.bernie.geckolib3.core.IAnimatable;
-//import software.bernie.geckolib3.core.processor.IBone;
-//import software.bernie.geckolib3.geo.render.built.GeoBone;
-//import software.bernie.geckolib3.item.GeoArmorItem;
-//import software.bernie.geckolib3.model.AnimatedGeoModel;
-//import software.bernie.geckolib3.renderers.geo.ExtendedGeoEntityRenderer;
-//import software.bernie.geckolib3.renderers.geo.GeoArmorRenderer;
+//import com.geckolib.animatable.GeoAnimatable;
+//import com.geckolib.model.GeoModel;
+//import com.geckolib.renderer.GeoEntityRenderer;
+//import com.geckolib3.core.IAnimatable;
+//import com.geckolib3.core.processor.IBone;
+//import com.geckolib3.geo.render.built.GeoBone;
+//import com.geckolib3.item.GeoArmorItem;
+//import com.geckolib3.model.AnimatedGeoModel;
+//import com.geckolib3.renderers.geo.ExtendedGeoEntityRenderer;
+//import com.geckolib3.renderers.geo.GeoArmorRenderer;
 //
 //import java.util.List;
 //
 //public class GeoHumanoidRenderer<T extends Mob & GeoAnimatable> extends GeoEntityRenderer<T> {
-//    private ResourceLocation textureResource;
+//    private Identifier textureResource;
 //
 //    public GeoHumanoidRenderer(EntityRendererProvider.Context renderManager, GeoModel<T> model) {
 //        super(renderManager, model);
@@ -43,7 +43,7 @@
 //
 //    @Nullable
 //    @Override
-//    protected ResourceLocation getTextureForBone(String boneName, T animatable) {
+//    protected Identifier getTextureForBone(String boneName, T animatable) {
 //        if ("bipedCape".equals(boneName))
 //            return EntityResources.EXTENDED_CAPE_TEXTURE;
 //
@@ -145,7 +145,7 @@
 //    private static final EquipmentSlot[] SLOTS = {EquipmentSlot.FEET, EquipmentSlot.LEGS, EquipmentSlot.CHEST, EquipmentSlot.HEAD};
 //
 //    @Override
-//    protected void handleArmorRenderingForBone(GeoBone bone, PoseStack stack, VertexConsumer buffer, int packedLight, int packedOverlay, ResourceLocation currentTexture) {
+//    protected void handleArmorRenderingForBone(GeoBone bone, PoseStack stack, VertexConsumer buffer, int packedLight, int packedOverlay, Identifier currentTexture) {
 //        super.handleArmorRenderingForBone(bone, stack, buffer, packedLight, packedOverlay, currentTexture);
 //        for (EquipmentSlot slot : SLOTS)
 //            if (currentEntityBeingRendered.getItemBySlot(slot).getItem() instanceof GeoArmorItem geoArmorItem) {
@@ -189,16 +189,16 @@
 //        var mainHandItem = animatable.getMainHandItem();
 //        var offHandItem = animatable.getOffhandItem();
 //        if (itemStack == mainHandItem) {
-//            poseStack.mulPose(Axis.XP.rotationDegrees(-90f));
+//            poseStack.rotate(Axis.XP.rotationDegrees(-90f));
 //
 //            if (itemStack.getItem() instanceof ShieldItem)
 //                poseStack.translate(0, 0.125, -0.25);
 //        } else if (itemStack == offHandItem) {
-//            poseStack.mulPose(Axis.XP.rotationDegrees(-90f));
+//            poseStack.rotate(Axis.XP.rotationDegrees(-90f));
 //
 //            if (itemStack.getItem() instanceof ShieldItem) {
 //                poseStack.translate(0, 0.125, 0.25);
-//                poseStack.mulPose(Axis.YP.rotationDegrees(180));
+//                poseStack.rotate(Axis.YP.rotationDegrees(180));
 //            }
 //        }
 //    }

@@ -21,7 +21,7 @@ import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
@@ -35,7 +35,7 @@ import java.util.Optional;
 
 public class EchoingStrikesSpell extends AbstractSpell {
     public static final float radius = 2;
-    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "echoing_strikes");
+    private final Identifier spellId = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "echoing_strikes");
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
@@ -71,7 +71,7 @@ public class EchoingStrikesSpell extends AbstractSpell {
     }
 
     @Override
-    public ResourceLocation getSpellResource() {
+    public Identifier getSpellResource() {
         return spellId;
     }
 

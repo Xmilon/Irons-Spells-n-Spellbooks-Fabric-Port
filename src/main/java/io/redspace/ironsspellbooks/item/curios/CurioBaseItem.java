@@ -5,7 +5,7 @@ import com.google.common.collect.Multimap;
 import io.redspace.ironsspellbooks.compat.TrinketsSlots;
 import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.InteractionHand;
@@ -49,7 +49,7 @@ public class CurioBaseItem extends Item implements ITrinketItem {
     }
 
 
-    public Multimap<Holder<Attribute>, AttributeModifier> getAttributeModifiers(TrinketSlotContext TrinketSlotContext, ResourceLocation id, ItemStack stack) {
+    public Multimap<Holder<Attribute>, AttributeModifier> getAttributeModifiers(TrinketSlotContext TrinketSlotContext, Identifier id, ItemStack stack) {
         return TrinketSlotContext.identifier().equals(this.attributeSlot) ? attributes.apply(TrinketSlotContext.index()) : ITrinketItem.super.getAttributeModifiers(TrinketSlotContext, id, stack);
     }
 
@@ -95,7 +95,7 @@ public class CurioBaseItem extends Item implements ITrinketItem {
                 continue;
             }
 
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 ItemStack equippedItem = target.get().result.stack().copy();
                 if (equippedItem.isEmpty()) {
                     ItemStack stackToEquip = heldStack.copy();
@@ -116,7 +116,7 @@ public class CurioBaseItem extends Item implements ITrinketItem {
                 }
             }
 
-            return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide);
+            return InteractionResultHolder.sidedSuccess(player.getItemInHand(hand), level.isClientSide());
         }
 
         return super.use(level, player, hand);

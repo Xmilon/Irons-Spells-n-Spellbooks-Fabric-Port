@@ -8,13 +8,13 @@ import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.Abstra
 import io.redspace.ironsspellbooks.entity.spells.SpinAttackModel;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import software.bernie.geckolib.cache.object.BakedGeoModel;
-import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.renderer.GeoRenderer;
-import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
+import com.geckolib.cache.model.BakedGeoModel;
+import com.geckolib.model.GeoModel;
+import com.geckolib.renderer.base.GeoRenderer;
+import com.geckolib.renderer.layer.GeoRenderLayer;
 
 @OnlyIn(Dist.CLIENT)
 public class GeoSpinAttackLayer extends GeoRenderLayer<AbstractSpellCastingMob> {
@@ -36,7 +36,7 @@ public class GeoSpinAttackLayer extends GeoRenderLayer<AbstractSpellCastingMob> 
             for (int i = 0; i < 3; ++i) {
                 poseStack.pushPose();
                 float f = (animatable.tickCount + partialTick) + (float) (-(45 + i * 5));
-                poseStack.mulPose(Axis.YP.rotationDegrees(f));
+                poseStack.rotate(Axis.YP.rotationDegrees(f));
                 float f1 = 0.75F * (float) i;
                 poseStack.scale(f1, f1, f1);
                 poseStack.translate(0, -1 + (double) (-0.2F + 0.6F * (float) i), 0);

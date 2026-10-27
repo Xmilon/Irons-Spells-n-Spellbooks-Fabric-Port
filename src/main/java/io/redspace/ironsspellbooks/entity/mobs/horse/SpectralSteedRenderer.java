@@ -2,11 +2,11 @@ package io.redspace.ironsspellbooks.entity.mobs.horse;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.SummonedHorse;
-import net.minecraft.client.model.HorseModel;
+import net.minecraft.client.model.animal.equine.HorseModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.AbstractHorseRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class SpectralSteedRenderer extends AbstractHorseRenderer<SummonedHorse, HorseModel<SummonedHorse>> {
     public SpectralSteedRenderer(EntityRendererProvider.Context p_174167_) {
@@ -25,7 +25,7 @@ public class SpectralSteedRenderer extends AbstractHorseRenderer<SummonedHorse, 
 //    }
 
     @Override
-    public ResourceLocation getTextureLocation(SummonedHorse pEntity) {
-        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/horse/spectral_steed.png");
+    public Identifier getTextureLocation(SummonedHorse pEntity) {
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/horse/spectral_steed.png");
     }
 }

@@ -4,11 +4,11 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.inventory.ItemCombinerScreen;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Inventory;
 
 public class ArcaneAnvilScreen extends ItemCombinerScreen<ArcaneAnvilMenu> {
-    private static final ResourceLocation ANVIL_LOCATION = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/arcane_anvil.png");
+    private static final Identifier ANVIL_LOCATION = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/arcane_anvil.png");
 
     public ArcaneAnvilScreen(ArcaneAnvilMenu pMenu, Inventory pPlayerInventory, Component pTitle) {
         super(pMenu, pPlayerInventory, pTitle, ANVIL_LOCATION);

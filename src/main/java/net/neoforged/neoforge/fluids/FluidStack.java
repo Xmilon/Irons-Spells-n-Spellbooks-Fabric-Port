@@ -14,7 +14,7 @@ import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.level.material.Fluid;
 import net.minecraft.world.level.material.Fluids;
@@ -123,7 +123,7 @@ public class FluidStack {
 
     public CompoundTag save(net.minecraft.core.HolderLookup.Provider access) {
         CompoundTag tag = new CompoundTag();
-        ResourceLocation fluidId = BuiltInRegistries.FLUID.getKey(fluid);
+        Identifier fluidId = BuiltInRegistries.FLUID.getKey(fluid);
         tag.putString("fluid", fluidId.toString());
         tag.putInt("amount", amount);
 
@@ -142,7 +142,7 @@ public class FluidStack {
         if (tag == null || !tag.contains("fluid")) {
             return EMPTY;
         }
-        Fluid fluid = BuiltInRegistries.FLUID.get(ResourceLocation.parse(tag.getString("fluid")));
+        Fluid fluid = BuiltInRegistries.FLUID.get(Identifier.parse(tag.getString("fluid")));
         int amount = tag.getInt("amount");
         FluidStack stack = new FluidStack(fluid, amount);
 

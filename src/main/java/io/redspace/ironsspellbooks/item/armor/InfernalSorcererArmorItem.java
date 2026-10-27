@@ -13,7 +13,7 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import software.bernie.geckolib.renderer.GeoArmorRenderer;
+import com.geckolib.renderer.GeoArmorRenderer;
 
 import java.util.List;
 

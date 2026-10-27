@@ -78,7 +78,7 @@ public class Snowball extends AbstractMagicProjectile {
     }
 
     public void createFrostField(Vec3 location) {
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             FrostField fire = new FrostField(level());
             fire.setOwner(getOwner());
             fire.setDuration((int) getDamage());

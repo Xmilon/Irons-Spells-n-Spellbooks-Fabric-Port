@@ -20,7 +20,7 @@ import net.minecraft.network.chat.CommonComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
@@ -31,7 +31,7 @@ import net.minecraft.world.phys.Vec2;
 import java.util.ArrayList;
 
 public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionTableMenu> {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/inscription_table.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/inscription_table.png");
     //button locations
     private static final int INSCRIBE_BUTTON_X = 43;
     private static final int INSCRIBE_BUTTON_Y = 35;
@@ -197,7 +197,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     }
 
     private void drawSpellIcon(GuiGraphics guiHelper, Vec2 pos, SpellSlotInfo slot) {
-        //setTexture(slot.containedSpell.getSpellType().getResourceLocation());
+        //setTexture(slot.containedSpell.getSpellType().getIdentifier());
         guiHelper.blit(slot.spellSlot.getSpell().getSpellIconResource(), (int) pos.x + 2, (int) pos.y + 2, 0, 0, 15, 15, 16, 16);
     }
 

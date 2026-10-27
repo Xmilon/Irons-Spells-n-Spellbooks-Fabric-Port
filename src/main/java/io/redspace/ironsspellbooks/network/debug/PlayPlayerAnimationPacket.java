@@ -7,31 +7,31 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.UUID;
 
 public class PlayPlayerAnimationPacket implements CustomPacketPayload {
-    public static final Type<PlayPlayerAnimationPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "play_player_animation"));
+    public static final Type<PlayPlayerAnimationPacket> TYPE = new Type<>(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "play_player_animation"));
     public static final StreamCodec<RegistryFriendlyByteBuf, PlayPlayerAnimationPacket> STREAM_CODEC = CustomPacketPayload.codec(PlayPlayerAnimationPacket::write, PlayPlayerAnimationPacket::new);
 
     private final UUID playerId;
-    private final ResourceLocation animation;
+    private final Identifier animation;
 
-    public PlayPlayerAnimationPacket(UUID playerId, ResourceLocation animation) {
+    public PlayPlayerAnimationPacket(UUID playerId, Identifier animation) {
         this.playerId = playerId;
         this.animation = animation;
     }
 
     public PlayPlayerAnimationPacket(FriendlyByteBuf buf) {
         this.playerId = buf.readUUID();
-        this.animation = buf.readResourceLocation();
+        this.animation = buf.readIdentifier();
     }
 
     public void write(FriendlyByteBuf buf) {
         buf.writeUUID(playerId);
-        buf.writeResourceLocation(animation);
+        buf.writeIdentifier(animation);
     }
 
     public static void handle(PlayPlayerAnimationPacket packet, IPayloadContext context) {

@@ -108,7 +108,7 @@ public class DeadKingSoulEntity extends Entity implements AntiMagicSusceptible {
         this.xo = d0;
         this.yo = d1;
         this.zo = d2;
-        if (level().isClientSide) {
+        if (level().isClientSide()) {
             double halfWidth = getBbWidth() * 0.5;
             int count = isAtSpawn() ? 1 : 3;
             for (int i = 0; i < count; i++) {

@@ -7,7 +7,7 @@ import io.redspace.ironsspellbooks.render.GeoLivingEntityRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.cache.object.BakedGeoModel;
+import com.geckolib.cache.model.BakedGeoModel;
 
 public class RootRenderer extends GeoLivingEntityRenderer<RootEntity> {
     public RootRenderer(EntityRendererProvider.Context context) {

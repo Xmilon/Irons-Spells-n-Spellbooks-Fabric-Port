@@ -98,7 +98,7 @@ public class TargetedAreaEntity extends Entity {
         if (shouldFade && this.tickCount >= duration - 10) {
             this.entityData.set(DATA_FADING, true);
         }
-        if (!level().isClientSide
+        if (!level().isClientSide()
                 && (duration > 0 && tickCount > duration
                 || duration == 0 && tickCount > 20 * 20
                 || (hasOwner && (owner == null || owner.isRemoved())))
@@ -138,7 +138,7 @@ public class TargetedAreaEntity extends Entity {
     }
 
     public void setRadius(float pRadius) {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.getEntityData().set(DATA_RADIUS, Mth.clamp(pRadius, 0.0F, 32.0F));
         }
     }
@@ -156,7 +156,7 @@ public class TargetedAreaEntity extends Entity {
     }
 
     public void setColor(int color) {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.getEntityData().set(DATA_COLOR, color);
         }
     }

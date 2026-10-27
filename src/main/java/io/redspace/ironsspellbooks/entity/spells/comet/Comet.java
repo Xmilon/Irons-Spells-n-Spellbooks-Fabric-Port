@@ -73,7 +73,7 @@ public class Comet extends AbstractMagicProjectile {
 
     @Override
     protected void onHit(HitResult hitResult) {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             impactParticles(xOld, yOld, zOld);
             getImpactSound().ifPresent(this::doImpactSound);
             float explosionRadius = getExplosionRadius();

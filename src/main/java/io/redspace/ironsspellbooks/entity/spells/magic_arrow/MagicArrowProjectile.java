@@ -109,7 +109,7 @@ public class MagicArrowProjectile extends AbstractMagicProjectile {
     @Override
     protected void onHit(HitResult result) {
         //IronsSpellbooks.LOGGER.debug("onHit ({})", result.getType());
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             var blockPos = BlockPos.containing(result.getLocation());
             if (result.getType() == HitResult.Type.BLOCK && !blockPos.equals(lastHitBlock)) {
                 lastHitBlock = blockPos;

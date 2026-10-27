@@ -23,11 +23,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
-import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.animation.*;
-import software.bernie.geckolib.util.GeckoLibUtil;
+import com.geckolib.animatable.GeoEntity;
+import com.geckolib.animatable.instance.AnimatableInstanceCache;
+import com.geckolib.cache.animation.AnimationState;
+import com.geckolib.animation.*;
+import com.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -104,7 +104,7 @@ public class WispEntity extends PathfinderMob implements GeoEntity {
     public void tick() {
         super.tick();
 
-        if (level().isClientSide) {
+        if (level().isClientSide()) {
             spawnParticles();
         } else {
             var target = this.getTarget();
@@ -234,7 +234,7 @@ public class WispEntity extends PathfinderMob implements GeoEntity {
     }
 
     public boolean hurt(DamageSource pSource, float pAmount) {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.popAndDie();
         }
 
@@ -260,7 +260,7 @@ public class WispEntity extends PathfinderMob implements GeoEntity {
 //            double dy = Utils.random.nextDouble() * 2 * speed - speed;
 //            double dz = Utils.random.nextDouble() * 2 * speed - speed;
 //            var tmp = ParticleHelper.UNSTABLE_ENDER;
-//            //IronsSpellbooks.LOGGER.debug("WispEntity.spawnParticles isClientSide:{}, position:{}, {} {} {}", this.level().isClientSide, this.position(), dx, dy, dz);
+//            //IronsSpellbooks.LOGGER.debug("WispEntity.spawnParticles isClientSide:{}, position:{}, {} {} {}", this.level().isClientSide(), this.position(), dx, dy, dz);
 //            level().addParticle(ParticleHelper.WISP, this.xOld - dx, this.position().y, this.zOld - dz, dx, dy, dz);
 //            //level().addParticle(ParticleHelper.UNSTABLE_ENDER, this.getX() + dx / 2, this.getY() + dy / 2, this.getZ() + dz / 2, dx, dy, dz);
 //        }

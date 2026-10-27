@@ -13,20 +13,20 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.FastColor;
 import net.minecraft.util.Mth;
 
 public class RayOfFrostRenderer extends EntityRenderer<RayOfFrostVisualEntity> {
 
-    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "ray_of_frost_model"), "main");
-    private static final ResourceLocation TEXTURE_CORE = IronsSpellbooks.id("textures/entity/ray_of_frost/core.png");
-    private static final ResourceLocation TEXTURE_OVERLAY = IronsSpellbooks.id("textures/entity/ray_of_frost/overlay.png");
+    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "ray_of_frost_model"), "main");
+    private static final Identifier TEXTURE_CORE = IronsSpellbooks.id("textures/entity/ray_of_frost/core.png");
+    private static final Identifier TEXTURE_OVERLAY = IronsSpellbooks.id("textures/entity/ray_of_frost/overlay.png");
 
     private final ModelPart body;
 
@@ -56,8 +56,8 @@ public class RayOfFrostRenderer extends EntityRenderer<RayOfFrostVisualEntity> {
         float length = 32 * scalar * scalar;
         float f = entity.tickCount + partialTicks;
         poseStack.translate(0, entity.getBoundingBox().getYsize() * .5f, 0);
-        poseStack.mulPose(Axis.YP.rotationDegrees(-entity.getYRot() - 180.0F));
-        poseStack.mulPose(Axis.XP.rotationDegrees(-entity.getXRot() - 90));
+        poseStack.rotate(Axis.YP.rotationDegrees(-entity.getYRot() - 180.0F));
+        poseStack.rotate(Axis.XP.rotationDegrees(-entity.getXRot() - 90));
         poseStack.scale(scalar, scalar, scalar);
 
         //float scale = Mth.lerp(Mth.clamp(f / 6f, 0, 1), 1, 2.3f);
@@ -72,9 +72,9 @@ public class RayOfFrostRenderer extends EntityRenderer<RayOfFrostVisualEntity> {
             {
                 poseStack.pushPose();
                 float expansion = Mth.clampedLerp(1.2f, 0, f / (lifetime));
-                poseStack.mulPose(Axis.YP.rotationDegrees(f * 5));
+                poseStack.rotate(Axis.YP.rotationDegrees(f * 5));
                 poseStack.scale(expansion, 1, expansion);
-                poseStack.mulPose(Axis.YP.rotationDegrees(45));
+                poseStack.rotate(Axis.YP.rotationDegrees(45));
                 this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, FastColor.ARGB32.color((int) (alpha * 255),255,255,255));
                 poseStack.popPose();
             }
@@ -84,7 +84,7 @@ public class RayOfFrostRenderer extends EntityRenderer<RayOfFrostVisualEntity> {
                 poseStack.pushPose();
                 float expansion = Mth.clampedLerp(1, 0, f / (lifetime - 8));
                 poseStack.scale(expansion, 1, expansion);
-                poseStack.mulPose(Axis.YP.rotationDegrees(f * -10));
+                poseStack.rotate(Axis.YP.rotationDegrees(f * -10));
                 this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, -1);
                 poseStack.popPose();
             }
@@ -97,7 +97,7 @@ public class RayOfFrostRenderer extends EntityRenderer<RayOfFrostVisualEntity> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(RayOfFrostVisualEntity entity) {
+    public Identifier getTextureLocation(RayOfFrostVisualEntity entity) {
         return TEXTURE_CORE;
     }
 

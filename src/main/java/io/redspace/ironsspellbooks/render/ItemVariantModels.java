@@ -4,7 +4,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.resources.model.BakedModel;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemDisplayContext;
 
@@ -30,17 +30,17 @@ public final class ItemVariantModels {
             "dragonskin_spell_book", "druidic_spell_book", "gold_spell_book", "ice_spell_book", "iron_spell_book",
             "necronomicon_spell_book", "netherite_spell_book", "rotten_spell_book", "villager_spell_book");
 
-    private static final Map<Item, ResourceLocation[]> CACHE = new ConcurrentHashMap<>();
-    private static final ResourceLocation[] NONE = new ResourceLocation[2];
+    private static final Map<Item, Identifier[]> CACHE = new ConcurrentHashMap<>();
+    private static final Identifier[] NONE = new Identifier[2];
 
     private ItemVariantModels() {
     }
 
-    public static ResourceLocation guiId(String name) {
+    public static Identifier guiId(String name) {
         return IronsSpellbooks.id("item/" + name + "_gui");
     }
 
-    public static ResourceLocation headId(String name) {
+    public static Identifier headId(String name) {
         return IronsSpellbooks.id("item/" + name + "_head");
     }
 
@@ -59,12 +59,12 @@ public final class ItemVariantModels {
         return variant == null || variant == manager.getMissingModel() ? model : variant;
     }
 
-    private static ResourceLocation[] resolve(Item item) {
-        ResourceLocation key = BuiltInRegistries.ITEM.getKey(item);
+    private static Identifier[] resolve(Item item) {
+        Identifier key = BuiltInRegistries.ITEM.getKey(item);
         if (!IronsSpellbooks.MODID.equals(key.getNamespace())) {
             return NONE;
         }
         String name = key.getPath();
-        return new ResourceLocation[]{GUI.contains(name) ? guiId(name) : null, HEAD.contains(name) ? headId(name) : null};
+        return new Identifier[]{GUI.contains(name) ? guiId(name) : null, HEAD.contains(name) ? headId(name) : null};
     }
 }

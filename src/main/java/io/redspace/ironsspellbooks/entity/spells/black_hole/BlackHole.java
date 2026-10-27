@@ -99,7 +99,7 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
     }
 
     public void setRadius(float pRadius) {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.getEntityData().set(DATA_RADIUS, Math.min(pRadius, 48));
         }
     }
@@ -163,7 +163,7 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
                 entity.fallDistance = 0;
             }
         }
-        if (!level().isClientSide && ServerConfigs.safeGet(ServerConfigs.SPELL_GREIFING)) {
+        if (!level().isClientSide() && ServerConfigs.safeGet(ServerConfigs.SPELL_GREIFING)) {
             int tries = 0;
             BlockHitResult blockHit;
             do {
@@ -185,7 +185,7 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
 
             } while (blockHit.getType() == HitResult.Type.MISS && tries++ < 3);
         }
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             if (tickCount > duration) {
                 this.discard();
                 this.playSound(SoundRegistry.BLACK_HOLE_CAST.get(), getRadius() / 2f, 1);

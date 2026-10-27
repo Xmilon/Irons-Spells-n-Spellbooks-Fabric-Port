@@ -44,9 +44,9 @@ public class PedestalRenderer implements BlockEntityRenderer<PedestalTile> {
         int renderId = (int) pedestalTile.getBlockPos().asLong();
 
         poseStack.translate(offset.x, offset.y, offset.z);
-        poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
+        poseStack.rotate(Axis.YP.rotationDegrees(yRot));
         if (itemStack.getItem() instanceof SwordItem || itemStack.getItem() instanceof DiggerItem) {
-            poseStack.mulPose(Axis.ZP.rotationDegrees(-45));
+            poseStack.rotate(Axis.ZP.rotationDegrees(-45));
         }
 
         poseStack.scale(0.65f, 0.65f, 0.65f);

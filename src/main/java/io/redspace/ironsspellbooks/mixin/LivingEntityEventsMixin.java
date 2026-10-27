@@ -30,7 +30,7 @@ public abstract class LivingEntityEventsMixin {
     @Inject(method = "hurt", at = @At("HEAD"), cancellable = true)
     private void irons_spellbooks$incomingDamage(DamageSource source, float amount, CallbackInfoReturnable<Boolean> cir) {
         LivingEntity self = (LivingEntity) (Object) this;
-        if (self.level().isClientSide || irons_spellbooks$postingIncomingDamage) {
+        if (self.level().isClientSide() || irons_spellbooks$postingIncomingDamage) {
             return;
         }
         var event = NeoForge.EVENT_BUS.post(new LivingIncomingDamageEvent(self, source, amount));
@@ -72,7 +72,7 @@ public abstract class LivingEntityEventsMixin {
     @ModifyVariable(method = "actuallyHurt", at = @At("HEAD"), argsOnly = true)
     private float irons_spellbooks$damagePreEvent(float amount, DamageSource source) {
         LivingEntity self = (LivingEntity) (Object) this;
-        if (self.level().isClientSide) {
+        if (self.level().isClientSide()) {
             return amount;
         }
         return NeoForge.EVENT_BUS.post(new LivingDamageEvent.Pre(self, source, amount)).getAmount();

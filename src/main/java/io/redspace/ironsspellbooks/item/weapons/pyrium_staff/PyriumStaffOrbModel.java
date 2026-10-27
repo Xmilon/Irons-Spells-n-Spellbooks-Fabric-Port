@@ -9,14 +9,14 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class PyriumStaffOrbModel extends Model {
-    public static final ResourceLocation TEXTURE = IronsSpellbooks.id("textures/item/pyrium_staff_orb.png");
+    public static final Identifier TEXTURE = IronsSpellbooks.id("textures/item/pyrium_staff_orb.png");
     public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(IronsSpellbooks.id("pyrium_staff_orb"), "main");
     private final ModelPart root;
 

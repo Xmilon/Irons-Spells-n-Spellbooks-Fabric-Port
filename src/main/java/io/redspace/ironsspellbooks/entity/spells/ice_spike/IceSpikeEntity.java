@@ -101,7 +101,7 @@ public class IceSpikeEntity extends AoeEntity {
         this.refreshDimensions();
         int waitTime = getWaitTime();
         if (tickCount == waitTime) {
-            if (!level().isClientSide) {
+            if (!level().isClientSide()) {
                 float f = getSpikeSize();
                 if (!this.isSilent()) {
                     level().playSound(null, this.blockPosition(), SoundRegistry.ICE_SPIKE_EMERGE.get(), SoundSource.NEUTRAL, 1.25f * getSpikeSize(), Mth.randomBetweenInclusive(Utils.random, 6, 12) * .1f);

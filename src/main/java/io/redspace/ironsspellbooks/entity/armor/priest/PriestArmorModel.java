@@ -2,27 +2,27 @@ package io.redspace.ironsspellbooks.entity.armor.priest;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.PriestArmorItem;
-import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.model.DefaultedItemGeoModel;
+import net.minecraft.resources.Identifier;
+import com.geckolib.model.DefaultedItemGeoModel;
 
 public class PriestArmorModel extends DefaultedItemGeoModel<PriestArmorItem> {
 
     public PriestArmorModel() {
-        super(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "armor/priest"));
+        super(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "armor/priest"));
     }
 
     @Override
-    public ResourceLocation getModelResource(PriestArmorItem object) {
-        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/priest_armor.geo.json");
+    public Identifier getModelResource(PriestArmorItem object) {
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/priest_armor.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureResource(PriestArmorItem object) {
-        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/priest.png");
+    public Identifier getTextureResource(PriestArmorItem object) {
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/priest.png");
     }
 
     @Override
-    public ResourceLocation getAnimationResource(PriestArmorItem animatable) {
-        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
+    public Identifier getAnimationResource(PriestArmorItem animatable) {
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
     }
 }

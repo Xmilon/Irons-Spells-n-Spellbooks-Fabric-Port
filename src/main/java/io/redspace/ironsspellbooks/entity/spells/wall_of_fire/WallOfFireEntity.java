@@ -76,7 +76,7 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityWit
             subEntity.xOld = pos.x;
             subEntity.yOld = pos.y;
             subEntity.zOld = pos.z;
-            if (level().isClientSide && i < subEntitiesLength - 1) {
+            if (level().isClientSide() && i < subEntitiesLength - 1) {
                 int count = this.random.nextIntBetweenInclusive(1,2);
                 for (int j = 0; j < count; j++) {
                     Vec3 offset = partPositions.get(i + 1).subtract(pos).scale(Utils.random.nextFloat()).add(Utils.getRandomVec3(.1));
@@ -90,7 +90,7 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityWit
                 }
             }
         }
-        if (!level().isClientSide && --lifetime < 0) {
+        if (!level().isClientSide() && --lifetime < 0) {
             discard();
         }
     }

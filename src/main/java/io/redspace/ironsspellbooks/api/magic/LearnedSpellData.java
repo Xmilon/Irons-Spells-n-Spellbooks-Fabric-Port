@@ -7,7 +7,7 @@ import net.minecraft.nbt.ListTag;
 import net.minecraft.nbt.StringTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.network.FriendlyByteBuf;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -16,12 +16,12 @@ import java.util.Set;
 public class LearnedSpellData implements ISerializable {
     public static final String LEARNED_SPELLS = "learnedSpells";
 
-    public final Set<ResourceLocation> learnedSpells = new HashSet<>();
+    public final Set<Identifier> learnedSpells = new HashSet<>();
 
     public void saveToNBT(CompoundTag compound) {
         if (!learnedSpells.isEmpty()) {
             ListTag listTag = new ListTag();
-            for (ResourceLocation resourceLocation : learnedSpells) {
+            for (Identifier resourceLocation : learnedSpells) {
                 listTag.add(StringTag.valueOf(resourceLocation.toString()));
             }
             compound.put(LEARNED_SPELLS, listTag);
@@ -33,7 +33,7 @@ public class LearnedSpellData implements ISerializable {
         if (learnedTag != null && !learnedTag.isEmpty()) {
             for (Tag tag : learnedTag) {
                 if (tag instanceof StringTag stringTag) {
-                    ResourceLocation resourceLocation = ResourceLocation.parse(stringTag.getAsString());
+                    Identifier resourceLocation = Identifier.parse(stringTag.getAsString());
                     if (SpellRegistry.getSpell(resourceLocation) != null) {
                         learnedSpells.add(resourceLocation);
                     }
@@ -45,8 +45,8 @@ public class LearnedSpellData implements ISerializable {
     @Override
     public void writeToBuffer(FriendlyByteBuf buf) {
         buf.writeInt(learnedSpells.size());
-        for (ResourceLocation resourceLocation : learnedSpells) {
-            buf.writeResourceLocation(resourceLocation);
+        for (Identifier resourceLocation : learnedSpells) {
+            buf.writeIdentifier(resourceLocation);
         }
     }
 
@@ -55,7 +55,7 @@ public class LearnedSpellData implements ISerializable {
         int i = buf.readInt();
         if (i > 0) {
             for (int j = 0; j < i; j++) {
-                ResourceLocation resourceLocation = buf.readResourceLocation();
+                Identifier resourceLocation = buf.readIdentifier();
                 if (SpellRegistry.REGISTRY.get(resourceLocation) != null) {
                     learnedSpells.add(resourceLocation);
                 }

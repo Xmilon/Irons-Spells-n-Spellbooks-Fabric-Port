@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.registries.RecipeRegistry;
-import net.minecraft.advancements.Criterion;
+import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.core.Holder;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
@@ -13,7 +13,7 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -196,7 +196,7 @@ public record BrewAlchemistCauldronRecipe(FluidStack fluidIn, Ingredient reagent
         }
 
         @Override
-        public void save(RecipeOutput recipeOutput, ResourceLocation id) {
+        public void save(RecipeOutput recipeOutput, Identifier id) {
             //todo: validity check results' size, custom throw (instead of null)
             Objects.requireNonNull(input);
             Objects.requireNonNull(reagent);

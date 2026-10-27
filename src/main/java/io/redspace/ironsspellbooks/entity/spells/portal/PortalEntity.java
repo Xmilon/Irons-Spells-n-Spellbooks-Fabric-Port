@@ -65,7 +65,7 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
 
     @Override
     public void onAntiMagic(MagicData magicData) {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             discard();
         }
     }
@@ -76,7 +76,7 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
 
     @Override
     public void remove(RemovalReason reason) {
-        if (!this.level().isClientSide && clearPortalOnDeath()) {
+        if (!this.level().isClientSide() && clearPortalOnDeath()) {
             if (reason.shouldDestroy()) {
                 PortalManager.INSTANCE.killPortal(uuid, getOwnerUUID());
             }
@@ -114,7 +114,7 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
     }
 
     public void checkForEntitiesToTeleport() {
-        if (this.level().isClientSide) return;
+        if (this.level().isClientSide()) return;
         this.level().getEntities((Entity) null, this.getBoundingBox(), (entity -> !entity.getType().is(ModTags.CANT_USE_PORTAL) && (entity.isPickable() || entity instanceof Projectile) && !entity.isVehicle() && !entity.isSpectator())).forEach(entity -> {
             //IronsSpellbooks.LOGGER.debug("PortalEntity: entity near portal:{}, portal:{}", entity, uuid);
 
@@ -164,7 +164,7 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
 
     @Override
     public void tick() {
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             Vec3 center = this.getBoundingBox().getCenter();
             for (int i = 0; i < 2; i++) {
                 this.level().addParticle(ParticleHelper.PORTAL_FRAME, center.x, center.y, center.z, 1f, 2.1f, this.getYRot());
@@ -208,7 +208,7 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
     public void onSyncedDataUpdated(EntityDataAccessor<?> pKey) {
         super.onSyncedDataUpdated(pKey);
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             return;
         }
 

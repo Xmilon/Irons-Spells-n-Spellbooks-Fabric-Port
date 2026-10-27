@@ -106,7 +106,7 @@ public class ArcaneShackleProjectile extends AbstractMagicProjectile {
         } else {
             victim = null;
         }
-        if (!level().isClientSide && victim != null) {
+        if (!level().isClientSide() && victim != null) {
             spawnChainsOnEntity(victim);
         }
         consumeEntityImpact(result, true);
@@ -115,7 +115,7 @@ public class ArcaneShackleProjectile extends AbstractMagicProjectile {
     @Override
     protected void onHitBlock(@NotNull BlockHitResult result) {
         super.onHitBlock(result);
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             Vec3 impactPos = result.getLocation();
             spawnChainsFromBlock(impactPos);
         }

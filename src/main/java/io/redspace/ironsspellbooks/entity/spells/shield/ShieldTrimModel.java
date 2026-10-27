@@ -3,23 +3,20 @@ package io.redspace.ironsspellbooks.entity.spells.shield;
 // Exported for Minecraft version 1.17 or later with Mojang mappings
 // Paste this class into your mod and generate all required imports
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
-public class ShieldTrimModel extends EntityModel<ShieldEntity> {
+public class ShieldTrimModel extends EntityModel<ShieldRenderer.ShieldRenderState> {
     // This layer location should be baked with EntityRendererProvider.Context in the entity renderer and passed into this model's constructor
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "shield_trim_model"), "main");
-    private final ModelPart bb_main;
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "shield_trim_model"), "main");
 
     public ShieldTrimModel(ModelPart root) {
-        this.bb_main = root.getChild("bb_main");
+        super(root);
     }
 
     public static LayerDefinition createBodyLayer() {
@@ -46,13 +43,4 @@ public class ShieldTrimModel extends EntityModel<ShieldEntity> {
         return LayerDefinition.create(meshdefinition, 64, 32);
     }
 
-    @Override
-    public void setupAnim(ShieldEntity entity, float limbSwing, float limbSwingAmount, float ageInTicks, float netHeadYaw, float headPitch) {
-
-    }
-
-    @Override
-    public void renderToBuffer(PoseStack pPoseStack, VertexConsumer pBuffer, int pPackedLight, int pPackedOverlay, int pColor) {
-        bb_main.render(pPoseStack, pBuffer, pPackedLight, pPackedOverlay, pColor);
-    }
 }

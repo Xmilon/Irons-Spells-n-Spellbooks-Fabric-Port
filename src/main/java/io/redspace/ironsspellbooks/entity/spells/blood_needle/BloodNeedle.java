@@ -42,12 +42,12 @@ public class BloodNeedle extends AbstractMagicProjectile {
     }
 
     public void setZRot(float zRot) {
-        if (!level().isClientSide)
+        if (!level().isClientSide())
             entityData.set(DATA_Z_ROT, zRot);
     }
 
     public void setScale(float scale) {
-        if (!level().isClientSide)
+        if (!level().isClientSide())
             entityData.set(DATA_SCALE, scale);
     }
 

@@ -72,7 +72,7 @@ public class MagicFireball extends AbstractMagicProjectile {
 
     @Override
     protected void onHit(HitResult hitResult) {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             impactParticles(xOld, yOld, zOld);
             float explosionRadius = getExplosionRadius();
             var explosionRadiusSqr = explosionRadius * explosionRadius;

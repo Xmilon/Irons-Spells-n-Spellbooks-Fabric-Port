@@ -96,7 +96,7 @@ public class PoisonArrow extends AbstractMagicProjectile {
         this.playSound(SoundEvents.ARROW_HIT, 1.0F, 1.2F / (this.random.nextFloat() * 0.2F + 0.9F));
         this.inGround = true;
         this.shakeTime = 7;
-        if (!level().isClientSide && !hasEmittedPoison) {
+        if (!level().isClientSide() && !hasEmittedPoison) {
             createPoisonCloud(pResult.getLocation());
         }
 
@@ -106,7 +106,7 @@ public class PoisonArrow extends AbstractMagicProjectile {
 
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
-        if (level().isClientSide)
+        if (level().isClientSide())
             return;
         Entity entity = entityHitResult.getEntity();
         boolean hit = DamageSources.applyDamage(entity, getDamage(), SpellRegistry.POISON_ARROW_SPELL.get().getDamageSource(this, getOwner()));
@@ -114,7 +114,7 @@ public class PoisonArrow extends AbstractMagicProjectile {
         boolean ignore = entity.getType() == EntityType.ENDERMAN;
         if (hit) {
             if (!ignore) {
-                if (!level().isClientSide && !hasEmittedPoison)
+                if (!level().isClientSide() && !hasEmittedPoison)
                     createPoisonCloud(entity.position());
                 if (entity instanceof LivingEntity livingEntity)
                     livingEntity.setArrowCount(livingEntity.getArrowCount() + 1);
@@ -138,7 +138,7 @@ public class PoisonArrow extends AbstractMagicProjectile {
     }
 
     public void createPoisonCloud(Vec3 location) {
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             PoisonCloud cloud = new PoisonCloud(level());
             cloud.setOwner(getOwner());
             cloud.setDuration(200);

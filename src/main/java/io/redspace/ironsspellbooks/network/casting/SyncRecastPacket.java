@@ -7,13 +7,13 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class SyncRecastPacket implements CustomPacketPayload {
 
     private final RecastInstance recastInstance;
-    public static final CustomPacketPayload.Type<SyncRecastPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "sync_recast"));
+    public static final CustomPacketPayload.Type<SyncRecastPacket> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "sync_recast"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncRecastPacket> STREAM_CODEC = CustomPacketPayload.codec(SyncRecastPacket::write, SyncRecastPacket::new);
 
     public SyncRecastPacket(RecastInstance recastInstance) {

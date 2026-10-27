@@ -14,22 +14,22 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.List;
 import java.util.Map;
 
-public record AffinityData(Map<ResourceLocation, Integer> affinityData) {
+public record AffinityData(Map<Identifier, Integer> affinityData) {
     //FIXME: HOLY SCUFF DELETE THIS SCURGE ASAP
     @Deprecated(forRemoval = true)
     public static final Codec<AffinityData> SINGLE_CODEC = RecordCodecBuilder.create(builder -> builder.group(
             Codec.STRING.fieldOf(SpellData.SPELL_ID).forGetter(data -> data.affinityData.keySet().stream().findFirst().orElse(IronsSpellbooks.id("none")).toString()),
             Codec.INT.optionalFieldOf("bonus", 1).forGetter(data -> data.affinityData.values().stream().findFirst().orElse(1))
-    ).apply(builder, (s, i) -> new AffinityData(Map.of(ResourceLocation.parse(s), i))));
+    ).apply(builder, (s, i) -> new AffinityData(Map.of(Identifier.parse(s), i))));
 
     public static final Codec<AffinityData> MULTI_CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            Codec.unboundedMap(ResourceLocation.CODEC, Codec.INT).fieldOf("bonuses").forGetter(AffinityData::affinityData)
+            Codec.unboundedMap(Identifier.CODEC, Codec.INT).fieldOf("bonuses").forGetter(AffinityData::affinityData)
     ).apply(builder, AffinityData::new));
 
     public static final Codec<AffinityData> CODEC = Codec.withAlternative(MULTI_CODEC, SINGLE_CODEC);
@@ -39,7 +39,7 @@ public record AffinityData(Map<ResourceLocation, Integer> affinityData) {
     public static final AffinityData NONE = new AffinityData(Map.of());
 
     private AffinityData(String id) {
-        this(Map.of(ResourceLocation.parse(id), 1));
+        this(Map.of(Identifier.parse(id), 1));
     }
 
     public AffinityData(AbstractSpell spell) {

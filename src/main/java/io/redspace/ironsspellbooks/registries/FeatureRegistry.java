@@ -12,7 +12,7 @@ import net.minecraft.data.worldgen.BootstrapContext;
 import net.minecraft.data.worldgen.features.FeatureUtils;
 import net.minecraft.data.worldgen.placement.PlacementUtils;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BiomeTags;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.tags.TagKey;
@@ -94,15 +94,15 @@ public class FeatureRegistry {
     }
 
     private static ResourceKey<ConfiguredFeature<?, ?>> configuredFeatureResourceKey(final String name) {
-        return ResourceKey.create(CONFIGURED_FEATURES.getRegistryKey(), ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, name));
+        return ResourceKey.create(CONFIGURED_FEATURES.getRegistryKey(), Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, name));
     }
 
     private static ResourceKey<PlacedFeature> placedFeatureResourceKey(final String name) {
-        return ResourceKey.create(PLACED_FEATURES.getRegistryKey(), ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, name));
+        return ResourceKey.create(PLACED_FEATURES.getRegistryKey(), Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, name));
     }
 
     private static ResourceKey<BiomeModifier> biomeModifierResourceKey(final String name) {
-        return ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, name));
+        return ResourceKey.create(NeoForgeRegistries.Keys.BIOME_MODIFIERS, Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, name));
     }
 
     private static HolderSet<Biome> tag(final HolderGetter<Biome> holderGetter, final TagKey<Biome> key) {

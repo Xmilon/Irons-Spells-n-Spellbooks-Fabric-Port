@@ -22,7 +22,7 @@ public class GluttonyEffect extends MagicMobEffect {
     public static void finishEating(LivingEntityUseItemEvent.Finish event) {
         var entity = event.getEntity();
         //This won't account for cake blocks, but that would require more invasive mixins to detect so this is fine
-        if (!entity.level().isClientSide) {
+        if (!entity.level().isClientSide()) {
             var food = event.getItem().get(DataComponents.FOOD);
             if (food != null) {
                 var gluttony = entity.getEffect(MobEffectRegistry.GLUTTONY);

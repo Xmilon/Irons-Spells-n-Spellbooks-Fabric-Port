@@ -113,7 +113,7 @@ public class InscriptionTableBlock extends HorizontalDirectionalBlock implements
 
     public void setPlacedBy(Level pLevel, BlockPos pPos, BlockState pState, @Nullable LivingEntity pPlacer, ItemStack pStack) {
         super.setPlacedBy(pLevel, pPos, pState, pPlacer, pStack);
-        if (!pLevel.isClientSide) {
+        if (!pLevel.isClientSide()) {
             BlockPos blockpos = pPos.relative(pState.getValue(FACING).getClockWise());
             pLevel.setBlock(blockpos, pState.setValue(PART, ChestType.LEFT).setValue(WATERLOGGED, pLevel.getFluidState(blockpos).getType() == Fluids.WATER), 3);
             pLevel.setBlock(pPos, pState.setValue(PART, ChestType.RIGHT), 3);
@@ -147,7 +147,7 @@ public class InscriptionTableBlock extends HorizontalDirectionalBlock implements
 
     @Override
     protected InteractionResult useWithoutItem(BlockState pState, Level pLevel, BlockPos pPos, Player pPlayer, BlockHitResult pHitResult) {
-        if (pLevel.isClientSide) {
+        if (pLevel.isClientSide()) {
             return InteractionResult.SUCCESS;
         } else {
             pPlayer.openMenu(pState.getMenuProvider(pLevel, pPos));

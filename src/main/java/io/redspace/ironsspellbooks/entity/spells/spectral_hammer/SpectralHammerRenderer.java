@@ -4,12 +4,12 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.redspace.ironsspellbooks.render.GeoLivingEntityRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec2;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.cache.object.BakedGeoModel;
+import com.geckolib.cache.model.BakedGeoModel;
 
 public class SpectralHammerRenderer extends GeoLivingEntityRenderer<SpectralHammer> {
     public SpectralHammerRenderer(EntityRendererProvider.Context renderManager) {
@@ -18,7 +18,7 @@ public class SpectralHammerRenderer extends GeoLivingEntityRenderer<SpectralHamm
     }
 
     @Override
-    public ResourceLocation getTextureLocation(SpectralHammer animatable) {
+    public Identifier getTextureLocation(SpectralHammer animatable) {
         return SpectralHammerModel.textureResource;
     }
 
@@ -29,7 +29,7 @@ public class SpectralHammerRenderer extends GeoLivingEntityRenderer<SpectralHamm
     }
 
     @Override
-    public RenderType getRenderType(SpectralHammer animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
+    public RenderType getRenderType(SpectralHammer animatable, Identifier texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
         Vec2 vec2 = getEnergySwirlOffset(animatable, partialTick);
         return RenderType.energySwirl(texture, vec2.x, vec2.y);
     }

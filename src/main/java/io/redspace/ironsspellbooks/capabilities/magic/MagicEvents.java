@@ -1,13 +1,13 @@
 package io.redspace.ironsspellbooks.capabilities.magic;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.event.tick.LevelTickEvent;
 
 
 public class MagicEvents {
 
-    public static final ResourceLocation PLAYER_MAGIC_RESOURCE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "player_magic");
+    public static final Identifier PLAYER_MAGIC_RESOURCE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "player_magic");
 
     //FIXME: look into this
 //    public static void onPlayerCloned(PlayerEvent.Clone event) {
@@ -23,7 +23,7 @@ public class MagicEvents {
 
     public static void onWorldTick(LevelTickEvent.Pre event) {
         // Don't do anything client side
-        if (event.getLevel().isClientSide) {
+        if (event.getLevel().isClientSide()) {
             return;
         }
 

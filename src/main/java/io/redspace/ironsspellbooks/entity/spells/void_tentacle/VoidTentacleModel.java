@@ -1,31 +1,31 @@
 package io.redspace.ironsspellbooks.entity.spells.void_tentacle;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.model.GeoModel;
+import com.geckolib.cache.animation.AnimationState;
+import com.geckolib.cache.model.GeoBone;
+import com.geckolib.model.GeoModel;
 
 import java.util.List;
 
 public class VoidTentacleModel extends GeoModel<VoidTentacle> {
-    public static final ResourceLocation modelResource = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/void_tentacle.geo.json");
-    public static final ResourceLocation textureResource = IronsSpellbooks.id("textures/entity/void_tentacle/void_tentacle.png");
-    public static final ResourceLocation animationResource = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/void_tentacle_animations.json");
+    public static final Identifier modelResource = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/void_tentacle.geo.json");
+    public static final Identifier textureResource = IronsSpellbooks.id("textures/entity/void_tentacle/void_tentacle.png");
+    public static final Identifier animationResource = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/void_tentacle_animations.json");
 
     @Override
-    public ResourceLocation getModelResource(VoidTentacle object) {
+    public Identifier getModelResource(VoidTentacle object) {
         return modelResource;
     }
 
     @Override
-    public ResourceLocation getTextureResource(VoidTentacle mob) {
+    public Identifier getTextureResource(VoidTentacle mob) {
         return textureResource;
     }
 
     @Override
-    public ResourceLocation getAnimationResource(VoidTentacle animatable) {
+    public Identifier getAnimationResource(VoidTentacle animatable) {
         return animationResource;
     }
 

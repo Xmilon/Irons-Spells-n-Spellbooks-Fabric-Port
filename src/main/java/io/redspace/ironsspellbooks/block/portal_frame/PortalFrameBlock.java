@@ -73,7 +73,7 @@ public class PortalFrameBlock extends BaseEntityBlock {
 
     @javax.annotation.Nullable
     protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level pLevel, BlockEntityType<T> pServerType, BlockEntityType<? extends PortalFrameBlockEntity> pClientType) {
-        return pLevel.isClientSide ? null : createTickerHelper(pServerType, pClientType, PortalFrameBlockEntity::serverTick);
+        return pLevel.isClientSide() ? null : createTickerHelper(pServerType, pClientType, PortalFrameBlockEntity::serverTick);
     }
 
 
@@ -107,7 +107,7 @@ public class PortalFrameBlock extends BaseEntityBlock {
 
     public void setPlacedBy(Level pLevel, BlockPos pPos, BlockState pState, @javax.annotation.Nullable LivingEntity pPlacer, ItemStack pStack) {
         super.setPlacedBy(pLevel, pPos, pState, pPlacer, pStack);
-        if (!pLevel.isClientSide) {
+        if (!pLevel.isClientSide()) {
             var half = pState.getValue(HALF);
             var facing = pState.getValue(FACING);
             BlockPos blockpos = pPos.relative(half.getDirectionToOther());
@@ -147,7 +147,7 @@ public class PortalFrameBlock extends BaseEntityBlock {
 
     @Override
     protected void entityInside(BlockState pState, Level pLevel, BlockPos pPos, Entity pEntity) {
-        if (!pEntity.level().isClientSide) {
+        if (!pEntity.level().isClientSide()) {
             VoxelShape voxelshape = pState.getShape(pLevel, pPos, CollisionContext.of(pEntity));
             VoxelShape voxelshape1 = voxelshape.move((double) pPos.getX(), (double) pPos.getY(), (double) pPos.getZ());
             if (pEntity.getBoundingBox().intersects(voxelshape1.bounds())) {

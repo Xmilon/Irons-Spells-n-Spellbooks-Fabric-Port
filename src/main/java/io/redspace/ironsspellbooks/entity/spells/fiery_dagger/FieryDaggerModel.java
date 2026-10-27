@@ -3,31 +3,31 @@ package io.redspace.ironsspellbooks.entity.spells.fiery_dagger;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.render.RenderHelper;
-import net.minecraft.client.renderer.RenderType;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.model.GeoModel;
+import com.geckolib.model.GeoModel;
 
 public class FieryDaggerModel extends GeoModel<FieryDaggerEntity> {
-    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/fiery_dagger.png");
-    public static final ResourceLocation MODEL = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/fiery_dagger.geo.json");
+    public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/fiery_dagger.png");
+    public static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/fiery_dagger.geo.json");
     @Override
-    public ResourceLocation getModelResource(FieryDaggerEntity animatable) {
+    public Identifier getModelResource(FieryDaggerEntity animatable) {
         return MODEL;
     }
 
     @Override
-    public ResourceLocation getTextureResource(FieryDaggerEntity animatable) {
+    public Identifier getTextureResource(FieryDaggerEntity animatable) {
         return TEXTURE;
     }
 
     @Override
-    public ResourceLocation getAnimationResource(FieryDaggerEntity animatable) {
+    public Identifier getAnimationResource(FieryDaggerEntity animatable) {
         return AbstractSpellCastingMob.animationInstantCast;
     }
 
     @Override
-    public @Nullable RenderType getRenderType(FieryDaggerEntity animatable, ResourceLocation texture) {
+    public @Nullable RenderType getRenderType(FieryDaggerEntity animatable, Identifier texture) {
         return RenderHelper.CustomerRenderType.magic(TEXTURE);
     }
 }

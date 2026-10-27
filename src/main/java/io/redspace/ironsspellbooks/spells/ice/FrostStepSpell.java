@@ -15,7 +15,7 @@ import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
@@ -30,7 +30,7 @@ import java.util.Optional;
 import java.util.function.Predicate;
 
 public class FrostStepSpell extends AbstractSpell {
-    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "frost_step");
+    private final Identifier spellId = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "frost_step");
 
     @Override
     public List<MutableComponent> getUniqueInfo(int spellLevel, LivingEntity caster) {
@@ -66,7 +66,7 @@ public class FrostStepSpell extends AbstractSpell {
     }
 
     @Override
-    public ResourceLocation getSpellResource() {
+    public Identifier getSpellResource() {
         return spellId;
     }
 
@@ -121,7 +121,7 @@ public class FrostStepSpell extends AbstractSpell {
     }
 
     public static void particleCloud(Level level, Vec3 pos) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             double width = 0.5;
             float height = 1;
             for (int i = 0; i < 25; i++) {

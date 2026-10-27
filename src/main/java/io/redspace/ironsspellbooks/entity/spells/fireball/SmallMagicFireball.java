@@ -81,7 +81,7 @@ public class SmallMagicFireball extends AbstractMagicProjectile {
 
     @Override
     protected void onHitEntity(EntityHitResult pResult) {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             var target = pResult.getEntity();
             var owner = getOwner();
             DamageSources.applyDamage(target, damage, SpellRegistry.BLAZE_STORM_SPELL.get().getDamageSource(this, owner));
@@ -90,7 +90,7 @@ public class SmallMagicFireball extends AbstractMagicProjectile {
 
     protected void onHitBlock(BlockHitResult pResult) {
         super.onHitBlock(pResult);
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (ServerConfigs.safeGet(ServerConfigs.SPELL_GREIFING)) {
                 BlockPos blockpos = pResult.getBlockPos().relative(pResult.getDirection());
                 if (this.level().isEmptyBlock(blockpos)) {

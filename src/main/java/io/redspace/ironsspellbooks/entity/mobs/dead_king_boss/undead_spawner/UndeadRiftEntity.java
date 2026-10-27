@@ -55,7 +55,7 @@ public class UndeadRiftEntity extends Entity implements IMagicSummon {
     @Override
     public void tick() {
         super.tick();
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             if (delay != 0 && tickCount >= delay * 2 && tickCount % delay == 0) {
                 if (summonedCount >= summonsToSpawn) {
                     vanish();

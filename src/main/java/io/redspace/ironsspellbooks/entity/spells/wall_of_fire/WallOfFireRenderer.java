@@ -6,20 +6,20 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 public class WallOfFireRenderer extends EntityRenderer<WallOfFireEntity> {
 
-    private static ResourceLocation TEXTURE = ResourceLocation.withDefaultNamespace("textures/block/fire_0.png");
+    private static Identifier TEXTURE = Identifier.withDefaultNamespace("textures/block/fire_0.png");
 
-    //private static ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("textures/entity/creeper/creeper_armor.png");
+    //private static Identifier TEXTURE = Identifier.fromNamespaceAndPath("textures/entity/creeper/creeper_armor.png");
     public WallOfFireRenderer(Context context) {
         super(context);
     }
@@ -46,7 +46,7 @@ public class WallOfFireRenderer extends EntityRenderer<WallOfFireEntity> {
             consumer.addVertex(poseMatrix, (float) start.x, (float) start.y + height, (float) start.z).setColor(255, 255, 255, 255).setUv(0f, uvY).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
             consumer.addVertex(poseMatrix, (float) end.x, (float) end.y + height, (float) end.z).setColor(255, 255, 255, 255).setUv(1f, uvY).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
             consumer.addVertex(poseMatrix, (float) end.x, (float) end.y, (float) end.z).setColor(255, 255, 255, 255).setUv(1f, uvY + uvPerFrame).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
-            poseStack.mulPose(Axis.ZP.rotationDegrees(180));
+            poseStack.rotate(Axis.ZP.rotationDegrees(180));
             consumer.addVertex(poseMatrix, (float) start.x, (float) start.y, (float) start.z).setColor(255, 255, 255, 255).setUv(0f, uvY + uvPerFrame).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
             consumer.addVertex(poseMatrix, (float) start.x, (float) start.y + height, (float) start.z).setColor(255, 255, 255, 255).setUv(0f, uvY).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
             consumer.addVertex(poseMatrix, (float) end.x, (float) end.y + height, (float) end.z).setColor(255, 255, 255, 255).setUv(1f, uvY).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
@@ -59,7 +59,7 @@ public class WallOfFireRenderer extends EntityRenderer<WallOfFireEntity> {
 
 
     @Override
-    public ResourceLocation getTextureLocation(WallOfFireEntity entity) {
+    public Identifier getTextureLocation(WallOfFireEntity entity) {
         return TEXTURE;
     }
 }

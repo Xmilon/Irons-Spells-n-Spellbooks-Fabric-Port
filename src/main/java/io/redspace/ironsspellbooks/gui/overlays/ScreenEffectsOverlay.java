@@ -10,16 +10,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 
 public class ScreenEffectsOverlay implements LayeredDraw.Layer {
     public static final ScreenEffectsOverlay instance = new ScreenEffectsOverlay();
 
-    public final static ResourceLocation MAGIC_AURA_TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/overlays/enchanted_ward_vignette.png");
-    public final static ResourceLocation HEARTSTOP_TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/overlays/heartstop.png");
-    public final static ResourceLocation ICE_BLOCK_TEXTURE = ResourceLocation.withDefaultNamespace("textures/block/ice.png");
+    public final static Identifier MAGIC_AURA_TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/overlays/enchanted_ward_vignette.png");
+    public final static Identifier HEARTSTOP_TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/overlays/heartstop.png");
+    public final static Identifier ICE_BLOCK_TEXTURE = Identifier.withDefaultNamespace("textures/block/ice.png");
 
     public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {
         Player player = Minecraft.getInstance().player;
@@ -42,7 +42,7 @@ public class ScreenEffectsOverlay implements LayeredDraw.Layer {
         }
     }
 
-    private static void renderOverlayAdditive(GuiGraphics gui, ResourceLocation texture, float r, float g, float b, float a, int screenWidth, int screenHeight) {
+    private static void renderOverlayAdditive(GuiGraphics gui, Identifier texture, float r, float g, float b, float a, int screenWidth, int screenHeight) {
         RenderSystem.disableDepthTest();
         RenderSystem.depthMask(false);
         RenderSystem.enableBlend();
@@ -58,7 +58,7 @@ public class ScreenEffectsOverlay implements LayeredDraw.Layer {
         RenderSystem.enableDepthTest();
     }
 
-    private static void renderOverlay(GuiGraphics gui, ResourceLocation texture, float r, float g, float b, float a, int screenWidth, int screenHeight) {
+    private static void renderOverlay(GuiGraphics gui, Identifier texture, float r, float g, float b, float a, int screenWidth, int screenHeight) {
         RenderSystem.disableDepthTest();
         RenderSystem.depthMask(false);
         RenderSystem.enableBlend();

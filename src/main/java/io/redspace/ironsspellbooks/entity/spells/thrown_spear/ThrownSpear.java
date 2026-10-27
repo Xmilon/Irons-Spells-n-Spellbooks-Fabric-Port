@@ -20,7 +20,7 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.enchantment.EnchantmentHelper;
@@ -108,7 +108,7 @@ public class ThrownSpear extends AbstractArrow {
             this.setNoPhysics(true);
             Vec3 vec3 = entity.getEyePosition().subtract(this.position());
             this.setPosRaw(this.getX(), this.getY() + vec3.y * 0.015 * (double) loyalty, this.getZ());
-            if (this.level().isClientSide) {
+            if (this.level().isClientSide()) {
                 this.yOld = this.getY();
             }
 
@@ -145,7 +145,7 @@ public class ThrownSpear extends AbstractArrow {
 
     @Override
     protected void onHit(HitResult result) {
-        if (isChanneled() && !level().isClientSide && !dealtDamage) {
+        if (isChanneled() && !level().isClientSide() && !dealtDamage) {
             this.playSound(SoundRegistry.SPEAR_CHANNELING_STRIKE.get(), 6.0F, .9f + Utils.random.nextInt(20) * .01f);
             MagicManager.spawnParticles(level(), ParticleHelper.ELECTRICITY, getX(), getY(), getZ(), 75, .1, .1, .1, 2, true);
             MagicManager.spawnParticles(level(), ParticleHelper.ELECTRICITY, getX(), getY(), getZ(), 75, .1, .1, .1, .5, false);

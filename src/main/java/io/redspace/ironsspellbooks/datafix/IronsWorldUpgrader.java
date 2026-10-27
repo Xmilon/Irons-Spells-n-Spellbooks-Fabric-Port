@@ -8,7 +8,7 @@
 //import io.redspace.ironsspellbooks.IronsSpellbooks;
 //import io.redspace.ironsspellbooks.data.DataFixerStorage;
 //import io.redspace.ironsspellbooks.util.ByteHelper;
-//import net.minecraft.Util;
+//import net.minecraft.util.Util;
 //import net.minecraft.core.LayeredRegistryAccess;
 //import net.minecraft.core.registries.Registries;
 //import net.minecraft.nbt.CompoundTag;

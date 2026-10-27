@@ -35,7 +35,7 @@ public class PoisonSplash extends AoeEntity {
     public void tick() {
         if (!playedParticles) {
             playedParticles = true;
-            if (level().isClientSide) {
+            if (level().isClientSide()) {
                 for (int i = 0; i < 150; i++) {
                     Vec3 pos = new Vec3(Utils.getRandomScaled(.5f), Utils.getRandomScaled(.2f), this.random.nextFloat() * getRadius()).yRot(this.random.nextFloat() * 360);
                     Vec3 motion = new Vec3(
@@ -54,7 +54,7 @@ public class PoisonSplash extends AoeEntity {
 
         if (tickCount == 4) {
             checkHits();
-            if (!level().isClientSide)
+            if (!level().isClientSide())
                 MagicManager.spawnParticles(level(), ParticleHelper.POISON_CLOUD, getX(), getY(), getZ(), 9, getRadius() * .7f, .2f, getRadius() * .7f, 1, true);
             createPoisonCloud();
         }
@@ -65,7 +65,7 @@ public class PoisonSplash extends AoeEntity {
     }
 
     public void createPoisonCloud() {
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             PoisonCloud cloud = new PoisonCloud(level());
             cloud.setOwner(getOwner());
             cloud.setDuration(getEffectDuration());

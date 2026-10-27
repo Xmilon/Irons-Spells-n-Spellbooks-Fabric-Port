@@ -13,19 +13,19 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.phys.Vec3;
 
 public class FireboltRenderer extends EntityRenderer<Projectile> {
 
-    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "firebolt_model"), "main");
-    private static ResourceLocation TEXTURE = IronsSpellbooks.id("textures/entity/fireball/firebolt.png");
+    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "firebolt_model"), "main");
+    private static Identifier TEXTURE = IronsSpellbooks.id("textures/entity/fireball/firebolt.png");
 
 
     private final ModelPart body;
@@ -54,8 +54,8 @@ public class FireboltRenderer extends EntityRenderer<Projectile> {
             Vec3 motion = entity.getDeltaMovement();
             float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
             float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
-            poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
-            poseStack.mulPose(Axis.XP.rotationDegrees(xRot));
+            poseStack.rotate(Axis.YP.rotationDegrees(yRot));
+            poseStack.rotate(Axis.XP.rotationDegrees(xRot));
             VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
             this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
         } else {
@@ -64,7 +64,7 @@ public class FireboltRenderer extends EntityRenderer<Projectile> {
 
             poseStack.scale(.5f, .5f, .5f);
             poseStack.mulPose(entityRenderDispatcher.cameraOrientation());
-            poseStack.mulPose(Axis.YP.rotationDegrees(180f));
+            poseStack.rotate(Axis.YP.rotationDegrees(180f));
 
             PoseStack.Pose pose = poseStack.last();
             vertex(consumer, pose, -.5f, -.5f, 0f, 0f, 1f);
@@ -87,7 +87,7 @@ public class FireboltRenderer extends EntityRenderer<Projectile> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(Projectile entity) {
+    public Identifier getTextureLocation(Projectile entity) {
         return TEXTURE;
     }
 }

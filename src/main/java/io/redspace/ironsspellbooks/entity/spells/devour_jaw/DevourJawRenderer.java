@@ -4,15 +4,15 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import net.minecraft.client.model.EvokerFangsModel;
+import net.minecraft.client.model.effects.EvokerFangsModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 public class DevourJawRenderer extends EntityRenderer<DevourJaw> {
@@ -29,7 +29,7 @@ public class DevourJawRenderer extends EntityRenderer<DevourJaw> {
             return;
         float f = entity.tickCount + partialTicks;
         poseStack.pushPose();
-        poseStack.mulPose(Axis.YP.rotationDegrees(-entity.getYRot()));
+        poseStack.rotate(Axis.YP.rotationDegrees(-entity.getYRot()));
         poseStack.scale(-1, -1, 1);
         poseStack.scale(1.85f, 1.85f, 1.85f);
         this.model.setupAnim(entity, f, 0.0F, 0.0F, entity.getYRot(), entity.getXRot());
@@ -40,7 +40,7 @@ public class DevourJawRenderer extends EntityRenderer<DevourJaw> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(DevourJaw pEntity) {
+    public Identifier getTextureLocation(DevourJaw pEntity) {
         return IronsSpellbooks.id("textures/entity/devour_jaw.png");
     }
 

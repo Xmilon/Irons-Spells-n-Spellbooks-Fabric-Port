@@ -8,12 +8,12 @@ import io.redspace.ironsspellbooks.item.InkItem;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -24,8 +24,8 @@ import org.joml.Matrix4f;
 
 
 public class ScrollForgeRenderer implements BlockEntityRenderer<ScrollForgeTile> {
-    private static final ResourceLocation PAPER_TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/block/scroll_forge_paper.png");
-    private static final ResourceLocation SIGIL_TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/block/scroll_forge_sigil.png");
+    private static final Identifier PAPER_TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/block/scroll_forge_paper.png");
+    private static final Identifier SIGIL_TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/block/scroll_forge_sigil.png");
     ItemRenderer itemRenderer;
 
     public ScrollForgeRenderer(BlockEntityRendererProvider.Context context) {
@@ -53,8 +53,8 @@ public class ScrollForgeRenderer implements BlockEntityRenderer<ScrollForgeTile>
             poseStack.pushPose();
             rotatePoseWithBlock(poseStack, scrollForgeTile);
             poseStack.translate(PAPER_POS.x, PAPER_POS.y, PAPER_POS.z);
-            poseStack.mulPose(Axis.YP.rotationDegrees(85));
-            poseStack.mulPose(Axis.XP.rotationDegrees(180));
+            poseStack.rotate(Axis.YP.rotationDegrees(85));
+            poseStack.rotate(Axis.XP.rotationDegrees(180));
             VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutout(PAPER_TEXTURE));
             var light = LevelRenderer.getLightColor(scrollForgeTile.getLevel(), scrollForgeTile.getBlockPos());
 
@@ -69,8 +69,8 @@ public class ScrollForgeRenderer implements BlockEntityRenderer<ScrollForgeTile>
         poseStack.pushPose();
         rotatePoseWithBlock(poseStack, scrollForgeTile);
         poseStack.translate(INK_POS.x, INK_POS.y, INK_POS.z);
-        poseStack.mulPose(Axis.YP.rotationDegrees(angle));
-        poseStack.mulPose(Axis.XP.rotationDegrees(180));
+        poseStack.rotate(Axis.YP.rotationDegrees(angle));
+        poseStack.rotate(Axis.XP.rotationDegrees(180));
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityTranslucent(SIGIL_TEXTURE));
         drawQuad(.5f, poseStack.last(), consumer, LightTexture.FULL_BRIGHT);
         poseStack.popPose();
@@ -89,11 +89,11 @@ public class ScrollForgeRenderer implements BlockEntityRenderer<ScrollForgeTile>
         rotatePoseWithBlock(poseStack, scrollForgeTile);
 
         poseStack.translate(offset.x, offset.y, offset.z);
-        poseStack.mulPose(Axis.XP.rotationDegrees(-90));
-        poseStack.mulPose(Axis.YP.rotationDegrees(180));
-        poseStack.mulPose(Axis.ZP.rotationDegrees(-yRot));
+        poseStack.rotate(Axis.XP.rotationDegrees(-90));
+        poseStack.rotate(Axis.YP.rotationDegrees(180));
+        poseStack.rotate(Axis.ZP.rotationDegrees(-yRot));
 
-        //poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
+        //poseStack.rotate(Axis.XP.rotationDegrees(90.0F));
         poseStack.scale(0.45f, 0.45f, 0.45f);
 
         itemRenderer.renderStatic(itemStack, ItemDisplayContext.FIXED, LevelRenderer.getLightColor(scrollForgeTile.getLevel(), scrollForgeTile.getBlockPos()), packedOverlay, poseStack, bufferSource, scrollForgeTile.getLevel(), renderId);
@@ -114,7 +114,7 @@ public class ScrollForgeRenderer implements BlockEntityRenderer<ScrollForgeTile>
     private void rotatePoseWithBlock(PoseStack poseStack, ScrollForgeTile scrollForgeTile) {
         Vec3 center = new Vec3(0.5, 0.5, 0.5);
         poseStack.translate(center.x, center.y, center.z);
-        poseStack.mulPose(Axis.YP.rotationDegrees(getBlockFacingDegrees(scrollForgeTile)));
+        poseStack.rotate(Axis.YP.rotationDegrees(getBlockFacingDegrees(scrollForgeTile)));
         poseStack.translate(-center.x, -center.y, -center.z);
     }
 

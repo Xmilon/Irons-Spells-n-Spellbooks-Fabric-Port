@@ -8,7 +8,7 @@ import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
-import software.bernie.geckolib.renderer.GeoArmorRenderer;
+import com.geckolib.renderer.GeoArmorRenderer;
 
 import java.util.Map;
 

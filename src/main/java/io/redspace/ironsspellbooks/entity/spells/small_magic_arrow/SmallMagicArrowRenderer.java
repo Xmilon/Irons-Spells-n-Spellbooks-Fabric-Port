@@ -11,14 +11,14 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 public class SmallMagicArrowRenderer extends EntityRenderer<SmallMagicArrow> {
-    private static final ResourceLocation TEXTURE = IronsSpellbooks.id("textures/entity/small_magic_arrow.png");
+    private static final Identifier TEXTURE = IronsSpellbooks.id("textures/entity/small_magic_arrow.png");
 
     public SmallMagicArrowRenderer(Context context) {
         super(context);
@@ -31,13 +31,13 @@ public class SmallMagicArrowRenderer extends EntityRenderer<SmallMagicArrow> {
         Vec3 motion = entity.deltaMovementOld.add(entity.getDeltaMovement().subtract(entity.deltaMovementOld).scale(partialTicks));
         float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
         float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
-        poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
-        poseStack.mulPose(Axis.XP.rotationDegrees(xRot));
+        poseStack.rotate(Axis.YP.rotationDegrees(yRot));
+        poseStack.rotate(Axis.XP.rotationDegrees(xRot));
 
         float f9 = entity.shakeTime - partialTicks;
         if (f9 > 0.0F) {
             float f10 = -Mth.sin(f9 * 3.0F) * f9;
-            poseStack.mulPose(Axis.XP.rotationDegrees(f10));
+            poseStack.rotate(Axis.XP.rotationDegrees(f10));
         }
 
         renderModel(poseStack, bufferSource);
@@ -54,11 +54,11 @@ public class SmallMagicArrowRenderer extends EntityRenderer<SmallMagicArrow> {
         Matrix3f normalMatrix = pose.normal();
 
         VertexConsumer consumer = bufferSource.getBuffer(RenderHelper.CustomerRenderType.magic(getTextureLocation()));
-        poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+        poseStack.rotate(Axis.YP.rotationDegrees(90.0F));
         poseStack.translate(-2, 0, 0);
 
         for (int j = 0; j < 4; ++j) {
-            poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
+            poseStack.rotate(Axis.XP.rotationDegrees(90.0F));
             vertex(poseMatrix, normalMatrix, consumer, -8, -2, 0, 0.0F, 0.0F, 0, 1, 0, LightTexture.FULL_BRIGHT);
             vertex(poseMatrix, normalMatrix, consumer, 8, -2, 0, 0.5F, 0.0F, 0, 1, 0, LightTexture.FULL_BRIGHT);
             vertex(poseMatrix, normalMatrix, consumer, 8, 2, 0, 0.5F, 0.15625F, 0, 1, 0, LightTexture.FULL_BRIGHT);
@@ -71,11 +71,11 @@ public class SmallMagicArrowRenderer extends EntityRenderer<SmallMagicArrow> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(SmallMagicArrow entity) {
+    public Identifier getTextureLocation(SmallMagicArrow entity) {
         return getTextureLocation();
     }
 
-    public static ResourceLocation getTextureLocation() {
+    public static Identifier getTextureLocation() {
         return TEXTURE;
     }
 

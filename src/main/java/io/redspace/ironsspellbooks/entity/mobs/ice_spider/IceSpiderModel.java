@@ -5,7 +5,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.TransformStack;
 import net.minecraft.client.Minecraft;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.WalkAnimationState;
@@ -13,12 +13,12 @@ import net.minecraft.world.phys.Vec3;
 import org.joml.Quaternionf;
 import org.joml.Vector2f;
 import org.joml.Vector3f;
-import software.bernie.geckolib.animatable.GeoReplacedEntity;
-import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.constant.dataticket.DataTicket;
-import software.bernie.geckolib.model.DefaultedEntityGeoModel;
+import com.geckolib.animatable.GeoReplacedEntity;
+import com.geckolib.animatable.instance.AnimatableInstanceCache;
+import com.geckolib.cache.animation.AnimationState;
+import com.geckolib.constant.DataTickets;
+import com.geckolib.constant.dataticket.DataTicket;
+import com.geckolib.model.DefaultedEntityGeoModel;
 
 import java.util.Objects;
 
@@ -36,23 +36,23 @@ public class IceSpiderModel extends DefaultedEntityGeoModel<IceSpiderEntity> {
 
     protected TransformStack transformStack = new TransformStack();
 
-    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/ice_spider/ice_spider.png");
-    public static final ResourceLocation MODEL = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/ice_spider.geo.json");
-    public static final ResourceLocation ANIMATION = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/ice_spider.animation.json");
+    public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/ice_spider/ice_spider.png");
+    public static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/ice_spider.geo.json");
+    public static final Identifier ANIMATION = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/ice_spider.animation.json");
     public static final DataTicket<TransformStack> STACK_TICKET = new DataTicket<>("irons_spellbooks:transform_stack", TransformStack.class);
 
     @Override
-    public ResourceLocation getModelResource(IceSpiderEntity object) {
+    public Identifier getModelResource(IceSpiderEntity object) {
         return MODEL;
     }
 
     @Override
-    public ResourceLocation getTextureResource(IceSpiderEntity object) {
+    public Identifier getTextureResource(IceSpiderEntity object) {
         return TEXTURE;
     }
 
     @Override
-    public ResourceLocation getAnimationResource(IceSpiderEntity animatable) {
+    public Identifier getAnimationResource(IceSpiderEntity animatable) {
         return ANIMATION;
     }
 

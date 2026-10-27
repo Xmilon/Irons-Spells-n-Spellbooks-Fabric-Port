@@ -23,7 +23,7 @@ import mezz.jei.api.registration.*;
 import mezz.jei.api.runtime.IIngredientManager;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -37,13 +37,13 @@ import java.util.stream.IntStream;
 
 @mezz.jei.api.JeiPlugin
 public class JeiPlugin implements IModPlugin {
-    public static final ResourceLocation RECIPE_GUI_VANILLA = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/gui_vanilla.png");
-    public static final ResourceLocation ALCHEMIST_CAULDRON_GUI = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/jei_alchemist_cauldron.png");
-    public static final ResourceLocation SCROLL_FORGE_GUI = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/scroll_forge.png");
+    public static final Identifier RECIPE_GUI_VANILLA = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/gui_vanilla.png");
+    public static final Identifier ALCHEMIST_CAULDRON_GUI = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/jei_alchemist_cauldron.png");
+    public static final Identifier SCROLL_FORGE_GUI = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/scroll_forge.png");
 
     @Override
-    public ResourceLocation getPluginUid() {
-        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "jei_plugin");
+    public Identifier getPluginUid() {
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "jei_plugin");
     }
 
     @Override

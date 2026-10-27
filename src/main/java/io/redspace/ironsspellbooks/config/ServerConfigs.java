@@ -8,7 +8,7 @@ import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.neoforged.neoforge.common.ModConfigSpec;
@@ -221,10 +221,10 @@ public class ServerConfigs {
         for (String name : ids) {
             try {
                 if (name.startsWith("#")) {
-                    var tag = new TagKey<Item>(Registries.ITEM, ResourceLocation.parse(name.substring(1)));
+                    var tag = new TagKey<Item>(Registries.ITEM, Identifier.parse(name.substring(1)));
                     output.addAll(BuiltInRegistries.ITEM.stream().filter(item -> item.builtInRegistryHolder().is(tag)).toList());
                 } else {
-                    var item = BuiltInRegistries.ITEM.get(ResourceLocation.parse(name));
+                    var item = BuiltInRegistries.ITEM.get(Identifier.parse(name));
                     if (item != null) {
                         output.add(item);
                     } else {
@@ -300,7 +300,7 @@ public class ServerConfigs {
             this.CS = CS;
             this.ALLOW_CRAFTING = ALLOW_CRAFTING;
             this.ACTUAL_SCHOOL = () -> {
-                var school = SchoolRegistry.getSchool(ResourceLocation.parse(SCHOOL.get()));
+                var school = SchoolRegistry.getSchool(Identifier.parse(SCHOOL.get()));
                 if (school != null) {
                     return school;
                 }

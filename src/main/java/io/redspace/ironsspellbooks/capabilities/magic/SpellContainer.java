@@ -6,7 +6,7 @@ import io.redspace.ironsspellbooks.api.spells.*;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import org.apache.commons.lang3.ArrayUtils;
 import org.jetbrains.annotations.NotNull;
@@ -64,7 +64,7 @@ public class SpellContainer implements ISpellContainer {
 
     //Codec<List<SpellData>> SPELL_LIST_CODEC = Codec.list(SpellData.CODEC);
     public static final Codec<SpellSlot> SPELL_SLOT_CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            ResourceLocation.CODEC.fieldOf(SPELL_ID).forGetter(data -> data.getSpell().getSpellResource()),
+            Identifier.CODEC.fieldOf(SPELL_ID).forGetter(data -> data.getSpell().getSpellResource()),
             Codec.INT.fieldOf(SLOT_INDEX).forGetter(SpellSlot::index),
             Codec.INT.fieldOf(SPELL_LEVEL).forGetter(SpellSlot::getLevel),
             Codec.BOOL.optionalFieldOf(SPELL_LOCKED, false).forGetter(SpellSlot::isLocked)

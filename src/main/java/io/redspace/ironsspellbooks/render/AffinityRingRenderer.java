@@ -13,8 +13,8 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.resources.model.ModelIdentifier;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
 
@@ -22,7 +22,7 @@ public class AffinityRingRenderer extends BlockEntityWithoutLevelRenderer {
 
 
     private final ItemRenderer renderer;
-    private final ResourceLocation defaultModel = IronsSpellbooks.id("item/affinity_ring_evocation");
+    private final Identifier defaultModel = IronsSpellbooks.id("item/affinity_ring_evocation");
 
     public AffinityRingRenderer(ItemRenderer renderDispatcher, EntityModelSet modelSet) {
         super(Minecraft.getInstance().getBlockEntityRenderDispatcher(), modelSet);
@@ -54,7 +54,7 @@ public class AffinityRingRenderer extends BlockEntityWithoutLevelRenderer {
         poseStack.popPose();
     }
 
-    public static ResourceLocation getAffinityRingModelLocation(SchoolType schoolType) {
-        return ResourceLocation.fromNamespaceAndPath(schoolType.getId().getNamespace(), String.format("item/affinity_ring_%s", schoolType.getId().getPath()));
+    public static Identifier getAffinityRingModelLocation(SchoolType schoolType) {
+        return Identifier.fromNamespaceAndPath(schoolType.getId().getNamespace(), String.format("item/affinity_ring_%s", schoolType.getId().getPath()));
     }
 }

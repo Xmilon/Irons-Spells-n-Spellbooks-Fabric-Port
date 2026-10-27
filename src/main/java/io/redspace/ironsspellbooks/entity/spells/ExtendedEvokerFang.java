@@ -37,7 +37,7 @@ public class ExtendedEvokerFang extends EvokerFangs implements AntiMagicSuscepti
         }
         if (attackStarted) {
             if (warmupDelayTicks == -8) {
-                if (this.level().isClientSide) {
+                if (this.level().isClientSide()) {
                     for (int i = 0; i < 12; ++i) {
                         double d0 = this.getX() + (this.random.nextDouble() * 2.0D - 1.0D) * (double) this.getBbWidth() * 0.5D;
                         double d1 = this.getY() + 0.05D + this.random.nextDouble();

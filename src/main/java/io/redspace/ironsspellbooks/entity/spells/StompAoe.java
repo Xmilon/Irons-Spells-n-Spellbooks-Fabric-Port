@@ -58,7 +58,7 @@ public class StompAoe extends AbstractMagicProjectile {
 
     @Override
     public void tick() {
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             if (tickCount % 1 == 0) {
                 checkHits();
             }
@@ -69,7 +69,7 @@ public class StompAoe extends AbstractMagicProjectile {
     }
 
     protected void checkHits() {
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             step++;
             int width = Math.max(step / 2, 2);
             float angle = (this.getYRot()) * Mth.DEG_TO_RAD;

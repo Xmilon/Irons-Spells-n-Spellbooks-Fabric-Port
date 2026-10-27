@@ -2,21 +2,21 @@ package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.client.model.geom.PartNames;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.WalkAnimationState;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector2f;
-import software.bernie.geckolib.animatable.GeoReplacedEntity;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.model.DefaultedEntityGeoModel;
+import com.geckolib.animatable.GeoReplacedEntity;
+import com.geckolib.cache.animation.AnimationState;
+import com.geckolib.cache.model.GeoBone;
+import com.geckolib.constant.DataTickets;
+import com.geckolib.model.DefaultedEntityGeoModel;
 
 public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoModel<AbstractSpellCastingMob> {
 
-    public AbstractSpellCastingMobModel(/*ResourceLocation assetSubpath*/) {
+    public AbstractSpellCastingMobModel(/*Identifier assetSubpath*/) {
         super(IronsSpellbooks.id("spellcastingmob"));
     }
 
@@ -24,15 +24,15 @@ public abstract class AbstractSpellCastingMobModel extends DefaultedEntityGeoMod
     private long lastRenderedInstance = -1;
 
     @Override
-    public ResourceLocation getModelResource(AbstractSpellCastingMob object) {
+    public Identifier getModelResource(AbstractSpellCastingMob object) {
         return AbstractSpellCastingMob.modelResource;
     }
 
     @Override
-    public abstract ResourceLocation getTextureResource(AbstractSpellCastingMob mob);
+    public abstract Identifier getTextureResource(AbstractSpellCastingMob mob);
 
     @Override
-    public ResourceLocation getAnimationResource(AbstractSpellCastingMob animatable) {
+    public Identifier getAnimationResource(AbstractSpellCastingMob animatable) {
         return AbstractSpellCastingMob.animationInstantCast;
     }
 

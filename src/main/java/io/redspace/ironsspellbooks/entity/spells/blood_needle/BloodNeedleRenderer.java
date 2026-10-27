@@ -6,18 +6,18 @@ import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 public class BloodNeedleRenderer extends EntityRenderer<BloodNeedle> {
-    //    private static final ResourceLocation[] TEXTURES = {
+    //    private static final Identifier[] TEXTURES = {
 //            IronsSpellbooks.id("textures/entity/blood_needle/needle_0.png"),
 //            IronsSpellbooks.id("textures/entity/blood_needle/needle_1.png"),
 //            IronsSpellbooks.id("textures/entity/blood_needle/needle_2.png"),
@@ -27,9 +27,9 @@ public class BloodNeedleRenderer extends EntityRenderer<BloodNeedle> {
 //            IronsSpellbooks.id("textures/entity/blood_needle/needle_6.png"),
 //            IronsSpellbooks.id("textures/entity/blood_needle/needle_7.png")
 //    };
-    private static final ResourceLocation TEXTURE = IronsSpellbooks.id("textures/entity/blood_needle/needle_5.png");
+    private static final Identifier TEXTURE = IronsSpellbooks.id("textures/entity/blood_needle/needle_5.png");
 
-    //private static final ResourceLocation TEXTURE = IronsSpellbooks.id("textures/entity/magic_missile_projectile.png");
+    //private static final Identifier TEXTURE = IronsSpellbooks.id("textures/entity/magic_missile_projectile.png");
     public BloodNeedleRenderer(Context context) {
         super(context);
     }
@@ -42,9 +42,9 @@ public class BloodNeedleRenderer extends EntityRenderer<BloodNeedle> {
         Vec3 motion = entity.getDeltaMovement();
         float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
         float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
-        poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
-        poseStack.mulPose(Axis.XP.rotationDegrees(xRot));
-        poseStack.mulPose(Axis.ZP.rotationDegrees(entity.getZRot() + (entity.tickCount + partialTicks) * 40));
+        poseStack.rotate(Axis.YP.rotationDegrees(yRot));
+        poseStack.rotate(Axis.XP.rotationDegrees(xRot));
+        poseStack.rotate(Axis.ZP.rotationDegrees(entity.getZRot() + (entity.tickCount + partialTicks) * 40));
 
         //VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
 
@@ -52,7 +52,7 @@ public class BloodNeedleRenderer extends EntityRenderer<BloodNeedle> {
         //old color: 125, 0, 10
         float width = 2.5f;
         //drawSlash(pose, bufferSource, light, width, 2);
-        poseStack.mulPose(Axis.XP.rotationDegrees(45));
+        poseStack.rotate(Axis.XP.rotationDegrees(45));
         float scale = entity.getScale();
         poseStack.scale(scale, scale, scale);
         drawSlash(pose, entity, bufferSource, light, width);
@@ -76,7 +76,7 @@ public class BloodNeedleRenderer extends EntityRenderer<BloodNeedle> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(BloodNeedle entity) {
+    public Identifier getTextureLocation(BloodNeedle entity) {
 //        int frame = (entity.tickCount / 4) % TEXTURES.length;
 //        return TEXTURES[frame];
         return TEXTURE;

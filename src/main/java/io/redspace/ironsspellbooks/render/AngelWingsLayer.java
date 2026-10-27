@@ -10,12 +10,12 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.Items;
@@ -25,7 +25,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 
 @OnlyIn(Dist.CLIENT)
 public class AngelWingsLayer<T extends LivingEntity, M extends EntityModel<T>> extends RenderLayer<T, M> {
-    private static final ResourceLocation WINGS_LOCATION = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/angel_wings.png");
+    private static final Identifier WINGS_LOCATION = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/angel_wings.png");
     private final AngelWingsModel<T> angelWingsModel;
 
     public AngelWingsLayer(RenderLayerParent<T, M> pRenderer) {
@@ -52,7 +52,7 @@ public class AngelWingsLayer<T extends LivingEntity, M extends EntityModel<T>> e
                 && entity.hasEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MobEffectRegistry.ANGEL_WINGS.get()));
     }
 
-    public ResourceLocation getAngelWingsTexture(T entity) {
+    public Identifier getAngelWingsTexture(T entity) {
         return WINGS_LOCATION;
     }
 }

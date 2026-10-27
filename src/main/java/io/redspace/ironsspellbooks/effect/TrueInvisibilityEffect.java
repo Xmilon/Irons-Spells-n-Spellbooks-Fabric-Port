@@ -31,7 +31,7 @@ public class TrueInvisibilityEffect extends MagicMobEffect implements ISyncedMob
 
     @Override
     public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
-        if (!livingEntity.level().isClientSide) {
+        if (!livingEntity.level().isClientSide()) {
             clearNearbyAggro(livingEntity);
         }
         // Force entity invisibility flag to keep all model layers hidden.

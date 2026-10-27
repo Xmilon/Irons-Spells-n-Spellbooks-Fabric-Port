@@ -2,21 +2,21 @@ package io.redspace.ironsspellbooks.entity.spells.scapegoat;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.TransformStack;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.WalkAnimationState;
 import org.joml.Vector2f;
-import software.bernie.geckolib.animatable.GeoReplacedEntity;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.constant.DataTickets;
-import software.bernie.geckolib.model.DefaultedEntityGeoModel;
+import com.geckolib.animatable.GeoReplacedEntity;
+import com.geckolib.cache.animation.AnimationState;
+import com.geckolib.constant.DataTickets;
+import com.geckolib.model.DefaultedEntityGeoModel;
 
 public class ScapegoatModel extends DefaultedEntityGeoModel<ScapegoatEntity> {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/scapegoat.png");
-    private static final ResourceLocation MODEL = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/scapegoat.geo.json");
-    public static final ResourceLocation ANIMS = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/scapegoat_animations.animation.json");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/scapegoat.png");
+    private static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/scapegoat.geo.json");
+    public static final Identifier ANIMS = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/scapegoat_animations.animation.json");
 
     public ScapegoatModel() {
         super(IronsSpellbooks.id("spellcastingmob"));
@@ -24,17 +24,17 @@ public class ScapegoatModel extends DefaultedEntityGeoModel<ScapegoatEntity> {
 
 
     @Override
-    public ResourceLocation getTextureResource(ScapegoatEntity object) {
+    public Identifier getTextureResource(ScapegoatEntity object) {
         return TEXTURE;
     }
 
     @Override
-    public ResourceLocation getModelResource(ScapegoatEntity object) {
+    public Identifier getModelResource(ScapegoatEntity object) {
         return MODEL;
     }
 
     @Override
-    public ResourceLocation getAnimationResource(ScapegoatEntity animatable) {
+    public Identifier getAnimationResource(ScapegoatEntity animatable) {
         return ANIMS;
     }
 

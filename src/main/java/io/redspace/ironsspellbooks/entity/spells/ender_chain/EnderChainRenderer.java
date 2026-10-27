@@ -7,7 +7,7 @@ import io.redspace.ironsspellbooks.render.SpellRenderingHelper;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
@@ -19,7 +19,7 @@ import org.joml.Vector3f;
 
 @OnlyIn(Dist.CLIENT)
 public class EnderChainRenderer extends EntityRenderer<EnderChain> {
-    public static final ResourceLocation CHAIN_TEXTURE = IronsSpellbooks.id("textures/entity/ender_chain.png");
+    public static final Identifier CHAIN_TEXTURE = IronsSpellbooks.id("textures/entity/ender_chain.png");
 
     public EnderChainRenderer(EntityRendererProvider.Context context) {
         super(context);
@@ -76,7 +76,7 @@ public class EnderChainRenderer extends EntityRenderer<EnderChain> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(EnderChain entity) {
+    public Identifier getTextureLocation(EnderChain entity) {
         return CHAIN_TEXTURE;
     }
 

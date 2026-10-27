@@ -8,7 +8,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -19,7 +19,7 @@ import java.util.UUID;
 public class SyncTargetingDataPacket implements CustomPacketPayload {
     private final List<UUID> targetUUIDs;
     private final String spellId;
-    public static final CustomPacketPayload.Type<SyncTargetingDataPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "sync_targeting_data"));
+    public static final CustomPacketPayload.Type<SyncTargetingDataPacket> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "sync_targeting_data"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncTargetingDataPacket> STREAM_CODEC = CustomPacketPayload.codec(SyncTargetingDataPacket::write, SyncTargetingDataPacket::new);
 
     public SyncTargetingDataPacket(LivingEntity entity, AbstractSpell spell) {

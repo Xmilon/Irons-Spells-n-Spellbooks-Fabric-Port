@@ -19,9 +19,10 @@ import net.minecraft.client.gui.Font;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.screens.Screen;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.util.FastColor;
@@ -40,8 +41,8 @@ import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
 public class EldritchResearchScreen extends Screen {
-    private static final ResourceLocation WINDOW_LOCATION = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/eldritch_research_screen/window.png");
-    private static final ResourceLocation FRAME_LOCATION = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/eldritch_research_screen/spell_frame.png");
+    private static final Identifier WINDOW_LOCATION = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/eldritch_research_screen/window.png");
+    private static final Identifier FRAME_LOCATION = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/eldritch_research_screen/spell_frame.png");
     public static final int WINDOW_WIDTH = 252;
     public static final int WINDOW_HEIGHT = 256;
     private static final int WINDOW_INSIDE_X = 9;
@@ -210,7 +211,7 @@ public class EldritchResearchScreen extends Screen {
                 WINDOW_INSIDE_WIDTH, WINDOW_INSIDE_HEIGHT);
     }
 
-    private void drawWithClipping(ResourceLocation texture, GuiGraphics guiGraphics, int x, int y, int uvx, int uvy, int width, int height, int imageWidth, int imageHeight, int bbx, int bby, int bbw, int bbh) {
+    private void drawWithClipping(Identifier texture, GuiGraphics guiGraphics, int x, int y, int uvx, int uvy, int width, int height, int imageWidth, int imageHeight, int bbx, int bby, int bbw, int bbh) {
         x += (int) viewportOffset.x;
         if (x < bbx) {
             int xDiff = bbx - x;
@@ -281,7 +282,7 @@ public class EldritchResearchScreen extends Screen {
                     .vertex(x2m1, y2m1).color(fadeOutTowardEdges(guiGraphics, x2m1, y2m1, color2))
                     .vertex(x2m2, y2m2).color(fadeOutTowardEdges(guiGraphics, x2m2, y2m2, color2))
                     .vertex(x1m2, y1m2).color(fadeOutTowardEdges(guiGraphics, x1m2, y1m2, color1))
-                    .build(guiGraphics, RenderType.gui());
+                    .build(guiGraphics, RenderPipelines.GUI);
         }
     }
 
@@ -318,8 +319,8 @@ public class EldritchResearchScreen extends Screen {
                 .vertex(left + EldritchResearchScreen.WINDOW_INSIDE_WIDTH, top)
                 .vertex(left, top)
                 .color(0, 0, 0, color);
-        definitelynothowabuilderworks.build(guiGraphics, RenderType.endPortal());
-        definitelynothowabuilderworks.build(guiGraphics, RenderType.guiOverlay());
+        definitelynothowabuilderworks.build(guiGraphics, RenderTypes.endPortal());
+        definitelynothowabuilderworks.build(guiGraphics, RenderPipelines.GUI);
     }
 
     private static Vector4f lerpColor(Vector4f a, Vector4f b, float pDelta) {
@@ -400,13 +401,13 @@ public class EldritchResearchScreen extends Screen {
     record NodeConnection(SpellNode node1, SpellNode node2) {
     }
 
-//    private static void setTexture(ResourceLocation texture) {
+//    private static void setTexture(Identifier texture) {
 //        RenderSystem.setShader(GameRenderer::getPositionTexShader);
 //        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
 //        RenderSystem.setShaderTexture(0, texture);
 //    }
 //
-//    private static void setTranslucentTexture(ResourceLocation texture) {
+//    private static void setTranslucentTexture(Identifier texture) {
 //        RenderSystem.enableBlend();
 //        RenderSystem.defaultBlendFunc();
 //        RenderSystem.setShader(GameRenderer::getRendertypeTranslucentShader);

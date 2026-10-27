@@ -86,11 +86,11 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.player.PlayerRenderer;
 import net.minecraft.client.gui.screens.MenuScreens;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.LivingEntity;
@@ -132,13 +132,13 @@ public class IronsSpellbooksClient implements ClientModInitializer {
     }
 
     private static void registerItemProperties() {
-        ItemProperties.register(ItemRegistry.WAYWARD_COMPASS.get(), ResourceLocation.withDefaultNamespace("angle"),
+        ItemProperties.register(ItemRegistry.WAYWARD_COMPASS.get(), Identifier.withDefaultNamespace("angle"),
                 new CompassItemPropertyFunction((level, itemStack, entity) -> WaywardCompass.getCatacombsLocation(entity, itemStack)));
         ItemProperties.register(ItemRegistry.WIZARD_HELMET.get(), IronsSpellbooks.id("hat"), (itemStack, clientLevel, livingEntity, i) -> itemStack.getOrDefault(ComponentRegistry.CLOTHING_VARIANT, "").equals("hat") ? 1.0f : 0f);
-        ItemProperties.register(ItemRegistry.TWILIGHT_GALE.get(), ResourceLocation.withDefaultNamespace("throwing"), (stack, level, entity, seed) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F);
+        ItemProperties.register(ItemRegistry.TWILIGHT_GALE.get(), Identifier.withDefaultNamespace("throwing"), (stack, level, entity, seed) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F);
         var autoloader = ItemRegistry.AUTOLOADER_CROSSBOW.get();
 
-        ItemProperties.register(autoloader, ResourceLocation.withDefaultNamespace("pull"), (stack, level, entity, seed) -> {
+        ItemProperties.register(autoloader, Identifier.withDefaultNamespace("pull"), (stack, level, entity, seed) -> {
             if (entity == null) {
                 return 0.0F;
             }
@@ -147,7 +147,7 @@ public class IronsSpellbooksClient implements ClientModInitializer {
                     : (float) (stack.getUseDuration(entity) - entity.getUseItemRemainingTicks()) / CrossbowItem.getChargeDuration(stack, entity);
         });
 
-        ItemProperties.register(autoloader, ResourceLocation.withDefaultNamespace("pulling"), (stack, level, entity, seed) ->
+        ItemProperties.register(autoloader, Identifier.withDefaultNamespace("pulling"), (stack, level, entity, seed) ->
                 entity != null
                         && entity.isUsingItem()
                         && entity.getUseItem() == stack
@@ -156,11 +156,11 @@ public class IronsSpellbooksClient implements ClientModInitializer {
                         : 0.0F
         );
 
-        ItemProperties.register(autoloader, ResourceLocation.withDefaultNamespace("charged"), (stack, level, entity, seed) ->
+        ItemProperties.register(autoloader, Identifier.withDefaultNamespace("charged"), (stack, level, entity, seed) ->
                 CrossbowItem.isCharged(stack) ? 1.0F : 0.0F
         );
 
-        ItemProperties.register(autoloader, ResourceLocation.withDefaultNamespace("firework"), (stack, level, entity, seed) -> {
+        ItemProperties.register(autoloader, Identifier.withDefaultNamespace("firework"), (stack, level, entity, seed) -> {
             ChargedProjectiles projectiles = stack.get(DataComponents.CHARGED_PROJECTILES);
             return projectiles != null && projectiles.contains(Items.FIREWORK_ROCKET) ? 1.0F : 0.0F;
         });
@@ -190,7 +190,7 @@ public class IronsSpellbooksClient implements ClientModInitializer {
                 if (model == null || topLevel == null) {
                     return model;
                 }
-                if (topLevel.equals(net.minecraft.client.resources.model.ModelResourceLocation.inventory(IronsSpellbooks.id("scroll")))) {
+                if (topLevel.equals(net.minecraft.client.resources.model.ModelIdentifier.inventory(IronsSpellbooks.id("scroll")))) {
                     return new io.redspace.ironsspellbooks.render.ScrollModel(model);
                 }
                 return model;
@@ -459,7 +459,7 @@ public class IronsSpellbooksClient implements ClientModInitializer {
     @SuppressWarnings({"rawtypes", "unchecked"})
     private static void registerFallbackEntityRenderers() {
         for (EntityType<?> entityType : BuiltInRegistries.ENTITY_TYPE) {
-            ResourceLocation id = BuiltInRegistries.ENTITY_TYPE.getKey(entityType);
+            Identifier id = BuiltInRegistries.ENTITY_TYPE.getKey(entityType);
             if (id != null && IronsSpellbooks.MODID.equals(id.getNamespace()) && !REGISTERED_RENDERERS.contains(entityType)) {
                 EntityRendererRegistry.register((EntityType) entityType, NullEntityRenderer::new);
             }
@@ -477,8 +477,8 @@ public class IronsSpellbooksClient implements ClientModInitializer {
         }
 
         @Override
-        public ResourceLocation getTextureLocation(Entity entity) {
-            return ResourceLocation.withDefaultNamespace("textures/misc/unknown_pack.png");
+        public Identifier getTextureLocation(Entity entity) {
+            return Identifier.withDefaultNamespace("textures/misc/unknown_pack.png");
         }
     }
 }

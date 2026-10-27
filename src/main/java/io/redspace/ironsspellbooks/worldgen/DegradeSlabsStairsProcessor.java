@@ -6,7 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.registries.StructureProcessorRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelReader;
@@ -81,7 +81,7 @@ public class DegradeSlabsStairsProcessor extends StructureProcessor {
     private Optional<Block> tryGetSlab(Block original) {
         try {
             var stringKey = BuiltInRegistries.BLOCK.getKey(original).toString().replace("_stairs", "_slab");
-            var block = BuiltInRegistries.BLOCK.get(ResourceLocation.parse(stringKey));
+            var block = BuiltInRegistries.BLOCK.get(Identifier.parse(stringKey));
             if (block.equals(Blocks.AIR)) {
                 return Optional.empty();
             } else {

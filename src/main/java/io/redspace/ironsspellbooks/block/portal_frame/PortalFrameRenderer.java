@@ -29,7 +29,7 @@ public class PortalFrameRenderer implements BlockEntityRenderer<PortalFrameBlock
         Vec3 dir = new Vec3(n.getX(), 0, n.getZ()).scale(-(6.5 / 16f));
         poseStack.translate(dir.x, 0, dir.z);
         if (direction == Direction.EAST || direction == Direction.WEST) {
-            poseStack.mulPose(Axis.YP.rotation(Mth.HALF_PI));
+            poseStack.rotate(Axis.YP.rotation(Mth.HALF_PI));
         }
         PortalRenderer.renderPortal(poseStack, pBufferSource, pBlockEntity.getLevel() == null ? 0 : (int) pBlockEntity.getLevel().getGameTime(), pPartialTick, true, pBlockEntity.getBlockState().is(BlockRegistry.POCKET_PORTAL_FRAME), pBlockEntity.getColor());
         poseStack.popPose();

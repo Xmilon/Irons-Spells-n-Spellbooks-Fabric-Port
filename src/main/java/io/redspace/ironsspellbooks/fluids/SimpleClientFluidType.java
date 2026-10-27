@@ -1,24 +1,24 @@
 package io.redspace.ironsspellbooks.fluids;
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import org.jetbrains.annotations.NotNull;
 
 public class SimpleClientFluidType implements IClientFluidTypeExtensions {
 
-    private final ResourceLocation texture;
+    private final Identifier texture;
 
-    public SimpleClientFluidType(ResourceLocation texture) {
+    public SimpleClientFluidType(Identifier texture) {
         this.texture = texture;
     }
 
 
-    public @NotNull ResourceLocation getStillTexture() {
+    public @NotNull Identifier getStillTexture() {
         return texture;
     }
 
 
-    public @NotNull ResourceLocation getFlowingTexture() {
+    public @NotNull Identifier getFlowingTexture() {
         return texture;
     }
 

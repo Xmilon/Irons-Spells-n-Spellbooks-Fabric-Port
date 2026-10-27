@@ -2,8 +2,8 @@ package io.redspace.ironsspellbooks.entity.armor;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.GoldCrownArmorItem;
-import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.model.GeoModel;
+import net.minecraft.resources.Identifier;
+import com.geckolib.model.GeoModel;
 
 public class GoldCrownModel extends GeoModel<GoldCrownArmorItem> {
 
@@ -13,17 +13,17 @@ public class GoldCrownModel extends GeoModel<GoldCrownArmorItem> {
     }
 
     @Override
-    public ResourceLocation getModelResource(GoldCrownArmorItem object) {
-        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/tarnished_armor.geo.json");
+    public Identifier getModelResource(GoldCrownArmorItem object) {
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/tarnished_armor.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureResource(GoldCrownArmorItem object) {
-        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/gold_crown.png");
+    public Identifier getTextureResource(GoldCrownArmorItem object) {
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/gold_crown.png");
     }
 
     @Override
-    public ResourceLocation getAnimationResource(GoldCrownArmorItem animatable) {
-        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
+    public Identifier getAnimationResource(GoldCrownArmorItem animatable) {
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
     }
 }

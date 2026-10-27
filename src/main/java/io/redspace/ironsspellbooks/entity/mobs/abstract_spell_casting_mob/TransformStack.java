@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
 import net.minecraft.util.Mth;
 import org.joml.Vector3f;
-import software.bernie.geckolib.cache.object.GeoBone;
+import com.geckolib.cache.model.GeoBone;
 
 import java.util.*;
 

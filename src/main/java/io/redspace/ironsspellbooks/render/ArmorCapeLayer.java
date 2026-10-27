@@ -18,11 +18,11 @@ import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
@@ -41,7 +41,7 @@ public class ArmorCapeLayer extends RenderLayer<LivingEntity, HumanoidModel<Livi
     private static final Map<Integer, IArmorCapeProvider.CapeData> CAPE_DATA = new HashMap<>();
 
     private Consumer<PoseStack> bodyTransformer;
-    public static ModelLayerLocation ARMOR_CAPE_LAYER = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "armor_cape"), "main");
+    public static ModelLayerLocation ARMOR_CAPE_LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "armor_cape"), "main");
 
     public ArmorCapeLayer(RenderLayerParent<LivingEntity, HumanoidModel<LivingEntity>> pRenderer) {
         super(pRenderer);
@@ -81,7 +81,7 @@ public class ArmorCapeLayer extends RenderLayer<LivingEntity, HumanoidModel<Livi
             float pHeadPitch
     ) {
         if (shouldRender(livingEntity)) {
-            var texture = ((IArmorCapeProvider) livingEntity.getItemBySlot(EquipmentSlot.CHEST).getItem()).getCapeResourceLocation();
+            var texture = ((IArmorCapeProvider) livingEntity.getItemBySlot(EquipmentSlot.CHEST).getItem()).getCapeIdentifier();
             var capeData = CAPE_DATA.computeIfAbsent(livingEntity.getId(), id -> new IArmorCapeProvider.CapeData());
             int lastTick = capeData.lastTick;
             if (lastTick != livingEntity.tickCount) {
@@ -117,9 +117,9 @@ public class ArmorCapeLayer extends RenderLayer<LivingEntity, HumanoidModel<Livi
                 this.cape.y = 0.0F;
             }
             this.bodyTransformer.accept(pPoseStack);
-            pPoseStack.mulPose(Axis.XP.rotationDegrees(6.0F + f2 / 2.0F + f1));
-            pPoseStack.mulPose(Axis.ZP.rotationDegrees(f3 / 2.0F));
-            pPoseStack.mulPose(Axis.YP.rotationDegrees(180.0F - f3 / 2.0F));
+            pPoseStack.rotate(Axis.XP.rotationDegrees(6.0F + f2 / 2.0F + f1));
+            pPoseStack.rotate(Axis.ZP.rotationDegrees(f3 / 2.0F));
+            pPoseStack.rotate(Axis.YP.rotationDegrees(180.0F - f3 / 2.0F));
             VertexConsumer vertexconsumer = pBuffer.getBuffer(RenderType.entityCutoutNoCull(texture));
             this.cape.render(pPoseStack, vertexconsumer, pPackedLight, OverlayTexture.NO_OVERLAY);
             pPoseStack.popPose();

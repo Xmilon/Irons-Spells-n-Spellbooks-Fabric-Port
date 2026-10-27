@@ -46,10 +46,10 @@ import net.minecraft.world.entity.ai.village.poi.PoiManager;
 import net.minecraft.world.entity.ai.village.poi.PoiTypes;
 import net.minecraft.world.entity.monster.Creeper;
 import net.minecraft.world.entity.monster.Enemy;
-import net.minecraft.world.entity.npc.VillagerData;
-import net.minecraft.world.entity.npc.VillagerDataHolder;
-import net.minecraft.world.entity.npc.VillagerProfession;
-import net.minecraft.world.entity.npc.VillagerType;
+import net.minecraft.world.entity.npc.villager.VillagerData;
+import net.minecraft.world.entity.npc.villager.VillagerDataHolder;
+import net.minecraft.world.entity.npc.villager.VillagerProfession;
+import net.minecraft.world.entity.npc.villager.VillagerType;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -258,26 +258,26 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
 
     @Override
     protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
-        boolean preventTrade = isAggressive() || (!this.level().isClientSide && this.getOffers().isEmpty());
+        boolean preventTrade = isAggressive() || (!this.level().isClientSide() && this.getOffers().isEmpty());
         if (pHand == InteractionHand.MAIN_HAND) {
-            if (preventTrade && !this.level().isClientSide) {
+            if (preventTrade && !this.level().isClientSide()) {
                 this.setUnhappy();
             }
         }
         if (!preventTrade) {
-            if (!this.level().isClientSide && !this.getOffers().isEmpty()) {
+            if (!this.level().isClientSide() && !this.getOffers().isEmpty()) {
                 if (shouldRestock()) {
                     restock();
                 }
                 this.startTrading(pPlayer);
             }
-            return InteractionResult.sidedSuccess(this.level().isClientSide);
+            return InteractionResult.sidedSuccess(this.level().isClientSide());
         }
         return super.mobInteract(pPlayer, pHand);
     }
 
     public void setUnhappy() {
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             this.playSound(SoundRegistry.TRADER_NO.get(), this.getSoundVolume(), this.getVoicePitch());
             unhappyTimer = 20;
             this.entityData.set(DATA_VILLAGER_UNHAPPY, true);
@@ -396,7 +396,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
 
     @Override
     public void notifyTradeUpdated(ItemStack pStack) {
-        if (!this.level().isClientSide && this.ambientSoundTime > -this.getAmbientSoundInterval() + 20) {
+        if (!this.level().isClientSide() && this.ambientSoundTime > -this.getAmbientSoundInterval() + 20) {
             this.ambientSoundTime = -this.getAmbientSoundInterval();
             this.playSound(this.getTradeUpdatedSound(!pStack.isEmpty()), this.getSoundVolume(), this.getVoicePitch());
         }
@@ -454,7 +454,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     static class BibleTrade extends AdditionalWanderingTrades.SimpleTrade {
         private BibleTrade() {
             super((trader, random) -> {
-                if (!trader.level().isClientSide) {
+                if (!trader.level().isClientSide()) {
                     ItemStack cost = new ItemStack(ItemRegistry.TRANSLATED_ARCHEVOKER_LOGBOOK.get());
                     ItemStack forSale = new ItemStack(ItemRegistry.VILLAGER_SPELL_BOOK.get());
                     return new MerchantOffer(new ItemCost(cost.getItem(), cost.getCount()), forSale, 1, 5, 0.5f);

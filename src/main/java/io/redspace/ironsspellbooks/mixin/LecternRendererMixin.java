@@ -6,9 +6,9 @@ import io.redspace.ironsspellbooks.item.ILecternPlaceable;
 import io.redspace.ironsspellbooks.item.SpellBook;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.model.BookModel;
+import net.minecraft.client.model.object.book.BookModel;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.blockentity.LecternRenderer;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.level.block.LecternBlock;
@@ -38,8 +38,8 @@ public class LecternRendererMixin {
                 pPoseStack.pushPose();
                 pPoseStack.translate(0.5F, 1.0625F, 0.5F);
                 float f = blockstate.getValue(LecternBlock.FACING).getClockWise().toYRot();
-                pPoseStack.mulPose(Axis.YP.rotationDegrees(-f));
-                pPoseStack.mulPose(Axis.ZP.rotationDegrees(67.5F));
+                pPoseStack.rotate(Axis.YP.rotationDegrees(-f));
+                pPoseStack.rotate(Axis.ZP.rotationDegrees(67.5F));
                 var textureOverride = lecternPlaceable.simpleTextureOverride(stack);
                 if (textureOverride.isPresent()) {
                     pPoseStack.translate(0.0F, -0.125F, 0.0F);
@@ -47,9 +47,9 @@ public class LecternRendererMixin {
                     var vertexconsumer = pBufferSource.getBuffer(RenderType.entitySolid(textureOverride.get()));
                     this.bookModel.render(pPoseStack, vertexconsumer, pPackedLight, pPackedOverlay, -1);
                 } else if (stack.getItem() instanceof SpellBook spellBook || stack.is(ItemRegistry.THE_CHRONICLE)/*todo: item tag for "3d lecterns"*/) {
-                    pPoseStack.mulPose(Axis.XP.rotationDegrees(-90f));
-                    pPoseStack.mulPose(Axis.ZP.rotationDegrees(90f));
-                    pPoseStack.mulPose(Axis.YP.rotationDegrees(180f));
+                    pPoseStack.rotate(Axis.XP.rotationDegrees(-90f));
+                    pPoseStack.rotate(Axis.ZP.rotationDegrees(90f));
+                    pPoseStack.rotate(Axis.YP.rotationDegrees(180f));
                     pPoseStack.translate(0.125F, -0.625F, 0.125F);
                     lecternPlaceable.handleCustomLecternPosing(pPoseStack);
                     var itemRenderer = Minecraft.getInstance().getItemRenderer();

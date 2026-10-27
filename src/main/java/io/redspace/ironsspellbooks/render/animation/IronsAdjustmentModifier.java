@@ -1,122 +1,64 @@
 package io.redspace.ironsspellbooks.render.animation;
 
-import dev.kosmx.playerAnim.api.TransformType;
-import dev.kosmx.playerAnim.api.layered.IAnimation;
-import dev.kosmx.playerAnim.api.layered.KeyframeAnimationPlayer;
-import dev.kosmx.playerAnim.api.layered.modifier.AbstractModifier;
-import dev.kosmx.playerAnim.api.layered.modifier.AdjustmentModifier;
-import dev.kosmx.playerAnim.core.util.Vec3f;
+import com.zigythebird.playeranim.animation.PlayerAnimationController;
+import com.zigythebird.playeranimcore.animation.AnimationController;
+import com.zigythebird.playeranimcore.animation.layered.modifier.AdjustmentModifier;
+import com.zigythebird.playeranimcore.math.Vec3f;
+import net.minecraft.util.Mth;
+import net.minecraft.world.entity.Avatar;
+import net.minecraft.world.phys.Vec3;
 
 import java.util.Optional;
-import java.util.function.BiFunction;
+import java.util.function.Supplier;
 
-/**
- * Implementation of {@link AdjustmentModifier} but uses a BiFunction to include the additional parameter of partial tick when making adjustments
- */
-public class IronsAdjustmentModifier extends AbstractModifier {
-    /**
-     * Keep reference to the instance so that we can invoke a fadeout when we stop an animation
-     */
-    public static IronsAdjustmentModifier INSTANCE;
-    public boolean enabled = true;
+/** Applies casting aim in PAL's bone coordinates, with the active cast's native fades. */
+public class IronsAdjustmentModifier extends AdjustmentModifier {
+    private final Supplier<PlayerAnimationController> controller;
 
-    protected BiFunction<String, Float, Optional<AdjustmentModifier.PartModifier>> transformFunction;
-
-    public IronsAdjustmentModifier(BiFunction<String, Float, Optional<AdjustmentModifier.PartModifier>> transformFunction) {
-        this.transformFunction = transformFunction;
-    }
-
-    protected float getFadeIn(float delta) {
-        float fadeIn = 1;
-        IAnimation animation = this.getAnim();
-        if (animation instanceof KeyframeAnimationPlayer) {
-            KeyframeAnimationPlayer player = (KeyframeAnimationPlayer) anim;
-            float currentTick = player.getTick() + delta;
-            fadeIn = currentTick / (float) player.getData().beginTick;
-            fadeIn = Math.min(fadeIn, 1F);
-        }
-        return fadeIn;
+    public IronsAdjustmentModifier(Avatar avatar, Supplier<PlayerAnimationController> controller) {
+        super((name, data) -> adjustment(avatar, controller.get(), name, data.getPartialTick()));
+        this.controller = controller;
     }
 
     @Override
-    public void tick() {
-        super.tick();
-
-        if (remainingFadeout > 0) {
-            remainingFadeout -= 1;
-            if (remainingFadeout <= 0) {
-                instructedFadeout = 0;
-            }
-        }
+    protected AnimationController getController() {
+        return controller.get();
     }
 
-    protected int instructedFadeout = 0;
-    private int remainingFadeout = 0;
-
-    public void fadeOut(int fadeOut) {
+    @Override
+    public void fadeOut(int ticks) {
         if (instructedFadeout == 0) {
-            instructedFadeout = fadeOut;
-            remainingFadeout = fadeOut + 1;
+            super.fadeOut(ticks);
         }
     }
 
-    public void resetFadeOut(){
-        instructedFadeout = 0;
-        remainingFadeout = 0;
+    public void resetFadeOut() {
+        super.fadeOut(0);
     }
 
-    protected float getFadeOut(float delta) {
-        float fadeOut = 1;
-        if (remainingFadeout > 0 && instructedFadeout > 0) {
-            float current = Math.max(remainingFadeout - delta, 0);
-            fadeOut = current / ((float) instructedFadeout);
-            fadeOut = Math.min(fadeOut, 1F);
-            return fadeOut;
-        }
-        IAnimation animation = this.getAnim();
-        if (animation instanceof KeyframeAnimationPlayer) {
-            KeyframeAnimationPlayer player = (KeyframeAnimationPlayer) anim;
-
-            float currentTick = player.getTick() + delta;
-            float position = (-1F) * (currentTick - player.getData().stopTick);
-            float length = player.getData().stopTick - player.getData().endTick;
-            if (length > 0) {
-                fadeOut = position / length;
-                fadeOut = Math.min(fadeOut, 1F);
+    private static Optional<PartModifier> adjustment(Avatar avatar, PlayerAnimationController controller, String name, float partialTick) {
+        float yaw = Mth.lerp(partialTick, avatar.yHeadRotO - avatar.yBodyRotO, avatar.yHeadRot - avatar.yBodyRot);
+        if (name.equals("head")) {
+            if (controller != null && controller.get3DTransform("head").rotation.lengthSquared() != 0) {
+                return Optional.of(new PartModifier(new Vec3f(0, yaw * Mth.DEG_TO_RAD, 0), Vec3f.ZERO));
             }
+        } else if (name.equals("right_arm") || name.equals("left_arm")) {
+            float x = Mth.wrapDegrees(Mth.lerp(partialTick, avatar.xRotO, avatar.getXRot()) * 0.65f) * Mth.DEG_TO_RAD;
+            float y = Mth.wrapDegrees(yaw * 0.65f) * Mth.DEG_TO_RAD;
+            Vec3f offset = Vec3f.ZERO;
+            if (controller != null) {
+                var position = controller.get3DTransform(name).position;
+                offset = armPositionOffset(new Vec3f(position.x, position.y, position.z), x, y);
+            }
+            return Optional.of(new PartModifier(new Vec3f(x, y, 0), offset));
         }
-        return fadeOut;
+        return Optional.empty();
     }
 
-    @Override
-    public Vec3f get3DTransform(String modelName, TransformType type, float partialTick, Vec3f value0) {
-        if (!enabled) {
-            return super.get3DTransform(modelName, type, partialTick, value0);
-        }
-
-        Optional<AdjustmentModifier.PartModifier> partModifier = transformFunction.apply(modelName, partialTick);
-
-        Vec3f modifiedVector = value0;
-        float fade = getFadeIn(partialTick) * getFadeOut(partialTick);
-        if (partModifier.isPresent()) {
-            modifiedVector = super.get3DTransform(modelName, type, partialTick, modifiedVector);
-            return transformVector(modifiedVector, type, partModifier.get(), fade);
-        } else {
-            return super.get3DTransform(modelName, type, partialTick, value0);
-        }
-    }
-
-    protected Vec3f transformVector(Vec3f vector, TransformType type, AdjustmentModifier.PartModifier partModifier, float fade) {
-        switch (type) {
-            case POSITION:
-                return vector.add(partModifier.offset().scale(fade));
-            case ROTATION:
-                return vector.add(partModifier.rotation().scale(fade));
-            case SCALE:
-                return vector.add(partModifier.scale().scale(fade));
-            case BEND:
-                break;
-        }
-        return vector;
+    static Vec3f armPositionOffset(Vec3f position, float pitch, float yaw) {
+        // PAL reverses non-body position Y relative to Player Animator's coordinates.
+        Vec3 original = new Vec3(position.x(), -position.y(), position.z());
+        Vec3 rotated = original.xRot(-pitch).yRot(yaw);
+        return new Vec3f((float) (rotated.x - original.x), (float) (original.y - rotated.y), (float) (rotated.z - original.z));
     }
 }

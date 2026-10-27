@@ -58,7 +58,7 @@ public class SummonedRapierEntity extends SummonedWeaponEntity {
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
-        if (!level().isClientSide && pSource.getEntity() != null && !pSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+        if (!level().isClientSide() && pSource.getEntity() != null && !pSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             // first, ignore summoner damage
             if (shouldIgnoreDamage(pSource)) {
                 return false;

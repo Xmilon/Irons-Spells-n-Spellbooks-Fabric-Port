@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.api.util;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.Minecraft;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -17,7 +17,7 @@ import java.util.UUID;
 @EventBusSubscriber(Dist.CLIENT)
 
 public class BossbarManager {
-    public record BossbarSprite(ResourceLocation spriteLocation, int width, int height, int buffer, int yBarOffset) {
+    public record BossbarSprite(Identifier spriteLocation, int width, int height, int buffer, int yBarOffset) {
     }
 
     private static final Map<UUID, BossbarSprite> CUSTOM_BARS = new HashMap<>();

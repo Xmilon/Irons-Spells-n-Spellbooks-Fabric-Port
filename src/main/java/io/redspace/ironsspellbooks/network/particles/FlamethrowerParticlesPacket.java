@@ -6,14 +6,14 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class FlamethrowerParticlesPacket implements CustomPacketPayload {
     private final Vec3 position;
     private final Vec3 forward;
-    public static final Type<FlamethrowerParticlesPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "flamethrower_particles"));
+    public static final Type<FlamethrowerParticlesPacket> TYPE = new Type<>(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "flamethrower_particles"));
     public static final StreamCodec<RegistryFriendlyByteBuf, FlamethrowerParticlesPacket> STREAM_CODEC = CustomPacketPayload.codec(FlamethrowerParticlesPacket::write, FlamethrowerParticlesPacket::new);
 
     public FlamethrowerParticlesPacket(Vec3 position, Vec3 forward) {

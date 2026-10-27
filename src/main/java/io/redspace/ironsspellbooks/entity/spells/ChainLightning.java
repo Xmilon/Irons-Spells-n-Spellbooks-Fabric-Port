@@ -56,7 +56,7 @@ public class ChainLightning extends AbstractMagicProjectile {
     public void tick() {
         super.tick();
         int f = tickCount - 1;
-        if (!this.level().isClientSide && f % 6 == 0) {
+        if (!this.level().isClientSide() && f % 6 == 0) {
             if (f == 0 && !allVictims.contains(initialVictim)) {
                 //First time zap
                 doHurt(initialVictim);

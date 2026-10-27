@@ -14,20 +14,20 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
 
 public class DeadKingSoulRenderer extends EntityRenderer<DeadKingSoulEntity> {
-    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "dead_king_orb_model"), "main");
-    public static final ModelLayerLocation CROWN_CUBE_LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "dead_king_soul_crown_cube"), "main");
-    private static final ResourceLocation TEXTURE = IronsSpellbooks.id("textures/entity/magic_missile/magic_missile.png");
-    private static final ResourceLocation CROWN_TEXTURE = IronsSpellbooks.id("textures/entity/dead_king/dead_king_crown.png");
+    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "dead_king_orb_model"), "main");
+    public static final ModelLayerLocation CROWN_CUBE_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "dead_king_soul_crown_cube"), "main");
+    private static final Identifier TEXTURE = IronsSpellbooks.id("textures/entity/magic_missile/magic_missile.png");
+    private static final Identifier CROWN_TEXTURE = IronsSpellbooks.id("textures/entity/dead_king/dead_king_crown.png");
     private final ModelPart body;
     private final ModelPart crownCube;
 
@@ -57,8 +57,8 @@ public class DeadKingSoulRenderer extends EntityRenderer<DeadKingSoulEntity> {
         poseStack.pushPose();
         poseStack.translate(0, entity.getBbHeight() * 1.5, 0);
         poseStack.scale(1.5f, -1.5f, 1.5f);
-        poseStack.mulPose(Axis.YP.rotationDegrees(entity.tickCount + partialTicks));
-        poseStack.mulPose(Axis.XP.rotationDegrees(Mth.sin((entity.tickCount + partialTicks) / 100f) * 6f));
+        poseStack.rotate(Axis.YP.rotationDegrees(entity.tickCount + partialTicks));
+        poseStack.rotate(Axis.XP.rotationDegrees(Mth.sin((entity.tickCount + partialTicks) / 100f) * 6f));
         VertexConsumer crownConsumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(CROWN_TEXTURE));
         this.crownCube.render(poseStack, crownConsumer, light, OverlayTexture.NO_OVERLAY);
         poseStack.popPose();
@@ -68,8 +68,8 @@ public class DeadKingSoulRenderer extends EntityRenderer<DeadKingSoulEntity> {
         float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
         float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
         poseStack.translate(0, entity.getBbHeight() * .5f, 0);
-        poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
-        poseStack.mulPose(Axis.XP.rotationDegrees(xRot));
+        poseStack.rotate(Axis.YP.rotationDegrees(yRot));
+        poseStack.rotate(Axis.XP.rotationDegrees(xRot));
         poseStack.scale(0.75f, 0.75f, 0.75f);
         float f = entity.tickCount + entity.getId() * 31 + partialTicks;
 
@@ -100,12 +100,12 @@ public class DeadKingSoulRenderer extends EntityRenderer<DeadKingSoulEntity> {
         poseStack.popPose();
     }
 
-    public RenderType renderType(ResourceLocation TEXTURE) {
+    public RenderType renderType(Identifier TEXTURE) {
         return RenderType.lightning();
     }
 
     @Override
-    public @NotNull ResourceLocation getTextureLocation(@NotNull DeadKingSoulEntity entity) {
+    public @NotNull Identifier getTextureLocation(@NotNull DeadKingSoulEntity entity) {
         return TEXTURE;
     }
 

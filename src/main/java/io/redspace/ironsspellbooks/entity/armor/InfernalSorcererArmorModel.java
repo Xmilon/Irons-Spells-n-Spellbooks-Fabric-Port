@@ -2,27 +2,27 @@ package io.redspace.ironsspellbooks.entity.armor;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.InfernalSorcererArmorItem;
-import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.model.DefaultedItemGeoModel;
+import net.minecraft.resources.Identifier;
+import com.geckolib.model.DefaultedItemGeoModel;
 
 public class InfernalSorcererArmorModel extends DefaultedItemGeoModel<InfernalSorcererArmorItem> {
 
     public InfernalSorcererArmorModel() {
-        super(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, ""));
+        super(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, ""));
     }
 
     @Override
-    public ResourceLocation getModelResource(InfernalSorcererArmorItem object) {
-        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/infernal_sorcerer.geo.json");
+    public Identifier getModelResource(InfernalSorcererArmorItem object) {
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/infernal_sorcerer.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureResource(InfernalSorcererArmorItem object) {
-        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/infernal_sorcerer.png");
+    public Identifier getTextureResource(InfernalSorcererArmorItem object) {
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/infernal_sorcerer.png");
     }
 
     @Override
-    public ResourceLocation getAnimationResource(InfernalSorcererArmorItem animatable) {
-        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
+    public Identifier getAnimationResource(InfernalSorcererArmorItem animatable) {
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
     }
 }

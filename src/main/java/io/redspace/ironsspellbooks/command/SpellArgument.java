@@ -9,7 +9,7 @@ import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import net.minecraft.commands.SharedSuggestionProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -27,7 +27,7 @@ public class SpellArgument implements ArgumentType<String> {
     public String parse(final StringReader reader) throws CommandSyntaxException {
         int i = reader.getCursor();
 
-        while (reader.canRead() && ResourceLocation.isAllowedInResourceLocation(reader.peek())) {
+        while (reader.canRead() && Identifier.isAllowedInIdentifier(reader.peek())) {
             reader.skip();
         }
 
@@ -37,10 +37,10 @@ public class SpellArgument implements ArgumentType<String> {
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(final CommandContext<S> context, final SuggestionsBuilder builder) {
         var registeredSpells = SpellRegistry.REGISTRY.entrySet().stream().map(entry -> {
-            if (entry.getKey().location().getNamespace().equals(IronsSpellbooks.MODID)) {
-                return entry.getKey().location().getPath();
+            if (entry.getKey().identifier().getNamespace().equals(IronsSpellbooks.MODID)) {
+                return entry.getKey().identifier().getPath();
             } else {
-                return entry.getKey().location().toString();
+                return entry.getKey().identifier().toString();
             }
         }).sorted((s1, s2) -> {
             if (s1.contains(":") && s2.contains(":")) {

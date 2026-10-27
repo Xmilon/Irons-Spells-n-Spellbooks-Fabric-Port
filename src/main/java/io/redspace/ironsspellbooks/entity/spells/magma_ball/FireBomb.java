@@ -74,7 +74,7 @@ public class FireBomb extends AbstractMagicProjectile {
     }
 
     public void createFireField(Vec3 location) {
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             FireField fire = new FireField(level());
             fire.setOwner(getOwner());
             fire.setDuration(200);

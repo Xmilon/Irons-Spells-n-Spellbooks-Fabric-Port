@@ -46,7 +46,7 @@ public class FangSwirlEntity extends AoeEntity {
     public void tick() {
         super.tick();
         // swirling line towards destination during delay
-        if (startPos != null && !level.isClientSide && tickCount < getDelay()) {
+        if (startPos != null && !level.isClientSide() && tickCount < getDelay()) {
             float f = tickCount / (float) getDelay();
             Vec3 forward = position().subtract(startPos).multiply(1, 0, 1).normalize();
             Vec3 right = new Vec3(-forward.z, 0, forward.x);
@@ -67,7 +67,7 @@ public class FangSwirlEntity extends AoeEntity {
 
     @Override
     protected void checkHits() {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
         float radius = getRadius();

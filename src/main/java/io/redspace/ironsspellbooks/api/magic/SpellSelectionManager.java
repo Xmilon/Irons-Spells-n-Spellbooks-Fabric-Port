@@ -55,14 +55,14 @@ public class SpellSelectionManager {
     private void init(Player player) {
         if (player == null) return;
 
-        if (player.level().isClientSide) {
+        if (player.level().isClientSide()) {
             spellSelection = ClientMagicData.getSyncedSpellData(player).getSpellSelection();
         } else {
             spellSelection = MagicData.getPlayerMagicData(player).getSyncedData().getSpellSelection();
         }
 
         if (Log.SPELL_SELECTION) {
-            IronsSpellbooks.LOGGER.debug("SpellSelectionManager init.begin spellSelection:{} valid:{} index:{} isClient:{}", spellSelection, selectionValid, selectionIndex, player.level().isClientSide);
+            IronsSpellbooks.LOGGER.debug("SpellSelectionManager init.begin spellSelection:{} valid:{} index:{} isClient:{}", spellSelection, selectionValid, selectionIndex, player.level().isClientSide());
         }
 
         initCurioItems(player);
@@ -78,7 +78,7 @@ public class SpellSelectionManager {
         }
 
         if (Log.SPELL_SELECTION) {
-            IronsSpellbooks.LOGGER.debug("SpellSelectionManager init.end spellSelection:{} valid:{} index:{} isClient:{}", spellSelection, selectionValid, selectionIndex, player.level().isClientSide);
+            IronsSpellbooks.LOGGER.debug("SpellSelectionManager init.end spellSelection:{} valid:{} index:{} isClient:{}", spellSelection, selectionValid, selectionIndex, player.level().isClientSide());
         }
     }
 
@@ -196,7 +196,7 @@ public class SpellSelectionManager {
     private void makeLocalSelection(String slot, int slotIndex, int globalIndex, boolean doSync) {
         selectionIndex = globalIndex;
         selectionValid = true;
-        if (doSync && player.level().isClientSide) {
+        if (doSync && player.level().isClientSide()) {
             spellSelection.makeSelection(slot, slotIndex);
             PacketDistributor.sendToServer(new SelectSpellPacket(spellSelection));
         }
@@ -208,7 +208,7 @@ public class SpellSelectionManager {
         }
 
         this.spellSelection = spellSelection;
-        if (player.level().isClientSide) {
+        if (player.level().isClientSide()) {
             PacketDistributor.sendToServer(new SelectSpellPacket(spellSelection));
         } else {
             MagicData.getPlayerMagicData(player).getSyncedData().setSpellSelection(spellSelection);

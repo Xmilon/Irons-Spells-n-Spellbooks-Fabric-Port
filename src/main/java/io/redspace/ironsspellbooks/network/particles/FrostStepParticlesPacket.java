@@ -6,14 +6,14 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class FrostStepParticlesPacket implements CustomPacketPayload {
     private final Vec3 pos1;
     private final Vec3 pos2;
-    public static final CustomPacketPayload.Type<FrostStepParticlesPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "frost_step_particles"));
+    public static final CustomPacketPayload.Type<FrostStepParticlesPacket> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "frost_step_particles"));
     public static final StreamCodec<RegistryFriendlyByteBuf, FrostStepParticlesPacket> STREAM_CODEC = CustomPacketPayload.codec(FrostStepParticlesPacket::write, FrostStepParticlesPacket::new);
 
     public FrostStepParticlesPacket(Vec3 pos1, Vec3 pos2) {

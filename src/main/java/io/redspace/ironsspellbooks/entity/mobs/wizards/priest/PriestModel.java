@@ -6,24 +6,24 @@ import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.Abstra
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.PartNames;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.EquipmentSlot;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.cache.object.GeoBone;
+import com.geckolib.cache.animation.AnimationState;
+import com.geckolib.cache.model.GeoBone;
 
 public class PriestModel extends AbstractSpellCastingMobModel {
-    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/priest/priest.png");
-    public static final ResourceLocation TEXTURE_ARMOR = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/priest/priest_armored.png");
-    public static final ResourceLocation MODEL = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/archevoker.geo.json");
+    public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/priest/priest.png");
+    public static final Identifier TEXTURE_ARMOR = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/priest/priest_armored.png");
+    public static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/archevoker.geo.json");
 
     @Override
-    public ResourceLocation getModelResource(AbstractSpellCastingMob object) {
+    public Identifier getModelResource(AbstractSpellCastingMob object) {
         return MODEL;
     }
 
     @Override
-    public ResourceLocation getTextureResource(AbstractSpellCastingMob object) {
+    public Identifier getTextureResource(AbstractSpellCastingMob object) {
         return object.getItemBySlot(EquipmentSlot.HEAD).is(ItemRegistry.PRIEST_HELMET.get()) ? TEXTURE_ARMOR : TEXTURE;
     }
 

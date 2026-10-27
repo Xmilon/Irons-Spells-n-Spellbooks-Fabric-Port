@@ -82,7 +82,7 @@ import io.redspace.ironsspellbooks.entity.spells.void_tentacle.VoidTentacle;
 import io.redspace.ironsspellbooks.entity.spells.wall_of_fire.WallOfFireEntity;
 import io.redspace.ironsspellbooks.entity.spells.wisp.WispEntity;
 import net.minecraft.core.registries.Registries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.level.block.Blocks;
@@ -623,66 +623,66 @@ public class EntityRegistry {
             ENTITIES.register("dead_king_soul", () -> EntityType.Builder.<DeadKingSoulEntity>of(DeadKingSoulEntity::new, MobCategory.MISC)
                     .sized(0.5f, 0.5f)
                     .clientTrackingRange(64)
-                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "dead_king_soul").toString()));
+                    .build(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "dead_king_soul").toString()));
 
     public static final DeferredHolder<EntityType<?>, EntityType<BlizzardAoe>> BLIZZARD_AOE =
             ENTITIES.register("blizzard_aoe", () -> EntityType.Builder.<BlizzardAoe>of(BlizzardAoe::new, MobCategory.MISC)
                     .sized(4f, BlizzardAoe.HEIGHT)
                     .clientTrackingRange(64)
-                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "blizzard_aoe").toString()));
+                    .build(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "blizzard_aoe").toString()));
 
     public static final DeferredHolder<EntityType<?>, EntityType<VisualFallingBlockEntity>> FALLING_BLOCK =
             ENTITIES.register("visual_falling_block", () -> EntityType.Builder.<VisualFallingBlockEntity>of(VisualFallingBlockEntity::new, MobCategory.MISC)
                     .sized(0.98F, 0.98F)
                     .clientTrackingRange(10)
                     .updateInterval(20)
-                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "visual_falling_block").toString()));
+                    .build(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "visual_falling_block").toString()));
 
     public static final DeferredHolder<EntityType<?>, EntityType<OminousFireOrbEntity>> OMINOUS_FIRE_ORB =
             ENTITIES.register("ominous_fire_orb", () -> EntityType.Builder.<OminousFireOrbEntity>of(OminousFireOrbEntity::new, MobCategory.MISC)
                     .sized(1.2f, 2.6f)
                     .clientTrackingRange(64)
-                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "ominous_fire_orb").toString()));
+                    .build(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "ominous_fire_orb").toString()));
 
     public static final DeferredHolder<EntityType<?>, EntityType<UndeadRiftEntity>> UNDEAD_RIFT =
             ENTITIES.register("undead_rift", () -> EntityType.Builder.<UndeadRiftEntity>of(UndeadRiftEntity::new, MobCategory.MISC)
                     .sized(.8f, 2f)
                     .clientTrackingRange(64)
-                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "undead_rift").toString()));
+                    .build(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "undead_rift").toString()));
 
     public static final DeferredHolder<EntityType<?>, EntityType<FangSwirlEntity>> FANG_SWIRL =
             ENTITIES.register("fang_swirl", () -> EntityType.Builder.<FangSwirlEntity>of(FangSwirlEntity::new, MobCategory.MISC)
                     .sized(4f, .8f)
                     .clientTrackingRange(64)
-                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "fang_swirl").toString()));
+                    .build(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "fang_swirl").toString()));
 
     public static final DeferredHolder<EntityType<?>, EntityType<ArcaneShackleProjectile>> ARCANE_SHACKLE =
             ENTITIES.register("arcane_shackle", () -> EntityType.Builder.<ArcaneShackleProjectile>of(ArcaneShackleProjectile::new, MobCategory.MISC)
                     .sized(0.5f, 0.5f)
                     .clientTrackingRange(64)
-                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "arcane_shackle").toString()));
+                    .build(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "arcane_shackle").toString()));
 
     public static final DeferredHolder<EntityType<?>, EntityType<EnderChain>> ENDER_CHAIN =
             ENTITIES.register("ender_chain", () -> EntityType.Builder.<EnderChain>of(EnderChain::new, MobCategory.MISC)
                     .sized(0.5f, 0.5f)
                     .clientTrackingRange(64)
-                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "ender_chain").toString()));
+                    .build(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "ender_chain").toString()));
 
     public static final DeferredHolder<EntityType<?>, EntityType<EchoingSword>> ECHOING_SWORD =
             ENTITIES.register("echoing_sword", () -> EntityType.Builder.<EchoingSword>of(EchoingSword::new, MobCategory.MISC)
                     .sized(0.5f, 0.5f)
                     .clientTrackingRange(64)
-                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "echoing_sword").toString()));
+                    .build(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "echoing_sword").toString()));
 
     public static final DeferredHolder<EntityType<?>, EntityType<EchoingArrowProjectile>> ECHOING_ARROW =
             ENTITIES.register("echoing_arrow", () -> EntityType.Builder.<EchoingArrowProjectile>of(EchoingArrowProjectile::new, MobCategory.MISC)
                     .sized(0.5f, 0.5f)
                     .clientTrackingRange(64)
-                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "echoing_arrow").toString()));
+                    .build(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "echoing_arrow").toString()));
 
     public static final DeferredHolder<EntityType<?>, EntityType<ScapegoatEntity>> SCAPEGOAT =
             ENTITIES.register("scapegoat", () -> EntityType.Builder.<ScapegoatEntity>of(ScapegoatEntity::new, MobCategory.MISC)
                     .sized(0.9F, 1.3F)
                     .clientTrackingRange(64)
-                    .build(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "scapegoat").toString()));
+                    .build(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "scapegoat").toString()));
 }

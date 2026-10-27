@@ -10,25 +10,25 @@ import io.redspace.ironsspellbooks.util.DefaultBipedBoneIdents;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.PartNames;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.WalkAnimationState;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Vector2f;
 import org.joml.Vector3d;
 import org.joml.Vector3f;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.cache.object.GeoBone;
+import com.geckolib.cache.animation.AnimationState;
+import com.geckolib.cache.model.GeoBone;
 
 public class FireBossModel extends AbstractSpellCastingMobModel {
-    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/fire_boss/tyros.png");
-    public static final ResourceLocation TEXTURE_SOUL_MODE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/fire_boss/tyros_soul_mode.png");
-    public static final ResourceLocation MODEL = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/tyros.geo.json");
+    public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/fire_boss/tyros.png");
+    public static final Identifier TEXTURE_SOUL_MODE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/fire_boss/tyros_soul_mode.png");
+    public static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/tyros.geo.json");
     private static final float tilt = 15 * Mth.DEG_TO_RAD;
     private static final Vector3f forward = new Vector3f(0, 0, Mth.sin(tilt) * -12);
 
     @Override
-    public ResourceLocation getTextureResource(AbstractSpellCastingMob object) {
+    public Identifier getTextureResource(AbstractSpellCastingMob object) {
         if (object instanceof FireBossEntity fireBossEntity && fireBossEntity.isSoulMode()) {
             return TEXTURE_SOUL_MODE;
         }
@@ -36,7 +36,7 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
     }
 
     @Override
-    public ResourceLocation getModelResource(AbstractSpellCastingMob object) {
+    public Identifier getModelResource(AbstractSpellCastingMob object) {
         return MODEL;
     }
 

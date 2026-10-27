@@ -4,7 +4,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.NotNull;
@@ -25,7 +25,7 @@ public class CameraShakeData {
     }
 
     public CameraShakeData(@NotNull Level level, int duration, Vec3 origin, float radius) {
-        this(level == null ? ResourceKey.create(Registries.DIMENSION, ResourceLocation.withDefaultNamespace("overworld")) : level.dimension(),
+        this(level == null ? ResourceKey.create(Registries.DIMENSION, Identifier.withDefaultNamespace("overworld")) : level.dimension(),
                 CameraShakeManager.getNextId(),
                 duration,
                 origin,

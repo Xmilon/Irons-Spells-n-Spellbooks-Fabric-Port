@@ -25,7 +25,7 @@ import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib.animation.*;
+import com.geckolib.animation.*;
 
 public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
     DeadKingAmbienceSoundManager ambienceSoundManager;
@@ -70,7 +70,7 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
         this.setHealth(this.getMaxHealth());
         if (triggered()) {
             ++currentAnimTime;
-            if (!level().isClientSide) {
+            if (!level().isClientSide()) {
                 if (currentAnimTime > animLength) {
                     DeadKingBoss boss = new DeadKingBoss(level());
                     boss.moveTo(this.position().add(0, 1, 0));
@@ -92,7 +92,7 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
             } else {
                 resurrectParticles();
             }
-        } else if (level.isClientSide) {
+        } else if (level.isClientSide()) {
             //Ambience sound handling
             if (tickCount % 40 == 0) {
                 MinecraftInstanceHelper.ifPlayerPresent(player -> {
@@ -148,7 +148,7 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
     protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
         if (!triggered()) {
             trigger();
-            return InteractionResult.sidedSuccess(level().isClientSide);
+            return InteractionResult.sidedSuccess(level().isClientSide());
         }
         return super.mobInteract(pPlayer, pHand);
     }

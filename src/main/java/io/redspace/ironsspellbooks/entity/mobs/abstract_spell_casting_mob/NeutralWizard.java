@@ -16,7 +16,7 @@ import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.GameRules;
+import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.Level;
 import org.jetbrains.annotations.NotNull;
 
@@ -99,7 +99,7 @@ public class NeutralWizard extends AbstractSpellCastingMob implements NeutralMob
     @Override
     public void aiStep() {
         super.aiStep();
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             this.updatePersistentAnger((ServerLevel) this.level(), true);
         }
         if (!angerLevels.isEmpty() && lastAngerLevelUpdate + 20 * 20 < tickCount) {
@@ -126,7 +126,7 @@ public class NeutralWizard extends AbstractSpellCastingMob implements NeutralMob
     }
 
     public void increaseAngerLevel(Player angryAt, int levels, boolean showParticles) {
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             return;
         }
         int anger = Math.min(angerLevels.getOrDefault(angryAt.getUUID(), 0) + levels, 10);

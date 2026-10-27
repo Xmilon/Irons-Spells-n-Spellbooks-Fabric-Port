@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.item;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundOpenBookPacket;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResultHolder;
@@ -18,9 +18,9 @@ import java.util.List;
 import java.util.Optional;
 
 public class ReadableLoreItem extends Item implements ILecternPlaceable {
-    private final ResourceLocation lecternLocation;
+    private final Identifier lecternLocation;
 
-    public ReadableLoreItem(ResourceLocation lecternLocation, Properties pProperties) {
+    public ReadableLoreItem(Identifier lecternLocation, Properties pProperties) {
         super(pProperties);
         this.lecternLocation = lecternLocation;
     }
@@ -49,7 +49,7 @@ public class ReadableLoreItem extends Item implements ILecternPlaceable {
     }
 
     @Override
-    public Optional<ResourceLocation> simpleTextureOverride(ItemStack stack) {
+    public Optional<Identifier> simpleTextureOverride(ItemStack stack) {
         return Optional.of(lecternLocation);
     }
 }

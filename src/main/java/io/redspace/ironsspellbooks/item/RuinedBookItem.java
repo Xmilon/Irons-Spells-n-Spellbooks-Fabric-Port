@@ -6,7 +6,7 @@ import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
@@ -174,11 +174,11 @@ public class RuinedBookItem extends Item implements ILecternPlaceable {
                     23 * 2,
                     23 * 2
             })
-    ).withStyle(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("alt")));
+    ).withStyle(Style.EMPTY.withFont(Identifier.withDefaultNamespace("alt")));
     public static Component PAGE2 = PAGE.copy().withStyle(ChatFormatting.OBFUSCATED);
-    public static Component DARKNESS = Component.literal("Darkness").withStyle(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("alt")));
+    public static Component DARKNESS = Component.literal("Darkness").withStyle(Style.EMPTY.withFont(Identifier.withDefaultNamespace("alt")));
     public static Component DARKNESS2 = DARKNESS.copy().withStyle(ChatFormatting.OBFUSCATED);
-    public static ResourceLocation LECTERN_LOCATION = IronsSpellbooks.id("textures/entity/lectern/ruined_book.png");
+    public static Identifier LECTERN_LOCATION = IronsSpellbooks.id("textures/entity/lectern/ruined_book.png");
 
     public RuinedBookItem(Properties pProperties) {
         super(pProperties);
@@ -195,7 +195,7 @@ public class RuinedBookItem extends Item implements ILecternPlaceable {
     }
 
     @Override
-    public Optional<ResourceLocation> simpleTextureOverride(ItemStack stack) {
+    public Optional<Identifier> simpleTextureOverride(ItemStack stack) {
         return Optional.of(LECTERN_LOCATION);
     }
 }

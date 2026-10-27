@@ -6,11 +6,11 @@ import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.render.RenderHelper;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -21,13 +21,13 @@ import java.util.List;
 
 @OnlyIn(Dist.CLIENT)
 public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile> {
-    private static ResourceLocation TEXTURES[] = {
+    private static Identifier TEXTURES[] = {
             IronsSpellbooks.id("textures/entity/electric_beams/beam_1.png"),
             IronsSpellbooks.id("textures/entity/electric_beams/beam_2.png"),
             IronsSpellbooks.id("textures/entity/electric_beams/beam_3.png"),
             IronsSpellbooks.id("textures/entity/electric_beams/beam_4.png")
     };
-    private static ResourceLocation SOLID = IronsSpellbooks.id("textures/entity/electric_beams/solid.png");
+    private static Identifier SOLID = IronsSpellbooks.id("textures/entity/electric_beams/solid.png");
 
     public ElectrocuteRenderer(Context context) {
         super(context);
@@ -48,8 +48,8 @@ public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile> {
 
         //VertexConsumer consumer = bufferSource.getBuffer(RenderType.lightning());
         poseStack.translate(0, entity.getEyeHeight() * .5f, 0);
-        poseStack.mulPose(Axis.YP.rotationDegrees(-entity.getOwner().getYRot()));
-        poseStack.mulPose(Axis.XP.rotationDegrees(entity.getOwner().getXRot()));
+        poseStack.rotate(Axis.YP.rotationDegrees(-entity.getOwner().getYRot()));
+        poseStack.rotate(Axis.XP.rotationDegrees(entity.getOwner().getXRot()));
         poseStack.translate(0, 0, 0.1);
 
 
@@ -107,7 +107,7 @@ public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(ElectrocuteProjectile p_115264_) {
+    public Identifier getTextureLocation(ElectrocuteProjectile p_115264_) {
         //return TEXTURES[(int) (Math.random() * 4)];
         return SOLID;
     }

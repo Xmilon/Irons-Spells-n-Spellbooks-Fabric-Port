@@ -6,7 +6,7 @@ import net.minecraft.core.HolderLookup.Provider;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.tags.TagsProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.damagesource.DamageTypes;
@@ -23,7 +23,7 @@ public class DamageTypeTagGenerator extends TagsProvider<DamageType> {
     }
 
     private static TagKey<DamageType> create(String name) {
-        return TagKey.create(Registries.DAMAGE_TYPE, ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, name));
+        return TagKey.create(Registries.DAMAGE_TYPE, Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, name));
     }
 
     public static final TagKey<DamageType> BYPASS_EVASION = create("bypass_evasion");
@@ -64,7 +64,7 @@ public class DamageTypeTagGenerator extends TagsProvider<DamageType> {
                 ISSDamageTypes.HEARTSTOP
         );
         tag(BYPASS_EVASION).addOptional(
-                NeoForgeMod.POISON_DAMAGE.location()
+                NeoForgeMod.POISON_DAMAGE.identifier()
         );
 
         tag(LONG_CAST_IGNORE).add(
@@ -77,7 +77,7 @@ public class DamageTypeTagGenerator extends TagsProvider<DamageType> {
                 DamageTypes.FALL
         );
         tag(LONG_CAST_IGNORE).addOptional(
-                NeoForgeMod.POISON_DAMAGE.location()
+                NeoForgeMod.POISON_DAMAGE.identifier()
         );
 
         tag(Tags.DamageTypes.IS_MAGIC)

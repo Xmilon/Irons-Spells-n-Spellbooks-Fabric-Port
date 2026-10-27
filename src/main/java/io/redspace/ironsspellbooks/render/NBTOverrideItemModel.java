@@ -2,19 +2,19 @@ package io.redspace.ironsspellbooks.render;
 
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
-import net.minecraft.client.renderer.block.model.BakedQuad;
+import net.minecraft.client.resources.model.geometry.BakedQuad;
 import net.minecraft.client.renderer.block.model.BlockModel;
 import net.minecraft.client.renderer.block.model.ItemOverrides;
-import net.minecraft.client.renderer.block.model.ItemTransforms;
+import net.minecraft.client.resources.model.cuboid.ItemTransforms;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.Material;
+import net.minecraft.client.resources.model.sprite.Material;
 import net.minecraft.client.resources.model.ModelBaker;
-import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.client.resources.model.ModelState;
+import net.minecraft.client.resources.model.ModelIdentifier;
+import net.minecraft.client.renderer.block.dispatch.ModelState;
 import net.minecraft.client.resources.model.UnbakedModel;
 import net.minecraft.core.Direction;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
@@ -39,11 +39,11 @@ public abstract class NBTOverrideItemModel implements BakedModel {
                 return null;
             }
 
-            public @Nullable UnbakedModel getTopLevelModel(ModelResourceLocation location) {
+            public @Nullable UnbakedModel getTopLevelModel(ModelIdentifier location) {
                 return null;
             }
 
-            public @Nullable BakedModel bake(ResourceLocation location, ModelState state, Function<Material, TextureAtlasSprite> sprites) {
+            public @Nullable BakedModel bake(Identifier location, ModelState state, Function<Material, TextureAtlasSprite> sprites) {
                 return null;
             }
 
@@ -52,12 +52,12 @@ public abstract class NBTOverrideItemModel implements BakedModel {
             }
 
             @Override
-            public @Nullable UnbakedModel getModel(ResourceLocation resourceLocation) {
+            public @Nullable UnbakedModel getModel(Identifier resourceLocation) {
                 return null;
             }
 
             @Override
-            public @Nullable BakedModel bake(ResourceLocation resourceLocation, ModelState modelState) {
+            public @Nullable BakedModel bake(Identifier resourceLocation, ModelState modelState) {
                 return null;
             }
         }, missing, Collections.emptyList()) {
@@ -73,7 +73,7 @@ public abstract class NBTOverrideItemModel implements BakedModel {
                         return standalone;
                     }
 
-                    var inventory = manager.getModel(ModelResourceLocation.inventory(override.get()));
+                    var inventory = manager.getModel(ModelIdentifier.inventory(override.get()));
                     if (inventory != missing) {
                         return inventory;
                     }
@@ -83,7 +83,7 @@ public abstract class NBTOverrideItemModel implements BakedModel {
         };
     }
 
-    abstract Optional<ResourceLocation> getModelFromStack(ItemStack itemStack);
+    abstract Optional<Identifier> getModelFromStack(ItemStack itemStack);
 
     @NotNull
     @Override

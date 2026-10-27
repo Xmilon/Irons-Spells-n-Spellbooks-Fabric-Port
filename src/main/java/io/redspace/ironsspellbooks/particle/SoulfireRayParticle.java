@@ -74,9 +74,9 @@ public class SoulfireRayParticle extends TextureSheetParticle {
         double zmargin = distance / (hulls * hullLength); // make up marginal differences caused by truncation of hull unit length
         rayVector = rayVector.normalize();
         Vec2 rotation = Utils.rotationFromDirection(rayVector);
-        poseStack.mulPose(Axis.YP.rotation(rotation.y));
-        poseStack.mulPose(Axis.XP.rotation(-rotation.x));
-        poseStack.mulPose(Axis.ZP.rotationDegrees((age + partialTick) * 360 / lifetime));
+        poseStack.rotate(Axis.YP.rotation(rotation.y));
+        poseStack.rotate(Axis.XP.rotation(-rotation.x));
+        poseStack.rotate(Axis.ZP.rotationDegrees((age + partialTick) * 360 / lifetime));
         poseStack.scale(1, 1, (float) zmargin);
         float t = Math.clamp((age + partialTick) / (float) lifetime, 0, 1);
         float width = Mth.lerp(t, 0.1f, baseWidth);
@@ -93,7 +93,7 @@ public class SoulfireRayParticle extends TextureSheetParticle {
         poseStack.pushPose();
         for (int i = 0; i < 4; i++) {
             drawQuad(from.subtract(0, height * .5f, 0), to.subtract(0, height * .5f, 0), width, 0, poseStack.last(), consumer);
-            poseStack.mulPose(Axis.ZP.rotation(Mth.HALF_PI));
+            poseStack.rotate(Axis.ZP.rotation(Mth.HALF_PI));
         }
         poseStack.popPose();
     }

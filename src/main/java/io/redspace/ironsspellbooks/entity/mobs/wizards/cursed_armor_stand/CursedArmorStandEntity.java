@@ -39,8 +39,8 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.animation.*;
+import com.geckolib.cache.animation.AnimationState;
+import com.geckolib.animation.*;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -112,7 +112,7 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
             this.setYHeadRot(originalYRot);
             this.setYBodyRot(originalYRot);
             this.setYRot(originalYRot);
-        } else if (wasFrozen && !level().isClientSide) {
+        } else if (wasFrozen && !level().isClientSide()) {
             MagicManager.spawnParticles(level(), ParticleTypes.ANGRY_VILLAGER, getX(), getY() + 1.25, getZ(), 15, .3, .2, .3, 0, false);
         }
     }
@@ -120,7 +120,7 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
     @Override
     public InteractionResult interactAt(Player pPlayer, Vec3 pVector, InteractionHand pHand) {
         if (isArmorStandFrozen()) {
-            if (pPlayer.level().isClientSide) {
+            if (pPlayer.level().isClientSide()) {
                 handleInteraction(pVector, slot -> {
                     switch (slot) {
                         case HEAD -> helmetJiggle = JIGGLE_TIME;
@@ -215,7 +215,7 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
     @Override
     public void tick() {
         super.tick();
-        if (level().isClientSide) {
+        if (level().isClientSide()) {
             if (helmetJiggle > 0) {
                 helmetJiggle--;
             }

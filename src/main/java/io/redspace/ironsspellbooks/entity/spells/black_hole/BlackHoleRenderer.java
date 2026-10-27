@@ -7,11 +7,11 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.spells.icicle.IcicleRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3f;
@@ -22,8 +22,8 @@ public class BlackHoleRenderer extends EntityRenderer<BlackHole> {
         super(pContext);
     }
 
-    private static final ResourceLocation CENTER_TEXTURE = IronsSpellbooks.id("textures/entity/black_hole/black_hole.png");
-    private static final ResourceLocation BEAM_TEXTURE = IronsSpellbooks.id("textures/entity/black_hole/beam.png");
+    private static final Identifier CENTER_TEXTURE = IronsSpellbooks.id("textures/entity/black_hole/black_hole.png");
+    private static final Identifier BEAM_TEXTURE = IronsSpellbooks.id("textures/entity/black_hole/beam.png");
 
     @Override
     public void render(BlackHole entity, float pEntityYaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int pPackedLight) {
@@ -38,7 +38,7 @@ public class BlackHoleRenderer extends EntityRenderer<BlackHole> {
         poseStack.translate(normalToCamera.x, normalToCamera.y, normalToCamera.z);
         poseStack.scale(.5f * entityScale, .5f * entityScale, .5f * entityScale);
         poseStack.mulPose(this.entityRenderDispatcher.cameraOrientation());
-        poseStack.mulPose(Axis.YP.rotationDegrees(90f));
+        poseStack.rotate(Axis.YP.rotationDegrees(90f));
 //        poseStack.translate(5, 0, 0);
 
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityTranslucent(CENTER_TEXTURE));
@@ -62,12 +62,12 @@ public class BlackHoleRenderer extends EntityRenderer<BlackHole> {
 
         float segments = Math.min(animationProgress, .8f);
         for (int i = 0; (float) i < (segments + segments * segments) / 2.0F * 40.0F; ++i) {
-            poseStack.mulPose(Axis.XP.rotationDegrees(randomSource.nextFloat() * 360.0F));
-            poseStack.mulPose(Axis.YP.rotationDegrees(randomSource.nextFloat() * 360.0F));
-            poseStack.mulPose(Axis.ZP.rotationDegrees(randomSource.nextFloat() * 360.0F));
-            poseStack.mulPose(Axis.XP.rotationDegrees(randomSource.nextFloat() * 360.0F));
-            poseStack.mulPose(Axis.YP.rotationDegrees(randomSource.nextFloat() * 360.0F));
-            poseStack.mulPose(Axis.ZP.rotationDegrees(randomSource.nextFloat() * 360.0F + animationProgress * 90.0F));
+            poseStack.rotate(Axis.XP.rotationDegrees(randomSource.nextFloat() * 360.0F));
+            poseStack.rotate(Axis.YP.rotationDegrees(randomSource.nextFloat() * 360.0F));
+            poseStack.rotate(Axis.ZP.rotationDegrees(randomSource.nextFloat() * 360.0F));
+            poseStack.rotate(Axis.XP.rotationDegrees(randomSource.nextFloat() * 360.0F));
+            poseStack.rotate(Axis.YP.rotationDegrees(randomSource.nextFloat() * 360.0F));
+            poseStack.rotate(Axis.ZP.rotationDegrees(randomSource.nextFloat() * 360.0F + animationProgress * 90.0F));
             float size1 = (randomSource.nextFloat() * 10.0F + 5.0F + fadeProgress * 5.0F) * entityScale * .4f;
             //float size2 = randomSource.nextFloat() * 2.0F + 1.0F + fadeProgress * 2.0F;
             Matrix4f matrix = poseStack.last().pose();
@@ -92,7 +92,7 @@ public class BlackHoleRenderer extends EntityRenderer<BlackHole> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(BlackHole pEntity) {
+    public Identifier getTextureLocation(BlackHole pEntity) {
         return IcicleRenderer.TEXTURE;
     }
 

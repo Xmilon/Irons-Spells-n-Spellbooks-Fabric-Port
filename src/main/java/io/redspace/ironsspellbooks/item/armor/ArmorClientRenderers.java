@@ -7,7 +7,7 @@ import io.redspace.ironsspellbooks.entity.armor.priest.PriestArmorModel;
 import io.redspace.ironsspellbooks.entity.armor.priest.PriestArmorRenderer;
 import io.redspace.ironsspellbooks.entity.armor.pumpkin.PumpkinArmorModel;
 import io.redspace.ironsspellbooks.entity.armor.pumpkin.PumpkinArmorRenderer;
-import software.bernie.geckolib.renderer.GeoArmorRenderer;
+import com.geckolib.renderer.GeoArmorRenderer;
 
 import java.util.Map;
 

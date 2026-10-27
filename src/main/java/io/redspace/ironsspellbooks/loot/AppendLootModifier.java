@@ -8,7 +8,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import it.unimi.dsi.fastutil.objects.ObjectArrayList;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
@@ -32,7 +32,7 @@ public class AppendLootModifier extends LootModifier {
 
 
     protected @NotNull ObjectArrayList<ItemStack> doApply(ObjectArrayList<ItemStack> generatedLoot, LootContext context) {
-        ResourceLocation path = ResourceLocation.parse(resourceLocationKey);
+        Identifier path = Identifier.parse(resourceLocationKey);
         var lootTable = context.getLevel().getServer().reloadableRegistries().getLootTable(ResourceKey.create(Registries.LOOT_TABLE, path));
         ObjectArrayList<ItemStack> objectarraylist = new ObjectArrayList<>();
         //use raw to avoid stack overflow/recursively adding all global loot modifiers

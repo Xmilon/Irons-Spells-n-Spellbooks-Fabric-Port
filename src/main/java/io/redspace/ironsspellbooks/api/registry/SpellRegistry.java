@@ -17,7 +17,7 @@ import io.redspace.ironsspellbooks.spells.nature.*;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
 import net.neoforged.neoforge.registries.NewRegistryEvent;
@@ -30,7 +30,7 @@ import java.util.function.Supplier;
 import java.util.stream.Collectors;
 
 public class SpellRegistry {
-    public static final ResourceKey<Registry<AbstractSpell>> SPELL_REGISTRY_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "spells"));
+    public static final ResourceKey<Registry<AbstractSpell>> SPELL_REGISTRY_KEY = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "spells"));
     private static final DeferredRegister<AbstractSpell> SPELLS = DeferredRegister.create(SPELL_REGISTRY_KEY, IronsSpellbooks.MODID);
 
     //public static final Supplier<IForgeRegistry<AbstractSpell>> REGISTRY = SPELLS.makeRegistry(() -> new RegistryBuilder<AbstractSpell>().disableSaving().disableOverrides());
@@ -49,10 +49,10 @@ public class SpellRegistry {
         if (bootstrapped) {
             return;
         }
-        if (BuiltInRegistries.REGISTRY.get(SPELL_REGISTRY_KEY.location()) == null) {
+        if (BuiltInRegistries.REGISTRY.get(SPELL_REGISTRY_KEY.identifier()) == null) {
             @SuppressWarnings("unchecked")
             Registry<Registry<?>> root = (Registry<Registry<?>>) (Registry<?>) BuiltInRegistries.REGISTRY;
-            Registry.register(root, SPELL_REGISTRY_KEY.location(), REGISTRY);
+            Registry.register(root, SPELL_REGISTRY_KEY.identifier(), REGISTRY);
         }
         bootstrapped = true;
     }
@@ -71,7 +71,7 @@ public class SpellRegistry {
     }
 
     public static AbstractSpell getSpell(String spellId) {
-        return getSpell(ResourceLocation.parse(spellId));
+        return getSpell(Identifier.parse(spellId));
     }
 
     public static List<AbstractSpell> getEnabledSpells() {
@@ -87,7 +87,7 @@ public class SpellRegistry {
                 .filter(spell -> spell.getSchoolType() == school).collect(Collectors.toList()));
     }
 
-    public static AbstractSpell getSpell(ResourceLocation resourceLocation) {
+    public static AbstractSpell getSpell(Identifier resourceLocation) {
         var spell = REGISTRY.get(resourceLocation);
         if (spell == null) {
             return noneSpell;

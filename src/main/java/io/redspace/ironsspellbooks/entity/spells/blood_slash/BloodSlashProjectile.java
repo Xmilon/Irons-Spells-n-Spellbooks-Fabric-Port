@@ -77,7 +77,7 @@ public class BloodSlashProjectile extends Projectile implements AntiMagicSuscept
     }
 
     public void setRadius(float newRadius) {
-        if (newRadius <= maxRadius && !this.level().isClientSide) {
+        if (newRadius <= maxRadius && !this.level().isClientSide()) {
             this.getEntityData().set(DATA_RADIUS, Mth.clamp(newRadius, 0.0F, maxRadius));
         }
     }
@@ -104,7 +104,7 @@ public class BloodSlashProjectile extends Projectile implements AntiMagicSuscept
         oldBB = getBoundingBox();
         setRadius(getRadius() + 0.12f);
 
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             HitResult hitresult = ProjectileUtil.getHitResultOnMoveVector(this, this::canHitEntity);
             if (hitresult.getType() == HitResult.Type.BLOCK) {
                 onHitBlock((BlockHitResult) hitresult);
@@ -155,7 +155,7 @@ public class BloodSlashProjectile extends Projectile implements AntiMagicSuscept
 
     //https://forge.gemwire.uk/wiki/Particles
     public void spawnParticles() {
-        if (level().isClientSide) {
+        if (level().isClientSide()) {
 
             float width = (float) getBoundingBox().getXsize();
             float step = .25f;

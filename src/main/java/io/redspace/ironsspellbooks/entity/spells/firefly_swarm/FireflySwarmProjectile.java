@@ -61,7 +61,7 @@ public class FireflySwarmProjectile extends PathfinderMob implements AntiMagicSu
 
     @Override
     public void tick() {
-        if (level().isClientSide) {
+        if (level().isClientSide()) {
             for (int i = 0; i < 2; i++) {
                 var motion = Utils.getRandomVec3(.05f).add(this.getDeltaMovement());
                 var spawn = Utils.getRandomVec3(.25f);

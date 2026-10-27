@@ -56,7 +56,7 @@ public class AlchemistCauldronBlock extends BaseEntityBlock {
 
     @javax.annotation.Nullable
     protected static <T extends BlockEntity> BlockEntityTicker<T> createTicker(Level pLevel, BlockEntityType<T> pServerType, BlockEntityType<? extends AlchemistCauldronTile> pClientType) {
-        return pLevel.isClientSide ? null : createTickerHelper(pServerType, pClientType, AlchemistCauldronTile::serverTick);
+        return pLevel.isClientSide() ? null : createTickerHelper(pServerType, pClientType, AlchemistCauldronTile::serverTick);
     }
 
     public VoxelShape getShape(BlockState pState, BlockGetter pLevel, BlockPos pPos, CollisionContext pContext) {
@@ -73,7 +73,7 @@ public class AlchemistCauldronBlock extends BaseEntityBlock {
 
     @Override
     public void entityInside(BlockState blockState, Level level, BlockPos pos, Entity entity) {
-        if (!level.isClientSide && entity.tickCount % 20 == 0) {
+        if (!level.isClientSide() && entity.tickCount % 20 == 0) {
             if (level.getBlockEntity(pos) instanceof AlchemistCauldronTile cauldronTile) {
                 if (entity instanceof LivingEntity livingEntity && livingEntity.hurt(DamageSources.get(level, ISSDamageTypes.CAULDRON), 2)) {
                     MagicManager.spawnParticles(level, ParticleHelper.BLOOD, entity.getX(), entity.getY() + entity.getBbHeight() / 2, entity.getZ(), 20, .05, .05, .05, .1, false);

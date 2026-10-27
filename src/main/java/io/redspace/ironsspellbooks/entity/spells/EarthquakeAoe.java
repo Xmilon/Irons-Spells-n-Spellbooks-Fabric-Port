@@ -89,7 +89,7 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
             waveAnim = 0;
             this.playSound(SoundRegistry.EARTHQUAKE_IMPACT.get(), 1.5f, .9f + random.nextFloat() * .2f);
         }
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             var radius = this.getRadius();
             var level = this.level();
             int intensity = Math.min((int) (radius * radius * .09f), 15);
@@ -134,7 +134,7 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
 
 
     protected void createScreenShake() {
-        if (!this.level().isClientSide && !this.isRemoved()) {
+        if (!this.level().isClientSide() && !this.isRemoved()) {
             this.cameraShakeData = new CameraShakeData(level(), this.duration - this.tickCount, this.position(), 15);
             CameraShakeManager.addCameraShake(cameraShakeData);
         }
@@ -153,7 +153,7 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
     @Override
     public void remove(RemovalReason pReason) {
         super.remove(pReason);
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             CameraShakeManager.removeCameraShake(this.cameraShakeData);
         }
     }

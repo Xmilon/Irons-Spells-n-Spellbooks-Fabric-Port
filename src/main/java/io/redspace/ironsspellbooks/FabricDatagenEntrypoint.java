@@ -9,7 +9,7 @@ import net.fabricmc.fabric.api.datagen.v1.FabricDataOutput;
 import net.minecraft.data.CachedOutput;
 import net.minecraft.data.DataProvider;
 import net.minecraft.data.PackOutput;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.concurrent.CompletableFuture;
 
@@ -31,8 +31,8 @@ public class FabricDatagenEntrypoint implements DataGeneratorEntrypoint {
 
         @Override
         public CompletableFuture<?> run(CachedOutput cachedOutput) {
-            CompletableFuture<?> mithril = DataProvider.saveStable(cachedOutput, selfDrop("irons_spellbooks:mithril_ore"), blockLootPathProvider.json(ResourceLocation.parse("irons_spellbooks:mithril_ore")));
-            CompletableFuture<?> deepslateMithril = DataProvider.saveStable(cachedOutput, selfDrop("irons_spellbooks:deepslate_mithril_ore"), blockLootPathProvider.json(ResourceLocation.parse("irons_spellbooks:deepslate_mithril_ore")));
+            CompletableFuture<?> mithril = DataProvider.saveStable(cachedOutput, selfDrop("irons_spellbooks:mithril_ore"), blockLootPathProvider.json(Identifier.parse("irons_spellbooks:mithril_ore")));
+            CompletableFuture<?> deepslateMithril = DataProvider.saveStable(cachedOutput, selfDrop("irons_spellbooks:deepslate_mithril_ore"), blockLootPathProvider.json(Identifier.parse("irons_spellbooks:deepslate_mithril_ore")));
             return CompletableFuture.allOf(mithril, deepslateMithril);
         }
 
@@ -72,8 +72,8 @@ public class FabricDatagenEntrypoint implements DataGeneratorEntrypoint {
 
         @Override
         public CompletableFuture<?> run(CachedOutput cachedOutput) {
-            CompletableFuture<?> configured = DataProvider.saveStable(cachedOutput, mithrilConfiguredFeature(), configuredFeaturePathProvider.json(ResourceLocation.parse("irons_spellbooks:ore_mithril_feature")));
-            CompletableFuture<?> placed = DataProvider.saveStable(cachedOutput, mithrilPlacedFeature(), placedFeaturePathProvider.json(ResourceLocation.parse("irons_spellbooks:ore_mithril_placement")));
+            CompletableFuture<?> configured = DataProvider.saveStable(cachedOutput, mithrilConfiguredFeature(), configuredFeaturePathProvider.json(Identifier.parse("irons_spellbooks:ore_mithril_feature")));
+            CompletableFuture<?> placed = DataProvider.saveStable(cachedOutput, mithrilPlacedFeature(), placedFeaturePathProvider.json(Identifier.parse("irons_spellbooks:ore_mithril_placement")));
             return CompletableFuture.allOf(configured, placed);
         }
 
@@ -160,7 +160,7 @@ public class FabricDatagenEntrypoint implements DataGeneratorEntrypoint {
 
         @Override
         public CompletableFuture<?> run(CachedOutput cachedOutput) {
-            return DataProvider.saveStable(cachedOutput, scrollModel(), itemModelPathProvider.json(ResourceLocation.parse("irons_spellbooks:scroll")));
+            return DataProvider.saveStable(cachedOutput, scrollModel(), itemModelPathProvider.json(Identifier.parse("irons_spellbooks:scroll")));
         }
 
         @Override

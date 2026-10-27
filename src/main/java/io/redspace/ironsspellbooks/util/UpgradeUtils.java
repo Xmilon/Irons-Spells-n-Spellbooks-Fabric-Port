@@ -76,7 +76,7 @@ public class UpgradeUtils {
             }
             int count = entry.getValue();
             double baseAmount = UpgradeUtils.collectAndRemovePreexistingAttribute(modifiers, upgradeType.attribute(), upgradeType.operation(), removeCallback);
-            addCallback.accept(upgradeType.attribute(), new AttributeModifier(IronsSpellbooks.id(String.format("%s_upgrade_%s", slotId, holderKey.location().getPath())), baseAmount + upgradeType.amount() * count, upgradeType.operation()));
+            addCallback.accept(upgradeType.attribute(), new AttributeModifier(IronsSpellbooks.id(String.format("%s_upgrade_%s", slotId, holderKey.identifier().getPath())), baseAmount + upgradeType.amount() * count, upgradeType.operation()));
         }
     }
 

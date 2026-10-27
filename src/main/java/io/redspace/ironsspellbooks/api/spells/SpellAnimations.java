@@ -2,10 +2,10 @@ package io.redspace.ironsspellbooks.api.spells;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.AnimationHolder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class SpellAnimations {
-    public static ResourceLocation ANIMATION_RESOURCE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animation");
+    public static Identifier ANIMATION_RESOURCE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animation");
 
     public static final AnimationHolder ONE_HANDED_RAY_CHARGE = new AnimationHolder(IronsSpellbooks.id("charge_one_handed_ray"), false, true);
     public static final AnimationHolder ONE_HANDED_RAY_SHOOT = new AnimationHolder(IronsSpellbooks.id("shoot_one_handed_ray"), true, true);

@@ -103,7 +103,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
             discard();
             return;
         }
-        if (level().isClientSide) {
+        if (level().isClientSide()) {
             trailParticles();
         }
         handleEntityHoming();
@@ -289,7 +289,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     @Override
     protected void onHit(@NotNull HitResult hitresult) {
         super.onHit(hitresult);
-        if (!level().isClientSide && hitresult.getType() != HitResult.Type.MISS) {
+        if (!level().isClientSide() && hitresult.getType() != HitResult.Type.MISS) {
             if (hitresult.getType() != HitResult.Type.BLOCK || collidesWithBlocks()) {
                 var vec = hitresult.getLocation();
                 impactParticles(vec.x, vec.y, vec.z);

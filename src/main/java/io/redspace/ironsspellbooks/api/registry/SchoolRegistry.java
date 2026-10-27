@@ -11,7 +11,7 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.registries.DeferredRegister;
@@ -23,7 +23,7 @@ import java.util.List;
 import java.util.function.Supplier;
 
 public class SchoolRegistry {
-    public static final ResourceKey<Registry<SchoolType>> SCHOOL_REGISTRY_KEY = ResourceKey.createRegistryKey(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "schools"));
+    public static final ResourceKey<Registry<SchoolType>> SCHOOL_REGISTRY_KEY = ResourceKey.createRegistryKey(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "schools"));
     private static final DeferredRegister<SchoolType> SCHOOLS = DeferredRegister.create(SCHOOL_REGISTRY_KEY, IronsSpellbooks.MODID);
     public static final Registry<SchoolType> REGISTRY = new RegistryBuilder<>(SCHOOL_REGISTRY_KEY).create();
     private static boolean bootstrapped = false;
@@ -32,10 +32,10 @@ public class SchoolRegistry {
         if (bootstrapped) {
             return;
         }
-        if (BuiltInRegistries.REGISTRY.get(SCHOOL_REGISTRY_KEY.location()) == null) {
+        if (BuiltInRegistries.REGISTRY.get(SCHOOL_REGISTRY_KEY.identifier()) == null) {
             @SuppressWarnings("unchecked")
             Registry<Registry<?>> root = (Registry<Registry<?>>) (Registry<?>) BuiltInRegistries.REGISTRY;
-            Registry.register(root, SCHOOL_REGISTRY_KEY.location(), REGISTRY);
+            Registry.register(root, SCHOOL_REGISTRY_KEY.identifier(), REGISTRY);
         }
         bootstrapped = true;
     }
@@ -57,19 +57,19 @@ public class SchoolRegistry {
         return SCHOOLS.register(schoolType.getId().getPath(), () -> schoolType);
     }
 
-    public static SchoolType getSchool(ResourceLocation resourceLocation) {
+    public static SchoolType getSchool(Identifier resourceLocation) {
         return REGISTRY.get(resourceLocation);
     }
 
-    public static final ResourceLocation FIRE_RESOURCE = IronsSpellbooks.id("fire");
-    public static final ResourceLocation ICE_RESOURCE = IronsSpellbooks.id("ice");
-    public static final ResourceLocation LIGHTNING_RESOURCE = IronsSpellbooks.id("lightning");
-    public static final ResourceLocation HOLY_RESOURCE = IronsSpellbooks.id("holy");
-    public static final ResourceLocation ENDER_RESOURCE = IronsSpellbooks.id("ender");
-    public static final ResourceLocation BLOOD_RESOURCE = IronsSpellbooks.id("blood");
-    public static final ResourceLocation EVOCATION_RESOURCE = IronsSpellbooks.id("evocation");
-    public static final ResourceLocation NATURE_RESOURCE = IronsSpellbooks.id("nature");
-    public static final ResourceLocation ELDRITCH_RESOURCE = IronsSpellbooks.id("eldritch");
+    public static final Identifier FIRE_RESOURCE = IronsSpellbooks.id("fire");
+    public static final Identifier ICE_RESOURCE = IronsSpellbooks.id("ice");
+    public static final Identifier LIGHTNING_RESOURCE = IronsSpellbooks.id("lightning");
+    public static final Identifier HOLY_RESOURCE = IronsSpellbooks.id("holy");
+    public static final Identifier ENDER_RESOURCE = IronsSpellbooks.id("ender");
+    public static final Identifier BLOOD_RESOURCE = IronsSpellbooks.id("blood");
+    public static final Identifier EVOCATION_RESOURCE = IronsSpellbooks.id("evocation");
+    public static final Identifier NATURE_RESOURCE = IronsSpellbooks.id("nature");
+    public static final Identifier ELDRITCH_RESOURCE = IronsSpellbooks.id("eldritch");
 
     public static final Supplier<SchoolType> FIRE = registerSchool(new SchoolType(
             FIRE_RESOURCE,

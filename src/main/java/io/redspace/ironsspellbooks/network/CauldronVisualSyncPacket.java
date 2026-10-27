@@ -9,14 +9,14 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
 public class CauldronVisualSyncPacket implements CustomPacketPayload {
-    public static final Type<CauldronVisualSyncPacket> TYPE = new Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "cauldron_visual_sync"));
+    public static final Type<CauldronVisualSyncPacket> TYPE = new Type<>(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "cauldron_visual_sync"));
     public static final StreamCodec<RegistryFriendlyByteBuf, CauldronVisualSyncPacket> STREAM_CODEC = CustomPacketPayload.codec(CauldronVisualSyncPacket::write, CauldronVisualSyncPacket::new);
 
     private final BlockPos pos;

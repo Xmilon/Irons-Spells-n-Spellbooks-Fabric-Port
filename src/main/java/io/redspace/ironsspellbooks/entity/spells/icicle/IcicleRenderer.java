@@ -9,17 +9,17 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 
 public class IcicleRenderer extends EntityRenderer<IcicleProjectile> {
-    public static final ResourceLocation TEXTURE = IronsSpellbooks.id("textures/entity/icicle_projectile.png");
-    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "icicle_model"), "main");
+    public static final Identifier TEXTURE = IronsSpellbooks.id("textures/entity/icicle_projectile.png");
+    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "icicle_model"), "main");
 
     private final ModelPart body;
     //private final ModelPart tip;
@@ -48,8 +48,8 @@ public class IcicleRenderer extends EntityRenderer<IcicleProjectile> {
         Vec3 motion = entity.getDeltaMovement();
         float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
         float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
-        poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
-        poseStack.mulPose(Axis.XP.rotationDegrees(xRot));
+        poseStack.rotate(Axis.YP.rotationDegrees(yRot));
+        poseStack.rotate(Axis.XP.rotationDegrees(xRot));
         poseStack.scale(1, -1, 1);
         VertexConsumer consumer2 = bufferSource.getBuffer(RenderType.entityCutoutNoCull(TEXTURE));
         this.body.render(poseStack, consumer2, light, OverlayTexture.NO_OVERLAY);
@@ -60,7 +60,7 @@ public class IcicleRenderer extends EntityRenderer<IcicleProjectile> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(IcicleProjectile entity) {
+    public Identifier getTextureLocation(IcicleProjectile entity) {
         return TEXTURE;
     }
 }

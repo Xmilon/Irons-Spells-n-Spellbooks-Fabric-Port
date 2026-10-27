@@ -14,7 +14,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.RegistryOps;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.ItemStack;
 
@@ -50,7 +50,7 @@ public record UpgradeData(Map<Holder<UpgradeOrbType>, Integer> upgrades, String 
             Codec.list(ELEMENT_CODEC).fieldOf(UPGRADES)
                     .forGetter(
                             (UpgradeData data) -> data.upgrades().entrySet().stream()
-                                    .map(entry -> new ObjectObjectImmutablePair<String, Integer>(entry.getKey().unwrapKey().map(ResourceKey::location).orElse(ResourceLocation.withDefaultNamespace("air")).toString(), entry.getValue()))
+                                    .map(entry -> new ObjectObjectImmutablePair<String, Integer>(entry.getKey().unwrapKey().map(ResourceKey::location).orElse(Identifier.withDefaultNamespace("air")).toString(), entry.getValue()))
                                     .toList())
     ).apply(builder, (slot, list) -> new UpgradeData(parseCodec(list), slot)));
 
@@ -84,7 +84,7 @@ public record UpgradeData(Map<Holder<UpgradeOrbType>, Integer> upgrades, String 
             var reg = ops.getter(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY).get();
             ImmutableMap.Builder<Holder<UpgradeOrbType>, Integer> map = ImmutableMap.builder();
             for (Pair<String, Integer> pair : data) {
-                var upgradeKey = ResourceLocation.parse(pair.left());
+                var upgradeKey = Identifier.parse(pair.left());
                 reg.get(ResourceKey.create(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY, upgradeKey)).ifPresent((upgrade) -> map.put(upgrade, pair.right()));
             }
             return map.build();
@@ -100,7 +100,7 @@ public record UpgradeData(Map<Holder<UpgradeOrbType>, Integer> upgrades, String 
                 for (Map.Entry<Holder<UpgradeOrbType>, Integer> entry : entries) {
                     var key = entry.getKey().unwrapKey().orElse(null);
                     if (key != null) {
-                        buf.writeResourceLocation(key.location());
+                        buf.writeIdentifier(key.identifier());
                         buf.writeInt(entry.getValue());
                     }
                 }
@@ -111,7 +111,7 @@ public record UpgradeData(Map<Holder<UpgradeOrbType>, Integer> upgrades, String 
                 int i = buf.readInt();
                 ImmutableMap.Builder<Holder<UpgradeOrbType>, Integer> upgrades = ImmutableMap.builder();
                 for (int j = 0; j < i; j++) {
-                    var upgradeKey = buf.readResourceLocation();
+                    var upgradeKey = buf.readIdentifier();
                     int c = buf.readInt();
                     Optional.ofNullable(registry.get(upgradeKey)).ifPresent((upgrade) -> upgrades.put(registry.wrapAsHolder(upgrade), c));
                 }

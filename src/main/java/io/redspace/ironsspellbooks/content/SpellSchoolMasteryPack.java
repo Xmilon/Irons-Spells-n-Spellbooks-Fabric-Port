@@ -6,7 +6,7 @@ import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeInstance;
@@ -146,7 +146,7 @@ public class SpellSchoolMasteryPack implements ContentPack {
         if (instance == null) {
             return;
         }
-        ResourceLocation id = masteryModifierId(school.getId());
+        Identifier id = masteryModifierId(school.getId());
         instance.removeModifier(id);
         if (bonus > 0d) {
             AttributeModifier modifier = new AttributeModifier(id, bonus, AttributeModifier.Operation.ADD_MULTIPLIED_BASE);
@@ -165,7 +165,7 @@ public class SpellSchoolMasteryPack implements ContentPack {
         instance.removeModifier(masteryModifierId(school.getId()));
     }
 
-    private static ResourceLocation masteryModifierId(ResourceLocation schoolId) {
-        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "mastery/" + schoolId.getNamespace() + "/" + schoolId.getPath());
+    private static Identifier masteryModifierId(Identifier schoolId) {
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "mastery/" + schoolId.getNamespace() + "/" + schoolId.getPath());
     }
 }

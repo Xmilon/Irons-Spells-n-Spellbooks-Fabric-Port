@@ -1,7 +1,7 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import net.minecraft.Util;
+import net.minecraft.util.Util;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.NbtOps;
 import net.minecraft.world.item.trading.Merchant;

@@ -13,16 +13,16 @@ import io.redspace.ironsspellbooks.util.DefaultBipedBoneIdents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.resources.model.ModelIdentifier;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.util.Color;
+import com.geckolib.cache.model.GeoBone;
+import com.geckolib.util.Color;
 
 public class FireBossRenderer extends AbstractSpellCastingMobRenderer {
 
@@ -56,7 +56,7 @@ public class FireBossRenderer extends AbstractSpellCastingMobRenderer {
         super.applyRenderLayersForBone(poseStack, animatable, bone, renderType, bufferSource, buffer, partialTick, packedLight, packedOverlay);
         if (bone.getName().equals(DefaultBipedBoneIdents.LEFT_HAND_BONE_IDENT) && animatable instanceof FireBossEntity fireBoss && fireBoss.spectralDaggerActive()) {
             poseStack.pushPose();
-            poseStack.mulPose(Axis.XP.rotationDegrees(90));
+            poseStack.rotate(Axis.XP.rotationDegrees(90));
             //[-0.375,.1,-1]
             poseStack.translate(-0.375, .1, -1);
             Minecraft.getInstance().getItemRenderer().render(
@@ -97,7 +97,7 @@ public class FireBossRenderer extends AbstractSpellCastingMobRenderer {
 
 
     @Override
-    public RenderType getRenderType(AbstractSpellCastingMob animatable, ResourceLocation texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
+    public RenderType getRenderType(AbstractSpellCastingMob animatable, Identifier texture, @Nullable MultiBufferSource bufferSource, float partialTick) {
         if (animatable.isDeadOrDying() || animatable instanceof FireBossEntity fireBoss && (fireBoss.isSpawning() || fireBoss.isDespawning())) {
             return RenderType.entityTranslucent(texture);
         }

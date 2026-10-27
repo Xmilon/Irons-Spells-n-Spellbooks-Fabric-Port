@@ -13,19 +13,19 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.phys.Vec3;
 
 public class GuidingBoltRenderer extends EntityRenderer<GuidingBoltProjectile> {
-    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "guiding_bolt_model"), "main");
-    private static final ResourceLocation BASE_TEXTURE = IronsSpellbooks.id("textures/entity/guiding_bolt/guiding_bolt.png");
-    private static final ResourceLocation[] FIRE_TEXTURES = {
+    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "guiding_bolt_model"), "main");
+    private static final Identifier BASE_TEXTURE = IronsSpellbooks.id("textures/entity/guiding_bolt/guiding_bolt.png");
+    private static final Identifier[] FIRE_TEXTURES = {
             IronsSpellbooks.id("textures/entity/guiding_bolt/fire_1.png"),
             IronsSpellbooks.id("textures/entity/guiding_bolt/fire_2.png"),
             IronsSpellbooks.id("textures/entity/guiding_bolt/fire_3.png"),
@@ -60,8 +60,8 @@ public class GuidingBoltRenderer extends EntityRenderer<GuidingBoltProjectile> {
         Vec3 motion = entity.getDeltaMovement();
         float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
         float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
-        poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
-        poseStack.mulPose(Axis.XP.rotationDegrees(xRot));
+        poseStack.rotate(Axis.YP.rotationDegrees(yRot));
+        poseStack.rotate(Axis.XP.rotationDegrees(xRot));
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.energySwirl(getTextureLocation(entity), 0, 0));
         this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
 
@@ -76,11 +76,11 @@ public class GuidingBoltRenderer extends EntityRenderer<GuidingBoltProjectile> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(GuidingBoltProjectile entity) {
+    public Identifier getTextureLocation(GuidingBoltProjectile entity) {
         return BASE_TEXTURE;
     }
 
-    public ResourceLocation getFireTextureLocation(Projectile entity) {
+    public Identifier getFireTextureLocation(Projectile entity) {
         int frame = (entity.tickCount) % FIRE_TEXTURES.length;
         return FIRE_TEXTURES[frame];
     }

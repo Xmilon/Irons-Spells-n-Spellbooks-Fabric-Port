@@ -17,7 +17,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.entity.npc.villager.VillagerTrades;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -218,7 +218,7 @@ public class AdditionalWanderingTrades {
 
         private RandomCurioTrade() {
             super((trader, random) -> {
-                if (!trader.level().isClientSide) {
+                if (!trader.level().isClientSide()) {
                     LootTable loottable = trader.level().getServer().reloadableRegistries().getLootTable(ResourceKey.create(Registries.LOOT_TABLE, IronsSpellbooks.id("magic_items/basic_curios")));
                     var context = new LootParams.Builder((ServerLevel) trader.level()).create(LootContextParamSets.EMPTY);
                     var items = loottable.getRandomItems(context);
@@ -236,7 +236,7 @@ public class AdditionalWanderingTrades {
     static class ScrollPouchTrade extends SimpleTrade {
         private ScrollPouchTrade() {
             super((trader, random) -> {
-                if (!trader.level().isClientSide) {
+                if (!trader.level().isClientSide()) {
                     LootTable loottable = trader.level().getServer().reloadableRegistries().getLootTable(ResourceKey.create(Registries.LOOT_TABLE, IronsSpellbooks.id("magic_items/scroll_pouch")));
                     var context = new LootParams.Builder((ServerLevel) trader.level()).create(LootContextParamSets.EMPTY);
                     var items = loottable.getRandomItems(context);

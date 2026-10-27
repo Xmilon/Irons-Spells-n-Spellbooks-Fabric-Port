@@ -11,7 +11,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.renderer.LevelRenderer;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
 import net.minecraft.client.renderer.entity.ItemRenderer;
@@ -19,7 +19,7 @@ import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.renderer.texture.TextureAtlasSprite;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
@@ -40,7 +40,7 @@ import java.util.function.Function;
 
 public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistCauldronTile> {
     ItemRenderer itemRenderer;
-    private static final ResourceLocation BLOOD_STILL_TEXTURE = IronsSpellbooks.id("block/blood");
+    private static final Identifier BLOOD_STILL_TEXTURE = IronsSpellbooks.id("block/blood");
 
     public AlchemistCauldronRenderer(BlockEntityRendererProvider.Context context) {
         this.itemRenderer = context.getItemRenderer();
@@ -133,8 +133,8 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
             int luminosity = Math.max(skylight, fluid.getFluidType().getLightLevel(fluid));
             int fluidlight = packedLight & 0xF00000 | luminosity << 4;
             IClientFluidTypeExtensions clientFluid = IClientFluidTypeExtensions.of(fluid.getFluid());
-            Function<ResourceLocation, TextureAtlasSprite> spriteAtlas = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS);
-            ResourceLocation stillTexture = clientFluid.getStillTexture(fluid.getFluid().defaultFluidState(), cauldron.getLevel(), cauldron.getBlockPos());
+            Function<Identifier, TextureAtlasSprite> spriteAtlas = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS);
+            Identifier stillTexture = clientFluid.getStillTexture(fluid.getFluid().defaultFluidState(), cauldron.getLevel(), cauldron.getBlockPos());
             if (fluid.getFluid().isSame(FluidRegistry.BLOOD.value())) {
                 stillTexture = BLOOD_STILL_TEXTURE;
             }
@@ -172,8 +172,8 @@ public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistC
         int renderId = (int) tile.getBlockPos().asLong();
         //BakedModel model = itemRenderer.getModel(itemStack, null, null, renderId);
         poseStack.translate(offset.x, offset.y, offset.z);
-        poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
-        poseStack.mulPose(Axis.XP.rotationDegrees(90));
+        poseStack.rotate(Axis.YP.rotationDegrees(yRot));
+        poseStack.rotate(Axis.XP.rotationDegrees(90));
         poseStack.scale(0.4f, 0.4f, 0.4f);
 
         itemRenderer.renderStatic(itemStack, ItemDisplayContext.FIXED, LevelRenderer.getLightColor(tile.getLevel(), tile.getBlockPos()), packedOverlay, poseStack, bufferSource, tile.getLevel(), renderId);

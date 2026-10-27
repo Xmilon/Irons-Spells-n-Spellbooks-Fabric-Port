@@ -6,7 +6,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.UUID;
@@ -15,7 +15,7 @@ public class OnCastStartedPacket implements CustomPacketPayload {
     private final String spellId;
     private final int spellLevel;
     private final UUID castingEntityId;
-    public static final CustomPacketPayload.Type<OnCastStartedPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "on_cast_started"));
+    public static final CustomPacketPayload.Type<OnCastStartedPacket> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "on_cast_started"));
     public static final StreamCodec<RegistryFriendlyByteBuf, OnCastStartedPacket> STREAM_CODEC = CustomPacketPayload.codec(OnCastStartedPacket::write, OnCastStartedPacket::new);
 
     public OnCastStartedPacket(UUID castingEntityId, String spellId, int spellLevel) {

@@ -11,16 +11,16 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
 public class ManaBarOverlay implements LayeredDraw.Layer {
     public static final ManaBarOverlay instance = new ManaBarOverlay();
 
-    public final static ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/icons.png");
+    public final static Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/icons.png");
 
-    //public final static ResourceLocation EMPTY = ResourceLocation.fromNamespaceAndPath(irons_spellbooks.MODID,"textures/gui/health_empty.png");
-    //public final static ResourceLocation FULL = ResourceLocation.fromNamespaceAndPath(irons_spellbooks.MODID,"textures/gui/health_full.png");
+    //public final static Identifier EMPTY = Identifier.fromNamespaceAndPath(irons_spellbooks.MODID,"textures/gui/health_empty.png");
+    //public final static Identifier FULL = Identifier.fromNamespaceAndPath(irons_spellbooks.MODID,"textures/gui/health_full.png");
     public enum Anchor {
         Hunger,
         XP,

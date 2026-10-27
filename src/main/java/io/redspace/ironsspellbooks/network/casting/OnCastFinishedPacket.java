@@ -6,7 +6,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.UUID;
@@ -15,7 +15,7 @@ public class OnCastFinishedPacket implements CustomPacketPayload {
     private final String spellId;
     private final UUID castingEntityId;
     private final boolean cancelled;
-    public static final CustomPacketPayload.Type<io.redspace.ironsspellbooks.network.casting.OnCastFinishedPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "on_cast_finished"));
+    public static final CustomPacketPayload.Type<io.redspace.ironsspellbooks.network.casting.OnCastFinishedPacket> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "on_cast_finished"));
     public static final StreamCodec<RegistryFriendlyByteBuf, io.redspace.ironsspellbooks.network.casting.OnCastFinishedPacket> STREAM_CODEC = CustomPacketPayload.codec(io.redspace.ironsspellbooks.network.casting.OnCastFinishedPacket::write, io.redspace.ironsspellbooks.network.casting.OnCastFinishedPacket::new);
 
     public OnCastFinishedPacket(UUID castingEntityId, String spellId, boolean cancelled) {

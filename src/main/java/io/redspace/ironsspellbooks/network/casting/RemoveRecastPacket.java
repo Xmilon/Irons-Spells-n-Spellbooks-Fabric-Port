@@ -6,13 +6,13 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class RemoveRecastPacket implements CustomPacketPayload {
 
     private final String spellId;
-    public static final CustomPacketPayload.Type<RemoveRecastPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "remove_recast"));
+    public static final CustomPacketPayload.Type<RemoveRecastPacket> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "remove_recast"));
     public static final StreamCodec<RegistryFriendlyByteBuf, RemoveRecastPacket> STREAM_CODEC = CustomPacketPayload.codec(RemoveRecastPacket::write, RemoveRecastPacket::new);
 
     public RemoveRecastPacket(String spellId) {

@@ -19,7 +19,7 @@ import net.minecraft.commands.Commands;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.*;
@@ -238,12 +238,12 @@ public class GenerateSiteData {
 
     @NotNull
     private static ArrayList<RecipeIngredientData> getRecipeData(Recipe<?> recipe) {
-        var resultItemResourceLocation = BuiltInRegistries.ITEM.getKey(recipe.getResultItem(level.registryAccess()).getItem());
+        var resultItemIdentifier = BuiltInRegistries.ITEM.getKey(recipe.getResultItem(level.registryAccess()).getItem());
         var recipeData = new ArrayList<RecipeIngredientData>(10);
         recipeData.add(new RecipeIngredientData(
-                resultItemResourceLocation.toString(),
+                resultItemIdentifier.toString(),
                 recipe.getResultItem(level.registryAccess()).getItem().getName(ItemStack.EMPTY).getString(),
-                String.format("/img/items/%s.png", resultItemResourceLocation.getPath()),
+                String.format("/img/items/%s.png", resultItemIdentifier.getPath()),
                 recipe.getResultItem(level.registryAccess()).getItem())
         );
         if (recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe) {
@@ -364,7 +364,7 @@ public class GenerateSiteData {
         appendRecipeSorted(sb, recipe, recipeIngredientData, group, tooltip, 0);
     }
 
-    private static void appendSimple(StringBuilder sb, String name, ResourceLocation itemResource, String tooltip) {
+    private static void appendSimple(StringBuilder sb, String name, Identifier itemResource, String tooltip) {
         sb.append(String.format(RECIPE_DATA_TEMPLATE,
                 itemResource.toString(),
                 name,
@@ -376,7 +376,7 @@ public class GenerateSiteData {
         ));
     }
 
-    private static void appendSimpleGrouped(StringBuilder sb, String name, ResourceLocation itemResource, String group, String tooltip) {
+    private static void appendSimpleGrouped(StringBuilder sb, String name, Identifier itemResource, String group, String tooltip) {
         sb.append(String.format(RECIPE_DATA_TEMPLATE,
                 itemResource.toString(),
                 name,
@@ -388,7 +388,7 @@ public class GenerateSiteData {
         ));
     }
 
-    private static void appendSimpleGroupedSorted(StringBuilder sb, String name, ResourceLocation itemResource, String group, String tooltip, int sort) {
+    private static void appendSimpleGroupedSorted(StringBuilder sb, String name, Identifier itemResource, String group, String tooltip, int sort) {
         sb.append(String.format(RECIPE_DATA_TEMPLATE,
                 itemResource.toString(),
                 name,

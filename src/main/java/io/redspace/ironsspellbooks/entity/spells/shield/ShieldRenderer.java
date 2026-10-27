@@ -1,90 +1,85 @@
 package io.redspace.ironsspellbooks.entity.spells.shield;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.PoseStack.Pose;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.render.RenderHelper;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.MultiBufferSource;
+import net.minecraft.util.LightCoordsUtil;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
-import net.minecraft.client.renderer.entity.RenderLayerParent;
-import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec2;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
 
-import java.util.ArrayList;
-import java.util.List;
-
-public class ShieldRenderer extends EntityRenderer<ShieldEntity> implements RenderLayerParent<ShieldEntity, ShieldModel> {
-
-    public static ResourceLocation SPECTRAL_OVERLAY_TEXTURE = IronsSpellbooks.id("textures/entity/shield/shield_overlay.png");
-    private static ResourceLocation SIGIL_TEXTURE = IronsSpellbooks.id("textures/block/scroll_forge_sigil.png");
-    //private static ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath("textures/entity/creeper/creeper_armor.png");
+public class ShieldRenderer extends EntityRenderer<ShieldEntity, ShieldRenderer.ShieldRenderState> {
+    public static final Identifier SPECTRAL_OVERLAY_TEXTURE = Identifier.fromNamespaceAndPath(
+            IronsSpellbooks.MODID, "textures/entity/shield/shield_overlay.png");
+    private static final Identifier TRIM_TEXTURE = Identifier.fromNamespaceAndPath(
+            IronsSpellbooks.MODID, "textures/entity/shield/shield_trim.png");
+    private static final int COLOR = RenderHelper.colorf(.65f, .65f, .65f);
     private final ShieldModel model;
-    protected final List<RenderLayer<ShieldEntity, ShieldModel>> layers = new ArrayList<>();
+    private final ShieldTrimModel trimModel;
 
     public ShieldRenderer(Context context) {
         super(context);
-        this.model = new ShieldModel(context.bakeLayer(ShieldModel.LAYER_LOCATION));
-        layers.add(new ShieldTrimLayer(this, context));
+        model = new ShieldModel(context.bakeLayer(ShieldModel.LAYER_LOCATION));
+        trimModel = new ShieldTrimModel(context.bakeLayer(ShieldTrimModel.LAYER_LOCATION));
     }
 
     @Override
-    public void render(ShieldEntity entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
-        poseStack.pushPose();
-
-        Pose pose = poseStack.last();
-        Matrix4f poseMatrix = pose.pose();
-        Matrix3f normalMatrix = pose.normal();
-        poseStack.mulPose(Axis.YP.rotationDegrees(-entity.getYRot()));
-        poseStack.mulPose(Axis.XP.rotationDegrees(entity.getXRot()));
-
-        //VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
-        var offset = getEnergySwirlOffset(entity, partialTicks);
-        VertexConsumer consumer = bufferSource.getBuffer(RenderHelper.CustomerRenderType.magicSwirl(getTextureLocation(entity), offset.x, offset.y));
-
-        float width = entity.width * .65f;
-        poseStack.scale(width, width, width);
-        RenderSystem.disableBlend();
-        model.renderToBuffer(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderHelper.colorf(.65f, .65f, .65f));
-
-
-        for (RenderLayer<ShieldEntity, ShieldModel> layer : layers) {
-            layer.render(poseStack, bufferSource, light, entity, 0f, 0f, 0f, 0f, 0f, 0f);
-        }
-
-        poseStack.popPose();
-        super.render(entity, yaw, partialTicks, poseStack, bufferSource, light);
+    public ShieldRenderState createRenderState() {
+        return new ShieldRenderState();
     }
 
-    private static float shittyNoise(float f) {
+    @Override
+    public void extractRenderState(ShieldEntity entity, ShieldRenderState state, float partialTick) {
+        super.extractRenderState(entity, state, partialTick);
+        state.yaw = entity.getYRot();
+        state.pitch = entity.getXRot();
+        state.width = entity.width * .65f;
+        Vec2 offset = getEnergySwirlOffset(entity, partialTick);
+        state.swirlU = offset.x;
+        state.swirlV = offset.y;
+    }
+
+    @Override
+    public void submit(ShieldRenderState state, PoseStack poseStack, SubmitNodeCollector collector,
+                       CameraRenderState camera) {
+        poseStack.pushPose();
+        poseStack.rotateDegrees(Axis.YP, -state.yaw);
+        poseStack.rotateDegrees(Axis.XP, state.pitch);
+        poseStack.scale(state.width, state.width, state.width);
+        collector.submitModel(model, state, poseStack,
+                RenderHelper.CustomerRenderType.magicSwirl(SPECTRAL_OVERLAY_TEXTURE, state.swirlU, state.swirlV),
+                LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, COLOR);
+        collector.submitModel(trimModel, state, poseStack, RenderTypes.energySwirl(TRIM_TEXTURE, 0, 0),
+                LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, COLOR);
+        poseStack.popPose();
+        super.submit(state, poseStack, collector, camera);
+    }
+
+    private static float noise(float f) {
         return (float) (Math.sin(f / 4) + 2 * Math.sin(f / 3) + 3 * Math.sin(f / 2) + 4 * Math.sin(f)) * .25f;
     }
 
     public static Vec2 getEnergySwirlOffset(ShieldEntity entity, float partialTicks, int offset) {
         float f = (entity.tickCount + partialTicks) * .02f;
-        return new Vec2(shittyNoise(1.2f * f + offset), shittyNoise(f + 456 + offset));
+        return new Vec2(noise(1.2f * f + offset), noise(f + 456 + offset));
     }
 
     public static Vec2 getEnergySwirlOffset(ShieldEntity entity, float partialTicks) {
         return getEnergySwirlOffset(entity, partialTicks, 0);
     }
 
-    @Override
-    public ShieldModel getModel() {
-        return this.model;
+    public static class ShieldRenderState extends EntityRenderState {
+        public float yaw;
+        public float pitch;
+        public float width;
+        public float swirlU;
+        public float swirlV;
     }
-
-    @Override
-    public ResourceLocation getTextureLocation(ShieldEntity entity) {
-        return SPECTRAL_OVERLAY_TEXTURE;
-    }
-
 }

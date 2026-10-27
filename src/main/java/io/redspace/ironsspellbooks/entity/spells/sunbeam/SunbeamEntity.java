@@ -51,7 +51,7 @@ public class SunbeamEntity extends AoeEntity implements AntiMagicSusceptible {
 //            }
 //        }
         if (tickCount == WARMUP_TIME) {
-            if (!level().isClientSide) {
+            if (!level().isClientSide()) {
                 checkHits();
                 MagicManager.spawnParticles(level, ParticleHelper.EMBERS, getX(), getY() + 0.06, getZ(), 50, getRadius() * .7f, .2f, getRadius() * .7f, 0.6f, true);
                 MagicManager.spawnParticles(level, new BlastwaveParticleOptions(1f, 0.85f, 0.4f, 7f), getX(), getY() + 0.06, getZ(), 1, 0, 0, 0, 0, true);

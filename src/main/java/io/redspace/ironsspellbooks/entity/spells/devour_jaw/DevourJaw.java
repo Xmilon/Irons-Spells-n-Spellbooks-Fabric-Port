@@ -64,7 +64,7 @@ public class DevourJaw extends AoeEntity {
         } else if (tickCount == waitTime) {
             this.playSound(SoundRegistry.DEVOUR_BITE.get(), 2, 1);
         } else if (tickCount == warmupTime) {
-            if (level().isClientSide) {
+            if (level().isClientSide()) {
                 float y = this.getYRot();
                 int countPerSide = 25;
                 //These particles were not at all what I intended. But they're cooler. no clue how it works

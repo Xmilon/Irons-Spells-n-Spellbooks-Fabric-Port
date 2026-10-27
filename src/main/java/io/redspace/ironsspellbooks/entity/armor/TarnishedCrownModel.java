@@ -2,8 +2,8 @@ package io.redspace.ironsspellbooks.entity.armor;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.TarnishedCrownArmorItem;
-import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.model.GeoModel;
+import net.minecraft.resources.Identifier;
+import com.geckolib.model.GeoModel;
 
 public class TarnishedCrownModel extends GeoModel<TarnishedCrownArmorItem> {
 
@@ -13,18 +13,18 @@ public class TarnishedCrownModel extends GeoModel<TarnishedCrownArmorItem> {
     }
 
     @Override
-    public ResourceLocation getModelResource(TarnishedCrownArmorItem object) {
-        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/tarnished_armor.geo.json");
+    public Identifier getModelResource(TarnishedCrownArmorItem object) {
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/tarnished_armor.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureResource(TarnishedCrownArmorItem object) {
-        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/tarnished.png");
+    public Identifier getTextureResource(TarnishedCrownArmorItem object) {
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/tarnished.png");
     }
 
     @Override
-    public ResourceLocation getAnimationResource(TarnishedCrownArmorItem animatable) {
-        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
+    public Identifier getAnimationResource(TarnishedCrownArmorItem animatable) {
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
     }
 //    public static String listOfBonesToString(List<IBone> list){
 //        String s = "";

@@ -32,7 +32,7 @@ public class EnergizedCoreItem extends Item {
         var blockPos = pContext.getClickedPos();
         if (pContext.getPlayer() != null && level.getBlockState(blockPos).is(Blocks.LIGHTNING_ROD)) {
             if (level.isThundering()) {
-                if (!level.isClientSide) {
+                if (!level.isClientSide()) {
                     if (level.setBlockAndUpdate(blockPos, Blocks.AIR.defaultBlockState())) {
                         //consume core
                         var itemstack = pContext.getItemInHand();
@@ -57,11 +57,11 @@ public class EnergizedCoreItem extends Item {
                     }
                 }
             } else {
-                if (level.isClientSide) {
+                if (level.isClientSide()) {
                     pContext.getPlayer().displayClientMessage(Component.translatable("item.irons_spellbooks.energized_core.failure").withStyle(ChatFormatting.AQUA), true);
                 }
             }
-            return InteractionResult.sidedSuccess(level.isClientSide);
+            return InteractionResult.sidedSuccess(level.isClientSide());
         }
         return super.useOn(pContext);
     }

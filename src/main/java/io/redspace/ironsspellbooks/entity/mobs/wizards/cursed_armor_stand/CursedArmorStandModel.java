@@ -6,19 +6,19 @@ import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.Abstra
 import io.redspace.ironsspellbooks.util.DefaultBipedBoneIdents;
 import net.minecraft.client.model.geom.PartNames;
 import net.minecraft.client.renderer.entity.ArmorStandRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.cache.object.GeoBone;
+import com.geckolib.cache.animation.AnimationState;
+import com.geckolib.cache.model.GeoBone;
 
 import static io.redspace.ironsspellbooks.entity.mobs.wizards.cursed_armor_stand.CursedArmorStandEntity.JIGGLE_TIME;
 
 public class CursedArmorStandModel extends AbstractSpellCastingMobModel {
-    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/cultist.png");
-    public static final ResourceLocation MODEL = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/armor_stand.geo.json");
+    public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/cultist.png");
+    public static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/armor_stand.geo.json");
 
     @Override
-    public ResourceLocation getTextureResource(AbstractSpellCastingMob object) {
+    public Identifier getTextureResource(AbstractSpellCastingMob object) {
         return ArmorStandRenderer.DEFAULT_SKIN_LOCATION;
     }
 
@@ -110,7 +110,7 @@ public class CursedArmorStandModel extends AbstractSpellCastingMobModel {
     }
 
     @Override
-    public ResourceLocation getModelResource(AbstractSpellCastingMob object) {
+    public Identifier getModelResource(AbstractSpellCastingMob object) {
         return MODEL;
     }
 }

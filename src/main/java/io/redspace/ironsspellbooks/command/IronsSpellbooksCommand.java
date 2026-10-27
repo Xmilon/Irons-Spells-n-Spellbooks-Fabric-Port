@@ -39,7 +39,7 @@ import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.inventory.ContainerLevelAccess;
@@ -341,7 +341,7 @@ public class IronsSpellbooksCommand {
     }
 
     private static SchoolType parseSchool(CommandSourceStack source, String input) {
-        ResourceLocation id = input.contains(":") ? ResourceLocation.tryParse(input) : ResourceLocation.fromNamespaceAndPath("irons_spellbooks", input.toLowerCase(Locale.ROOT));
+        Identifier id = input.contains(":") ? Identifier.tryParse(input) : Identifier.fromNamespaceAndPath("irons_spellbooks", input.toLowerCase(Locale.ROOT));
         if (id == null) {
             source.sendFailure(Component.literal("Invalid school id: " + input));
             return null;

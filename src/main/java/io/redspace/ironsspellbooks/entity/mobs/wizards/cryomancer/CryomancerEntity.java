@@ -29,7 +29,7 @@ import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.ResetUniversalAngerTargetGoal;
-import net.minecraft.world.entity.npc.VillagerTrades;
+import net.minecraft.world.entity.npc.villager.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -120,15 +120,15 @@ public class CryomancerEntity  extends NeutralWizard implements IMerchantWizard 
 
     @Override
     protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
-        boolean preventTrade = isAggressive() || (!this.level().isClientSide && this.getOffers().isEmpty());
+        boolean preventTrade = isAggressive() || (!this.level().isClientSide() && this.getOffers().isEmpty());
         if (!preventTrade) {
-            if (!this.level().isClientSide && !this.getOffers().isEmpty()) {
+            if (!this.level().isClientSide() && !this.getOffers().isEmpty()) {
                 if (shouldRestock()) {
                     restock();
                 }
                 this.startTrading(pPlayer);
             }
-            return InteractionResult.sidedSuccess(level().isClientSide);
+            return InteractionResult.sidedSuccess(level().isClientSide());
         }
         return super.mobInteract(pPlayer, pHand);
     }
@@ -274,7 +274,7 @@ public class CryomancerEntity  extends NeutralWizard implements IMerchantWizard 
 
     @Override
     public void notifyTradeUpdated(ItemStack pStack) {
-        if (!this.level().isClientSide && this.ambientSoundTime > -this.getAmbientSoundInterval() + 20) {
+        if (!this.level().isClientSide() && this.ambientSoundTime > -this.getAmbientSoundInterval() + 20) {
             this.ambientSoundTime = -this.getAmbientSoundInterval();
             this.playSound(this.getTradeUpdatedSound(!pStack.isEmpty()), this.getSoundVolume(), this.getVoicePitch());
         }

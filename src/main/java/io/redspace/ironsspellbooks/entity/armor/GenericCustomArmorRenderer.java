@@ -2,17 +2,17 @@ package io.redspace.ironsspellbooks.entity.armor;
 
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.animatable.GeoItem;
-import software.bernie.geckolib.cache.object.BakedGeoModel;
-import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.model.GeoModel;
-import software.bernie.geckolib.renderer.GeoArmorRenderer;
-import software.bernie.geckolib.util.RenderUtil;
+import com.geckolib.animatable.GeoItem;
+import com.geckolib.cache.model.BakedGeoModel;
+import com.geckolib.cache.model.GeoBone;
+import com.geckolib.model.GeoModel;
+import com.geckolib.renderer.GeoArmorRenderer;
+import com.geckolib.util.RenderUtil;
 
 import java.util.ArrayList;
 import java.util.function.Function;
@@ -59,7 +59,7 @@ public class GenericCustomArmorRenderer<T extends Item & GeoItem> extends GeoArm
     protected final ArrayList<AsyncBone> asyncBones;
 
     @Override
-    public ResourceLocation getTextureLocation(T animatable) {
+    public Identifier getTextureLocation(T animatable) {
         return super.getTextureLocation(animatable);
     }
 

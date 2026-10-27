@@ -17,7 +17,7 @@ import net.minecraft.commands.arguments.item.ItemArgument;
 import net.minecraft.commands.arguments.item.ItemInput;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.SwordItem;
 
@@ -30,7 +30,7 @@ public class CreateImbuedSwordCommand {
 //    private static final SuggestionProvider<CommandSourceStack> SWORD_SUGGESTIONS2 = (p_180253_, p_180254_) -> {
 //        var resources = BuiltInRegistries.ITEM.stream()
 //                .filter((k) -> k.getValue() instanceof SwordItem)
-//                .map(x -> Registries.ITEM.location())
+//                .map(x -> Registries.ITEM.identifier())
 //                .collect(Collectors.toSet());
 //        return SharedSuggestionProvider.suggestResource(resources, p_180254_);
 //    };
@@ -38,7 +38,7 @@ public class CreateImbuedSwordCommand {
     private static final SuggestionProvider<CommandSourceStack> SWORD_SUGGESTIONS = (context, builder) -> {
         var resources = BuiltInRegistries.ITEM.entrySet().stream()
                 .filter(e -> e.getValue() instanceof SwordItem)
-                .map(e -> e.getKey().location())
+                .map(e -> e.getKey().identifier())
                 .collect(Collectors.toSet());
         return SharedSuggestionProvider.suggestResource(resources, builder);
     };
@@ -60,7 +60,7 @@ public class CreateImbuedSwordCommand {
             spell = IronsSpellbooks.MODID + ":" + spell;
         }
 
-        var abstractSpell = SpellRegistry.REGISTRY.get(ResourceLocation.parse(spell));
+        var abstractSpell = SpellRegistry.REGISTRY.get(Identifier.parse(spell));
 
         if (spellLevel > abstractSpell.getMaxLevel()) {
             throw new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.create_spell.failed_max_level", abstractSpell.getSpellName(), abstractSpell.getMaxLevel())).create();

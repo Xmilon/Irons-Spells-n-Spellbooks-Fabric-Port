@@ -4,8 +4,8 @@ import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
-import software.bernie.geckolib.animatable.client.GeoRenderProvider;
-import software.bernie.geckolib.renderer.GeoArmorRenderer;
+import com.geckolib.animatable.client.GeoRenderProvider;
+import com.geckolib.renderer.GeoArmorRenderer;
 
 import javax.annotation.Nullable;
 import java.util.function.Consumer;

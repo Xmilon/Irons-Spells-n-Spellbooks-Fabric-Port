@@ -20,7 +20,7 @@
 //import io.redspace.ironsspellbooks.spells.void_school.VoidTentaclesSpell;
 //import net.minecraft.network.chat.Component;
 //import net.minecraft.network.chat.MutableComponent;
-//import net.minecraft.resources.ResourceLocation;
+//import net.minecraft.resources.Identifier;
 //import net.minecraft.world.damagesource.DamageSource;
 //import net.minecraft.world.entity.Entity;
 //import net.minecraft.world.item.UseAnim;
@@ -314,8 +314,8 @@
 //        return Component.translatable(getComponentId());
 //    }
 //
-////    public ResourceLocation getResourceLocation() {
-////        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/spell_icons/" + this.getId() + ".png");
+////    public Identifier getIdentifier() {
+////        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/spell_icons/" + this.getId() + ".png");
 ////    }
 //
 //    public DamageSource getDamageSource() {

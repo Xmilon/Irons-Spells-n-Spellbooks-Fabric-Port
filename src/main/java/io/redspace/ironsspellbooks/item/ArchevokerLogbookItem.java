@@ -4,7 +4,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.network.Filterable;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
@@ -24,14 +24,14 @@ public class ArchevokerLogbookItem extends ReadableLoreItem {
             Filterable.passThrough(Component.translatable("item.irons_spellbooks.archevoker_log.entry_4.2"))
     ), true);
     public static WrittenBookContent UNTRANSLATED_CONTENTS = new WrittenBookContent(Filterable.passThrough(""), "Archevoker", 0, List.of(
-            Filterable.passThrough(Component.translatable("item.irons_spellbooks.archevoker_log.header").withStyle(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("illageralt"))).append(Component.literal("2:\n\n").withStyle(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("default")))).append(Component.translatable("item.irons_spellbooks.archevoker_log.entry_1.1").withStyle(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("illageralt"))))),
-            Filterable.passThrough(Component.translatable("item.irons_spellbooks.archevoker_log.entry_1.2").withStyle(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("illageralt")))),
-            Filterable.passThrough(Component.translatable("item.irons_spellbooks.archevoker_log.header").withStyle(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("illageralt"))).append(Component.literal("14:\n\n").withStyle(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("default")))).append(Component.translatable("item.irons_spellbooks.archevoker_log.entry_2.1").withStyle(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("illageralt"))))),
-            Filterable.passThrough(Component.translatable("item.irons_spellbooks.archevoker_log.entry_2.2").withStyle(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("illageralt")))),
-            Filterable.passThrough(Component.translatable("item.irons_spellbooks.archevoker_log.header").withStyle(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("illageralt"))).append(Component.literal("31:\n\n").withStyle(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("default")))).append(Component.translatable("item.irons_spellbooks.archevoker_log.entry_3.1").withStyle(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("illageralt"))))),
-            Filterable.passThrough(Component.translatable("item.irons_spellbooks.archevoker_log.entry_3.2").withStyle(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("illageralt")))),
-            Filterable.passThrough(Component.translatable("item.irons_spellbooks.archevoker_log.header").withStyle(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("illageralt"))).append(Component.literal("73:\n\n").withStyle(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("default")))).append(Component.translatable("item.irons_spellbooks.archevoker_log.entry_4.1").withStyle(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("illageralt"))))),
-            Filterable.passThrough(Component.translatable("item.irons_spellbooks.archevoker_log.entry_4.2").withStyle(Style.EMPTY.withFont(ResourceLocation.withDefaultNamespace("illageralt"))))
+            Filterable.passThrough(Component.translatable("item.irons_spellbooks.archevoker_log.header").withStyle(Style.EMPTY.withFont(Identifier.withDefaultNamespace("illageralt"))).append(Component.literal("2:\n\n").withStyle(Style.EMPTY.withFont(Identifier.withDefaultNamespace("default")))).append(Component.translatable("item.irons_spellbooks.archevoker_log.entry_1.1").withStyle(Style.EMPTY.withFont(Identifier.withDefaultNamespace("illageralt"))))),
+            Filterable.passThrough(Component.translatable("item.irons_spellbooks.archevoker_log.entry_1.2").withStyle(Style.EMPTY.withFont(Identifier.withDefaultNamespace("illageralt")))),
+            Filterable.passThrough(Component.translatable("item.irons_spellbooks.archevoker_log.header").withStyle(Style.EMPTY.withFont(Identifier.withDefaultNamespace("illageralt"))).append(Component.literal("14:\n\n").withStyle(Style.EMPTY.withFont(Identifier.withDefaultNamespace("default")))).append(Component.translatable("item.irons_spellbooks.archevoker_log.entry_2.1").withStyle(Style.EMPTY.withFont(Identifier.withDefaultNamespace("illageralt"))))),
+            Filterable.passThrough(Component.translatable("item.irons_spellbooks.archevoker_log.entry_2.2").withStyle(Style.EMPTY.withFont(Identifier.withDefaultNamespace("illageralt")))),
+            Filterable.passThrough(Component.translatable("item.irons_spellbooks.archevoker_log.header").withStyle(Style.EMPTY.withFont(Identifier.withDefaultNamespace("illageralt"))).append(Component.literal("31:\n\n").withStyle(Style.EMPTY.withFont(Identifier.withDefaultNamespace("default")))).append(Component.translatable("item.irons_spellbooks.archevoker_log.entry_3.1").withStyle(Style.EMPTY.withFont(Identifier.withDefaultNamespace("illageralt"))))),
+            Filterable.passThrough(Component.translatable("item.irons_spellbooks.archevoker_log.entry_3.2").withStyle(Style.EMPTY.withFont(Identifier.withDefaultNamespace("illageralt")))),
+            Filterable.passThrough(Component.translatable("item.irons_spellbooks.archevoker_log.header").withStyle(Style.EMPTY.withFont(Identifier.withDefaultNamespace("illageralt"))).append(Component.literal("73:\n\n").withStyle(Style.EMPTY.withFont(Identifier.withDefaultNamespace("default")))).append(Component.translatable("item.irons_spellbooks.archevoker_log.entry_4.1").withStyle(Style.EMPTY.withFont(Identifier.withDefaultNamespace("illageralt"))))),
+            Filterable.passThrough(Component.translatable("item.irons_spellbooks.archevoker_log.entry_4.2").withStyle(Style.EMPTY.withFont(Identifier.withDefaultNamespace("illageralt"))))
             ), true);
 
     private final boolean translated;

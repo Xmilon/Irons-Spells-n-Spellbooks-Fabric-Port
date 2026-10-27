@@ -8,7 +8,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -18,7 +18,7 @@ public class ShockwaveParticlesPacket implements CustomPacketPayload {
     Vec3 pos;
     float radius;
     String particleName;
-    public static final CustomPacketPayload.Type<ShockwaveParticlesPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "shockwave_particles"));
+    public static final CustomPacketPayload.Type<ShockwaveParticlesPacket> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "shockwave_particles"));
     public static final StreamCodec<RegistryFriendlyByteBuf, ShockwaveParticlesPacket> STREAM_CODEC = CustomPacketPayload.codec(ShockwaveParticlesPacket::write, ShockwaveParticlesPacket::new);
 
     public ShockwaveParticlesPacket(Vec3 pos, float radius, ParticleType particleType) {
@@ -42,7 +42,7 @@ public class ShockwaveParticlesPacket implements CustomPacketPayload {
     public static void handle(ShockwaveParticlesPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> {
             try {
-                var type = BuiltInRegistries.PARTICLE_TYPE.get(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, packet.particleName));
+                var type = BuiltInRegistries.PARTICLE_TYPE.get(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, packet.particleName));
                 ClientSpellCastHelper.handleClientboundShockwaveParticle(packet.pos, packet.radius, type);
             } catch (Exception ignored) {
             }

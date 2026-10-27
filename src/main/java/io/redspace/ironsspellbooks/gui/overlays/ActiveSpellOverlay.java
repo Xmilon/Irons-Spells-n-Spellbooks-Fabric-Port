@@ -14,7 +14,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.GuiGraphics;
 import net.minecraft.client.gui.LayeredDraw;
 import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -23,9 +23,9 @@ import net.minecraft.world.item.ItemStack;
 public class ActiveSpellOverlay implements LayeredDraw.Layer {
     public static ActiveSpellOverlay instance = new ActiveSpellOverlay();
 
-    protected static final ResourceLocation WIDGETS_LOCATION = ResourceLocation.withDefaultNamespace("textures/gui/widgets.png");
-    public final static ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/icons.png");
-    protected static final ResourceLocation FRAME_LOCATION = ResourceLocation.withDefaultNamespace("textures/gui/sprites/hud/hotbar_offhand_left.png");
+    protected static final Identifier WIDGETS_LOCATION = Identifier.withDefaultNamespace("textures/gui/widgets.png");
+    public final static Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/icons.png");
+    protected static final Identifier FRAME_LOCATION = Identifier.withDefaultNamespace("textures/gui/sprites/hud/hotbar_offhand_left.png");
 
     public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {
         var minecraft = Minecraft.getInstance();
@@ -93,13 +93,13 @@ public class ActiveSpellOverlay implements LayeredDraw.Layer {
         return item instanceof Scroll || item instanceof CastingItem;
     }
 
-    private static void setOpaqueTexture(ResourceLocation texture) {
+    private static void setOpaqueTexture(Identifier texture) {
         RenderSystem.setShader(GameRenderer::getPositionTexShader);
         RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         RenderSystem.setShaderTexture(0, texture);
     }
 
-    private static void setTranslucentTexture(ResourceLocation texture) {
+    private static void setTranslucentTexture(Identifier texture) {
         RenderSystem.enableBlend();
         RenderSystem.defaultBlendFunc();
         RenderSystem.setShader(GameRenderer::getRendertypeTranslucentShader);

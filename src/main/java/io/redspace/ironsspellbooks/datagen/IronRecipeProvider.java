@@ -15,7 +15,7 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.data.PackOutput;
 import net.minecraft.data.recipes.*;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.ArmorItem;
@@ -216,14 +216,14 @@ public class IronRecipeProvider extends RecipeProvider {
         var slots = new ArmorItem.Type[]{ArmorItem.Type.BOOTS, ArmorItem.Type.LEGGINGS, ArmorItem.Type.CHESTPLATE, ArmorItem.Type.HELMET};
 //        var armors = new Item[]{ItemRegistry.WIZARD_BOOTS.get(), ItemRegistry.WIZARD_LEGGINGS.get(), ItemRegistry.WIZARD_CHESTPLATE.get(), ItemRegistry.WIZARD_HELMET.get()};
 //        var slots = new ArmorItem.Type[]{ArmorItem.Type.BOOTS, ArmorItem.Type.LEGGINGS, ArmorItem.Type.CHESTPLATE, ArmorItem.Type.HELMET};
-        ResourceLocation schoolId = SchoolRegistry.REGISTRY.getKey(school);
+        Identifier schoolId = SchoolRegistry.REGISTRY.getKey(school);
         for (int i = 0; i < 4; i++) {
             var tag = (TagKey<Item>) base[i];
             Ingredient baseArmor = Ingredient.of(tag);
 //            if (baseArmor.hasNoItems()) continue;
 //            Item armorItem = baseArmor.getItems()[0].getItem();
-            ResourceLocation itemId = ResourceLocation.fromNamespaceAndPath(schoolId.getNamespace(), String.format("%s_%s", armorName, slots[i].getName()));
-            Item rune = BuiltInRegistries.ITEM.get(ResourceLocation.fromNamespaceAndPath(schoolId.getNamespace(), String.format("%s_rune", schoolId.getPath())));
+            Identifier itemId = Identifier.fromNamespaceAndPath(schoolId.getNamespace(), String.format("%s_%s", armorName, slots[i].getName()));
+            Item rune = BuiltInRegistries.ITEM.get(Identifier.fromNamespaceAndPath(schoolId.getNamespace(), String.format("%s_rune", schoolId.getPath())));
             ItemStack result = BuiltInRegistries.ITEM.get(itemId).getDefaultInstance();
             Item essence = ItemRegistry.ARCANE_ESSENCE.get();
             output.accept(itemId.withSuffix("_smithing"),

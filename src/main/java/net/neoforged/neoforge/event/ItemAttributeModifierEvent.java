@@ -31,7 +31,7 @@ public class ItemAttributeModifierEvent extends net.neoforged.bus.api.Event {
         modifiers.add(new ItemAttributeModifiers.Entry(attribute, modifier, group));
     }
 
-    public void removeModifier(Holder<Attribute> attribute, net.minecraft.resources.ResourceLocation id) {
+    public void removeModifier(Holder<Attribute> attribute, net.minecraft.resources.Identifier id) {
         modifiers.removeIf(entry -> entry.attribute().equals(attribute) && entry.modifier().id().equals(id));
     }
 

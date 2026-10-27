@@ -14,7 +14,7 @@ import io.redspace.ironsspellbooks.registries.*;
 import io.redspace.ironsspellbooks.setup.CommonSetup;
 import io.redspace.ironsspellbooks.setup.ModSetup;
 import net.fabricmc.api.ModInitializer;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerLevel;
 import net.neoforged.neoforge.common.NeoForge;
@@ -80,8 +80,8 @@ public class IronsSpellbooks implements ModInitializer {
                 .forEach(container -> container.getEntrypoint().onInitialize());
     }
 
-    public static ResourceLocation id(@NotNull String path) {
-        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, path);
+    public static Identifier id(@NotNull String path) {
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, path);
     }
 }
 

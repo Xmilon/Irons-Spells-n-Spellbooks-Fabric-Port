@@ -9,7 +9,7 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.chat.Style;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 
 import java.io.BufferedReader;
@@ -28,7 +28,7 @@ public class ChronicleItem extends ReadableLoreItem {
     }
 
     @Override
-    public Optional<ResourceLocation> simpleTextureOverride(ItemStack stack) {
+    public Optional<Identifier> simpleTextureOverride(ItemStack stack) {
         return Optional.empty();
     }
 

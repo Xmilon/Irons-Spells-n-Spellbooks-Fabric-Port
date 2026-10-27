@@ -7,13 +7,13 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class ScrollForgeSelectSpellPacket implements CustomPacketPayload {
     private final BlockPos pos;
     private final String spellId;
-    public static final CustomPacketPayload.Type<ScrollForgeSelectSpellPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "scroll_forge_select_spell"));
+    public static final CustomPacketPayload.Type<ScrollForgeSelectSpellPacket> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "scroll_forge_select_spell"));
     public static final StreamCodec<RegistryFriendlyByteBuf, ScrollForgeSelectSpellPacket> STREAM_CODEC = CustomPacketPayload.codec(ScrollForgeSelectSpellPacket::write, ScrollForgeSelectSpellPacket::new);
 
     public ScrollForgeSelectSpellPacket(BlockPos pos, String spellId) {

@@ -5,7 +5,7 @@ import com.mojang.math.Axis;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
@@ -22,12 +22,12 @@ public class ArcaneShackleRenderer extends EntityRenderer<ArcaneShackleProjectil
     public void render(@NotNull ArcaneShackleProjectile entity, float entityYaw, float partialTick, @NotNull PoseStack poseStack, @NotNull MultiBufferSource bufferSource, int packedLight) {
         poseStack.pushPose();
         for (int i = 0; i < 3; i++) {
-            poseStack.mulPose(Axis.YP.rotationDegrees((entity.tickCount + partialTick) * 8));
+            poseStack.rotate(Axis.YP.rotationDegrees((entity.tickCount + partialTick) * 8));
             poseStack.pushPose();
             float scale = (1 + i * .4f) * 0.5f;
             poseStack.scale(scale, scale, scale);
             float radius = 0.5f;
-            poseStack.mulPose(Axis.ZP.rotationDegrees(40 * (i - 1)));
+            poseStack.rotate(Axis.ZP.rotationDegrees(40 * (i - 1)));
             renderChainRing(poseStack, bufferSource, radius);
             poseStack.popPose();
         }
@@ -44,7 +44,7 @@ public class ArcaneShackleRenderer extends EntityRenderer<ArcaneShackleProjectil
     }
 
     @Override
-    public ResourceLocation getTextureLocation(ArcaneShackleProjectile entity) {
+    public Identifier getTextureLocation(ArcaneShackleProjectile entity) {
         return EnderChainRenderer.CHAIN_TEXTURE;
     }
 

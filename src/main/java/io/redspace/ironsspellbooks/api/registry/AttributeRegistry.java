@@ -5,111 +5,93 @@ import io.redspace.ironsspellbooks.api.attribute.MagicPercentAttribute;
 import io.redspace.ironsspellbooks.api.attribute.MagicRangedAttribute;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.compat.TrinketsSlots;
-import io.redspace.ironsspellbooks.compat.trinkets.TrinketsApi;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.core.component.DataComponents;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.EquipmentSlotGroup;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.ai.attributes.Attribute;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
-import net.minecraft.world.entity.ai.attributes.AttributeInstance;
-import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.component.ItemAttributeModifiers;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.EntityAttributeModificationEvent;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import io.redspace.ironsspellbooks.compat.trinkets.ITrinketItem;
 import io.redspace.ironsspellbooks.compat.trinkets.TrinketSlotContext;
 import io.redspace.ironsspellbooks.compat.trinkets.TrinketSlotResult;
-import io.redspace.ironsspellbooks.compat.trinkets.ITrinketItem;
+import io.redspace.ironsspellbooks.compat.trinkets.TrinketsApi;
 import io.redspace.ironsspellbooks.item.SpellBook;
+import java.util.List;
+import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRegistry;
+import net.minecraft.core.Holder;
+import net.minecraft.core.Registry;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.world.entity.EquipmentSlot;
+import net.minecraft.world.entity.EquipmentSlotGroup;
+import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.world.entity.ai.attributes.Attribute;
+import net.minecraft.world.entity.ai.attributes.AttributeInstance;
+import net.minecraft.world.entity.ai.attributes.AttributeModifier;
+import net.minecraft.world.entity.ai.attributes.DefaultAttributes;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 
-
-@EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class AttributeRegistry {
+    public static final Holder.Reference<Attribute> MAX_MANA = register("max_mana", new MagicRangedAttribute("attribute.irons_spellbooks.max_mana", 100.0D, 0.0D, 1000000.0D).setSyncable(true));
+    public static final Holder.Reference<Attribute> MANA_REGEN = register("mana_regen", new MagicPercentAttribute("attribute.irons_spellbooks.mana_regen", 1.0D, 0.0D, 100.0D).setSyncable(true));
+    public static final Holder.Reference<Attribute> COOLDOWN_REDUCTION = register("cooldown_reduction", new MagicPercentAttribute("attribute.irons_spellbooks.cooldown_reduction", 1.0D, -100.0D, 100.0D).setSyncable(true));
+    public static final Holder.Reference<Attribute> SPELL_POWER = register("spell_power", new MagicPercentAttribute("attribute.irons_spellbooks.spell_power", 1.0D, -100, 100.0D).setSyncable(true));
+    public static final Holder.Reference<Attribute> SPELL_RESIST = register("spell_resist", new MagicPercentAttribute("attribute.irons_spellbooks.spell_resist", 1.0D, -100, 100.0D).setSyncable(true));
+    public static final Holder.Reference<Attribute> CAST_TIME_REDUCTION = register("cast_time_reduction", new MagicPercentAttribute("attribute.irons_spellbooks.cast_time_reduction", 1.0D, -100, 100.0D).setSyncable(true));
+    public static final Holder.Reference<Attribute> SUMMON_DAMAGE = register("summon_damage", new MagicPercentAttribute("attribute.irons_spellbooks.summon_damage", 1.0D, -100, 100.0D).setSyncable(true));
+    public static final Holder.Reference<Attribute> CASTING_MOVESPEED = register("casting_movespeed", new MagicPercentAttribute("attribute.irons_spellbooks.casting_movespeed", 1, 0, 100.0D).setSyncable(true));
+    public static final Holder.Reference<Attribute> FIRE_MAGIC_RESIST = newResistanceAttribute("fire");
+    public static final Holder.Reference<Attribute> ICE_MAGIC_RESIST = newResistanceAttribute("ice");
+    public static final Holder.Reference<Attribute> LIGHTNING_MAGIC_RESIST = newResistanceAttribute("lightning");
+    public static final Holder.Reference<Attribute> HOLY_MAGIC_RESIST = newResistanceAttribute("holy");
+    public static final Holder.Reference<Attribute> ENDER_MAGIC_RESIST = newResistanceAttribute("ender");
+    public static final Holder.Reference<Attribute> BLOOD_MAGIC_RESIST = newResistanceAttribute("blood");
+    public static final Holder.Reference<Attribute> EVOCATION_MAGIC_RESIST = newResistanceAttribute("evocation");
+    public static final Holder.Reference<Attribute> NATURE_MAGIC_RESIST = newResistanceAttribute("nature");
+    public static final Holder.Reference<Attribute> ELDRITCH_MAGIC_RESIST = newResistanceAttribute("eldritch");
+    public static final Holder.Reference<Attribute> FIRE_SPELL_POWER = newPowerAttribute("fire");
+    public static final Holder.Reference<Attribute> ICE_SPELL_POWER = newPowerAttribute("ice");
+    public static final Holder.Reference<Attribute> LIGHTNING_SPELL_POWER = newPowerAttribute("lightning");
+    public static final Holder.Reference<Attribute> HOLY_SPELL_POWER = newPowerAttribute("holy");
+    public static final Holder.Reference<Attribute> ENDER_SPELL_POWER = newPowerAttribute("ender");
+    public static final Holder.Reference<Attribute> BLOOD_SPELL_POWER = newPowerAttribute("blood");
+    public static final Holder.Reference<Attribute> EVOCATION_SPELL_POWER = newPowerAttribute("evocation");
+    public static final Holder.Reference<Attribute> NATURE_SPELL_POWER = newPowerAttribute("nature");
+    public static final Holder.Reference<Attribute> ELDRITCH_SPELL_POWER = newPowerAttribute("eldritch");
 
-    private static final DeferredRegister<Attribute> ATTRIBUTES = DeferredRegister.create(Registries.ATTRIBUTE, IronsSpellbooks.MODID);
+    private static final List<Holder.Reference<Attribute>> ATTRIBUTES = List.of(
+            MAX_MANA, MANA_REGEN, COOLDOWN_REDUCTION, SPELL_POWER, SPELL_RESIST,
+            CAST_TIME_REDUCTION, SUMMON_DAMAGE, CASTING_MOVESPEED,
+            FIRE_MAGIC_RESIST, ICE_MAGIC_RESIST, LIGHTNING_MAGIC_RESIST,
+            HOLY_MAGIC_RESIST, ENDER_MAGIC_RESIST, BLOOD_MAGIC_RESIST,
+            EVOCATION_MAGIC_RESIST, NATURE_MAGIC_RESIST, ELDRITCH_MAGIC_RESIST,
+            FIRE_SPELL_POWER, ICE_SPELL_POWER, LIGHTNING_SPELL_POWER,
+            HOLY_SPELL_POWER, ENDER_SPELL_POWER, BLOOD_SPELL_POWER,
+            EVOCATION_SPELL_POWER, NATURE_SPELL_POWER, ELDRITCH_SPELL_POWER
+    );
 
-    public static void register(IEventBus eventBus) {
-        ATTRIBUTES.register(eventBus);
-    }
-
-    public static final DeferredHolder<Attribute, Attribute> MAX_MANA = ATTRIBUTES.register("max_mana", () -> (new MagicRangedAttribute("attribute.irons_spellbooks.max_mana", 100.0D, 0.0D, 1000000.0D).setSyncable(true)));
-    public static final DeferredHolder<Attribute, Attribute> MANA_REGEN = ATTRIBUTES.register("mana_regen", () -> (new MagicPercentAttribute("attribute.irons_spellbooks.mana_regen", 1.0D, 0.0D, 100.0D).setSyncable(true)));
-    public static final DeferredHolder<Attribute, Attribute> COOLDOWN_REDUCTION = ATTRIBUTES.register("cooldown_reduction", () -> (new MagicPercentAttribute("attribute.irons_spellbooks.cooldown_reduction", 1.0D, -100.0D, 100.0D).setSyncable(true)));
-    public static final DeferredHolder<Attribute, Attribute> SPELL_POWER = ATTRIBUTES.register("spell_power", () -> (new MagicPercentAttribute("attribute.irons_spellbooks.spell_power", 1.0D, -100, 100.0D).setSyncable(true)));
-    public static final DeferredHolder<Attribute, Attribute> SPELL_RESIST = ATTRIBUTES.register("spell_resist", () -> (new MagicPercentAttribute("attribute.irons_spellbooks.spell_resist", 1.0D, -100, 100.0D).setSyncable(true)));
-    public static final DeferredHolder<Attribute, Attribute> CAST_TIME_REDUCTION = ATTRIBUTES.register("cast_time_reduction", () -> (new MagicPercentAttribute("attribute.irons_spellbooks.cast_time_reduction", 1.0D, -100, 100.0D).setSyncable(true)));
-    public static final DeferredHolder<Attribute, Attribute> SUMMON_DAMAGE = ATTRIBUTES.register("summon_damage", () -> (new MagicPercentAttribute("attribute.irons_spellbooks.summon_damage", 1.0D, -100, 100.0D).setSyncable(true)));
-    public static final DeferredHolder<Attribute, Attribute> CASTING_MOVESPEED = ATTRIBUTES.register("casting_movespeed", () -> (new MagicPercentAttribute("attribute.irons_spellbooks.casting_movespeed", 1, 0, 100.0D).setSyncable(true)));
-
-    public static final DeferredHolder<Attribute, Attribute> FIRE_MAGIC_RESIST = newResistanceAttribute("fire");
-    public static final DeferredHolder<Attribute, Attribute> ICE_MAGIC_RESIST = newResistanceAttribute("ice");
-    public static final DeferredHolder<Attribute, Attribute> LIGHTNING_MAGIC_RESIST = newResistanceAttribute("lightning");
-    public static final DeferredHolder<Attribute, Attribute> HOLY_MAGIC_RESIST = newResistanceAttribute("holy");
-    public static final DeferredHolder<Attribute, Attribute> ENDER_MAGIC_RESIST = newResistanceAttribute("ender");
-    public static final DeferredHolder<Attribute, Attribute> BLOOD_MAGIC_RESIST = newResistanceAttribute("blood");
-    public static final DeferredHolder<Attribute, Attribute> EVOCATION_MAGIC_RESIST = newResistanceAttribute("evocation");
-    public static final DeferredHolder<Attribute, Attribute> NATURE_MAGIC_RESIST = newResistanceAttribute("nature");
-    public static final DeferredHolder<Attribute, Attribute> ELDRITCH_MAGIC_RESIST = newResistanceAttribute("eldritch");
-
-    public static final DeferredHolder<Attribute, Attribute> FIRE_SPELL_POWER = newPowerAttribute("fire");
-    public static final DeferredHolder<Attribute, Attribute> ICE_SPELL_POWER = newPowerAttribute("ice");
-    public static final DeferredHolder<Attribute, Attribute> LIGHTNING_SPELL_POWER = newPowerAttribute("lightning");
-    public static final DeferredHolder<Attribute, Attribute> HOLY_SPELL_POWER = newPowerAttribute("holy");
-    public static final DeferredHolder<Attribute, Attribute> ENDER_SPELL_POWER = newPowerAttribute("ender");
-    public static final DeferredHolder<Attribute, Attribute> BLOOD_SPELL_POWER = newPowerAttribute("blood");
-    public static final DeferredHolder<Attribute, Attribute> EVOCATION_SPELL_POWER = newPowerAttribute("evocation");
-    public static final DeferredHolder<Attribute, Attribute> NATURE_SPELL_POWER = newPowerAttribute("nature");
-    public static final DeferredHolder<Attribute, Attribute> ELDRITCH_SPELL_POWER = newPowerAttribute("eldritch");
-
-    /** Registry-bound holder; vanilla attribute maps (sync packets, save/load) are keyed by it, not by DeferredHolder. */
-    public static net.minecraft.core.Holder<Attribute> registered(DeferredHolder<Attribute, Attribute> holder) {
-        return holder.unwrapKey()
-                .flatMap(net.minecraft.core.registries.BuiltInRegistries.ATTRIBUTE::getHolder)
-                .<net.minecraft.core.Holder<Attribute>>map(h -> h)
-                .orElse(holder);
-    }
-
-    /**
-     * Fabric replacement for EntityAttributeModificationEvent: gives a living entity type's supplier every attribute of this mod it lacks.
-     */
-    public static AttributeSupplier withModAttributes(AttributeSupplier supplier) {
-        var builder = new AttributeSupplier.Builder();
-        ((io.redspace.ironsspellbooks.mixin.AttributeSupplierAccessor) supplier).irons_spellbooks$instances()
-                .forEach((attribute, instance) -> builder.add(attribute, instance.getBaseValue()));
-        for (var entry : ATTRIBUTES.getEntries()) {
-            var holder = registered((DeferredHolder<Attribute, Attribute>) entry);
-            if (!supplier.hasAttribute(holder)) {
-                builder.add(holder);
+    public static void register() {
+        FabricDefaultAttributeRegistry.MODIFY.register(context -> context.modifyAll((type, builder) -> {
+            var existing = DefaultAttributes.getSupplier(type);
+            for (var attribute : ATTRIBUTES) {
+                if (!existing.hasAttribute(attribute)) {
+                    builder.add(attribute);
+                }
             }
-        }
-        return builder.build();
+        }));
     }
 
-    @SubscribeEvent
-    public static void modifyEntityAttributes(EntityAttributeModificationEvent e) {
-        e.getTypes().forEach(entity -> ATTRIBUTES.getEntries().forEach(attribute -> e.add(entity, (DeferredHolder<Attribute, Attribute>) attribute)));
+    private static Holder.Reference<Attribute> register(String name, Attribute attribute) {
+        return Registry.registerForHolder(BuiltInRegistries.ATTRIBUTE, IronsSpellbooks.id(name), attribute);
     }
 
-    private static DeferredHolder<Attribute, Attribute> newResistanceAttribute(String id) {
-        return (DeferredHolder<Attribute, Attribute>) ATTRIBUTES.register(id + "_magic_resist", () -> (new MagicPercentAttribute("attribute.irons_spellbooks." + id + "_magic_resist", 1.0D, -100, 100).setSyncable(true)));
+    private static Holder.Reference<Attribute> newResistanceAttribute(String id) {
+        return register(id + "_magic_resist", new MagicPercentAttribute(
+                "attribute.irons_spellbooks." + id + "_magic_resist", 1.0D, -100, 100).setSyncable(true));
     }
 
-    private static DeferredHolder<Attribute, Attribute> newPowerAttribute(String id) {
-        return ATTRIBUTES.register(id + "_spell_power", () -> (new MagicPercentAttribute("attribute.irons_spellbooks." + id + "_spell_power", 1.0D, -100, 100).setSyncable(true)));
+    private static Holder.Reference<Attribute> newPowerAttribute(String id) {
+        return register(id + "_spell_power", new MagicPercentAttribute(
+                "attribute.irons_spellbooks." + id + "_spell_power", 1.0D, -100, 100).setSyncable(true));
     }
 
-    public static double getValueOrDefault(LivingEntity entity, DeferredHolder<Attribute, Attribute> attribute, double fallback) {
-        return getValueOrDefault(entity, (net.minecraft.core.Holder<Attribute>) attribute, fallback);
-    }
-
-    public static double getValueOrDefault(LivingEntity entity, net.minecraft.core.Holder<Attribute> attribute, double fallback) {
+    public static double getValueOrDefault(LivingEntity entity, Holder<Attribute> attribute, double fallback) {
         if (entity == null || attribute == null) {
             return fallback;
         }
@@ -117,16 +99,12 @@ public class AttributeRegistry {
         return instance != null ? instance.getValue() : fallback;
     }
 
-    public static double getValueOrDefaultWithSpellbookFallback(LivingEntity entity, DeferredHolder<Attribute, Attribute> attribute, double fallback) {
-        return getValueOrDefaultWithSpellbookFallback(entity, (net.minecraft.core.Holder<Attribute>) attribute, fallback);
-    }
-
-    public static double getValueOrDefaultWithSpellbookFallback(LivingEntity entity, net.minecraft.core.Holder<Attribute> attribute, double fallback) {
+    public static double getValueOrDefaultWithSpellbookFallback(LivingEntity entity, Holder<Attribute> attribute, double fallback) {
         double value = getValueOrDefault(entity, attribute, fallback);
         if (!(entity instanceof Player player)) {
             return value;
         }
-        if (!player.level().isClientSide) {
+        if (!player.level().isClientSide()) {
             return value;
         }
         if (Double.compare(value, fallback) != 0) {
@@ -162,7 +140,7 @@ public class AttributeRegistry {
             }
             ItemAttributeModifiers modifiers = stack.getOrDefault(DataComponents.ATTRIBUTE_MODIFIERS, ItemAttributeModifiers.EMPTY);
             for (ItemAttributeModifiers.Entry entry : modifiers.modifiers()) {
-                if (entry.attribute().value() != MAX_MANA.get()) {
+                if (entry.attribute().value() != MAX_MANA.value()) {
                     continue;
                 }
                 if (entry.slot() != EquipmentSlotGroup.bySlot(slot)) {
@@ -193,7 +171,7 @@ public class AttributeRegistry {
         double multipliedTotal = 0.0D;
 
         for (var entry : modifiers.entries()) {
-            if (entry.getKey().value() != MAX_MANA.get()) {
+            if (entry.getKey().value() != MAX_MANA.value()) {
                 continue;
             }
             switch (entry.getValue().operation()) {
@@ -206,7 +184,7 @@ public class AttributeRegistry {
         return Math.max(100.0D, (base + additive) * (1.0D + multipliedBase) * (1.0D + multipliedTotal));
     }
 
-    private static double getSpellbookAttributeFallback(Player player, net.minecraft.core.Holder<Attribute> attribute, double fallback) {
+    private static double getSpellbookAttributeFallback(Player player, Holder<Attribute> attribute, double fallback) {
         TrinketSlotResult result = TrinketsApi.getTrinketsInventory(player)
                 .map(inv -> inv.findTrinkets(stack -> stack.getItem() instanceof SpellBook).stream()
                         .filter(entry -> TrinketsSlots.SPELLBOOK_SLOT.equals(entry.slotContext().identifier()))
@@ -243,3 +221,4 @@ public class AttributeRegistry {
         return (base + additive) * (1.0D + multipliedBase) * (1.0D + multipliedTotal);
     }
 }
+

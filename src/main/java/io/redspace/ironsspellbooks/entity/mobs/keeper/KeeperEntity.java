@@ -47,8 +47,8 @@ import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.animation.*;
+import com.geckolib.cache.animation.AnimationState;
+import com.geckolib.animation.*;
 
 import javax.annotation.Nullable;
 
@@ -148,7 +148,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
         super.tick();
         if (riseAnimTick > 0) {
             riseAnimTick--;
-            if (!level().isClientSide) {
+            if (!level().isClientSide()) {
                 Vec3 vec3 = this.getBoundingBox().getCenter();
                 MagicManager.spawnParticles(level(), ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), vec3.x, vec3.y, vec3.z, 5, 0.2, 0.2, 0.2, 0.05, false);
             }

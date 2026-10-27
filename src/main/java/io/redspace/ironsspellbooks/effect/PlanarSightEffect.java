@@ -27,7 +27,7 @@ public class PlanarSightEffect extends MagicMobEffect implements ISyncedMobEffec
 
     @Override
     public boolean applyEffectTick(LivingEntity livingEntity, int pAmplifier) {
-        if (livingEntity.level().isClientSide && livingEntity == Minecraft.getInstance().player) {
+        if (livingEntity.level().isClientSide() && livingEntity == Minecraft.getInstance().player) {
             for (int i = 0; i < 3; i++) {
                 Vec3 pos = new Vec3(Utils.getRandomScaled(16), Utils.getRandomScaled(5f) + 5, Utils.getRandomScaled(16)).add(livingEntity.position());
                 Vec3 random = new Vec3(Utils.getRandomScaled(.08f), Utils.getRandomScaled(.08f), Utils.getRandomScaled(.08f));

@@ -21,7 +21,7 @@ import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.MeleeAttackGoal;
 import net.minecraft.world.entity.ai.goal.WaterAvoidingRandomStrollGoal;
-import net.minecraft.world.entity.animal.PolarBear;
+import net.minecraft.world.entity.animal.polarbear.PolarBear;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -74,12 +74,12 @@ public class SummonedPolarBear extends PolarBear implements IMagicSummon {
         if (pPlayer == getSummoner()) {
             this.doPlayerRide(pPlayer);
         }
-        return InteractionResult.sidedSuccess(this.level().isClientSide);
+        return InteractionResult.sidedSuccess(this.level().isClientSide());
     }
 
     protected void doPlayerRide(Player pPlayer) {
         this.setStanding(false);
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             pPlayer.setYRot(this.getYRot());
             pPlayer.setXRot(this.getXRot());
             pPlayer.startRiding(this);
@@ -139,7 +139,7 @@ public class SummonedPolarBear extends PolarBear implements IMagicSummon {
 
     @Override
     public void onUnSummon() {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             MagicManager.spawnParticles(level(), ParticleTypes.POOF, getX(), getY(), getZ(), 25, .4, .8, .4, .03, false);
             setRemoved(RemovalReason.DISCARDED);
         }

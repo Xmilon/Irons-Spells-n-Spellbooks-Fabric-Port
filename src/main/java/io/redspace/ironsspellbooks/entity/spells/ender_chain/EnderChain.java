@@ -150,7 +150,7 @@ public class EnderChain extends Entity implements AntiMagicSusceptible, IEntityW
         if (warmup < VISUAL_WARMUP_TIME) {
             warmup++;
         }
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             Entity victim = getVictim();
             if (victim == null || victim.isRemoved() || victim.distanceToSqr(this) > 12 * 12 || tickCount > lifetime || health <= 0) {
                 breakChain();
@@ -212,7 +212,7 @@ public class EnderChain extends Entity implements AntiMagicSusceptible, IEntityW
         if (invulnerableTime > 0) {
             return false;
         }
-        if (level().isClientSide || isInvulnerableTo(source)) {
+        if (level().isClientSide() || isInvulnerableTo(source)) {
             return false;
         }
         if (DamageSources.isFriendlyFireBetween(source.getEntity(), getOwner())) {
@@ -234,7 +234,7 @@ public class EnderChain extends Entity implements AntiMagicSusceptible, IEntityW
     }
 
     public void breakChain() {
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             playSound(SoundEvents.CHAIN_BREAK);
             if (parts.length > 0) {
                 int count = 15;

@@ -10,11 +10,11 @@ import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 public class IceSpikeRenderer extends EntityRenderer<IceSpikeEntity> {
 
@@ -30,8 +30,8 @@ public class IceSpikeRenderer extends EntityRenderer<IceSpikeEntity> {
             return;
         float f = entity.tickCount + partialTicks;
         poseStack.pushPose();
-        poseStack.mulPose(Axis.YP.rotationDegrees(-entity.getYRot()));
-        poseStack.mulPose(Axis.XP.rotationDegrees(entity.getXRot()));
+        poseStack.rotate(Axis.YP.rotationDegrees(-entity.getYRot()));
+        poseStack.rotate(Axis.XP.rotationDegrees(entity.getXRot()));
         float anim = entity.getPositionOffset(partialTicks);
         poseStack.scale(1, -1, 1);
         float scale = entity.getSpikeSize();
@@ -51,12 +51,12 @@ public class IceSpikeRenderer extends EntityRenderer<IceSpikeEntity> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(IceSpikeEntity pEntity) {
+    public Identifier getTextureLocation(IceSpikeEntity pEntity) {
         return IronsSpellbooks.id("textures/entity/ice_spike.png");
     }
 
     public static class IceSpikeModel extends EntityModel<IceSpikeEntity> {
-        public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "ice_spike"), "main");
+        public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "ice_spike"), "main");
         private final ModelPart bottom;
         private final ModelPart middle;
         private final ModelPart top;

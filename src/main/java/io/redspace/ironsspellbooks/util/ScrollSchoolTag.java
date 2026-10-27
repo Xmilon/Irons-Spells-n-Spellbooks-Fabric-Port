@@ -6,7 +6,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.CustomModelData;
 import net.minecraft.world.item.component.CustomData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Optional;
 
@@ -68,7 +68,7 @@ public final class ScrollSchoolTag {
     }
 
     private static int modelValueForSchool(String schoolIdOrPath) {
-        var parsed = ResourceLocation.tryParse(schoolIdOrPath);
+        var parsed = Identifier.tryParse(schoolIdOrPath);
         var path = parsed != null ? parsed.getPath() : schoolIdOrPath;
         return Math.round(ScrollSchoolModels.predicateValueForSchool(path));
     }

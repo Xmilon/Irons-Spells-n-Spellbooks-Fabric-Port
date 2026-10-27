@@ -14,19 +14,19 @@ import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.projectile.Projectile;
 
 public class FireballRenderer extends EntityRenderer<Projectile> {
 
-    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "fireball_model"), "main");
-    public static final ResourceLocation BASE_TEXTURE = IronsSpellbooks.id("textures/entity/fireball/fireball_core.png");
-    public static final ResourceLocation[] FIRE_TEXTURES = {
+    public static final ModelLayerLocation MODEL_LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "fireball_model"), "main");
+    public static final Identifier BASE_TEXTURE = IronsSpellbooks.id("textures/entity/fireball/fireball_core.png");
+    public static final Identifier[] FIRE_TEXTURES = {
             IronsSpellbooks.id("textures/entity/fireball/fire_0.png"),
             IronsSpellbooks.id("textures/entity/fireball/fire_1.png"),
             IronsSpellbooks.id("textures/entity/fireball/fire_2.png"),
@@ -65,12 +65,12 @@ public class FireballRenderer extends EntityRenderer<Projectile> {
         poseStack.translate(0, entity.getBoundingBox().getYsize() * .5f, 0);
         poseStack.scale(scale, scale, scale);
         if (entity instanceof AbstractMagicProjectile) {
-            poseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot()) + 180));
-            poseStack.mulPose(Axis.XP.rotationDegrees(Mth.lerp(partialTicks, entity.xRotO, entity.getXRot())));
+            poseStack.rotate(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot()) + 180));
+            poseStack.rotate(Axis.XP.rotationDegrees(Mth.lerp(partialTicks, entity.xRotO, entity.getXRot())));
         } else {
             // replaced fireball renderer. these use different rules
-            poseStack.mulPose(Axis.YP.rotationDegrees(-Mth.lerp(partialTicks, entity.yRotO, entity.getYRot())));
-            poseStack.mulPose(Axis.XP.rotationDegrees(-Mth.lerp(partialTicks, entity.xRotO, entity.getXRot())));
+            poseStack.rotate(Axis.YP.rotationDegrees(-Mth.lerp(partialTicks, entity.yRotO, entity.getYRot())));
+            poseStack.rotate(Axis.XP.rotationDegrees(-Mth.lerp(partialTicks, entity.xRotO, entity.getXRot())));
         }
 
         VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(getTextureLocation(entity)));
@@ -87,11 +87,11 @@ public class FireballRenderer extends EntityRenderer<Projectile> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(Projectile entity) {
+    public Identifier getTextureLocation(Projectile entity) {
         return BASE_TEXTURE;
     }
 
-    public ResourceLocation getFireTextureLocation(Projectile entity) {
+    public Identifier getFireTextureLocation(Projectile entity) {
         int frame = (entity.tickCount / 2) % FIRE_TEXTURES.length;
         return FIRE_TEXTURES[frame];
     }

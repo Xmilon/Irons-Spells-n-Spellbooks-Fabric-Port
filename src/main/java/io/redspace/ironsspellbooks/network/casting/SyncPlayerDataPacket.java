@@ -8,12 +8,12 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class SyncPlayerDataPacket implements CustomPacketPayload {
     SyncedSpellData syncedSpellData;
-    public static final CustomPacketPayload.Type<SyncPlayerDataPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "sync_player_data"));
+    public static final CustomPacketPayload.Type<SyncPlayerDataPacket> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "sync_player_data"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncPlayerDataPacket> STREAM_CODEC = CustomPacketPayload.codec(SyncPlayerDataPacket::write, SyncPlayerDataPacket::new);
 
     public SyncPlayerDataPacket(SyncedSpellData playerSyncedData) {

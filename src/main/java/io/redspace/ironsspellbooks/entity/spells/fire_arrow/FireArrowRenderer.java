@@ -12,14 +12,14 @@ import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
 public class FireArrowRenderer extends EntityRenderer<AbstractMagicProjectile> {
-    private static final ResourceLocation TEXTURE = IronsSpellbooks.id("textures/entity/fire_arrow.png");
+    private static final Identifier TEXTURE = IronsSpellbooks.id("textures/entity/fire_arrow.png");
 
     public FireArrowRenderer(Context context) {
         super(context);
@@ -31,10 +31,10 @@ public class FireArrowRenderer extends EntityRenderer<AbstractMagicProjectile> {
         Vec3 motion = entity.deltaMovementOld.add(entity.getDeltaMovement().subtract(entity.deltaMovementOld).scale(partialTicks));
         float xRot = -((float) (Mth.atan2(motion.horizontalDistance(), motion.y) * (double) (180F / (float) Math.PI)) - 90.0F);
         float yRot = -((float) (Mth.atan2(motion.z, motion.x) * (double) (180F / (float) Math.PI)) + 90.0F);
-        poseStack.mulPose(Axis.YP.rotationDegrees(yRot));
-        poseStack.mulPose(Axis.XP.rotationDegrees(xRot));
-//        poseStack.mulPose(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot())));
-//        poseStack.mulPose(Axis.XP.rotationDegrees(Mth.lerp(partialTicks, entity.xRotO, entity.getXRot())));
+        poseStack.rotate(Axis.YP.rotationDegrees(yRot));
+        poseStack.rotate(Axis.XP.rotationDegrees(xRot));
+//        poseStack.rotate(Axis.YP.rotationDegrees(Mth.lerp(partialTicks, entity.yRotO, entity.getYRot())));
+//        poseStack.rotate(Axis.XP.rotationDegrees(Mth.lerp(partialTicks, entity.xRotO, entity.getXRot())));
         renderModel(poseStack, bufferSource);
         poseStack.popPose();
 
@@ -52,11 +52,11 @@ public class FireArrowRenderer extends EntityRenderer<AbstractMagicProjectile> {
         Matrix3f normalMatrix = pose.normal();
 
         VertexConsumer consumer = bufferSource.getBuffer(RenderHelper.CustomerRenderType.magic(getTextureLocation()));
-        poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+        poseStack.rotate(Axis.YP.rotationDegrees(90.0F));
         poseStack.translate(-2, 0, 0);
 
         for (int j = 0; j < 4; ++j) {
-            poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
+            poseStack.rotate(Axis.XP.rotationDegrees(90.0F));
             vertex(poseMatrix, normalMatrix, consumer, -8, -2, 0, 0.0F, 0.0F, 0, 1, 0, LightTexture.FULL_BRIGHT);
             vertex(poseMatrix, normalMatrix, consumer, 8, -2, 0, 0.5F, 0.0F, 0, 1, 0, LightTexture.FULL_BRIGHT);
             vertex(poseMatrix, normalMatrix, consumer, 8, 2, 0, 0.5F, 0.15625F, 0, 1, 0, LightTexture.FULL_BRIGHT);
@@ -69,11 +69,11 @@ public class FireArrowRenderer extends EntityRenderer<AbstractMagicProjectile> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(AbstractMagicProjectile entity) {
+    public Identifier getTextureLocation(AbstractMagicProjectile entity) {
         return getTextureLocation();
     }
 
-    public static ResourceLocation getTextureLocation() {
+    public static Identifier getTextureLocation() {
         return TEXTURE;
     }
 

@@ -3,10 +3,10 @@ package io.redspace.ironsspellbooks.item.armor;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.registries.ArmorMaterialRegistry;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import software.bernie.geckolib.renderer.GeoArmorRenderer;
+import com.geckolib.renderer.GeoArmorRenderer;
 
 public class PyromancerArmorItem extends ImbuableChestplateArmorItem implements IArmorCapeProvider {
     public PyromancerArmorItem(Type slot, Properties settings) {
@@ -14,8 +14,8 @@ public class PyromancerArmorItem extends ImbuableChestplateArmorItem implements 
     }
 
     @Override
-    public ResourceLocation getCapeResourceLocation() {
-        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/pyromancer_cape.png");
+    public Identifier getCapeIdentifier() {
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/pyromancer_cape.png");
     }
 
     @Override

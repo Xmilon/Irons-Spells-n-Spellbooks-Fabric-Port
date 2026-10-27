@@ -1,13 +1,13 @@
 package io.redspace.ironsspellbooks.api.config;
 
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.function.Consumer;
 
 public class DefaultConfig {
     public SpellRarity minRarity;
-    public ResourceLocation schoolResource;
+    public Identifier schoolResource;
     public int maxLevel = -1;
     public boolean enabled = true;
     public double cooldownInSeconds = -1;
@@ -41,7 +41,7 @@ public class DefaultConfig {
         return this;
     }
 
-    public DefaultConfig setSchoolResource(ResourceLocation schoolResource) {
+    public DefaultConfig setSchoolResource(Identifier schoolResource) {
         this.schoolResource = schoolResource;
         return this;
     }

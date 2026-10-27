@@ -12,7 +12,7 @@ import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 
 public class SunbeamRenderer extends EntityRenderer<SunbeamEntity> {
@@ -31,7 +31,7 @@ public class SunbeamRenderer extends EntityRenderer<SunbeamEntity> {
     public void render(SunbeamEntity entity, float yaw, float partialTicks, PoseStack poseStack, MultiBufferSource bufferSource, int light) {
         poseStack.pushPose();
 
-        //poseStack.mulPose(Axis.XP.rotationDegrees(90));
+        //poseStack.rotate(Axis.XP.rotationDegrees(90));
         float maxRadius = 2.5f;
         float minRadius = 0.005f;
         float deltaTicks = entity.tickCount + partialTicks;
@@ -69,7 +69,7 @@ public class SunbeamRenderer extends EntityRenderer<SunbeamEntity> {
                     .overlay(OverlayTexture.NO_OVERLAY)
                     .matrix(poseStack.last().pose())
                     .build(inner);
-            poseStack.mulPose(Axis.YP.rotationDegrees(90));
+            poseStack.rotate(Axis.YP.rotationDegrees(90));
         }
 
         poseStack.popPose();
@@ -78,7 +78,7 @@ public class SunbeamRenderer extends EntityRenderer<SunbeamEntity> {
     }
 
     @Override
-    public ResourceLocation getTextureLocation(SunbeamEntity entity) {
+    public Identifier getTextureLocation(SunbeamEntity entity) {
         return SpellRenderingHelper.BEACON;
     }
 

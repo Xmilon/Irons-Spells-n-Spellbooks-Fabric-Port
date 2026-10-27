@@ -5,7 +5,7 @@ import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.registries.StructureElementRegistry;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.levelgen.structure.TerrainAdjustment;
 import net.minecraft.world.level.levelgen.structure.pools.SinglePoolElement;
 import net.minecraft.world.level.levelgen.structure.pools.StructurePoolElementType;
@@ -29,7 +29,7 @@ public class IndividualTerrainStructurePoolElement extends SinglePoolElement {
 
     private final @Nullable TerrainAdjustment terrainAdjustment;
 
-    public IndividualTerrainStructurePoolElement(Either<ResourceLocation, StructureTemplate> resourceLocation, Holder<StructureProcessorList> processors, StructureTemplatePool.Projection projection, Optional<LiquidSettings> liquidSettings, @Nullable TerrainAdjustment terrainAdjustment) {
+    public IndividualTerrainStructurePoolElement(Either<Identifier, StructureTemplate> resourceLocation, Holder<StructureProcessorList> processors, StructureTemplatePool.Projection projection, Optional<LiquidSettings> liquidSettings, @Nullable TerrainAdjustment terrainAdjustment) {
         super(resourceLocation, processors, projection, liquidSettings);
         this.terrainAdjustment = terrainAdjustment;
     }

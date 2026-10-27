@@ -19,13 +19,13 @@ import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimatableManager;
-import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.PlayState;
-import software.bernie.geckolib.animation.RawAnimation;
-import software.bernie.geckolib.util.GeckoLibUtil;
+import com.geckolib.animatable.GeoEntity;
+import com.geckolib.animatable.instance.AnimatableInstanceCache;
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.cache.animation.AnimationController;
+import com.geckolib.animation.object.PlayState;
+import com.geckolib.animation.RawAnimation;
+import com.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -68,7 +68,7 @@ public class VoidTentacle extends LivingEntity implements GeoEntity, AntiMagicSu
 
     @Override
     public void tick() {
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             if (age > 300) {
                 //IronsSpellbooks.LOGGER.debug("Discarding void Tentacle (age:{})", age);
                 this.discard();
@@ -199,7 +199,7 @@ public class VoidTentacle extends LivingEntity implements GeoEntity, AntiMagicSu
 //        return entityData.get(DATA_DELAY);
 //    }
 
-    private PlayState animationPredicate(software.bernie.geckolib.animation.AnimationState event) {
+    private PlayState animationPredicate(com.geckolib.cache.animation.AnimationState event) {
         //if (age >= getDelay()) {
         var controller = event.getController();
         //if (controller.getAnimationState() == AnimationState.Stopped) {
@@ -225,7 +225,7 @@ public class VoidTentacle extends LivingEntity implements GeoEntity, AntiMagicSu
         //return PlayState.STOP;
     }
 
-    private PlayState risePredicate(software.bernie.geckolib.animation.AnimationState event) {
+    private PlayState risePredicate(com.geckolib.cache.animation.AnimationState event) {
         //if (age >= getDelay()) {
         var controller = event.getController();
         //if (controller.getAnimationState() == AnimationState.Stopped) {

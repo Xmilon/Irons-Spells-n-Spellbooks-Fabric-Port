@@ -2,8 +2,8 @@ package io.redspace.ironsspellbooks.entity.armor;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.item.armor.WanderingMagicianArmorItem;
-import net.minecraft.resources.ResourceLocation;
-import software.bernie.geckolib.model.GeoModel;
+import net.minecraft.resources.Identifier;
+import com.geckolib.model.GeoModel;
 
 public class WanderingMagicianModel extends GeoModel<WanderingMagicianArmorItem> {
 
@@ -13,18 +13,18 @@ public class WanderingMagicianModel extends GeoModel<WanderingMagicianArmorItem>
     }
 
     @Override
-    public ResourceLocation getModelResource(WanderingMagicianArmorItem object) {
-        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/wandering_magician_armor.geo.json");
+    public Identifier getModelResource(WanderingMagicianArmorItem object) {
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/wandering_magician_armor.geo.json");
     }
 
     @Override
-    public ResourceLocation getTextureResource(WanderingMagicianArmorItem object) {
-        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/wandering_magician.png");
+    public Identifier getTextureResource(WanderingMagicianArmorItem object) {
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/models/armor/wandering_magician.png");
     }
 
     @Override
-    public ResourceLocation getAnimationResource(WanderingMagicianArmorItem animatable) {
-        return ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
+    public Identifier getAnimationResource(WanderingMagicianArmorItem animatable) {
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
     }
 //    public static String listOfBonesToString(List<IBone> list){
 //        String s = "";

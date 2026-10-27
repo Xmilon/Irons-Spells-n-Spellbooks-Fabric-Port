@@ -9,7 +9,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.item.ItemStack;
@@ -19,7 +19,7 @@ public class LearnSpellPacket implements CustomPacketPayload {
     private final byte hand;
     private final String spell;
 
-    public static final CustomPacketPayload.Type<LearnSpellPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "learn_spell"));
+    public static final CustomPacketPayload.Type<LearnSpellPacket> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "learn_spell"));
     public static final StreamCodec<RegistryFriendlyByteBuf, LearnSpellPacket> STREAM_CODEC = CustomPacketPayload.codec(LearnSpellPacket::write, LearnSpellPacket::new);
 
     public LearnSpellPacket(InteractionHand interactionHand, String spell) {

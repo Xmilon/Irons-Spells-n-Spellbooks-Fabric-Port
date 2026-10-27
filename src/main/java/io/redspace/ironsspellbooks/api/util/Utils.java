@@ -493,7 +493,7 @@ public class Utils {
     }
 
     public static boolean doMeleeAttack(Mob attacker, Entity target, DamageSource damageSource) {
-        if (attacker.level().isClientSide) {
+        if (attacker.level().isClientSide()) {
             return false;
         }
         float f = (float) attacker.getAttributeValue(Attributes.ATTACK_DAMAGE);
@@ -879,7 +879,7 @@ public class Utils {
     }
 
     public static void createTremorBlock(Level level, BlockPos blockPos, float impulseStrength) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
         if (level.getBlockState(blockPos.above()).isAir() || level.getBlockState(blockPos.above().above()).isAir()) {

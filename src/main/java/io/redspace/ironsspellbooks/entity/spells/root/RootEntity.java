@@ -23,13 +23,13 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.fluids.FluidType;
 import org.jetbrains.annotations.NotNull;
-import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimatableManager;
-import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.PlayState;
-import software.bernie.geckolib.animation.RawAnimation;
-import software.bernie.geckolib.util.GeckoLibUtil;
+import com.geckolib.animatable.GeoEntity;
+import com.geckolib.animatable.instance.AnimatableInstanceCache;
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.cache.animation.AnimationController;
+import com.geckolib.animation.object.PlayState;
+import com.geckolib.animation.RawAnimation;
+import com.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 import java.util.Collections;
@@ -138,14 +138,14 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
     @Override
     public void tick() {
         super.tick();
-        //IronsSpellbooks.LOGGER.debug("RootEntity.tick {}, {}", getFirstPassenger(), this.level().isClientSide);
+        //IronsSpellbooks.LOGGER.debug("RootEntity.tick {}, {}", getFirstPassenger(), this.level().isClientSide());
         if (playSound) {
             this.refreshDimensions();
             playSound(SoundRegistry.ROOT_EMERGE.get(), 2f, 1);
             playSound = false;
         }
 
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             if (tickCount > duration || (target != null && target.isDeadOrDying()) || !isVehicle()) {
                 this.removeRoot();
             }
@@ -191,7 +191,7 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
     }
 
     public void removeRoot() {
-        if (level().isClientSide) {
+        if (level().isClientSide()) {
             for (int i = 0; i < 5; i++) {
                 level().addParticle(ParticleHelper.ROOT_FOG, getX() + Utils.getRandomScaled(.1f), getY() + Utils.getRandomScaled(.1f), getZ() + Utils.getRandomScaled(.1f), Utils.getRandomScaled(2f), -random.nextFloat() * .5f, Utils.getRandomScaled(2f));
             }
@@ -319,7 +319,7 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
 
     private boolean played = false;
 
-    private PlayState animationPredicate(software.bernie.geckolib.animation.AnimationState event) {
+    private PlayState animationPredicate(com.geckolib.cache.animation.AnimationState event) {
         var controller = event.getController();
 
         if (!played && controller.getAnimationState() == AnimationController.State.STOPPED) {

@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.entity.spells.ice_block;
 
 
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
+import com.geckolib.renderer.GeoEntityRenderer;
 
 public class IceBlockRenderer extends GeoEntityRenderer<IceBlockProjectile> {
 

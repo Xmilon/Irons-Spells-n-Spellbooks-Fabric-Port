@@ -8,7 +8,7 @@ import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.Objects;
 
@@ -18,7 +18,7 @@ public class SpellData implements Comparable<SpellData> {
     public static final String SPELL_LOCKED = "locked";
 
     public static final Codec<SpellData> CODEC = RecordCodecBuilder.create(builder -> builder.group(
-            ResourceLocation.CODEC.fieldOf(SPELL_ID).forGetter(data -> data.spell.getSpellResource()),
+            Identifier.CODEC.fieldOf(SPELL_ID).forGetter(data -> data.spell.getSpellResource()),
             Codec.INT.fieldOf(SPELL_LEVEL).forGetter(SpellData::getLevel),
             Codec.BOOL.optionalFieldOf(SPELL_LOCKED, false).forGetter(SpellData::isLocked)
     ).apply(builder, SpellData::new));
@@ -43,18 +43,18 @@ public class SpellData implements Comparable<SpellData> {
         this(spell, level, false);
     }
 
-    public SpellData(ResourceLocation spellId, int level, boolean locked) {
+    public SpellData(Identifier spellId, int level, boolean locked) {
         this(SpellRegistry.getSpell(spellId), level, locked);
     }
 
     public static void writeToBuffer(FriendlyByteBuf buf, SpellData data) {
-        buf.writeResourceLocation(data.spell.getSpellResource());
+        buf.writeIdentifier(data.spell.getSpellResource());
         buf.writeInt(data.spellLevel);
         buf.writeBoolean(data.locked);
     }
 
     public static SpellData readFromBuffer(FriendlyByteBuf buf) {
-        return new SpellData(buf.readResourceLocation(), buf.readInt(), buf.readBoolean());
+        return new SpellData(buf.readIdentifier(), buf.readInt(), buf.readBoolean());
     }
 
     public AbstractSpell getSpell() {

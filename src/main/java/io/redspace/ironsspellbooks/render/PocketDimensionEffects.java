@@ -11,7 +11,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.renderer.DimensionSpecialEffects;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.client.renderer.ShaderInstance;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
 import org.joml.Matrix4f;
@@ -36,10 +36,10 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
         return false;
     }
 
-    public static final ResourceLocation SKY_LOCATION = IronsSpellbooks.id("textures/environment/pocket_dimension_sky.png");
-    public static final ResourceLocation CLOUDS_LOCATION = IronsSpellbooks.id("textures/environment/pocket_clouds.png");
-    public static final ResourceLocation WISP_LOCATION = IronsSpellbooks.id("textures/environment/single_cloud.png");
-    public static final ResourceLocation NOISE = IronsSpellbooks.id("textures/environment/noise_tile.png");
+    public static final Identifier SKY_LOCATION = IronsSpellbooks.id("textures/environment/pocket_dimension_sky.png");
+    public static final Identifier CLOUDS_LOCATION = IronsSpellbooks.id("textures/environment/pocket_clouds.png");
+    public static final Identifier WISP_LOCATION = IronsSpellbooks.id("textures/environment/single_cloud.png");
+    public static final Identifier NOISE = IronsSpellbooks.id("textures/environment/noise_tile.png");
 
     public boolean renderSky(ClientLevel level, int ticks, float partialTick, Matrix4f modelViewMatrix, Camera camera, Matrix4f projectionMatrix, boolean isFoggy, Runnable setupFog) {
 
@@ -70,9 +70,9 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
             float x = (i * 68731 + f * speed * (random.nextFloat() - 0.5f)) % 360;
             float y = (i * 74869 + f * speed * (random.nextFloat() - 0.5f)) % 360;
             float z = (i * 98744 + f * speed * (random.nextFloat() - 0.5f)) % 360;
-            poseStack.mulPose(Axis.XP.rotationDegrees(x));
-            poseStack.mulPose(Axis.YP.rotationDegrees(y));
-            poseStack.mulPose(Axis.ZP.rotationDegrees(z));
+            poseStack.rotate(Axis.XP.rotationDegrees(x));
+            poseStack.rotate(Axis.YP.rotationDegrees(y));
+            poseStack.rotate(Axis.ZP.rotationDegrees(z));
             Vector3f rgb = new Vector3f(random.nextFloat() * 0.5f + 0.5f, random.nextFloat() * 0.5f + 0.5f, random.nextFloat() * 0.5f + 0.5f);
             float intensity = Mth.lerp(j / (float) layers, 0.25f, 0.8f);
             rgb.mul(intensity);
@@ -136,7 +136,7 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
         float uvTile = Mth.floor(HARDCODE_WIDTH / 3f); // times for x axis to tile
         for (int i = 0; i < 4; i++) {
             poseStack.pushPose();
-            poseStack.mulPose(Axis.YP.rotationDegrees(i * 90));
+            poseStack.rotate(Axis.YP.rotationDegrees(i * 90));
 
             Matrix4f matrix4f = poseStack.last().pose();
             BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
@@ -161,9 +161,9 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
             float x = (random.nextInt(360) + f * speed) % 360;
             float y = (random.nextInt(360) + f * speed) % 360;
             float z = (random.nextInt(360) + f * speed) % 360;
-            poseStack.mulPose(Axis.XP.rotationDegrees(x));
-            poseStack.mulPose(Axis.YP.rotationDegrees(y));
-            poseStack.mulPose(Axis.ZP.rotationDegrees(z));
+            poseStack.rotate(Axis.XP.rotationDegrees(x));
+            poseStack.rotate(Axis.YP.rotationDegrees(y));
+            poseStack.rotate(Axis.ZP.rotationDegrees(z));
             for (int j = 0; j < count; j++) {
                 Vector3f offset = new Vector3f(
                         (random.nextFloat() - 0.5f),
@@ -183,29 +183,29 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
         return zoff;
     }
 
-    private static void renderBox(PoseStack poseStack, Tesselator tesselator, float skyDistance, float uvMin, float uvMax, Supplier<ShaderInstance> shaderSupplier, ResourceLocation texture, int color) {
+    private static void renderBox(PoseStack poseStack, Tesselator tesselator, float skyDistance, float uvMin, float uvMax, Supplier<ShaderInstance> shaderSupplier, Identifier texture, int color) {
         RenderSystem.setShader(shaderSupplier);
         RenderSystem.setShaderTexture(0, texture);
         for (int i = 0; i < 6; i++) {
             poseStack.pushPose();
             if (i == 1) {
-                poseStack.mulPose(Axis.XP.rotationDegrees(90.0F));
+                poseStack.rotate(Axis.XP.rotationDegrees(90.0F));
             }
 
             if (i == 2) {
-                poseStack.mulPose(Axis.XP.rotationDegrees(-90.0F));
+                poseStack.rotate(Axis.XP.rotationDegrees(-90.0F));
             }
 
             if (i == 3) {
-                poseStack.mulPose(Axis.XP.rotationDegrees(180.0F));
+                poseStack.rotate(Axis.XP.rotationDegrees(180.0F));
             }
 
             if (i == 4) {
-                poseStack.mulPose(Axis.ZP.rotationDegrees(90.0F));
+                poseStack.rotate(Axis.ZP.rotationDegrees(90.0F));
             }
 
             if (i == 5) {
-                poseStack.mulPose(Axis.ZP.rotationDegrees(-90.0F));
+                poseStack.rotate(Axis.ZP.rotationDegrees(-90.0F));
             }
             Matrix4f matrix4f = poseStack.last().pose();
             BufferBuilder bufferbuilder = tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_TEX_COLOR);
@@ -218,7 +218,7 @@ public class PocketDimensionEffects extends DimensionSpecialEffects {
         }
     }
 
-    private static void renderPlane(PoseStack poseStack, Tesselator tesselator, float skyDistance, float uvMin, float uvMax, Supplier<ShaderInstance> shaderSupplier, ResourceLocation texture, float scale, int color) {
+    private static void renderPlane(PoseStack poseStack, Tesselator tesselator, float skyDistance, float uvMin, float uvMax, Supplier<ShaderInstance> shaderSupplier, Identifier texture, float scale, int color) {
         RenderSystem.setShader(shaderSupplier);
         RenderSystem.setShaderTexture(0, texture);
         poseStack.pushPose();

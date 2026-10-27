@@ -64,7 +64,7 @@ public class FireEruptionAoe extends AoeEntity {
         var radius = this.getRadius();
         var level = this.level();
         if (waveAnim++ < radius) {
-            if (!level().isClientSide) {
+            if (!level().isClientSide()) {
                 if (waveAnim % 2 == 0) {
                     float volume = (waveAnim + 8) / 16f;
                     this.playSound(SoundRegistry.EARTHQUAKE_IMPACT.get(), volume, Utils.random.nextIntBetweenInclusive(90, 110) * .01f);

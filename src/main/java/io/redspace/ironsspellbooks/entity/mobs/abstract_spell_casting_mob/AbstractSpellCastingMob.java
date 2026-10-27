@@ -19,7 +19,7 @@ import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.util.Mth;
 import net.minecraft.world.InteractionHand;
@@ -33,22 +33,22 @@ import net.minecraft.world.entity.ai.control.LookControl;
 import net.minecraft.world.entity.projectile.Projectile;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimatableManager;
-import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.animation.PlayState;
-import software.bernie.geckolib.util.GeckoLibUtil;
+import com.geckolib.animatable.GeoEntity;
+import com.geckolib.animatable.instance.AnimatableInstanceCache;
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.cache.animation.AnimationController;
+import com.geckolib.cache.animation.AnimationState;
+import com.geckolib.animation.object.PlayState;
+import com.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
 import java.util.HashMap;
 
 public abstract class AbstractSpellCastingMob extends PathfinderMob implements GeoEntity, IMagicEntity {
     protected final Level level;
-    public static final ResourceLocation modelResource = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/abstract_casting_mob.geo.json");
-    public static final ResourceLocation textureResource = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/abstract_casting_mob/abstract_casting_mob.png");
-    public static final ResourceLocation animationInstantCast = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/casting_animations.json");
+    public static final Identifier modelResource = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/abstract_casting_mob.geo.json");
+    public static final Identifier textureResource = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/abstract_casting_mob/abstract_casting_mob.png");
+    public static final Identifier animationInstantCast = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/casting_animations.json");
     //private static final EntityDataAccessor<SyncedSpellData> DATA_SPELL = SynchedEntityData.defineId(AbstractSpellCastingMob.class, SyncedSpellData.SYNCED_SPELL_DATA);
     private static final EntityDataAccessor<Boolean> DATA_CANCEL_CAST = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_DRINKING_POTION = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.BOOLEAN);
@@ -127,7 +127,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     }
 
     public void startDrinkingPotion() {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             setDrinkingPotion(true);
             drinkTime = 35;
             AttributeInstance attributeinstance = this.getAttribute(Attributes.MOVEMENT_SPEED);
@@ -149,7 +149,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     public void onSyncedDataUpdated(EntityDataAccessor<?> pKey) {
         super.onSyncedDataUpdated(pKey);
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             return;
         }
 
@@ -182,7 +182,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
 
     public void cancelCast() {
         if (isCasting()) {
-            if (this.level().isClientSide) {
+            if (this.level().isClientSide()) {
                 cancelCastAnimation = true;
             } else {
                 //Need to ensure we pass a different value if we want the data to sync
@@ -195,7 +195,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     }
 
     public void castComplete() {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             if (castingSpell != null) {
                 castingSpell.getSpell().onServerCastComplete(this.level(), castingSpell.getLevel(), this, playerMagicData, false);
             }
@@ -207,7 +207,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     }
 
     public void setSyncedSpellData(SyncedSpellData syncedSpellData) {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             return;
         }
 
@@ -304,7 +304,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
             return;
         }
 
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             cancelCastAnimation = false;
         }
 
@@ -314,7 +314,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
             forceLookAtTarget(getTarget());
         }
 
-        if (!this.level().isClientSide && !castingSpell.getSpell().checkPreCastConditions(this.level(), spellLevel, this, playerMagicData)) {
+        if (!this.level().isClientSide() && !castingSpell.getSpell().checkPreCastConditions(this.level(), spellLevel, this, playerMagicData)) {
             if (Log.SPELL_DEBUG) {
                 IronsSpellbooks.LOGGER.debug("ASCM.precastfailed: spellType:{} spellLevel:{}, isClient:{}", spell.getSpellId(), spellLevel, this.level().isClientSide());
             }
@@ -333,7 +333,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
 
         playerMagicData.initiateCast(castingSpell.getSpell(), castingSpell.getLevel(), castingSpell.getSpell().getEffectiveCastTime(castingSpell.getLevel(), this), CastSource.MOB, SpellSelectionManager.MAINHAND);
 
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             castingSpell.getSpell().onServerPreCast(this.level(), castingSpell.getLevel(), this, playerMagicData);
         }
     }

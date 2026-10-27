@@ -6,7 +6,7 @@ import net.minecraft.core.Holder;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.damagesource.DamageType;
@@ -18,7 +18,7 @@ import net.minecraft.world.item.ItemStack;
 import org.joml.Vector3f;
 
 public class SchoolType {
-    final ResourceLocation id;
+    final Identifier id;
     final TagKey<Item> focus;
     final Component displayName;
     final Style displayStyle;
@@ -29,7 +29,7 @@ public class SchoolType {
     final boolean requiresLearning;
     final boolean allowLooting;
 
-    public SchoolType(ResourceLocation id, TagKey<Item> focus, Component displayName, Holder<Attribute> powerAttribute, Holder<Attribute> resistanceAttribute, Holder<SoundEvent> defaultCastSound, ResourceKey<DamageType> damageType, boolean requiresLearning, boolean allowLooting) {
+    public SchoolType(Identifier id, TagKey<Item> focus, Component displayName, Holder<Attribute> powerAttribute, Holder<Attribute> resistanceAttribute, Holder<SoundEvent> defaultCastSound, ResourceKey<DamageType> damageType, boolean requiresLearning, boolean allowLooting) {
         this.id = id;
         this.focus = focus;
         this.displayName = displayName;
@@ -42,7 +42,7 @@ public class SchoolType {
         this.allowLooting = allowLooting;
     }
 
-    public SchoolType(ResourceLocation id, TagKey<Item> focus, Component displayName, Holder<Attribute> powerAttribute, Holder<Attribute> resistanceAttribute, Holder<SoundEvent> defaultCastSound, ResourceKey<DamageType> damageType) {
+    public SchoolType(Identifier id, TagKey<Item> focus, Component displayName, Holder<Attribute> powerAttribute, Holder<Attribute> resistanceAttribute, Holder<SoundEvent> defaultCastSound, ResourceKey<DamageType> damageType) {
         this(id, focus, displayName, powerAttribute, resistanceAttribute, defaultCastSound, damageType, false, true);
     }
 
@@ -70,7 +70,7 @@ public class SchoolType {
         return damageType;
     }
 
-    public ResourceLocation getId() {
+    public Identifier getId() {
         return id;
     }
 

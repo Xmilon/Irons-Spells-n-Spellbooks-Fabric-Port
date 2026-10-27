@@ -12,22 +12,22 @@ import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.phys.AABB;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 import org.joml.Vector3f;
-import software.bernie.geckolib.cache.object.BakedGeoModel;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
-import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
+import com.geckolib.cache.model.BakedGeoModel;
+import com.geckolib.renderer.GeoEntityRenderer;
+import com.geckolib.renderer.layer.GeoRenderLayer;
 
 public class SpellTargetingLayer {
-    public static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/target/heal.png");
+    public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/target/heal.png");
 
     public static class Vanilla<T extends LivingEntity, M extends EntityModel<T>> extends RenderLayer<T, M> {
         public Vanilla(RenderLayerParent<T, M> pRenderer) {
@@ -53,10 +53,10 @@ public class SpellTargetingLayer {
         public void render(PoseStack poseStack, AbstractSpellCastingMob animatable, BakedGeoModel bakedModel, RenderType renderType, MultiBufferSource bufferSource, VertexConsumer buffer, float partialTick, int packedLight, int packedOverlay) {
             if (shouldRender(animatable)) {
 //                //It's upside down???
-//                poseStack.mulPose(Axis.XP.rotationDegrees(180));
+//                poseStack.rotate(Axis.XP.rotationDegrees(180));
 //                poseStack.translate(0, -(abstractSpellCastingMob.getBbWidth() + abstractSpellCastingMob.getBbHeight()) / 2, 0);
                 poseStack.pushPose();
-                poseStack.mulPose(Axis.XP.rotationDegrees(180));
+                poseStack.rotate(Axis.XP.rotationDegrees(180));
                 poseStack.translate(0, -animatable.getBoundingBox().getYsize() / 2, 0);
                 renderTargetLayer(poseStack, bufferSource, animatable);
                 poseStack.popPose();
@@ -112,7 +112,7 @@ public class SpellTargetingLayer {
             consumer.addVertex(poseMatrix, halfWidth, 0, halfWidth).setColor(color.x(), color.y(), color.z(), 1).setUv(0f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
             consumer.addVertex(poseMatrix, -halfWidth, 0, halfWidth).setColor(color.x(), color.y(), color.z(), 1).setUv(1f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
             consumer.addVertex(poseMatrix, -halfWidth, height, halfWidth).setColor(color.x(), color.y(), color.z(), 1).setUv(1f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightTexture.FULL_BRIGHT).setNormal(0f, 1f, 0f);
-            poseStack.mulPose(Axis.YP.rotationDegrees(90.0F));
+            poseStack.rotate(Axis.YP.rotationDegrees(90.0F));
 
         }
 

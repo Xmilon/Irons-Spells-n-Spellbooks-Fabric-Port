@@ -30,10 +30,10 @@ import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import org.jetbrains.annotations.Nullable;
 import org.joml.Vector3f;
-import software.bernie.geckolib.animatable.GeoAnimatable;
-import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimatableManager;
-import software.bernie.geckolib.util.GeckoLibUtil;
+import com.geckolib.animatable.GeoAnimatable;
+import com.geckolib.animatable.instance.AnimatableInstanceCache;
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.util.GeckoLibUtil;
 
 import java.util.Optional;
 import java.util.UUID;
@@ -176,7 +176,7 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
                     onHit(hitResult);
                 }
             }
-            if (level().isClientSide) {
+            if (level().isClientSide()) {
                 level().addParticle(ParticleHelper.EMBERS, getX(), getY() + getBbHeight() * .5f, getZ(), 0, 0, 0);
             }
         } else {

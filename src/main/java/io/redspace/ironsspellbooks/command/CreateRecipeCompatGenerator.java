@@ -9,7 +9,7 @@ import io.redspace.ironsspellbooks.registries.RecipeRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeManager;
 
@@ -27,13 +27,13 @@ public class CreateRecipeCompatGenerator {
                 .forEach(
                         recipeHolder -> {
                             var recipe = recipeHolder.value();
-                            ResourceLocation resultId = recipe.result().getItemHolder().unwrapKey().map(key -> key.location()).orElse(BuiltInRegistries.ITEM.getKey(recipe.result().getItem()));
+                            Identifier resultId = recipe.result().getItemHolder().unwrapKey().map(key -> key.identifier()).orElse(BuiltInRegistries.ITEM.getKey(recipe.result().getItem()));
                             if (resultId.getNamespace().equals("irons_spellbooks")) {
                                 String stringJson = String.format(FILL_FORMAT,
                                         Ingredient.CODEC.encodeStart(JsonOps.INSTANCE, recipe.input()).getOrThrow().toString(),
-                                        recipe.fluid().getFluidHolder().unwrapKey().map(key -> key.location()).orElse(BuiltInRegistries.FLUID.getKey(recipe.fluid().getFluid())).toString(),
+                                        recipe.fluid().getFluidHolder().unwrapKey().map(key -> key.identifier()).orElse(BuiltInRegistries.FLUID.getKey(recipe.fluid().getFluid())).toString(),
                                         recipe.fluid().getAmount(),
-                                        recipe.result().getItemHolder().unwrapKey().map(key -> key.location()).orElse(BuiltInRegistries.ITEM.getKey(recipe.result().getItem())).toString()
+                                        recipe.result().getItemHolder().unwrapKey().map(key -> key.identifier()).orElse(BuiltInRegistries.ITEM.getKey(recipe.result().getItem())).toString()
                                 );
                                 String outputFilepath = String.format("create_compat/create_fill_%s.json", recipeHolder.id().getPath().split("/", 2)[1].split("_", 2)[1]);
                                 var file = new File(outputFilepath);
@@ -49,12 +49,12 @@ public class CreateRecipeCompatGenerator {
                 .forEach(
                         recipeHolder -> {
                             var recipe = recipeHolder.value();
-                            ResourceLocation inputId = recipe.result().getFluidHolder().unwrapKey().map(key -> key.location()).orElse(BuiltInRegistries.FLUID.getKey(recipe.result().getFluid()));
+                            Identifier inputId = recipe.result().getFluidHolder().unwrapKey().map(key -> key.identifier()).orElse(BuiltInRegistries.FLUID.getKey(recipe.result().getFluid()));
                             if (inputId.getNamespace().equals("irons_spellbooks")) {
                                 String stringJson = String.format(EMPTY_FORMAT,
                                         Ingredient.CODEC.encodeStart(JsonOps.INSTANCE, recipe.input()).getOrThrow().toString(),
-                                        recipe.returned().getItemHolder().unwrapKey().map(key -> key.location()).orElse(BuiltInRegistries.ITEM.getKey(recipe.returned().getItem())).toString(),
-                                        recipe.result().getFluidHolder().unwrapKey().map(key -> key.location()).orElse(BuiltInRegistries.FLUID.getKey(recipe.result().getFluid())).toString(),
+                                        recipe.returned().getItemHolder().unwrapKey().map(key -> key.identifier()).orElse(BuiltInRegistries.ITEM.getKey(recipe.returned().getItem())).toString(),
+                                        recipe.result().getFluidHolder().unwrapKey().map(key -> key.identifier()).orElse(BuiltInRegistries.FLUID.getKey(recipe.result().getFluid())).toString(),
                                         recipe.result().getAmount()
                                 );
                                 new File("create_compat").mkdir();

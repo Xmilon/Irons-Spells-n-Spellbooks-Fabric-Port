@@ -346,7 +346,7 @@ public class ClientPlayerEvents {
             if (registry.isEmpty()) {
                 return;
             }
-            var upgrade = registry.get().get(upgradeKey.location());
+            var upgrade = registry.get().get(upgradeKey.identifier());
             if (upgrade == null) {
                 return;
             }

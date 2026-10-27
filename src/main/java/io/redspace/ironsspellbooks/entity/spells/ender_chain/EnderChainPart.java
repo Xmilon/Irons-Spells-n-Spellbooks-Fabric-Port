@@ -32,7 +32,7 @@ public class EnderChainPart extends PartEntity<EnderChain> implements AntiMagicS
 
     @Override
     public boolean hurt(@NotNull DamageSource source, float amount) {
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             MagicManager.spawnParticles(level(), ParticleHelper.ENDER_SPARKS, getBoundingBox().getCenter().x, getBoundingBox().getCenter().y, getBoundingBox().getCenter().z, 3, 0, 0, 0, 0.15, false);
         }
         return parentChain.hurt(source, amount);

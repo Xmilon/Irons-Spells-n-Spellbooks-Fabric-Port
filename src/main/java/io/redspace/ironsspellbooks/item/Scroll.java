@@ -64,7 +64,7 @@ public class Scroll extends Item implements IScroll {
         var spellSlot = getSpellSlotFromStack(stack);
         var spell = spellSlot.getSpell();
 
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             if (ClientMagicData.isCasting()) {
                 return InteractionResultHolder.consume(stack);
             } else if (!ClientMagicData.getSyncedSpellData(player).isSpellLearned(spell)) {

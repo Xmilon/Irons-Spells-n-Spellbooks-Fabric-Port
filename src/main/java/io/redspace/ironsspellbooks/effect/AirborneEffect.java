@@ -19,7 +19,7 @@ public class AirborneEffect extends MobEffect {
 
     @Override
     public boolean applyEffectTick(LivingEntity livingEntity, int pAmplifier) {
-        if (!livingEntity.level().isClientSide) {
+        if (!livingEntity.level().isClientSide()) {
             if (livingEntity.horizontalCollision) {
                 double d11 = livingEntity.getDeltaMovement().horizontalDistance();
                 float f1 = (float) (d11 * 10.0D - 1.0D);

@@ -30,7 +30,7 @@ public class FireBreathProjectile extends AbstractConeProjectile {
 
     @Override
     public void tick() {
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             if (dealDamageActive) {
                 //Set Fire Blocks
                 if (ServerConfigs.safeGet(ServerConfigs.SPELL_GREIFING)) {
@@ -59,7 +59,7 @@ public class FireBreathProjectile extends AbstractConeProjectile {
     @Override
     public void spawnParticles() {
         var owner = getOwner();
-        if (!level().isClientSide || owner == null) {
+        if (!level().isClientSide() || owner == null) {
             return;
         }
         Vec3 rotation = owner.getLookAngle().normalize();

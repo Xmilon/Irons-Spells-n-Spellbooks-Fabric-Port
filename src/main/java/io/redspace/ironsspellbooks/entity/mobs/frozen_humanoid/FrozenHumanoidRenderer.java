@@ -13,13 +13,13 @@ import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.LivingEntityRenderer;
 import net.minecraft.client.renderer.texture.SimpleTexture;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
 
 public class FrozenHumanoidRenderer extends LivingEntityRenderer<LivingEntity, EntityModel<LivingEntity>> {
 
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/frozen_humanoid.png");
-    private static final ResourceLocation TEXTURE_ALT = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/frozen_humanoid_alt.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/frozen_humanoid.png");
+    private static final Identifier TEXTURE_ALT = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/frozen_humanoid_alt.png");
     final EntityModel<LivingEntity> originalModel;
 
     public FrozenHumanoidRenderer(EntityRendererProvider.Context context) {
@@ -67,7 +67,7 @@ public class FrozenHumanoidRenderer extends LivingEntityRenderer<LivingEntity, E
     }
 
     @Override
-    public ResourceLocation getTextureLocation(LivingEntity pEntity) {
+    public Identifier getTextureLocation(LivingEntity pEntity) {
         return rectangular ? TEXTURE_ALT : TEXTURE;
     }
 

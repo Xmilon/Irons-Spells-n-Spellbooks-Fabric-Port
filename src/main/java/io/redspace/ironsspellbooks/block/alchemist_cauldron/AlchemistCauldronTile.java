@@ -387,7 +387,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
     public ItemInteractionResult handleUse(BlockState blockState, Level level, BlockPos pos, Player player, InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
         boolean isBucketInteraction = itemStack.is(Items.WATER_BUCKET) || itemStack.is(Items.BUCKET);
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             ItemStack recipeResult = tryExecuteRecipeInteractions(level, itemStack);
             if (!recipeResult.isEmpty()) {
                 player.setItemInHand(hand, ItemUtils.createFilledResult(player.getItemInHand(hand), player, recipeResult));
@@ -404,7 +404,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         }
         // item inputting
         if (isValidInput(itemStack)) {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 for (int i = 0; i < inputItems.size(); i++) {
                     var stack = inputItems.get(i);
                     if (stack.isEmpty()) {
@@ -418,14 +418,14 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                     }
                 }
             }
-            return ItemInteractionResult.sidedSuccess(level.isClientSide);
+            return ItemInteractionResult.sidedSuccess(level.isClientSide());
         }
         // item taking
         //fixme: players cannot trigger block interactions while crouching
         else if ((itemStack.isEmpty() || player.isCrouching()) && hand.equals(InteractionHand.MAIN_HAND)) {
             for (ItemStack item : inputItems) {
                 if (!item.isEmpty()) {
-                    if (!level.isClientSide) {
+                    if (!level.isClientSide()) {
                         var take = item.split(1);
                         if (player.getItemInHand(hand).isEmpty()) {
                             player.setItemInHand(hand, take);
@@ -437,7 +437,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                         this.setChanged();
                         flushClientSync();
                     }
-                    return ItemInteractionResult.sidedSuccess(level.isClientSide);
+                    return ItemInteractionResult.sidedSuccess(level.isClientSide());
                 }
             }
         }
@@ -550,7 +550,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
     @Override
     public void setChanged() {
         super.setChanged();
-        if (level != null && !level.isClientSide) {
+        if (level != null && !level.isClientSide()) {
             needsClientSync = true;
             // Push block-entity data updates immediately for client-side visuals.
             flushClientSync();
@@ -558,7 +558,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
     }
 
     private void flushClientSync() {
-        if (level == null || level.isClientSide || !needsClientSync) {
+        if (level == null || level.isClientSide() || !needsClientSync) {
             return;
         }
         needsClientSync = false;
@@ -566,7 +566,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
     }
 
     private void syncVisualState() {
-        if (level == null || level.isClientSide) {
+        if (level == null || level.isClientSide()) {
             return;
         }
         level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
@@ -658,7 +658,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
     }
 
     private void forceClientVisualRefresh() {
-        if (level == null || !level.isClientSide) {
+        if (level == null || !level.isClientSide()) {
             return;
         }
         var state = getBlockState();

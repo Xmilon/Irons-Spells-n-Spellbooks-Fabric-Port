@@ -19,7 +19,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.goal.*;
-import net.minecraft.world.entity.animal.horse.AbstractHorse;
+import net.minecraft.world.entity.animal.equine.AbstractHorse;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
@@ -90,7 +90,7 @@ public class SummonedHorse extends AbstractHorse implements IMagicSummon {
     }
 
     public void onUnSummon() {
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             MagicManager.spawnParticles(level(), ParticleTypes.POOF, getX(), getY(), getZ(), 25, .4, .8, .4, .03, false);
             setRemoved(RemovalReason.DISCARDED);
         }
@@ -119,7 +119,7 @@ public class SummonedHorse extends AbstractHorse implements IMagicSummon {
 
     public void spawnParticles() {
 
-        if (this.level().isClientSide) {
+        if (this.level().isClientSide()) {
             if (Utils.random.nextFloat() < .25f) {
                 float radius = .75f;
                 Vec3 vec = new Vec3(
@@ -142,7 +142,7 @@ public class SummonedHorse extends AbstractHorse implements IMagicSummon {
         } else {
             this.makeMad();
         }
-        return InteractionResult.sidedSuccess(this.level().isClientSide);
+        return InteractionResult.sidedSuccess(this.level().isClientSide());
     }
 
     /**

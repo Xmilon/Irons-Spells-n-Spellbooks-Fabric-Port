@@ -12,25 +12,22 @@ import io.redspace.ironsspellbooks.item.FurledMapItem;
 import io.redspace.ironsspellbooks.item.armor.UpgradeOrbType;
 import io.redspace.ironsspellbooks.item.weapons.AutoloaderCrossbow;
 import net.minecraft.core.component.DataComponentType;
-import net.minecraft.core.registries.Registries;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.util.Unit;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.function.UnaryOperator;
 
 public class ComponentRegistry {
-    private static final DeferredRegister<DataComponentType<?>> COMPONENTS = DeferredRegister.create(Registries.DATA_COMPONENT_TYPE, IronsSpellbooks.MODID);
-
-    public static void register(IEventBus eventBus) {
-        COMPONENTS.register(eventBus);
+    /** Initializes the registered component constants before registries freeze. */
+    public static void register() {
     }
 
     private static <T> DataComponentType<T> register(String pName, UnaryOperator<DataComponentType.Builder<T>> pBuilder) {
-        return COMPONENTS.register(pName, () -> pBuilder.apply(DataComponentType.builder()).build()).get();
+        return Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, IronsSpellbooks.id(pName), pBuilder.apply(DataComponentType.builder()).build());
     }
 
     public static final DataComponentType<AffinityData> AFFINITY_COMPONENT = register("affinity_data", (builder) -> builder.persistent(AffinityData.CODEC).networkSynchronized(AffinityData.STREAM_CODEC).cacheEncoding());
@@ -45,3 +42,4 @@ public class ComponentRegistry {
     public static final DataComponentType<ResourceKey<UpgradeOrbType>> UPGRADE_ORB_TYPE = register("upgrade_orb_type", (builder) -> builder.persistent(ResourceKey.codec(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY)).networkSynchronized(ByteBufCodecs.fromCodec(ResourceKey.codec(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY))).cacheEncoding());
     public static final DataComponentType<PotionFluid.BottleType> POTION_BOTTLE_TYPE = register("potion_bottle_type", (builder) -> builder.persistent(PotionFluid.BottleType.CODEC).networkSynchronized(PotionFluid.BottleType.STREAM_CODEC).cacheEncoding());
 }
+

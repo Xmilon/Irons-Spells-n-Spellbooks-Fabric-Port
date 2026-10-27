@@ -24,7 +24,7 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.player.AbstractClientPlayer;
 import net.minecraft.core.particles.*;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.InteractionHand;
@@ -293,10 +293,10 @@ public class ClientSpellCastHelper {
     }
 
     /**
-     * Use {@link AnimationHelper#animatePlayerStart(Player, ResourceLocation)} instead
+     * Use {@link AnimationHelper#animatePlayerStart(Player, Identifier)} instead
      */
     @Deprecated(forRemoval = true)
-    public static void animatePlayerStart(Player player, ResourceLocation resourceLocation) {
+    public static void animatePlayerStart(Player player, Identifier resourceLocation) {
         AnimationHelper.animatePlayerStart(player, resourceLocation);
     }
 

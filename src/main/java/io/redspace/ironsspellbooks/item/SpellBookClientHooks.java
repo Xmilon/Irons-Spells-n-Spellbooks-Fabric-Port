@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.item;
 
 import io.redspace.ironsspellbooks.render.item.SpellBookGeoRenderer;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
-import software.bernie.geckolib.animatable.client.GeoRenderProvider;
+import com.geckolib.animatable.client.GeoRenderProvider;
 
 import java.util.function.Consumer;
 

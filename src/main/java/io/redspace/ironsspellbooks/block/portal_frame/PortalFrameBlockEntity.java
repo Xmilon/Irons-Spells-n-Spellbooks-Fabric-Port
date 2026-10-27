@@ -258,7 +258,7 @@ public class PortalFrameBlockEntity extends BlockEntity {
         if (isPrimary(this.getBlockState())) {
             if (level != null) {
                 level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
-                if (!level.isClientSide && level instanceof ServerLevel serverLevel) {
+                if (!level.isClientSide() && level instanceof ServerLevel serverLevel) {
                     // Force block entity data sync so client renderer updates connected state immediately.
                     serverLevel.getChunkSource().blockChanged(worldPosition);
                 }

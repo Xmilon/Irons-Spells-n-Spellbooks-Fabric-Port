@@ -86,7 +86,7 @@ public class AutoloaderCrossbow extends CrossbowItem {
     }
 
     protected static void handleTicking(ItemStack itemStack, Level level, @NotNull Entity entity) {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             if (isLoading(itemStack)) {
                 int i = getLoadingTicks(itemStack);
                 if (i > (entity instanceof LivingEntity livingEntity ? getChargeDuration(itemStack, livingEntity) : 1.25f * 20 * 3)) {

@@ -85,7 +85,7 @@ public class BlizzardAoe extends AoeEntity {
 
     @Override
     public void ambientParticles() {
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             return;
         }
         Vec3 pos = position();

@@ -54,9 +54,9 @@ public class BossLootHandler {
         preparedDrops.clear();
 
         ResourceKey<LootTable> rootLootTable = mob.getLootTable();
-        ResourceKey<LootTable> perPlayerLootTable = ResourceKey.create(Registries.LOOT_TABLE, rootLootTable.location().withSuffix("_per_player"));
-        ResourceKey<LootTable> ominousLootTable = ResourceKey.create(Registries.LOOT_TABLE, rootLootTable.location().withSuffix("_ominous"));
-        ResourceKey<LootTable> perPlayerOminousLootTable = ResourceKey.create(Registries.LOOT_TABLE, rootLootTable.location().withSuffix("_per_player_ominous"));
+        ResourceKey<LootTable> perPlayerLootTable = ResourceKey.create(Registries.LOOT_TABLE, rootLootTable.identifier().withSuffix("_per_player"));
+        ResourceKey<LootTable> ominousLootTable = ResourceKey.create(Registries.LOOT_TABLE, rootLootTable.identifier().withSuffix("_ominous"));
+        ResourceKey<LootTable> perPlayerOminousLootTable = ResourceKey.create(Registries.LOOT_TABLE, rootLootTable.identifier().withSuffix("_per_player_ominous"));
 
         // if not set, loot tables default to empty
         LootTable sharedLoot = serverLevel.getServer().reloadableRegistries().getLootTable(rootLootTable);

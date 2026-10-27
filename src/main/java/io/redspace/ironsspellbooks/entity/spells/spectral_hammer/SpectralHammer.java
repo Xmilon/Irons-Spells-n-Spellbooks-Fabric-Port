@@ -26,13 +26,13 @@ import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.HitResult;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.level.BlockEvent;
-import software.bernie.geckolib.animatable.GeoEntity;
-import software.bernie.geckolib.animatable.instance.AnimatableInstanceCache;
-import software.bernie.geckolib.animation.AnimatableManager;
-import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.PlayState;
-import software.bernie.geckolib.animation.RawAnimation;
-import software.bernie.geckolib.util.GeckoLibUtil;
+import com.geckolib.animatable.GeoEntity;
+import com.geckolib.animatable.instance.AnimatableInstanceCache;
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.cache.animation.AnimationController;
+import com.geckolib.animation.object.PlayState;
+import com.geckolib.animation.RawAnimation;
+import com.geckolib.util.GeckoLibUtil;
 
 import java.util.*;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -138,7 +138,7 @@ public class SpectralHammer extends LivingEntity implements GeoEntity {
                             // Handle if the event is canceled
                             if (!event.isCanceled()) {
                                 boolean spawnFallingBlock = missChance < pct;
-                                if (spawnFallingBlock && !level().isClientSide) {
+                                if (spawnFallingBlock && !level().isClientSide()) {
                                     MagicManager.spawnParticles(level, new FallingBlockParticleOption(blockstate), pos.getX(), pos.getY(), pos.getZ(), 1, 0, 0, 0, 0, true);
                                 }
                                 if (count.incrementAndGet() % 5 == 0 && !spawnFallingBlock) {
@@ -323,7 +323,7 @@ public class SpectralHammer extends LivingEntity implements GeoEntity {
     private final RawAnimation animationBuilder = RawAnimation.begin().thenPlay("hammer_swing");
     private final AnimationController animationController = new AnimationController(this, "controller", 0, this::predicate);
 
-    private PlayState predicate(software.bernie.geckolib.animation.AnimationState event) {
+    private PlayState predicate(com.geckolib.cache.animation.AnimationState event) {
 
         if (event.getController().getAnimationState() == AnimationController.State.STOPPED) {
             if (playSwingAnimation) {

@@ -4,7 +4,7 @@ import io.redspace.ironsspellbooks.registries.ArmorMaterialRegistry;
 import net.minecraft.world.item.ArmorItem;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import software.bernie.geckolib.renderer.GeoArmorRenderer;
+import com.geckolib.renderer.GeoArmorRenderer;
 
 public class WanderingMagicianArmorItem extends ExtendedArmorItem {
     public WanderingMagicianArmorItem(ArmorItem.Type slot, Properties settings) {

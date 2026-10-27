@@ -41,7 +41,7 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
     private final int tickDelay = 1;
 
     public void startTracking(LivingEntity entity) {
-        if (!entity.level().isClientSide) {
+        if (!entity.level().isClientSide()) {
             if (!trackedEntities.containsKey(entity.getUUID())) {
                 trackedEntities.put(entity.getUUID(), new HashSet<>());
                 IronsDataStorage.INSTANCE.setDirty();
@@ -50,7 +50,7 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
     }
 
     public void stopTracking(LivingEntity entity) {
-        if (!entity.level().isClientSide) {
+        if (!entity.level().isClientSide()) {
             trackedEntities.remove(entity.getUUID());
             IronsDataStorage.INSTANCE.setDirty();
             PacketDistributor.sendToPlayersTrackingEntity(entity, new GuidingBoltManagerStopTrackingPacket(entity));

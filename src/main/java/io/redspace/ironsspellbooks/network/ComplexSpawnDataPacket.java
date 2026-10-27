@@ -7,7 +7,7 @@ import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
@@ -17,7 +17,7 @@ import net.neoforged.neoforge.network.handling.IPayloadContext;
  * (see ServerEntityMixin) so the client entity can read the extra data written by writeSpawnData.
  */
 public record ComplexSpawnDataPacket(int entityId, byte[] data) implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<ComplexSpawnDataPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "complex_spawn_data"));
+    public static final CustomPacketPayload.Type<ComplexSpawnDataPacket> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "complex_spawn_data"));
     public static final StreamCodec<RegistryFriendlyByteBuf, ComplexSpawnDataPacket> STREAM_CODEC = StreamCodec.composite(
             ByteBufCodecs.VAR_INT, ComplexSpawnDataPacket::entityId,
             ByteBufCodecs.BYTE_ARRAY, ComplexSpawnDataPacket::data,

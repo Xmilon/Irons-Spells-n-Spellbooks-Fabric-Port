@@ -8,7 +8,7 @@ import io.redspace.ironsspellbooks.registries.LootRegistry;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
@@ -55,9 +55,9 @@ public class FurledMapLootFunction extends LootItemConditionalFunction {
         if (itemStack.getItem() instanceof FurledMapItem) {
             //todo: ancient map support
             if (dimension.isPresent()) {
-                return FurledMapItem.of(ResourceLocation.parse(destination), ResourceKey.create(Registries.DIMENSION, ResourceLocation.parse(dimension.get())), Component.translatable(translation));
+                return FurledMapItem.of(Identifier.parse(destination), ResourceKey.create(Registries.DIMENSION, Identifier.parse(dimension.get())), Component.translatable(translation));
             } else {
-                return FurledMapItem.of(ResourceLocation.parse(destination), Component.translatable(translation));
+                return FurledMapItem.of(Identifier.parse(destination), Component.translatable(translation));
             }
         }
         return itemStack;

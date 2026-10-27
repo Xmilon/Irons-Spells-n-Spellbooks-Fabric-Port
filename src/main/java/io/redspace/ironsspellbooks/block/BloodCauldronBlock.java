@@ -47,7 +47,7 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
     }
 
     public static void attemptCookEntity(BlockState blockState, Level level, BlockPos pos, Entity entity, CookExecution execution) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
         if (!CampfireBlock.isLitCampfire(level.getBlockState(pos.below()))) {
@@ -78,7 +78,7 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
 
         // Take Blood
         map.map().put(Items.GLASS_BOTTLE, (blockState, level, blockPos, player, hand, itemStack) -> {
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 Item item = itemStack.getItem();
                 player.setItemInHand(hand, ItemUtils.createFilledResult(itemStack, player, new ItemStack(ItemRegistry.BLOOD_VIAL.get())));
                 player.awardStat(Stats.USE_CAULDRON);
@@ -88,7 +88,7 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
                 level.gameEvent(null, GameEvent.FLUID_PICKUP, blockPos);
             }
 
-            return ItemInteractionResult.sidedSuccess(level.isClientSide);
+            return ItemInteractionResult.sidedSuccess(level.isClientSide());
         });
 
         return map;

@@ -71,7 +71,7 @@ public class AcidOrb extends AbstractMagicProjectile {
     @Override
     protected void onHit(HitResult hitresult) {
         super.onHit(hitresult);
-        if (!this.level().isClientSide) {
+        if (!this.level().isClientSide()) {
             float explosionRadius = 3.5f;
             var entities = level().getEntities(this, this.getBoundingBox().inflate(explosionRadius));
             for (Entity entity : entities) {

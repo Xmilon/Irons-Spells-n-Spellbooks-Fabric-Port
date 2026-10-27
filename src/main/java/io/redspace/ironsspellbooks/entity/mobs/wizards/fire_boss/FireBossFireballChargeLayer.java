@@ -8,20 +8,20 @@ import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.Abstra
 import io.redspace.ironsspellbooks.entity.spells.fireball.FireballRenderer;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.Nullable;
-import software.bernie.geckolib.cache.object.BakedGeoModel;
-import software.bernie.geckolib.renderer.GeoEntityRenderer;
-import software.bernie.geckolib.renderer.layer.GeoRenderLayer;
+import com.geckolib.cache.model.BakedGeoModel;
+import com.geckolib.renderer.GeoEntityRenderer;
+import com.geckolib.renderer.layer.GeoRenderLayer;
 
 @OnlyIn(Dist.CLIENT)
 public class FireBossFireballChargeLayer extends GeoRenderLayer<AbstractSpellCastingMob> {
-    private static final ResourceLocation TEXTURE = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/fire_boss/tyros_flame.png");
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/fire_boss/tyros_flame.png");
     protected final ModelPart fireball;
 
     public FireBossFireballChargeLayer(GeoEntityRenderer entityRendererIn, EntityRendererProvider.Context context) {
@@ -37,7 +37,7 @@ public class FireBossFireballChargeLayer extends GeoRenderLayer<AbstractSpellCas
                 var tick = FireBossEntity.HALF_HEALTH_ANIM_DURATION - fireBoss.halfHealthTimer;
                 if (tick > FireBossEntity.HALF_HEALTH_JUMP_TIMESTAMP && tick < FireBossEntity.HALF_HEALTH_CAST_TIMESTAMP) {
                     poseStack.pushPose();
-                    poseStack.mulPose(Axis.YP.rotationDegrees(fireBoss.yHeadRot));
+                    poseStack.rotate(Axis.YP.rotationDegrees(fireBoss.yHeadRot));
                     poseStack.translate(0, fireBoss.getBoundingBox().getYsize() * 1.25, 0);
                     float scale = Mth.lerp(tick / (float) FireBossEntity.HALF_HEALTH_ANIM_DURATION, 1f, 1.5f);
                     poseStack.scale(scale, scale, scale);
@@ -47,9 +47,9 @@ public class FireBossFireballChargeLayer extends GeoRenderLayer<AbstractSpellCas
                     float swirlX = Mth.cos(.08f * f) * 180;
                     float swirlY = Mth.sin(.08f * f) * 180;
                     float swirlZ = Mth.cos(.08f * f + 5464) * 180;
-                    poseStack.mulPose(Axis.XP.rotationDegrees(swirlX));
-                    poseStack.mulPose(Axis.YP.rotationDegrees(swirlY));
-                    poseStack.mulPose(Axis.ZP.rotationDegrees(swirlZ));
+                    poseStack.rotate(Axis.XP.rotationDegrees(swirlX));
+                    poseStack.rotate(Axis.YP.rotationDegrees(swirlY));
+                    poseStack.rotate(Axis.ZP.rotationDegrees(swirlZ));
 
                     fireball.render(poseStack, consumer, packedLight, packedOverlay, -1);
                     poseStack.popPose();

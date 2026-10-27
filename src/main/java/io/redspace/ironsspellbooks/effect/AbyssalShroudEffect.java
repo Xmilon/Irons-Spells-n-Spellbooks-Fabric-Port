@@ -28,7 +28,7 @@ public class AbyssalShroudEffect extends MagicMobEffect implements ISyncedMobEff
     }
 
     public static boolean doEffect(LivingEntity livingEntity, DamageSource damageSource) {
-        if (livingEntity.level().isClientSide || damageSource.is(DamageTypeTagsCompat.BYPASS_EVASION) || damageSource.is(DamageTypeTags.IS_FALL) || damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
+        if (livingEntity.level().isClientSide() || damageSource.is(DamageTypeTagsCompat.BYPASS_EVASION) || damageSource.is(DamageTypeTags.IS_FALL) || damageSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             return false;
         }
         var random = livingEntity.getRandom();

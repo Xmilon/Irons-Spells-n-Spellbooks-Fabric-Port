@@ -14,7 +14,7 @@ import net.minecraft.core.Vec3i;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
@@ -29,7 +29,7 @@ import java.util.List;
 import java.util.Optional;
 
 public class TeleportSpell extends AbstractSpell {
-    private final ResourceLocation spellId = ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "teleport");
+    private final Identifier spellId = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "teleport");
 
     private final DefaultConfig defaultConfig = new DefaultConfig()
             .setMinRarity(SpellRarity.UNCOMMON)
@@ -57,7 +57,7 @@ public class TeleportSpell extends AbstractSpell {
     }
 
     @Override
-    public ResourceLocation getSpellResource() {
+    public Identifier getSpellResource() {
         return spellId;
     }
 
@@ -74,7 +74,7 @@ public class TeleportSpell extends AbstractSpell {
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         if (Log.SPELL_DEBUG) {
-            IronsSpellbooks.LOGGER.debug("TeleportSpell.onCast isClient:{}, entity:{}, pmd:{}", level.isClientSide, entity, playerMagicData);
+            IronsSpellbooks.LOGGER.debug("TeleportSpell.onCast isClient:{}, entity:{}, pmd:{}", level.isClientSide(), entity, playerMagicData);
         }
         var teleportData = (TeleportData) playerMagicData.getAdditionalCastData();
 
@@ -108,7 +108,7 @@ public class TeleportSpell extends AbstractSpell {
 
     public static Vec3 findTeleportLocation(Level level, LivingEntity entity, float maxDistance) {
         if (Log.SPELL_DEBUG) {
-            IronsSpellbooks.LOGGER.debug("TeleportSpell.findTeleportLocation isClient:{}, entity:{}", level.isClientSide, entity);
+            IronsSpellbooks.LOGGER.debug("TeleportSpell.findTeleportLocation isClient:{}, entity:{}", level.isClientSide(), entity);
         }
 
         var blockHitResult = Utils.getTargetBlock(level, entity, ClipContext.Fluid.NONE, maxDistance);
@@ -131,7 +131,7 @@ public class TeleportSpell extends AbstractSpell {
     }
 
     public static void particleCloud(Level level, Vec3 pos) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             double width = 0.5;
             float height = 1;
             for (int i = 0; i < 55; i++) {

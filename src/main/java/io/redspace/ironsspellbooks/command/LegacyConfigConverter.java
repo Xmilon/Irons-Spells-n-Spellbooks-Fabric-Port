@@ -14,7 +14,7 @@ import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.level.storage.LevelResource;
 import net.neoforged.fml.loading.FMLPaths;
 
@@ -102,9 +102,9 @@ public class LegacyConfigConverter {
         );
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
 //        List<Map<String, Object>> configOutput = new ArrayList<>();
-        Map<ResourceLocation, Map<String, Object>> configOutput = new HashMap<>();
+        Map<Identifier, Map<String, Object>> configOutput = new HashMap<>();
         for (var entry : spellToml.entrySet()) {
-            ResourceLocation spellId = ResourceLocation.parse(entry.getKey());
+            Identifier spellId = Identifier.parse(entry.getKey());
             if (entry.isNull() || !(entry.getRawValue() instanceof Config)) {
                 continue;
             }
@@ -154,11 +154,11 @@ public class LegacyConfigConverter {
         return path;
     }
 
-    private static boolean checkIsDefaultValue(ResourceLocation spellId, Object value, SpellConfigParameter<?> param) {
+    private static boolean checkIsDefaultValue(Identifier spellId, Object value, SpellConfigParameter<?> param) {
         Object toCompare = value;
         if (param.equals(SpellConfigParameter.SCHOOL)) {
             try {
-                toCompare = SchoolRegistry.getSchool(ResourceLocation.parse((String) toCompare));
+                toCompare = SchoolRegistry.getSchool(Identifier.parse((String) toCompare));
             } catch (Exception e) {
                 throw new RuntimeException("Failed to read school entry for spell " + spellId.toString());
             }

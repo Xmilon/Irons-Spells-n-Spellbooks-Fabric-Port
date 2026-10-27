@@ -35,8 +35,8 @@ public class SpellBookCurioRenderer implements ITrinketRenderer {
             //Scale by 1/16th, we are now dealing with units of pixels
             poseStack.translate((TrinketSlotContext.entity() != null && !TrinketSlotContext.entity().getItemBySlot(EquipmentSlot.CHEST).isEmpty() ? -5.5 : -4.5) * .0625f, 9 * .0625f, 0);
             //poseStack.mulPose(Vector3f.YP.rotation(Mth.PI * .5f));
-            poseStack.mulPose(Axis.YP.rotation(Mth.PI));
-            poseStack.mulPose(Axis.ZP.rotation(Mth.PI - 5 * Mth.DEG_TO_RAD));
+            poseStack.rotate(Axis.YP.rotation(Mth.PI));
+            poseStack.rotate(Axis.ZP.rotation(Mth.PI - 5 * Mth.DEG_TO_RAD));
             poseStack.scale(.625f, .625f, .625f);
             itemRenderer.renderStatic(itemStack, ItemDisplayContext.FIXED, light, OverlayTexture.NO_OVERLAY, poseStack, renderTypeBuffer, null, 0);
             poseStack.popPose();

@@ -10,12 +10,12 @@ import net.minecraft.client.model.geom.EntityModelSet;
 import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
 import net.minecraft.client.renderer.LightTexture;
 import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.model.ItemTransform;
+import net.minecraft.client.resources.model.cuboid.ItemTransform;
 import net.minecraft.client.renderer.entity.ItemRenderer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.client.resources.model.BakedModel;
-import net.minecraft.client.resources.model.ModelResourceLocation;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.client.resources.model.ModelIdentifier;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
 import net.minecraft.world.item.ItemDisplayContext;
 import net.minecraft.world.item.ItemStack;
@@ -30,7 +30,7 @@ public class PyriumStaffRenderer extends BlockEntityWithoutLevelRenderer {
     public PyriumStaffRenderer(ItemRenderer renderDispatcher, EntityModelSet modelSet) {
         super(Minecraft.getInstance().getBlockEntityRenderDispatcher(), modelSet);
         this.renderer = renderDispatcher;
-        this.haftModel = renderer.getItemModelShaper().getModelManager().getModel(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "item/pyrium_staff_haft"));
+        this.haftModel = renderer.getItemModelShaper().getModelManager().getModel(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "item/pyrium_staff_haft"));
         this.headModel = new PyriumStaffHeadModel(modelSet.bakeLayer(PyriumStaffHeadModel.LAYER_LOCATION));
         this.orbModel = new PyriumStaffOrbModel(modelSet.bakeLayer(PyriumStaffOrbModel.LAYER_LOCATION));
     }
@@ -60,8 +60,8 @@ public class PyriumStaffRenderer extends BlockEntityWithoutLevelRenderer {
 
         ItemTransform transform = haftModel.getTransforms().getTransform(transformType);
         applyTransform(transform, leftHanded, poseStack);
-        poseStack.mulPose(Axis.ZP.rotationDegrees(135));
-        poseStack.mulPose(Axis.YP.rotationDegrees(-90));
+        poseStack.rotate(Axis.ZP.rotationDegrees(135));
+        poseStack.rotate(Axis.YP.rotationDegrees(-90));
 
         poseStack.translate(0, -6.375/16f, 0);
         poseStack.scale(0.5f, 0.5f, 0.5f);

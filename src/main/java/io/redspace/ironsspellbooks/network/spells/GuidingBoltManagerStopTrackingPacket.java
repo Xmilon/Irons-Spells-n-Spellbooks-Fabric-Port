@@ -6,7 +6,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
@@ -14,7 +14,7 @@ import java.util.UUID;
 
 public class GuidingBoltManagerStopTrackingPacket implements CustomPacketPayload {
     private final UUID entity;
-    public static final CustomPacketPayload.Type<GuidingBoltManagerStopTrackingPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "guiding_bolt_manager_stop_tracking"));
+    public static final CustomPacketPayload.Type<GuidingBoltManagerStopTrackingPacket> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "guiding_bolt_manager_stop_tracking"));
     public static final StreamCodec<RegistryFriendlyByteBuf, GuidingBoltManagerStopTrackingPacket> STREAM_CODEC = CustomPacketPayload.codec(GuidingBoltManagerStopTrackingPacket::write, GuidingBoltManagerStopTrackingPacket::new);
 
     public GuidingBoltManagerStopTrackingPacket(Entity entity) {

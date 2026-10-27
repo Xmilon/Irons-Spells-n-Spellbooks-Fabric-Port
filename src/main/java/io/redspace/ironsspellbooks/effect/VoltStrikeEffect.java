@@ -27,7 +27,7 @@ public class VoltStrikeEffect extends MagicMobEffect implements ISyncedMobEffect
     @Override
     public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
         var level = livingEntity.level();
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return true;
         }
         List<Entity> list = level.getEntities(livingEntity, livingEntity.getBoundingBox().inflate(.25, .5, .25));

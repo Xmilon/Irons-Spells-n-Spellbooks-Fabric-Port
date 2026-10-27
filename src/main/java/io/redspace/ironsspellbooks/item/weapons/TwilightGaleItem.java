@@ -13,7 +13,7 @@ import net.minecraft.world.InteractionResultHolder;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.entity.projectile.AbstractArrow;
+import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.UseAnim;
@@ -65,7 +65,7 @@ public class TwilightGaleItem extends MagicSwordItem {
                 if (!isTooDamagedToUse(stack)) {
                     Holder<SoundEvent> holder = EnchantmentHelper.pickHighestLevel(stack, EnchantmentEffectComponents.TRIDENT_SOUND)
                             .orElse(SoundEvents.TRIDENT_THROW);
-                    if (!level.isClientSide) {
+                    if (!level.isClientSide()) {
                         stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(entityLiving.getUsedItemHand()));
                         double damage = 1 + ExtendedWeaponTier.TWILIGHT_GALE.damage;
                         if (stack.equals(player.getWeaponItem())) {

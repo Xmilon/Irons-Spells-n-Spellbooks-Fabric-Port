@@ -2,7 +2,7 @@ package io.redspace.ironsspellbooks.block.alchemist_cauldron;
 
 import com.google.common.collect.ImmutableList;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import org.jetbrains.annotations.Nullable;
 
@@ -10,7 +10,7 @@ import org.jetbrains.annotations.Nullable;
 public class AlchemistCauldronRecipeRegistry {
 
     @Deprecated(forRemoval = true)
-    public static AlchemistCauldronRecipe registerRecipe(ResourceLocation resourceLocation, AlchemistCauldronRecipe recipe) {
+    public static AlchemistCauldronRecipe registerRecipe(Identifier resourceLocation, AlchemistCauldronRecipe recipe) {
         IronsSpellbooks.LOGGER.warn("Mod {} is trying to register an Alchemist Cauldron recipe, which no longer works!", resourceLocation.getNamespace());
         return recipe;
     }

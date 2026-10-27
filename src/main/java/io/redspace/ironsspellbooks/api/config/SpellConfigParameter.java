@@ -5,12 +5,12 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 
 import java.util.function.Supplier;
 
-public record SpellConfigParameter<T>(ResourceLocation key, Codec<T> datatype, Supplier<T> defaultValue) {
-    public SpellConfigParameter(ResourceLocation key, Codec<T> datatype, T defaultValue) {
+public record SpellConfigParameter<T>(Identifier key, Codec<T> datatype, Supplier<T> defaultValue) {
+    public SpellConfigParameter(Identifier key, Codec<T> datatype, T defaultValue) {
         this(key, datatype, () -> defaultValue);
     }
 

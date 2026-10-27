@@ -3,7 +3,7 @@ package io.redspace.ironsspellbooks.item.armor;
 import io.redspace.ironsspellbooks.registries.ArmorMaterialRegistry;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import software.bernie.geckolib.renderer.GeoArmorRenderer;
+import com.geckolib.renderer.GeoArmorRenderer;
 
 public class NetheriteMageArmorItem extends ImbuableChestplateArmorItem {
     public NetheriteMageArmorItem(Type type, Properties settings) {

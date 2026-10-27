@@ -32,7 +32,7 @@ public class TeleportationAmuletItem extends SimpleDescriptiveCurio {
 
     private void handleCurse(TrinketSlotContext TrinketSlotContext, ItemStack stack) {
         var entity = TrinketSlotContext.entity();
-        if (entity != null && !TrinketSlotContext.entity().level().isClientSide && !canUse(entity)) {
+        if (entity != null && !TrinketSlotContext.entity().level().isClientSide() && !canUse(entity)) {
             TrinketsApi.getTrinketsInventory(TrinketSlotContext.entity()).ifPresent(
                     handler ->
                     {

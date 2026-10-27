@@ -42,7 +42,7 @@ public class TinctureOfForgetfulnessItem extends Item {
             return super.useOn(context);
         }
 
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return InteractionResult.SUCCESS;
         }
 

@@ -53,7 +53,7 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
     public void onSyncedDataUpdated(EntityDataAccessor<?> pKey) {
         super.onSyncedDataUpdated(pKey);
 
-        if (!level().isClientSide) {
+        if (!level().isClientSide()) {
             return;
         }
 

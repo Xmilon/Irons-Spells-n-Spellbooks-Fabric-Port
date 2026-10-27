@@ -6,7 +6,7 @@ import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.registries.StructureProcessorRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.LevelReader;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
@@ -21,13 +21,13 @@ import java.util.Map;
 public class HandleLitBlocksProcessor extends StructureProcessor {
     public static final MapCodec<HandleLitBlocksProcessor> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
             Codec.DOUBLE.fieldOf("chanceLit").forGetter(obj -> obj.chanceLit),
-            Codec.unboundedMap(ResourceLocation.CODEC, Codec.DOUBLE).optionalFieldOf("byBlock", Map.of()).forGetter(obj -> obj.byBlock)
+            Codec.unboundedMap(Identifier.CODEC, Codec.DOUBLE).optionalFieldOf("byBlock", Map.of()).forGetter(obj -> obj.byBlock)
     ).apply(builder, HandleLitBlocksProcessor::new));
 
     public final double chanceLit;
-    public final Map<ResourceLocation, Double> byBlock;
+    public final Map<Identifier, Double> byBlock;
 
-    private HandleLitBlocksProcessor(double chanceLit, Map<ResourceLocation, Double> byBlock) {
+    private HandleLitBlocksProcessor(double chanceLit, Map<Identifier, Double> byBlock) {
         this.chanceLit = chanceLit;
         this.byBlock = byBlock;
     }

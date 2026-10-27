@@ -6,7 +6,7 @@ import net.minecraft.core.HolderOwner;
 import net.minecraft.core.Registry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.ResourceKey;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.minecraft.tags.TagKey;
 
 import java.util.Optional;
@@ -15,19 +15,19 @@ import java.util.function.Supplier;
 import java.util.stream.Stream;
 
 public class DeferredHolder<R, T extends R> implements Supplier<T>, Holder<R> {
-    private final ResourceLocation id;
+    private final Identifier id;
     private final ResourceKey<? extends Registry<R>> registryKey;
     private ResourceKey<R> key;
     private final Supplier<T> supplier;
     private T value;
 
-    public DeferredHolder(ResourceKey<? extends Registry<R>> registryKey, ResourceLocation id, Supplier<T> supplier) {
+    public DeferredHolder(ResourceKey<? extends Registry<R>> registryKey, Identifier id, Supplier<T> supplier) {
         this.registryKey = registryKey;
         this.id = id;
         this.supplier = supplier;
     }
 
-    public static <R, T extends R> DeferredHolder<R, T> create(ResourceKey<? extends net.minecraft.core.Registry<R>> registryKey, ResourceLocation id) {
+    public static <R, T extends R> DeferredHolder<R, T> create(ResourceKey<? extends net.minecraft.core.Registry<R>> registryKey, Identifier id) {
         DeferredHolder<R, T> holder = new DeferredHolder<>(registryKey, id, () -> null);
         holder.key = ResourceKey.create(registryKey, id);
         return holder;
@@ -37,7 +37,7 @@ public class DeferredHolder<R, T extends R> implements Supplier<T>, Holder<R> {
         return id.getPath();
     }
 
-    public ResourceLocation getLocation() {
+    public Identifier getLocation() {
         return id;
     }
 
@@ -48,7 +48,7 @@ public class DeferredHolder<R, T extends R> implements Supplier<T>, Holder<R> {
     @SuppressWarnings("unchecked")
     private Optional<Registry<R>> resolveRegistry() {
         Registry<? extends Registry<?>> root = BuiltInRegistries.REGISTRY;
-        Registry<R> registry = (Registry<R>) root.get(registryKey.location());
+        Registry<R> registry = (Registry<R>) root.get(registryKey.identifier());
         return Optional.ofNullable(registry);
     }
 
@@ -86,8 +86,8 @@ public class DeferredHolder<R, T extends R> implements Supplier<T>, Holder<R> {
     }
 
     @Override
-    public boolean is(ResourceLocation location) {
-        return id.equals(location) || (key != null && key.location().equals(location));
+    public boolean is(Identifier location) {
+        return id.equals(location) || (key != null && key.identifier().equals(location));
     }
 
     @Override

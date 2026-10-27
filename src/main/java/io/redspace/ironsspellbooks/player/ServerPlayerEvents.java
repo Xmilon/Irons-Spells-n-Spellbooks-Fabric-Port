@@ -130,7 +130,7 @@ public class ServerPlayerEvents {
     @SubscribeEvent
     public static void onUseItem(PlayerInteractEvent.RightClickItem event) {
         var player = event.getEntity();
-        if (player.level().isClientSide) {
+        if (player.level().isClientSide()) {
             MinecraftInstanceHelper.ifPlayerPresent(localPlayer -> {
                 if (ClientMagicData.isCasting() && player.getUUID().equals(localPlayer.getUUID())) {
                     event.setCanceled(true);
@@ -153,22 +153,22 @@ public class ServerPlayerEvents {
             SpellSelectionManager spellSelectionManager = new SpellSelectionManager(player);
             SpellSelectionManager.SelectionOption selectionOption = spellSelectionManager.getSelection();
             if (selectionOption == null || selectionOption.spellData.equals(SpellData.EMPTY)) {
-                //IronsSpellbooks.LOGGER.debug("CastingItem.Use.1 {} {}", level.isClientSide, hand);
+                //IronsSpellbooks.LOGGER.debug("CastingItem.Use.1 {} {}", level.isClientSide(), hand);
                 return;
             }
             SpellData spellData = selectionOption.spellData;
             int spellLevel = spellData.getSpell().getLevelFor(spellData.getLevel(), player);
             if (level.isClientSide()) {
                 if (ClientMagicData.isCasting()) {
-                    //IronsSpellbooks.LOGGER.debug("CastingItem.Use.2 {} {}", level.isClientSide, hand);
+                    //IronsSpellbooks.LOGGER.debug("CastingItem.Use.2 {} {}", level.isClientSide(), hand);
                     event.setCancellationResult(InteractionResult.CONSUME);
                 } else if (ClientMagicData.getPlayerMana() < spellData.getSpell().getManaCost(spellLevel)
                         || ClientMagicData.getCooldowns().isOnCooldown(spellData.getSpell())
                         || !ClientMagicData.getSyncedSpellData(player).isSpellLearned(spellData.getSpell())) {
-                    //IronsSpellbooks.LOGGER.debug("CastingItem.Use.3 {} {}", level.isClientSide, hand);
+                    //IronsSpellbooks.LOGGER.debug("CastingItem.Use.3 {} {}", level.isClientSide(), hand);
                     return;
                 } else {
-                    //IronsSpellbooks.LOGGER.debug("CastingItem.Use.4 {} {}", level.isClientSide, hand);
+                    //IronsSpellbooks.LOGGER.debug("CastingItem.Use.4 {} {}", level.isClientSide(), hand);
                     event.setCancellationResult(InteractionResult.CONSUME);
                 }
             }
@@ -178,7 +178,7 @@ public class ServerPlayerEvents {
             if (spellData.getSpell().attemptInitiateCast(itemStack, spellLevel, level, player, selectionOption.getCastSource(), true, castingSlot)) {
                 event.setCancellationResult(InteractionResult.CONSUME);
             } else {
-                //IronsSpellbooks.LOGGER.debug("CastingItem.Use.6 {} {}", level.isClientSide, hand);
+                //IronsSpellbooks.LOGGER.debug("CastingItem.Use.6 {} {}", level.isClientSide(), hand);
                 event.setCancellationResult(InteractionResult.FAIL);
             }
             event.setCanceled(true);
@@ -259,7 +259,7 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void onPlayerOpenContainer(PlayerContainerEvent.Open event) {
-        if (event.getEntity().level.isClientSide) {
+        if (event.getEntity().level.isClientSide()) {
             return;
         }
         if (event.getEntity() instanceof ServerPlayer serverPlayer) {
@@ -334,7 +334,7 @@ public class ServerPlayerEvents {
     @SubscribeEvent
     public static void onLivingDeathEvent(LivingDeathEvent event) {
         var entity = event.getEntity();
-        if (!entity.level().isClientSide) {
+        if (!entity.level().isClientSide()) {
             if (entity instanceof ServerPlayer serverPlayer) {
                 Utils.serverSideCancelCast(serverPlayer);
                 MagicData.getPlayerMagicData(serverPlayer).getPlayerRecasts().removeAll(RecastResult.DEATH);
@@ -366,7 +366,7 @@ public class ServerPlayerEvents {
                 }
             }));
 
-            IronsSpellbooks.LOGGER.debug("onPlayerCloned: copy data: client: {}", newServerPlayer.level().isClientSide);
+            IronsSpellbooks.LOGGER.debug("onPlayerCloned: copy data: client: {}", newServerPlayer.level().isClientSide());
             MagicData oldMagicData = MagicData.getPlayerMagicData(event.getOriginal());
             MagicData newMagicData = MagicData.getPlayerMagicData(newServerPlayer);
             newMagicData.setSyncedData(oldMagicData.getSyncedData().getPersistentData(newServerPlayer));
@@ -411,7 +411,7 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void fixDragonCrits(CriticalHitEvent event) {
-        if (event.getTarget().level.isClientSide) {
+        if (event.getTarget().level.isClientSide()) {
             return;
         }
         // Crits require the target to be a LivingEntity, meaning dragon parts cannot be critically struck
@@ -531,7 +531,7 @@ public class ServerPlayerEvents {
     public static void preventDismount(EntityMountEvent event) {
         var mount = event.getEntityBeingMounted();
         var entity = event.getEntity();
-        if (!entity.level().isClientSide && event.isDismounting() && mount instanceof PreventDismount preventDismount
+        if (!entity.level().isClientSide() && event.isDismounting() && mount instanceof PreventDismount preventDismount
                 && !mount.isRemoved() && !entity.isRemoved()) {
             if (!preventDismount.canEntityDismount(entity)) {
                 event.setCanceled(true);
@@ -608,7 +608,7 @@ public class ServerPlayerEvents {
     public static void onLivingTick(EntityTickEvent.Pre event) {
         var entity = event.getEntity();
         var level = entity.level();
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             if (entity.tickCount % 40 == 0) {
                 BlockPos pos = entity.blockPosition();
                 BlockState blockState = entity.level().getBlockState(pos);

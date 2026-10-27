@@ -65,7 +65,7 @@ public abstract class LivingEntityMixin implements io.redspace.ironsspellbooks.a
     @Inject(method = "onEffectRemoved", at = @At(value = "HEAD"))
     public void irons_spellbooks$onEffectRemoved(MobEffectInstance effectInstance, CallbackInfo ci) {
         LivingEntity self = (LivingEntity) (Object) this;
-        if (!self.level().isClientSide) {
+        if (!self.level().isClientSide()) {
             if (effectInstance.getEffect().value() instanceof IMobEffectEndCallback mobEffect) {
                 mobEffect.onEffectRemoved(self, effectInstance.getAmplifier());
             }
@@ -78,7 +78,7 @@ public abstract class LivingEntityMixin implements io.redspace.ironsspellbooks.a
     @Inject(method = "onEffectUpdated", at = @At(value = "HEAD"))
     public void irons_spellbooks$onEffectUpdated(MobEffectInstance effectInstance, boolean forced, Entity entity, CallbackInfo ci) {
         LivingEntity self = (LivingEntity) (Object) this;
-        if (!self.level().isClientSide) {
+        if (!self.level().isClientSide()) {
             if (effectInstance.getEffect().value() instanceof ISyncedMobEffect && self.level().getChunkSource() instanceof ServerChunkCache serverChunk) {
                 serverChunk.broadcast(self, new ClientboundUpdateMobEffectPacket(self.getId(), effectInstance, false));
             }
@@ -88,7 +88,7 @@ public abstract class LivingEntityMixin implements io.redspace.ironsspellbooks.a
     @Inject(method = "onEffectAdded", at = @At(value = "HEAD"))
     public void irons_spellbooks$onEffectAdded(MobEffectInstance effectInstance, Entity entity, CallbackInfo ci) {
         LivingEntity self = (LivingEntity) (Object) this;
-        if (!self.level().isClientSide) {
+        if (!self.level().isClientSide()) {
             if (effectInstance.getEffect().value() instanceof ISyncedMobEffect && self.level().getChunkSource() instanceof ServerChunkCache serverChunk) {
                 serverChunk.broadcast(self, new ClientboundUpdateMobEffectPacket(self.getId(), effectInstance, false));
             }
@@ -236,7 +236,7 @@ public abstract class LivingEntityMixin implements io.redspace.ironsspellbooks.a
         }
 
         // Vanilla handles start/stop conditions. Only keep glide alive if it was already active this tick.
-        if (!self.level().isClientSide
+        if (!self.level().isClientSide()
                 && self instanceof Player player
                 && irons_spellbooks$wasFallFlying
                 && !self.onGround()

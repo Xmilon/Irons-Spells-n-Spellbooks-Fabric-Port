@@ -77,7 +77,7 @@ import net.minecraft.world.entity.ai.goal.FloatGoal;
 import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
-import net.minecraft.world.entity.animal.Pig;
+import net.minecraft.world.entity.animal.pig.Pig;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
@@ -88,11 +88,11 @@ import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.entity.IEntityWithComplexSpawn;
 import net.neoforged.neoforge.network.PacketDistributor;
-import software.bernie.geckolib.animation.AnimatableManager;
-import software.bernie.geckolib.animation.AnimationController;
-import software.bernie.geckolib.animation.AnimationState;
-import software.bernie.geckolib.animation.PlayState;
-import software.bernie.geckolib.animation.RawAnimation;
+import com.geckolib.animatable.manager.AnimatableManager;
+import com.geckolib.cache.animation.AnimationController;
+import com.geckolib.cache.animation.AnimationState;
+import com.geckolib.animation.object.PlayState;
+import com.geckolib.animation.RawAnimation;
 
 import javax.annotation.Nullable;
 import java.util.List;
@@ -489,7 +489,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     public void procSpectralDagger(int ticks) {
         this.entityData.set(DATA_DAGGER_TIME, ticks);
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             serverTriggerEvent(DAGGER_PARTICLES);
         }
     }
@@ -518,14 +518,14 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         if (isSpawning()) {
             spawnTimer--;
             handleSpawnSequence();
-            if (spawnTimer == 0 && !level.isClientSide) {
+            if (spawnTimer == 0 && !level.isClientSide()) {
                 spawnKnight(true);
                 spawnKnight(false);
             }
         } else if (isDespawning()) {
             // reuse death time for fadeout animations
             deathTime++;
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 deathParticles();
                 if (getTarget() != null) {
                     // stop despawning if we re-aggro
@@ -540,11 +540,11 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             deathTime = Math.max(0, deathTime - 3);
         } else if (isHalfHealthAttacking()) {
             halfHealthTimer--;
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 handleHalfHealthSequence();
             }
         }
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             // while this is server-only logic, this cannot be in aistep because ai is disabled during stance breaks
             if (isStanceBroken()) {
                 stanceBreakTimer--;
@@ -609,7 +609,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     private void handleHalfHealthSequence() {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return;
         }
         // force tick various controls while overall ai is turned off
@@ -718,12 +718,12 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         float worldZOffset = Mth.lerp(walkProgress, -60 / 16f * getScale(), 0);
         Vec3 position = this.position().add(new Vec3(0, 0, worldZOffset).yRot(-this.getYRot() * Mth.DEG_TO_RAD));
         // timed delay to sync beginning of music with beginning of fight
-        if (!level.isClientSide && animProgress == 65) {
+        if (!level.isClientSide() && animProgress == 65) {
             this.serverTriggerEvent(START_MUSIC);
         }
         if (animProgress == SPAWN_DELAY) {
             // begin walking out of puff of smoke
-            if (!level.isClientSide) {
+            if (!level.isClientSide()) {
                 //smoke to step out of
                 MagicManager.spawnParticles(level, ParticleTypes.CAMPFIRE_COSY_SMOKE, position.x, position.y + 1.2, position.z, (int) (165 * getScale()), 0.4 * getScale(), 1.0 * getScale(), 0.4 * getScale(), 0.01, true);
                 MagicManager.spawnParticles(level, ParticleHelper.FOG_CAMPFIRE_SMOKE, position.x, position.y + 0.1, position.z, 6, 0.6, .1, 0.6, 0.05, true);
@@ -815,7 +815,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     @Override
     public void die(DamageSource pDamageSource) {
         super.die(pDamageSource);
-        if (this.isDeadOrDying() && !this.level.isClientSide) {
+        if (this.isDeadOrDying() && !this.level.isClientSide()) {
             this.stanceBreakTimer = 0;
             this.stopHalfHealthAttack();
             this.castComplete();
@@ -848,7 +848,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     @Override
     protected void tickDeath() {
         this.deathTime++;
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             float scale = getScale();
             Vec3 vec3 = this.position();
             deathParticles();
@@ -977,7 +977,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     @Override
     public boolean hurt(DamageSource pSource, float pAmount) {
-        if (level.isClientSide) {
+        if (level.isClientSide()) {
             return false;
         }
         /*
@@ -1109,7 +1109,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         int stanceTime = pCompound.getInt("stanceBreakTime");
         if (stanceTime > 0) {
             this.stanceBreakTimer = stanceTime;
-            if (level.isClientSide) {
+            if (level.isClientSide()) {
                 //todo: sync anim to completed time
                 this.animationToPlay = RawAnimation.begin().thenPlay("fire_boss_break_stance");
             }
@@ -1140,7 +1140,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             }
         }
         super.load(pCompound);
-        if (!level.isClientSide) {
+        if (!level.isClientSide()) {
             // re-sync uuid if we are loading from file rather than creating new entity (uuid is loaded in super.load)
             createBossEvent();
         }

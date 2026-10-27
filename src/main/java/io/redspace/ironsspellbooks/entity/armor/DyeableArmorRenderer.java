@@ -3,9 +3,9 @@ package io.redspace.ironsspellbooks.entity.armor;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import net.minecraft.world.item.Item;
-import software.bernie.geckolib.animatable.GeoItem;
-import software.bernie.geckolib.cache.object.GeoBone;
-import software.bernie.geckolib.model.GeoModel;
+import com.geckolib.animatable.GeoItem;
+import com.geckolib.cache.model.GeoBone;
+import com.geckolib.model.GeoModel;
 
 public class DyeableArmorRenderer<T extends Item & GeoItem> extends GenericCustomArmorRenderer<T> {
     public DyeableArmorRenderer(GeoModel<T> model) {

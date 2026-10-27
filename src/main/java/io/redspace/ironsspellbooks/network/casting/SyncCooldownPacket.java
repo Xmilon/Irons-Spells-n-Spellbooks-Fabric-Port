@@ -6,13 +6,13 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class SyncCooldownPacket implements CustomPacketPayload {
     private final String spellId;
     private final int duration;
-    public static final CustomPacketPayload.Type<SyncCooldownPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "sync_cooldown"));
+    public static final CustomPacketPayload.Type<SyncCooldownPacket> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "sync_cooldown"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncCooldownPacket> STREAM_CODEC = CustomPacketPayload.codec(SyncCooldownPacket::write, SyncCooldownPacket::new);
 
     public SyncCooldownPacket(String spellId, int duration) {

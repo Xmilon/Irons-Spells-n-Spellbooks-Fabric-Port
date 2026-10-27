@@ -8,7 +8,7 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.network.protocol.common.custom.CustomPacketPayload;
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 import java.util.HashMap;
@@ -22,12 +22,12 @@ import java.util.Map;
  * - Packet max size is orders of magnitude larger
  */
 public class SyncJsonConfigPacket implements CustomPacketPayload {
-    public static final CustomPacketPayload.Type<SyncJsonConfigPacket> TYPE = new CustomPacketPayload.Type<>(ResourceLocation.fromNamespaceAndPath(IronsSpellbooks.MODID, "sync_config"));
+    public static final CustomPacketPayload.Type<SyncJsonConfigPacket> TYPE = new CustomPacketPayload.Type<>(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "sync_config"));
     public static final StreamCodec<RegistryFriendlyByteBuf, SyncJsonConfigPacket> STREAM_CODEC = CustomPacketPayload.codec(SyncJsonConfigPacket::toBytes, SyncJsonConfigPacket::new);
 
-    public final Map<ResourceLocation, byte[]> data;
+    public final Map<Identifier, byte[]> data;
 
-    public SyncJsonConfigPacket(Map<ResourceLocation, byte[]> bytes) {
+    public SyncJsonConfigPacket(Map<Identifier, byte[]> bytes) {
         this.data = bytes;
     }
 
@@ -35,7 +35,7 @@ public class SyncJsonConfigPacket implements CustomPacketPayload {
         this.data = new HashMap<>();
         int size = buf.readInt();
         for (int i = 0; i < size; i++) {
-            var id = buf.readResourceLocation();
+            var id = buf.readIdentifier();
             var bytes = new byte[buf.readInt()];
             buf.readBytes(bytes, 0, bytes.length);
             this.data.put(id, bytes);
@@ -45,7 +45,7 @@ public class SyncJsonConfigPacket implements CustomPacketPayload {
     public void toBytes(FriendlyByteBuf buf) {
         buf.writeInt(data.size());
         for (var entry : data.entrySet()) {
-            buf.writeResourceLocation(entry.getKey());
+            buf.writeIdentifier(entry.getKey());
             buf.writeInt(entry.getValue().length);
             buf.writeBytes(entry.getValue());
         }
