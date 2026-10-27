@@ -23,13 +23,13 @@ public class OwnerHelper {
 
     public static void serializeOwner(CompoundTag compoundTag, UUID ownerUUID) {
         if (ownerUUID != null) {
-            compoundTag.putUUID("Summoner", ownerUUID);
+            compoundTag.store("Summoner", net.minecraft.core.UUIDUtil.CODEC, ownerUUID);
         }
     }
 
     public static UUID deserializeOwner(CompoundTag compoundTag) {
-        if (compoundTag.hasUUID("Summoner")) {
-            return compoundTag.getUUID("Summoner");
+        if (compoundTag.contains("Summoner")) {
+            return compoundTag.read("Summoner", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
         }
         return null;
     }

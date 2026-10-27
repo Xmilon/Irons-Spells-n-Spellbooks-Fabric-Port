@@ -204,7 +204,7 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
         super.addAdditionalSaveData(pCompound);
         pCompound.putInt("Age", this.tickCount);
         if (this.ownerUUID != null) {
-            pCompound.putUUID("Owner", this.ownerUUID);
+            pCompound.store("Owner", net.minecraft.core.UUIDUtil.CODEC, this.ownerUUID);
         }
         pCompound.putInt("Duration", duration);
     }
@@ -214,11 +214,11 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
      */
     public void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
-        this.tickCount = pCompound.getInt("Age");
-        if (pCompound.hasUUID("Owner")) {
-            this.ownerUUID = pCompound.getUUID("Owner");
+        this.tickCount = pCompound.getIntOr("Age", 0);
+        if (pCompound.contains("Owner")) {
+            this.ownerUUID = pCompound.read("Owner", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
         }
-        this.duration = pCompound.getInt("Duration");
+        this.duration = pCompound.getIntOr("Duration", 0);
     }
 
     @Override

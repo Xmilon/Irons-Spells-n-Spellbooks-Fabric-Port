@@ -115,8 +115,8 @@ public class StompAoe extends AbstractMagicProjectile {
     @Override
     protected void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
-        this.step = pCompound.getInt("stompStep");
-        this.maxSteps = pCompound.getInt("maxSteps");
+        this.step = pCompound.getIntOr("stompStep", 0);
+        this.maxSteps = pCompound.getIntOr("maxSteps", 0);
     }
 }
 

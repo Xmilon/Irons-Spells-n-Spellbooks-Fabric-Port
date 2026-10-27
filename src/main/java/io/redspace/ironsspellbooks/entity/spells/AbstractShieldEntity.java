@@ -115,8 +115,8 @@ public abstract class AbstractShieldEntity extends Entity implements AntiMagicSu
 
     @Override
     protected void readAdditionalSaveData(CompoundTag pCompound) {
-        if (pCompound.contains("Health", 99)) {
-            this.setHealth(pCompound.getFloat("Health"));
+        if (pCompound.contains("Health")) {
+            this.setHealth(pCompound.getFloatOr("Health", 0f));
         }
     }
 

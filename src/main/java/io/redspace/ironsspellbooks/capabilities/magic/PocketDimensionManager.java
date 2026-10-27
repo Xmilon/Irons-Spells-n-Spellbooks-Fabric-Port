@@ -55,7 +55,7 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
         ListTag entries = new ListTag();
         for (var entry : ids.object2IntEntrySet()) {
             CompoundTag tagEntry = new CompoundTag();
-            tagEntry.putUUID(UUID_KEY, entry.getKey());
+            tagEntry.store(UUID_KEY, net.minecraft.core.UUIDUtil.CODEC, entry.getKey());
             tagEntry.putInt(INT_ID_KEY, entry.getIntValue());
             entries.add(tagEntry);
         }
@@ -66,13 +66,13 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        ListTag entries = nbt.getList(ID_MAP_KEY, 10);
-        int nextId = nbt.getInt(NEXT_ID_KEY);
+        ListTag entries = nbt.getListOrEmpty(ID_MAP_KEY);
+        int nextId = nbt.getIntOr(NEXT_ID_KEY, 0);
         for (Tag tag : entries) {
             try {
                 CompoundTag compoundTag = (CompoundTag) tag;
-                UUID uuid = compoundTag.getUUID(UUID_KEY);
-                int pocketId = compoundTag.getInt(INT_ID_KEY);
+                UUID uuid = compoundTag.read(UUID_KEY, net.minecraft.core.UUIDUtil.CODEC).orElse(null);
+                int pocketId = compoundTag.getIntOr(INT_ID_KEY, 0);
                 ids.put(uuid, pocketId);
             } catch (Exception e) {
                 IronsSpellbooks.LOGGER.error("Failed to parse PocketDimensionManager id entry: {}: {}", tag, e.getMessage());

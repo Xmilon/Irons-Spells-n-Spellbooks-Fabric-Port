@@ -1101,12 +1101,12 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     @Override
     public void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
-        this.stanceBreakCounter = pCompound.getInt("stanceBreakCount");
-        this.playerScale = pCompound.getInt("playerScale");
+        this.stanceBreakCounter = pCompound.getIntOr("stanceBreakCount", 0);
+        this.playerScale = pCompound.getIntOr("playerScale", 0);
         if (this.hasCustomName()) {
             this.bossEvent.setName(this.getDisplayName());
         }
-        int stanceTime = pCompound.getInt("stanceBreakTime");
+        int stanceTime = pCompound.getIntOr("stanceBreakTime", 0);
         if (stanceTime > 0) {
             this.stanceBreakTimer = stanceTime;
             if (level.isClientSide()) {
@@ -1115,14 +1115,14 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             }
         }
 
-        this.setSoulMode(pCompound.getBoolean("soulMode"));
+        this.setSoulMode(pCompound.getBooleanOr("soulMode", false));
         bossLoot.load(pCompound, this.registryAccess());
-        this.halfHealthTimer = pCompound.getInt("halfHealthTimer");
-        this.halfHealthDamageAccumulated = pCompound.getFloat("halfHealthDamage");
-        this.hasPerformedHalfHealthAttack = pCompound.getBoolean("halfHealthAttack");
-        setIsOminous(pCompound.getBoolean("ominous"));
-        if (pCompound.contains("SpawnPos", Tag.TAG_COMPOUND)) {
-            this.spawnPos = NBT.readVec3(pCompound.getCompound("SpawnPos"));
+        this.halfHealthTimer = pCompound.getIntOr("halfHealthTimer", 0);
+        this.halfHealthDamageAccumulated = pCompound.getFloatOr("halfHealthDamage", 0f);
+        this.hasPerformedHalfHealthAttack = pCompound.getBooleanOr("halfHealthAttack", false);
+        setIsOminous(pCompound.getBooleanOr("ominous", false));
+        if (pCompound.contains("SpawnPos")) {
+            this.spawnPos = NBT.readVec3(pCompound.getCompoundOrEmpty("SpawnPos"));
         } else {
             this.spawnPos = null;
         }
@@ -1130,7 +1130,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     @Override
     public void load(CompoundTag pCompound) {
-        if (pCompound.contains("unloadedGametime", 99)) {
+        if (pCompound.contains("unloadedGametime")) {
             var unloadTimestamp = pCompound.getLong("unloadedGametime");
             var delta = level.getGameTime() - unloadTimestamp;
             if (delta > UNLOADED_DESPAWN_LIMIT_SECONDS * 20) {

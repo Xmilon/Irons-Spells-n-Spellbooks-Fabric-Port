@@ -70,7 +70,7 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
 
     @Override
     public void deserializeNBT(HolderLookup.Provider pRegistries, CompoundTag compoundTag) {
-        ListTag list = compoundTag.getList("TrackedEntities", 11);
+        ListTag list = compoundTag.getListOrEmpty("TrackedEntities");
         for (Tag uuidTag : list) {
             try {
                 var uuid = NbtUtils.loadUUID(uuidTag);

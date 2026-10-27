@@ -39,7 +39,7 @@ public class NBT {
     }
 
     public static PortalPos readPortalPos(CompoundTag compoundTag) {
-        var resourcelocation = Identifier.parse(compoundTag.getString("res"));
+        var resourcelocation = Identifier.parse(compoundTag.getStringOr("res", ""));
         var posTag = (CompoundTag) compoundTag.get("pos");
         var pos = readVec3(posTag);
         var resourceKey = ResourceKey.create(Registries.DIMENSION, resourcelocation);
@@ -48,7 +48,7 @@ public class NBT {
     }
 
     public static Vec3 readVec3(CompoundTag pTag) {
-        return new Vec3(pTag.getDouble("X"), pTag.getDouble("Y"), pTag.getDouble("Z"));
+        return new Vec3(pTag.getDoubleOr("X", 0d), pTag.getDoubleOr("Y", 0d), pTag.getDoubleOr("Z", 0d));
     }
 
     public static CompoundTag writeVec3Pos(Vec3 pPos) {

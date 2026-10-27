@@ -128,15 +128,15 @@ public class SyncedSpellData {
     }
 
     public void loadNBTData(CompoundTag compound, HolderLookup.Provider provider) {
-        this.isCasting = compound.getBoolean("isCasting");
-        this.castingSpellId = compound.getString("castingSpellId");
-        this.castingEquipmentSlot = compound.getString("castingEquipmentSlot");
-        this.castingSpellLevel = compound.getInt("castingSpellLevel");
-        this.heartStopAccumulatedDamage = compound.getFloat("heartStopAccumulatedDamage");
-        this.evasionHitsRemaining = compound.getInt("evasionHitsRemaining");
+        this.isCasting = compound.getBooleanOr("isCasting", false);
+        this.castingSpellId = compound.getStringOr("castingSpellId", "");
+        this.castingEquipmentSlot = compound.getStringOr("castingEquipmentSlot", "");
+        this.castingSpellLevel = compound.getIntOr("castingSpellLevel", 0);
+        this.heartStopAccumulatedDamage = compound.getFloatOr("heartStopAccumulatedDamage", 0f);
+        this.evasionHitsRemaining = compound.getIntOr("evasionHitsRemaining", 0);
         //TODO: refactor learned spell data to use INBTSerializable instead of this custom deal
         this.learnedSpellData.loadFromNBT(compound);
-        this.spellSelection.deserializeNBT(provider, compound.getCompound("spellSelection"));
+        this.spellSelection.deserializeNBT(provider, compound.getCompoundOrEmpty("spellSelection"));
         //SpinAttack not saved
 
     }

@@ -304,25 +304,25 @@ public abstract class AoeEntity extends Projectile implements NoKnockbackProject
     }
 
     protected void readAdditionalSaveData(CompoundTag pCompound) {
-        this.tickCount = pCompound.getInt("Age");
+        this.tickCount = pCompound.getIntOr("Age", 0);
         if (pCompound.getInt("Duration") > 0)
-            this.duration = pCompound.getInt("Duration");
+            this.duration = pCompound.getIntOr("Duration", 0);
         if (pCompound.getInt("ReapplicationDelay") > 0)
-            this.reapplicationDelay = pCompound.getInt("ReapplicationDelay");
+            this.reapplicationDelay = pCompound.getIntOr("ReapplicationDelay", 0);
         if (pCompound.getInt("Radius") > 0)
-            this.setRadius(pCompound.getFloat("Radius"));
+            this.setRadius(pCompound.getFloatOr("Radius", 0f));
         if (pCompound.getInt("DurationOnUse") > 0)
-            this.durationOnUse = pCompound.getInt("DurationOnUse");
+            this.durationOnUse = pCompound.getIntOr("DurationOnUse", 0);
         if (pCompound.getInt("RadiusOnUse") > 0)
-            this.radiusOnUse = pCompound.getFloat("RadiusOnUse");
+            this.radiusOnUse = pCompound.getFloatOr("RadiusOnUse", 0f);
         if (pCompound.getInt("RadiusPerTick") > 0)
-            this.radiusPerTick = pCompound.getFloat("RadiusPerTick");
+            this.radiusPerTick = pCompound.getFloatOr("RadiusPerTick", 0f);
         if (pCompound.getInt("EffectDuration") > 0)
-            this.effectDuration = pCompound.getInt("EffectDuration");
+            this.effectDuration = pCompound.getIntOr("EffectDuration", 0);
         if (pCompound.getInt("Delay") > 0)
-            setDelay(pCompound.getInt("Delay"));
-        this.setDamage(pCompound.getFloat("Damage"));
-        if (pCompound.getBoolean("Circular"))
+            setDelay(pCompound.getIntOr("Delay", 0));
+        this.setDamage(pCompound.getFloatOr("Damage", 0f));
+        if (pCompound.getBooleanOr("Circular", false))
             setCircular();
 
         super.readAdditionalSaveData(pCompound);

@@ -77,9 +77,9 @@ public class BloodNeedle extends AbstractMagicProjectile {
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
-        setZRot(tag.getFloat("zRot"));
+        setZRot(tag.getFloatOr("zRot", 0f));
         if (tag.contains("Scale"))
-            setScale(tag.getFloat("Scale"));
+            setScale(tag.getFloatOr("Scale", 0f));
     }
 
     @Override

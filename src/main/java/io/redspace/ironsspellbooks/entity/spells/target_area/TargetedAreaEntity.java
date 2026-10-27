@@ -195,19 +195,19 @@ public class TargetedAreaEntity extends Entity {
         if (duration > 0)
             tag.putInt("Duration", duration);
         if (ownerUUID != null)
-            tag.putUUID("Owner", ownerUUID);
+            tag.store("Owner", net.minecraft.core.UUIDUtil.CODEC, ownerUUID);
     }
 
     protected void readAdditionalSaveData(CompoundTag tag) {
-        this.setRadius(tag.getFloat("Radius"));
-        this.setColor(tag.getInt("Color"));
-        this.tickCount = (tag.getInt("Age"));
-        this.shouldFade = (tag.getBoolean("ShouldFade"));
+        this.setRadius(tag.getFloatOr("Radius", 0f));
+        this.setColor(tag.getIntOr("Color", 0));
+        this.tickCount = (tag.getIntOr("Age", 0));
+        this.shouldFade = (tag.getBooleanOr("ShouldFade", false));
         if (tag.contains("Duration")) {
-            this.duration = tag.getInt("Duration");
+            this.duration = tag.getIntOr("Duration", 0);
         }
         if (tag.contains("Owner")) {
-            this.ownerUUID = tag.getUUID("Owner");
+            this.ownerUUID = tag.read("Owner", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
             hasOwner = true;
         }
     }

@@ -779,7 +779,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         super.addAdditionalSaveData(pCompound);
         if (getGrappleTargetUUID() != null) {
             pCompound.putInt("grappleTime", grappleTime);
-            pCompound.putUUID("grappleTarget", getGrappleTargetUUID());
+            pCompound.store("grappleTarget", net.minecraft.core.UUIDUtil.CODEC, getGrappleTargetUUID());
         }
         pCompound.putBoolean("crouching", isCrouching());
         pCompound.putInt("satiation", satiation);
@@ -789,15 +789,15 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     @Override
     public void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
-        if (pCompound.hasUUID("grappleTarget")) {
-            setGrappleTargetUUID(pCompound.getUUID("grappleTarget"));
-            grappleTime = pCompound.getInt("grappleTime");
+        if (pCompound.contains("grappleTarget")) {
+            setGrappleTargetUUID(pCompound.read("grappleTarget", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
+            grappleTime = pCompound.getIntOr("grappleTime", 0);
         }
-        if (pCompound.getBoolean("crouching")) {
+        if (pCompound.getBooleanOr("crouching", false)) {
             startCrouching();
         }
-        isHungry = pCompound.getBoolean("is_hungry");
-        setSatiation(pCompound.getInt("satiation"));
+        isHungry = pCompound.getBooleanOr("is_hungry", false);
+        setSatiation(pCompound.getIntOr("satiation", 0));
     }
 
     RawAnimation animationToPlay = null;

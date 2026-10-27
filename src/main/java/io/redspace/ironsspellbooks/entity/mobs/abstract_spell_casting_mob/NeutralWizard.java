@@ -70,7 +70,7 @@ public class NeutralWizard extends AbstractSpellCastingMob implements NeutralMob
             ListTag levels = new ListTag();
             for (Map.Entry<UUID, Integer> entry : angerLevels.object2IntEntrySet()) {
                 CompoundTag tag = new CompoundTag();
-                tag.putUUID("player", entry.getKey());
+                tag.store("player", net.minecraft.core.UUIDUtil.CODEC, entry.getKey());
                 tag.putInt("anger", entry.getValue());
                 levels.add(tag);
             }
@@ -83,10 +83,10 @@ public class NeutralWizard extends AbstractSpellCastingMob implements NeutralMob
     public void readAdditionalSaveData(CompoundTag pCompound) {
         this.readPersistentAngerSaveData(this.level(), pCompound);
         if (pCompound.contains("angerLevels")) {
-            ListTag entries = pCompound.getList("angerLevels", CompoundTag.TAG_COMPOUND);
+            ListTag entries = pCompound.getListOrEmpty("angerLevels");
             for (Tag tag : entries) {
                 try {
-                    this.angerLevels.put(((CompoundTag) tag).getUUID("player"), ((CompoundTag) tag).getInt("anger"));
+                    this.angerLevels.put(((CompoundTag) tag).read("player", net.minecraft.core.UUIDUtil.CODEC).orElse(null), ((CompoundTag) tag).getIntOr("anger", 0));
                 } catch (Exception exception) {
                     continue;
                 }
@@ -182,12 +182,12 @@ public class NeutralWizard extends AbstractSpellCastingMob implements NeutralMob
 
     @Override
     public void readPersistentAngerSaveData(Level level, CompoundTag tag) {
-        this.setRemainingPersistentAngerTime(tag.getInt("AngerTime"));
+        this.setRemainingPersistentAngerTime(tag.getIntOr("AngerTime", 0));
         if (level instanceof ServerLevel) {
-            if (!tag.hasUUID("AngryAt")) {
+            if (!tag.contains("AngryAt")) {
                 this.setPersistentAngerTarget(null);
             } else {
-                UUID uuid = tag.getUUID("AngryAt");
+                UUID uuid = tag.read("AngryAt", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
                 this.setPersistentAngerTarget(uuid);
             }
         }

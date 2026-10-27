@@ -67,8 +67,8 @@ public class ArrowVolleyEntity extends AbstractMagicProjectile {
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
-        this.rows = tag.getInt("rows");
-        this.arrowsPerRow = tag.getInt("arrowsPerRow");
+        this.rows = tag.getIntOr("rows", 0);
+        this.arrowsPerRow = tag.getIntOr("arrowsPerRow", 0);
     }
 
     public void setRows(int rows) {

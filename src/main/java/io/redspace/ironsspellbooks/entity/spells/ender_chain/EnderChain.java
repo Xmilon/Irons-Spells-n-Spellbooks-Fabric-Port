@@ -261,10 +261,10 @@ public class EnderChain extends Entity implements AntiMagicSusceptible, IEntityW
     @Override
     protected void addAdditionalSaveData(CompoundTag tag) {
         if (ownerUUID != null) {
-            tag.putUUID("Owner", ownerUUID);
+            tag.store("Owner", net.minecraft.core.UUIDUtil.CODEC, ownerUUID);
         }
         if (victimUUID != null) {
-            tag.putUUID("Victim", victimUUID);
+            tag.store("Victim", net.minecraft.core.UUIDUtil.CODEC, victimUUID);
         }
         tag.putFloat("Health", health);
         tag.putInt("Lifetime", lifetime);
@@ -274,19 +274,19 @@ public class EnderChain extends Entity implements AntiMagicSusceptible, IEntityW
 
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
-        if (tag.hasUUID("Owner")) {
-            this.ownerUUID = tag.getUUID("Owner");
+        if (tag.contains("Owner")) {
+            this.ownerUUID = tag.read("Owner", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
             this.cachedOwner = null;
         }
-        if (tag.hasUUID("Victim")) {
-            this.victimUUID = tag.getUUID("Victim");
+        if (tag.contains("Victim")) {
+            this.victimUUID = tag.read("Victim", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
             this.cachedVictim = null;
         }
-        this.health = tag.getFloat("Health");
-        this.lifetime = tag.getInt("Lifetime");
-        this.tickCount = tag.getInt("Age");
+        this.health = tag.getFloatOr("Health", 0f);
+        this.lifetime = tag.getIntOr("Lifetime", 0);
+        this.tickCount = tag.getIntOr("Age", 0);
         if (tag.contains("RestraintStrength")) {
-            this.restraintStrength = tag.getFloat("RestraintStrength");
+            this.restraintStrength = tag.getFloatOr("RestraintStrength", 0f);
         }
     }
 

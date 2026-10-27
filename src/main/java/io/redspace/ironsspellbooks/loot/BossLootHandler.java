@@ -135,7 +135,7 @@ public class BossLootHandler {
         ListTag participants = new ListTag();
         for (UUID participantId : participantIds) {
             CompoundTag participantTag = new CompoundTag();
-            participantTag.putUUID(PARTICIPANT_ID_TAG, participantId);
+            participantTag.store(PARTICIPANT_ID_TAG, net.minecraft.core.UUIDUtil.CODEC, participantId);
             participants.add(participantTag);
         }
         tag.put(PARTICIPANTS_TAG, participants);
@@ -145,7 +145,7 @@ public class BossLootHandler {
             CompoundTag dropTag = new CompoundTag();
             dropTag.put(PREPARED_DROP_ITEM_TAG, preparedDrop.itemStack.save(registries));
             if (preparedDrop.targetPlayer != null) {
-                dropTag.putUUID(PREPARED_DROP_TARGET_TAG, preparedDrop.targetPlayer);
+                dropTag.store(PREPARED_DROP_TARGET_TAG, net.minecraft.core.UUIDUtil.CODEC, preparedDrop.targetPlayer);
             }
             preparedDropTags.add(dropTag);
         }
@@ -154,23 +154,23 @@ public class BossLootHandler {
 
     public void load(CompoundTag tag, HolderLookup.Provider registries) {
         participantIds.clear();
-        ListTag participants = tag.getList(PARTICIPANTS_TAG, Tag.TAG_COMPOUND);
+        ListTag participants = tag.getListOrEmpty(PARTICIPANTS_TAG);
         for (Tag participantTagRaw : participants) {
             CompoundTag participantTag = (CompoundTag) participantTagRaw;
-            if (participantTag.hasUUID(PARTICIPANT_ID_TAG)) {
-                participantIds.add(participantTag.getUUID(PARTICIPANT_ID_TAG));
+            if (participantTag.contains(PARTICIPANT_ID_TAG)) {
+                participantIds.add(participantTag.read(PARTICIPANT_ID_TAG, net.minecraft.core.UUIDUtil.CODEC).orElse(null));
             }
         }
 
         preparedDrops.clear();
-        ListTag preparedDropTags = tag.getList(PREPARED_DROPS_TAG, Tag.TAG_COMPOUND);
+        ListTag preparedDropTags = tag.getListOrEmpty(PREPARED_DROPS_TAG);
         for (Tag dropTagRaw : preparedDropTags) {
             CompoundTag dropTag = (CompoundTag) dropTagRaw;
             ItemStack stack = ItemStack.parseOptional(registries, dropTag.getCompound(PREPARED_DROP_ITEM_TAG));
             if (stack.isEmpty()) {
                 continue;
             }
-            UUID targetPlayer = dropTag.hasUUID(PREPARED_DROP_TARGET_TAG) ? dropTag.getUUID(PREPARED_DROP_TARGET_TAG) : null;
+            UUID targetPlayer = dropTag.contains(PREPARED_DROP_TARGET_TAG) ? dropTag.read(PREPARED_DROP_TARGET_TAG, net.minecraft.core.UUIDUtil.CODEC).orElse(null) : null;
             preparedDrops.add(new PreparedDrop(stack, targetPlayer));
         }
     }

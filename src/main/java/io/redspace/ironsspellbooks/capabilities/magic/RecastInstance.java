@@ -122,12 +122,12 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag compoundTag) {
-        spellId = compoundTag.getString("spellId");
-        spellLevel = compoundTag.getInt("spellLevel");
-        remainingRecasts = compoundTag.getInt("remainingRecasts");
-        totalRecasts = compoundTag.getInt("totalRecasts");
-        ticksToLive = compoundTag.getInt("ticksToLive");
-        remainingTicks = compoundTag.getInt("ticksRemaining");
+        spellId = compoundTag.getStringOr("spellId", "");
+        spellLevel = compoundTag.getIntOr("spellLevel", 0);
+        remainingRecasts = compoundTag.getIntOr("remainingRecasts", 0);
+        totalRecasts = compoundTag.getIntOr("totalRecasts", 0);
+        ticksToLive = compoundTag.getIntOr("ticksToLive", 0);
+        remainingTicks = compoundTag.getIntOr("ticksRemaining", 0);
         castSource = CastSource.valueOf(compoundTag.getString("castSource"));
 
         if (compoundTag.contains("cd")) {

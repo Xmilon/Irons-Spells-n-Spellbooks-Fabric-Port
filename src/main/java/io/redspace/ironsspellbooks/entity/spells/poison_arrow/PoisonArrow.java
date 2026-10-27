@@ -152,9 +152,9 @@ public class PoisonArrow extends AbstractMagicProjectile {
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
-        this.inGround = tag.getBoolean("inGround");
-        this.hasEmittedPoison = tag.getBoolean("hasEmittedPoison");
-        this.aoeDamage = tag.getFloat("aoeDamage");
+        this.inGround = tag.getBooleanOr("inGround", false);
+        this.hasEmittedPoison = tag.getBooleanOr("hasEmittedPoison", false);
+        this.aoeDamage = tag.getFloatOr("aoeDamage", 0f);
     }
 
     @Override

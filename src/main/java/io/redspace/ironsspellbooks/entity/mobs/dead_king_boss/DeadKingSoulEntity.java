@@ -142,8 +142,8 @@ public class DeadKingSoulEntity extends Entity implements AntiMagicSusceptible {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
-        if (compound.contains("RespawnPos", Tag.TAG_COMPOUND)) {
-            this.setRespawnPos(NBT.readVec3(compound.getCompound("RespawnPos")));
+        if (compound.contains("RespawnPos")) {
+            this.setRespawnPos(NBT.readVec3(compound.getCompoundOrEmpty("RespawnPos")));
         }
     }
 

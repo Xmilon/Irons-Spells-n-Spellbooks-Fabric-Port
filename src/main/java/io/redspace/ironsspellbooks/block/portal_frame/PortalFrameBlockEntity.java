@@ -168,17 +168,17 @@ public class PortalFrameBlockEntity extends BlockEntity {
     protected void loadAdditional(CompoundTag tag, HolderLookup.Provider pRegistries) {
         super.loadAdditional(tag, pRegistries);
         if (tag.contains("uuid")) {
-            var uuid = tag.getUUID("uuid");
+            var uuid = tag.read("uuid", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
             this.portalId = new PortalId(Optional.of(uuid));
         }
         if (tag.contains("owner")) {
-            this.ownerUUID = tag.getUUID("owner");
+            this.ownerUUID = tag.read("owner", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
         }
         if (tag.contains("color")) {
-            color = tag.getInt("color");
+            color = tag.getIntOr("color", 0);
         }
         if (tag.contains("connected")) {
-            this.clientIsConnected = tag.getBoolean("connected");
+            this.clientIsConnected = tag.getBooleanOr("connected", false);
         }
     }
 
@@ -190,10 +190,10 @@ public class PortalFrameBlockEntity extends BlockEntity {
             tag.putBoolean("connected", this.isPortalConnected());
             var uuid = getUUID();
             if (uuid != null) {
-                tag.putUUID("uuid", uuid);
+                tag.store("uuid", net.minecraft.core.UUIDUtil.CODEC, uuid);
             }
             if (ownerUUID != null) {
-                tag.putUUID("owner", ownerUUID);
+                tag.store("owner", net.minecraft.core.UUIDUtil.CODEC, ownerUUID);
             }
         }
     }
@@ -248,8 +248,8 @@ public class PortalFrameBlockEntity extends BlockEntity {
         if (tag == null) {
             return;
         }
-        this.clientIsConnected = tag.getBoolean("connected");
-        color = tag.getInt("color");
+        this.clientIsConnected = tag.getBooleanOr("connected", false);
+        color = tag.getIntOr("color", 0);
     }
 
     @Override

@@ -110,7 +110,7 @@ public class SmallMagicArrow extends AbstractMagicProjectile {
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
-        this.inGround = tag.getBoolean("inGround");
+        this.inGround = tag.getBooleanOr("inGround", false);
     }
 
     @Override

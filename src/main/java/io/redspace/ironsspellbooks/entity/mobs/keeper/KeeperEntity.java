@@ -345,10 +345,10 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
     @Override
     public void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
-        if (pCompound.getBoolean("summoned")) {
+        if (pCompound.getBooleanOr("summoned", false)) {
             setIsSummoned();
         }
-        if (pCompound.getBoolean("restored")) {
+        if (pCompound.getBooleanOr("restored", false)) {
             setIsRestored();
         }
     }

@@ -126,30 +126,30 @@ public final class SpellSchoolMasteryStore {
 
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag root) {
         dataByPlayer.clear();
-        if (!root.contains(PLAYERS_TAG, Tag.TAG_LIST)) {
+        if (!root.contains(PLAYERS_TAG)) {
             return;
         }
-        ListTag players = root.getList(PLAYERS_TAG, Tag.TAG_COMPOUND);
+        ListTag players = root.getListOrEmpty(PLAYERS_TAG);
         for (Tag entry : players) {
             CompoundTag playerTag = (CompoundTag) entry;
-            if (!playerTag.contains(PLAYER_UUID, Tag.TAG_INT_ARRAY)) {
+            if (!playerTag.contains(PLAYER_UUID)) {
                 continue;
             }
             UUID uuid = NbtUtils.loadUUID(playerTag.get(PLAYER_UUID));
             PlayerMasteryData data = new PlayerMasteryData();
-            if (playerTag.contains(PLAYER_NAME, Tag.TAG_STRING)) {
-                data.lastKnownName = playerTag.getString(PLAYER_NAME);
+            if (playerTag.contains(PLAYER_NAME)) {
+                data.lastKnownName = playerTag.getStringOr(PLAYER_NAME, "");
             }
-            if (playerTag.contains(CASTS_TAG, Tag.TAG_COMPOUND)) {
-                CompoundTag casts = playerTag.getCompound(CASTS_TAG);
+            if (playerTag.contains(CASTS_TAG)) {
+                CompoundTag casts = playerTag.getCompoundOrEmpty(CASTS_TAG);
                 for (String key : casts.getAllKeys()) {
-                    data.castCounts.put(key, casts.getInt(key));
+                    data.castCounts.put(key, casts.getIntOr(key, 0));
                 }
             }
-            if (playerTag.contains(BONUSES_TAG, Tag.TAG_COMPOUND)) {
-                CompoundTag bonuses = playerTag.getCompound(BONUSES_TAG);
+            if (playerTag.contains(BONUSES_TAG)) {
+                CompoundTag bonuses = playerTag.getCompoundOrEmpty(BONUSES_TAG);
                 for (String key : bonuses.getAllKeys()) {
-                    data.powerBonuses.put(key, bonuses.getDouble(key));
+                    data.powerBonuses.put(key, bonuses.getDoubleOr(key, 0d));
                 }
             }
             dataByPlayer.put(uuid, data);

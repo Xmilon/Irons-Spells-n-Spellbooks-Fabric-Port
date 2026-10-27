@@ -157,7 +157,7 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityWit
     @Override
     protected void addAdditionalSaveData(CompoundTag compoundTag) {
         if (this.ownerUUID != null) {
-            compoundTag.putUUID("Owner", this.ownerUUID);
+            compoundTag.store("Owner", net.minecraft.core.UUIDUtil.CODEC, this.ownerUUID);
         }
         compoundTag.putInt("lifetime", lifetime);
 
@@ -176,20 +176,20 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityWit
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compoundTag) {
-        if (compoundTag.hasUUID("Owner")) {
-            this.ownerUUID = compoundTag.getUUID("Owner");
+        if (compoundTag.contains("Owner")) {
+            this.ownerUUID = compoundTag.read("Owner", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
         }
         if (compoundTag.contains("lifetime"))
-            this.lifetime = compoundTag.getInt("lifetime");
+            this.lifetime = compoundTag.getIntOr("lifetime", 0);
 
         //9 is list tag id
         //TODO: use castData
         anchorPoints = new ArrayList<>();
-        if (compoundTag.contains("Anchors", 9)) {
+        if (compoundTag.contains("Anchors")) {
             ListTag anchors = (ListTag) compoundTag.get("Anchors");
             for (Tag tag : anchors) {
                 if (tag instanceof CompoundTag anchor) {
-                    anchorPoints.add(new Vec3(anchor.getDouble("x"), anchor.getDouble("y"), anchor.getDouble("z")));
+                    anchorPoints.add(new Vec3(anchor.getDoubleOr("x", 0d), anchor.getDoubleOr("y", 0d), anchor.getDoubleOr("z", 0d)));
                 }
             }
         }

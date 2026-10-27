@@ -352,7 +352,7 @@ public class MagicData {
     }
 
     public void loadNBTData(CompoundTag compound, HolderLookup.Provider provider) {
-        mana = compound.getInt(MANA);
+        mana = compound.getIntOr(MANA, 0);
 
         var listTag = (ListTag) compound.get(COOLDOWNS);
         if (listTag != null && !listTag.isEmpty()) {
@@ -364,19 +364,19 @@ public class MagicData {
             playerRecasts.loadNBTData(listTag, provider);
         }
 
-        if (compound.contains(SCHOOL_CAST_COUNTS, Tag.TAG_COMPOUND)) {
-            CompoundTag castTag = compound.getCompound(SCHOOL_CAST_COUNTS);
+        if (compound.contains(SCHOOL_CAST_COUNTS)) {
+            CompoundTag castTag = compound.getCompoundOrEmpty(SCHOOL_CAST_COUNTS);
             schoolCastCounts.clear();
             for (String key : castTag.getAllKeys()) {
-                schoolCastCounts.put(key, castTag.getInt(key));
+                schoolCastCounts.put(key, castTag.getIntOr(key, 0));
             }
         }
 
-        if (compound.contains(SCHOOL_POWER_BONUSES, Tag.TAG_COMPOUND)) {
-            CompoundTag bonusTag = compound.getCompound(SCHOOL_POWER_BONUSES);
+        if (compound.contains(SCHOOL_POWER_BONUSES)) {
+            CompoundTag bonusTag = compound.getCompoundOrEmpty(SCHOOL_POWER_BONUSES);
             schoolPowerBonuses.clear();
             for (String key : bonusTag.getAllKeys()) {
-                schoolPowerBonuses.put(key, bonusTag.getDouble(key));
+                schoolPowerBonuses.put(key, bonusTag.getDoubleOr(key, 0d));
             }
         }
 

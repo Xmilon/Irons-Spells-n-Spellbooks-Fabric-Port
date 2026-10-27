@@ -25,7 +25,7 @@ public class ServerPlayerMixin {
     private void irons_spellbooks$loadMagic(CompoundTag tag, CallbackInfo ci) {
         if (tag.contains(IRONS_MAGIC)) {
             var player = (ServerPlayer) (Object) this;
-            MagicData.getPlayerMagicData(player).loadNBTData(tag.getCompound(IRONS_MAGIC), player.registryAccess());
+            MagicData.getPlayerMagicData(player).loadNBTData(tag.getCompoundOrEmpty(IRONS_MAGIC), player.registryAccess());
         }
     }
 }

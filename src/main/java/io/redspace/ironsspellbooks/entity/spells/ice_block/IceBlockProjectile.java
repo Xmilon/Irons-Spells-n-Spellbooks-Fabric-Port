@@ -85,7 +85,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
     protected void addAdditionalSaveData(CompoundTag tag) {
         super.addAdditionalSaveData(tag);
         if (this.targetUUID != null) {
-            tag.putUUID("Target", this.targetUUID);
+            tag.store("Target", net.minecraft.core.UUIDUtil.CODEC, this.targetUUID);
         }
         if (this.airTime > 0) {
             tag.putInt("airTime", airTime);
@@ -94,11 +94,11 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
 
     protected void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
-        if (tag.hasUUID("Target")) {
-            this.targetUUID = tag.getUUID("Target");
+        if (tag.contains("Target")) {
+            this.targetUUID = tag.read("Target", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
         }
         if (tag.contains("airTime")) {
-            this.airTime = tag.getInt("airTime");
+            this.airTime = tag.getIntOr("airTime", 0);
         }
     }
 

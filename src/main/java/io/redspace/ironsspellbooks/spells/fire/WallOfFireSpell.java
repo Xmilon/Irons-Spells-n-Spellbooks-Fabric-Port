@@ -234,11 +234,11 @@ public class WallOfFireSpell extends AbstractSpell {
         @Override
         public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
             this.anchorPoints = new ArrayList<>();
-            if (nbt.contains("Anchors", 9)) {
+            if (nbt.contains("Anchors")) {
                 ListTag anchors = (ListTag) nbt.get("Anchors");
                 for (Tag tag : anchors) {
                     if (tag instanceof CompoundTag anchor) {
-                        this.anchorPoints.add(new Vec3(anchor.getDouble("x"), anchor.getDouble("y"), anchor.getDouble("z")));
+                        this.anchorPoints.add(new Vec3(anchor.getDoubleOr("x", 0d), anchor.getDoubleOr("y", 0d), anchor.getDoubleOr("z", 0d)));
                     }
                 }
             }

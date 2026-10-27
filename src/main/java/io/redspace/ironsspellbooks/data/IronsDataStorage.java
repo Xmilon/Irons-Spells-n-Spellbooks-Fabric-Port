@@ -39,23 +39,23 @@ public class IronsDataStorage extends SavedData {
 
     public static IronsDataStorage load(CompoundTag tag, HolderLookup.Provider pRegistries) {
         //TODO: make annotation for this?
-        if (tag.contains("GuidingBoltManager", Tag.TAG_COMPOUND)) {
-            GuidingBoltManager.INSTANCE.deserializeNBT(pRegistries, tag.getCompound("GuidingBoltManager"));
+        if (tag.contains("GuidingBoltManager")) {
+            GuidingBoltManager.INSTANCE.deserializeNBT(pRegistries, tag.getCompoundOrEmpty("GuidingBoltManager"));
         }
-        if (tag.contains("PortalManager", Tag.TAG_COMPOUND)) {
-            PortalManager.INSTANCE.deserializeNBT(pRegistries, tag.getCompound("PortalManager"));
+        if (tag.contains("PortalManager")) {
+            PortalManager.INSTANCE.deserializeNBT(pRegistries, tag.getCompoundOrEmpty("PortalManager"));
         }
-        if (tag.contains("PocketDimensionIdManager", Tag.TAG_COMPOUND)) {
-            PocketDimensionManager.INSTANCE.deserializeNBT(pRegistries, tag.getCompound("PocketDimensionIdManager"));
+        if (tag.contains("PocketDimensionIdManager")) {
+            PocketDimensionManager.INSTANCE.deserializeNBT(pRegistries, tag.getCompoundOrEmpty("PocketDimensionIdManager"));
         }
-        if (tag.contains("SummonManager", Tag.TAG_COMPOUND)) {
-            SummonManager.INSTANCE.deserializeNBT(pRegistries, tag.getCompound("SummonManager"));
+        if (tag.contains("SummonManager")) {
+            SummonManager.INSTANCE.deserializeNBT(pRegistries, tag.getCompoundOrEmpty("SummonManager"));
         }
-        if (tag.contains("ContentPackManager", Tag.TAG_COMPOUND)) {
-            ContentPackManager.INSTANCE.deserializeNBT(pRegistries, tag.getCompound("ContentPackManager"));
+        if (tag.contains("ContentPackManager")) {
+            ContentPackManager.INSTANCE.deserializeNBT(pRegistries, tag.getCompoundOrEmpty("ContentPackManager"));
         }
-        if (tag.contains("SpellSchoolMasteryStore", Tag.TAG_COMPOUND)) {
-            SpellSchoolMasteryStore.INSTANCE.deserializeNBT(pRegistries, tag.getCompound("SpellSchoolMasteryStore"));
+        if (tag.contains("SpellSchoolMasteryStore")) {
+            SpellSchoolMasteryStore.INSTANCE.deserializeNBT(pRegistries, tag.getCompoundOrEmpty("SpellSchoolMasteryStore"));
         }
 
         return new IronsDataStorage();

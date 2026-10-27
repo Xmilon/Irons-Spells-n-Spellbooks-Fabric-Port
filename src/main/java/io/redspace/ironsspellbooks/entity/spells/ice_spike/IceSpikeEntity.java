@@ -138,7 +138,7 @@ public class IceSpikeEntity extends AoeEntity {
     @Override
     protected void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
-        this.setWaitTime(pCompound.getInt("waitTime"));
+        this.setWaitTime(pCompound.getIntOr("waitTime", 0));
     }
 
     @Override

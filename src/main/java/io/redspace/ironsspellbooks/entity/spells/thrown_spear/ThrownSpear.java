@@ -250,7 +250,7 @@ public class ThrownSpear extends AbstractArrow {
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        this.dealtDamage = compound.getBoolean("DealtDamage");
+        this.dealtDamage = compound.getBooleanOr("DealtDamage", false);
     }
 
     @Override

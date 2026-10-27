@@ -152,9 +152,9 @@ public class VoidTentacle extends LivingEntity implements GeoEntity, AntiMagicSu
      */
     public void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
-        this.age = pCompound.getInt("Age");
-        if (pCompound.hasUUID("Owner")) {
-            this.ownerUUID = pCompound.getUUID("Owner");
+        this.age = pCompound.getIntOr("Age", 0);
+        if (pCompound.contains("Owner")) {
+            this.ownerUUID = pCompound.read("Owner", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
         }
     }
 
@@ -177,7 +177,7 @@ public class VoidTentacle extends LivingEntity implements GeoEntity, AntiMagicSu
         super.addAdditionalSaveData(pCompound);
         pCompound.putInt("Age", this.age);
         if (this.ownerUUID != null) {
-            pCompound.putUUID("Owner", this.ownerUUID);
+            pCompound.store("Owner", net.minecraft.core.UUIDUtil.CODEC, this.ownerUUID);
         }
     }
 

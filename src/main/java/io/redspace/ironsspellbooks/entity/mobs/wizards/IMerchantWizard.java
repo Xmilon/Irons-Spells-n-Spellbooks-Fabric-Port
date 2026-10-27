@@ -34,8 +34,8 @@ public interface IMerchantWizard extends Merchant {
                     .resultOrPartial(Util.prefix("Failed to load offers: ", IronsSpellbooks.LOGGER::warn))
                     .ifPresent(setOffers);
         }
-        setLastRestockGameTime(pCompound.getLong("LastRestock"));
-        setRestocksToday(pCompound.getInt("RestocksToday"));
+        setLastRestockGameTime(pCompound.getLongOr("LastRestock", 0L));
+        setRestocksToday(pCompound.getIntOr("RestocksToday", 0));
     }
 
     default boolean isTrading() {

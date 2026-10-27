@@ -107,7 +107,7 @@ public class FireBomb extends AbstractMagicProjectile {
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
-        this.aoeDamage = tag.getFloat("AoeDamage");
+        this.aoeDamage = tag.getFloatOr("AoeDamage", 0f);
 
     }
 

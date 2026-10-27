@@ -119,11 +119,11 @@ public class PortalData implements ICastDataSerializable {
 
         if (globalPos1 != null) {
             tag.put("gp1", NBT.writePortalPos(globalPos1));
-            tag.putUUID("pe1", portalEntityId1);
+            tag.store("pe1", net.minecraft.core.UUIDUtil.CODEC, portalEntityId1);
 
             if (globalPos2 != null) {
                 tag.put("gp2", NBT.writePortalPos(globalPos2));
-                tag.putUUID("pe2", portalEntityId2);
+                tag.store("pe2", net.minecraft.core.UUIDUtil.CODEC, portalEntityId2);
             }
         }
 
@@ -134,18 +134,18 @@ public class PortalData implements ICastDataSerializable {
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag compoundTag) {
-        ticksToLive = compoundTag.getInt("ticksToLive");
+        ticksToLive = compoundTag.getIntOr("ticksToLive", 0);
 
         if (compoundTag.contains("gp1") && compoundTag.contains("pe1")) {
-            this.globalPos1 = NBT.readPortalPos(compoundTag.getCompound("gp1"));
-            this.portalEntityId1 = compoundTag.getUUID("pe1");
+            this.globalPos1 = NBT.readPortalPos(compoundTag.getCompoundOrEmpty("gp1"));
+            this.portalEntityId1 = compoundTag.read("pe1", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
 
             if (compoundTag.contains("gp2") && compoundTag.contains("pe2")) {
-                this.globalPos2 = NBT.readPortalPos(compoundTag.getCompound("gp2"));
-                this.portalEntityId2 = compoundTag.getUUID("pe2");
+                this.globalPos2 = NBT.readPortalPos(compoundTag.getCompoundOrEmpty("gp2"));
+                this.portalEntityId2 = compoundTag.read("pe2", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
             }
         }
-        this.isBlock = compoundTag.getBoolean("isBlock");
+        this.isBlock = compoundTag.getBooleanOr("isBlock", false);
     }
 
     @Override

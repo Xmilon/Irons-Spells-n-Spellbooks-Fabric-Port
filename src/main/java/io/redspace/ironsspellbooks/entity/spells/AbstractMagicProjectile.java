@@ -331,7 +331,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
             tag.putInt("PierceLevel", getPierceLevel());
         }
         if (this.homingTargetUUID != null) {
-            tag.putUUID("homingTarget", homingTargetUUID);
+            tag.store("homingTarget", net.minecraft.core.UUIDUtil.CODEC, homingTargetUUID);
         }
         if (getRicochetLevel() != 0) {
             tag.putInt("RicochetLevel", getRicochetLevel());
@@ -342,20 +342,20 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
-        this.damage = tag.getFloat("Damage");
+        this.damage = tag.getFloatOr("Damage", 0f);
         if (tag.contains("ExplosionRadius")) {
-            this.explosionRadius = tag.getFloat("ExplosionRadius");
+            this.explosionRadius = tag.getFloatOr("ExplosionRadius", 0f);
         }
         if (tag.contains("PierceLevel")) {
-            this.setPierceLevel(tag.getInt("PierceLevel"));
+            this.setPierceLevel(tag.getIntOr("PierceLevel", 0));
         }
-        if (tag.contains("homingTarget", 11)) {
-            this.homingTargetUUID = tag.getUUID("homingTarget");
+        if (tag.contains("homingTarget")) {
+            this.homingTargetUUID = tag.read("homingTarget", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
         }
         if (tag.contains("RicochetLevel")) {
-            setRicochetLevel(tag.getInt("RicochetLevel"));
+            setRicochetLevel(tag.getIntOr("RicochetLevel", 0));
         }
-        this.tickCount = tag.getInt("Age");
+        this.tickCount = tag.getIntOr("Age", 0);
     }
 
     @Override

@@ -241,18 +241,18 @@ public class OminousFireOrbEntity extends Entity implements AntiMagicSusceptible
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
-        this.health = compound.getFloat("Health");
-        this.damage = compound.getFloat("Damage");
-        this.radius = compound.getFloat("Radius");
-        this.tickCount = compound.getInt("Age");
+        this.health = compound.getFloatOr("Health", 0f);
+        this.damage = compound.getFloatOr("Damage", 0f);
+        this.radius = compound.getFloatOr("Radius", 0f);
+        this.tickCount = compound.getIntOr("Age", 0);
         if (compound.contains("Fuse")) {
-            setFuse(compound.getInt("Fuse"));
+            setFuse(compound.getIntOr("Fuse", 0));
         }
         if (compound.contains("ChargeTime")) {
-            setChargeTime(compound.getInt("ChargeTime"));
+            setChargeTime(compound.getIntOr("ChargeTime", 0));
         }
-        if (compound.hasUUID("Owner")) {
-            this.ownerUUID = compound.getUUID("Owner");
+        if (compound.contains("Owner")) {
+            this.ownerUUID = compound.read("Owner", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
             this.cachedOwner = null;
         }
     }
@@ -270,7 +270,7 @@ public class OminousFireOrbEntity extends Entity implements AntiMagicSusceptible
             compound.putInt("ChargeTime", getChargeTime());
         }
         if (this.ownerUUID != null) {
-            compound.putUUID("Owner", this.ownerUUID);
+            compound.store("Owner", net.minecraft.core.UUIDUtil.CODEC, this.ownerUUID);
         }
     }
 

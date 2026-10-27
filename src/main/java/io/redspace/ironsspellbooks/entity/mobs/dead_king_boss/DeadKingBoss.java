@@ -561,10 +561,10 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
             setFinalPhaseGoals();
         }
         entityData.set(IS_OMINOUS, pCompound.getBoolean("ominous"));
-        this.playerScale = pCompound.getInt("playerScale");
+        this.playerScale = pCompound.getIntOr("playerScale", 0);
         bossLoot.load(pCompound, this.registryAccess());
-        if (pCompound.contains("SpawnPos", Tag.TAG_COMPOUND)) {
-            this.spawnPos = NBT.readVec3(pCompound.getCompound("SpawnPos"));
+        if (pCompound.contains("SpawnPos")) {
+            this.spawnPos = NBT.readVec3(pCompound.getCompoundOrEmpty("SpawnPos"));
         } else {
             this.spawnPos = null;
         }

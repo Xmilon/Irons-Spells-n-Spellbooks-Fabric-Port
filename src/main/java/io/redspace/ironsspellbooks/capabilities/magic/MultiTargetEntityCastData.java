@@ -69,7 +69,7 @@ public class MultiTargetEntityCastData implements ICastDataSerializable {
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         targetUUIDs = new ArrayList<>();
-        ListTag listTag = nbt.getList("targets", 11);
+        ListTag listTag = nbt.getListOrEmpty("targets");
         listTag.stream().map(NbtUtils::loadUUID).forEach(targetUUIDs::add);
     }
 }

@@ -182,7 +182,7 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
     @Override
     protected void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
-        this.slownessAmplifier = pCompound.getInt("Slowness");
+        this.slownessAmplifier = pCompound.getIntOr("Slowness", 0);
         //IronsSpellbooks.LOGGER.debug("EarthquakeAoe readAdditionalSaveData");
         createScreenShake();
     }

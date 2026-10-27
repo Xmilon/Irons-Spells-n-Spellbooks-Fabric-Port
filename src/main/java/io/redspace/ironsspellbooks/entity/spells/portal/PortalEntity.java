@@ -220,11 +220,11 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
     @Override
     protected void readAdditionalSaveData(CompoundTag compoundTag) {
         if (compoundTag.contains("ownerUUID")) {
-            setOwnerUUID(compoundTag.getUUID("ownerUUID"));
+            setOwnerUUID(compoundTag.read("ownerUUID", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
         }
 
         if (compoundTag.contains("ticksToLive")) {
-            ticksToLive = compoundTag.getLong("ticksToLive");
+            ticksToLive = compoundTag.getLongOr("ticksToLive", 0L);
         }
 
         var portalData = PortalManager.INSTANCE.getPortalData(this);
@@ -241,7 +241,7 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
     @Override
     protected void addAdditionalSaveData(CompoundTag compoundTag) {
         compoundTag.putLong("ticksToLive", ticksToLive);
-        compoundTag.putUUID("ownerUUID", getOwnerUUID());
+        compoundTag.store("ownerUUID", net.minecraft.core.UUIDUtil.CODEC, getOwnerUUID());
     }
 
     public class LoopTrackerData {

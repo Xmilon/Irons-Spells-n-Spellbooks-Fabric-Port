@@ -259,7 +259,7 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
         ListTag offlineSummonsInstances = new ListTag();
         for (var entry : offlineSummonersToSavedEntities.entrySet()) {
             CompoundTag tag = new CompoundTag();
-            tag.putUUID("summoner", entry.getKey());
+            tag.store("summoner", net.minecraft.core.UUIDUtil.CODEC, entry.getKey());
             ListTag summons = new ListTag();
             summons.addAll(entry.getValue());
             tag.put("summons", summons);
@@ -271,11 +271,11 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
 
     @Override
     public void deserializeNBT(HolderLookup.Provider pRegistries, CompoundTag compoundTag) {
-        ListTag offline = compoundTag.getList("OfflineSummons", Tag.TAG_COMPOUND);
+        ListTag offline = compoundTag.getListOrEmpty("OfflineSummons");
         for (Tag tag : offline) {
             CompoundTag entry = (CompoundTag) tag;
-            var uuid = entry.getUUID("summoner");
-            ListTag summons = entry.getList("summons", Tag.TAG_COMPOUND);
+            var uuid = entry.read("summoner", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
+            ListTag summons = entry.getListOrEmpty("summons");
             ArrayList<CompoundTag> summonsList = new ArrayList<>();
             summons.forEach(t -> summonsList.add((CompoundTag) t));
             offlineSummonersToSavedEntities.put(uuid, summonsList);

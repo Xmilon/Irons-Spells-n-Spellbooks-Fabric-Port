@@ -54,9 +54,9 @@ public class ImpulseCastData implements ICastDataSerializable {
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag compoundTag) {
-        x = compoundTag.getFloat("x");
-        y = compoundTag.getFloat("y");
-        z = compoundTag.getFloat("z");
-        hasImpulse = compoundTag.getBoolean("i");
+        x = compoundTag.getFloatOr("x", 0f);
+        y = compoundTag.getFloatOr("y", 0f);
+        z = compoundTag.getFloatOr("z", 0f);
+        hasImpulse = compoundTag.getBooleanOr("i", false);
     }
 }

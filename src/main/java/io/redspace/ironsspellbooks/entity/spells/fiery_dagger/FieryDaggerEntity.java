@@ -250,7 +250,7 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
             tag.put("ownerTrack", NBT.writeVec3Pos(ownerTrack));
         }
         if (targetEntity != null) {
-            tag.putUUID("target", targetEntity);
+            tag.store("target", net.minecraft.core.UUIDUtil.CODEC, targetEntity);
         }
         tag.putInt("Age", age);
     }
@@ -258,14 +258,14 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
-        this.delay = tag.getInt("delay");
-        if (tag.hasUUID("ownerTrack")) {
-            this.ownerTrack = NBT.readVec3(tag.getCompound("ownerTrack"));
+        this.delay = tag.getIntOr("delay", 0);
+        if (tag.contains("ownerTrack")) {
+            this.ownerTrack = NBT.readVec3(tag.getCompoundOrEmpty("ownerTrack"));
         }
-        if (tag.hasUUID("target")) {
-            this.targetEntity = tag.getUUID("target");
+        if (tag.contains("target")) {
+            this.targetEntity = tag.read("target", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
         }
-        this.age = tag.getInt("Age");
+        this.age = tag.getIntOr("Age", 0);
     }
 
     /*

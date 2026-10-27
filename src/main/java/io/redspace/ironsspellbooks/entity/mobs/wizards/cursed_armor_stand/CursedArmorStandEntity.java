@@ -266,12 +266,12 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
     @Override
     public void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
-        this.originalYRot = pCompound.getFloat("originalYRot");
-        if (pCompound.contains("spawnPos", 10)) {
-            this.spawn = NBT.readVec3(pCompound.getCompound("spawnPos"));
+        this.originalYRot = pCompound.getFloatOr("originalYRot", 0f);
+        if (pCompound.contains("spawnPos")) {
+            this.spawn = NBT.readVec3(pCompound.getCompoundOrEmpty("spawnPos"));
         }
-        this.setArmorStandFrozen(pCompound.getBoolean("armorStandFrozen"));
-        String pose = pCompound.getString("armorStandPose");
+        this.setArmorStandFrozen(pCompound.getBooleanOr("armorStandFrozen", false));
+        String pose = pCompound.getStringOr("armorStandPose", "");
         try {
             this.setArmorstandPose(Pose.valueOf(pose));
         } catch (Exception ignored) {

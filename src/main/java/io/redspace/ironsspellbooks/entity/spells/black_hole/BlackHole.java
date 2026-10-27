@@ -118,13 +118,13 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
     }
 
     protected void readAdditionalSaveData(CompoundTag pCompound) {
-        this.tickCount = pCompound.getInt("Age");
-        this.damage = pCompound.getFloat("Damage");
-        this.duration = pCompound.getInt("Duration");
+        this.tickCount = pCompound.getIntOr("Age", 0);
+        this.damage = pCompound.getFloatOr("Damage", 0f);
+        this.duration = pCompound.getIntOr("Duration", 0);
         if (damage == 0)
             damage = 1;
         if (pCompound.getInt("Radius") > 0)
-            this.setRadius(pCompound.getFloat("Radius"));
+            this.setRadius(pCompound.getFloatOr("Radius", 0f));
 
         super.readAdditionalSaveData(pCompound);
 

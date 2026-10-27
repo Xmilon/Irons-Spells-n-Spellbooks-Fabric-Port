@@ -85,9 +85,9 @@ public class DebugWizard extends AbstractSpellCastingMob implements Enemy {
     public void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
         spell = SpellRegistry.getSpell(pCompound.getString("spellId"));
-        spellLevel = pCompound.getInt("spellLevel");
-        targetsPlayer = pCompound.getBoolean("targetsPlayer");
-        cancelCastAfterTicks = pCompound.getInt("cancelCastAfterTicks");
+        spellLevel = pCompound.getIntOr("spellLevel", 0);
+        targetsPlayer = pCompound.getBooleanOr("targetsPlayer", false);
+        cancelCastAfterTicks = pCompound.getIntOr("cancelCastAfterTicks", 0);
         initGoals();
     }
 

@@ -335,23 +335,23 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
     @Override
     public void readAdditionalSaveData(CompoundTag compoundTag) {
         super.readAdditionalSaveData(compoundTag);
-        if (compoundTag.hasUUID("Summoner")) {
-            this.summonerUUID = compoundTag.getUUID("Summoner");
+        if (compoundTag.contains("Summoner")) {
+            this.summonerUUID = compoundTag.read("Summoner", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
         }
         if (compoundTag.contains("entityToCopy")) {
             try {
-                setEntityTypeToCopy(BuiltInRegistries.ENTITY_TYPE.get(Identifier.parse(compoundTag.getString("entityToCopy"))));
+                setEntityTypeToCopy(BuiltInRegistries.ENTITY_TYPE.get(Identifier.parse(compoundTag.getStringOr("entityToCopy", ""))));
             } catch (Exception ignore) {
             }
         }
-        this.deathTimer = compoundTag.getInt("deathTimer");
+        this.deathTimer = compoundTag.getIntOr("deathTimer", 0);
     }
 
     @Override
     public void addAdditionalSaveData(CompoundTag compoundTag) {
         super.addAdditionalSaveData(compoundTag);
         if (this.summonerUUID != null) {
-            compoundTag.putUUID("Summoner", this.summonerUUID);
+            compoundTag.store("Summoner", net.minecraft.core.UUIDUtil.CODEC, this.summonerUUID);
         }
         if (this.entityToCopy != null) {
             compoundTag.putString("entityToCopy", BuiltInRegistries.ENTITY_TYPE.getKey(entityToCopy).toString());

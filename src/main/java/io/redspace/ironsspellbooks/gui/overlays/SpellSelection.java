@@ -75,10 +75,10 @@ public class SpellSelection implements ISerializable, INBTSerializable<CompoundT
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag compoundTag) {
-        equipmentSlot = compoundTag.getString("slot");
-        index = compoundTag.getInt("index");
-        lastEquipmentSlot = compoundTag.getString("lastSlot");
-        lastIndex = compoundTag.getInt("lastIndex");
+        equipmentSlot = compoundTag.getStringOr("slot", "");
+        index = compoundTag.getIntOr("index", 0);
+        lastEquipmentSlot = compoundTag.getStringOr("lastSlot", "");
+        lastIndex = compoundTag.getIntOr("lastIndex", 0);
     }
 
     @Override

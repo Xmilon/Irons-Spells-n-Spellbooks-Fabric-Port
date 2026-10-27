@@ -100,8 +100,8 @@ public class AcidOrb extends AbstractMagicProjectile {
     @Override
     protected void readAdditionalSaveData(CompoundTag tag) {
         super.readAdditionalSaveData(tag);
-        this.rendLevel = tag.getInt("RendLevel");
-        this.rendDuration = tag.getInt("RendDuration");
+        this.rendLevel = tag.getIntOr("RendLevel", 0);
+        this.rendDuration = tag.getIntOr("RendDuration", 0);
     }
 }
 

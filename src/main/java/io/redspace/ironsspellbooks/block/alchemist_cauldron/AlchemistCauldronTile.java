@@ -257,8 +257,8 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         }
 
         public void load(String name, CompoundTag tag, HolderLookup.Provider access) {
-            if (tag.contains(name, 9)) {
-                ListTag fluids = tag.getList(name, 10);
+            if (tag.contains(name)) {
+                ListTag fluids = tag.getListOrEmpty(name);
                 int i = 0;
                 try {
                     for (Tag l : fluids) {

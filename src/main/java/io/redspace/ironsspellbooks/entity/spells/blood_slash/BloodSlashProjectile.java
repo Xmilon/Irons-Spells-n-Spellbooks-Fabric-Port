@@ -196,7 +196,7 @@ public class BloodSlashProjectile extends Projectile implements AntiMagicSuscept
     @Override
     protected void readAdditionalSaveData(CompoundTag pCompound) {
         super.readAdditionalSaveData(pCompound);
-        this.damage = pCompound.getFloat("Damage");
+        this.damage = pCompound.getFloatOr("Damage", 0f);
     }
 }
 

@@ -193,7 +193,7 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
         if (!portalLookup.isEmpty()) {
             portalLookupTag.addAll(portalLookup.entrySet().stream().map(entry -> {
                 CompoundTag itemTag = new CompoundTag();
-                itemTag.putUUID("key", entry.getKey());
+                itemTag.store("key", net.minecraft.core.UUIDUtil.CODEC, entry.getKey());
                 itemTag.put("value", entry.getValue().serializeNBT(pRegistries));
                 return itemTag;
             }).toList());
@@ -211,8 +211,8 @@ public class PortalManager implements INBTSerializable<CompoundTag> {
                 portalLookupTag.forEach(tag -> {
                     var portalLookupItem = (CompoundTag) tag;
                     var portalData = new PortalData();
-                    portalData.deserializeNBT(pRegistries, portalLookupItem.getCompound("value"));
-                    portalLookup.put(portalLookupItem.getUUID("key"), portalData);
+                    portalData.deserializeNBT(pRegistries, portalLookupItem.getCompoundOrEmpty("value"));
+                    portalLookup.put(portalLookupItem.read("key", net.minecraft.core.UUIDUtil.CODEC).orElse(null), portalData);
                 });
             }
         }

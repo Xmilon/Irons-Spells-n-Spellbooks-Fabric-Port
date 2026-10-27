@@ -176,9 +176,9 @@ public class UndeadRiftEntity extends Entity implements IMagicSummon {
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
-        this.summonedCount = compound.getInt("SummonedCount");
-        this.summonsToSpawn = compound.getInt("SummonsToSpawn");
-        this.delay = compound.getInt("Delay");
+        this.summonedCount = compound.getIntOr("SummonedCount", 0);
+        this.summonsToSpawn = compound.getIntOr("SummonsToSpawn", 0);
+        this.delay = compound.getIntOr("Delay", 0);
     }
 
     @Override

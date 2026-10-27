@@ -783,9 +783,9 @@ public class Utils {
     }
 
     public static void loadAllItems(CompoundTag pTag, NonNullList<ItemStack> pItems, String location, HolderLookup.Provider pLevelRegistry) {
-        ListTag listtag = pTag.getList(location, 10);
+        ListTag listtag = pTag.getListOrEmpty(location);
         for (int i = 0; i < listtag.size(); i++) {
-            CompoundTag compoundtag = listtag.getCompound(i);
+            CompoundTag compoundtag = listtag.getCompoundOrEmpty(i);
             int j = compoundtag.getByte("Slot") & 255;
             if (j >= 0 && j < pItems.size()) {
                 pItems.set(j, ItemStack.parse(pLevelRegistry, compoundtag).orElse(ItemStack.EMPTY));

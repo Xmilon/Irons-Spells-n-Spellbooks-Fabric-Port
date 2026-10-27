@@ -55,13 +55,13 @@ public class SerializedTargetData implements ICastDataSerializable {
     @Override
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
-        tag.putUUID("target", this.targetUUID);
+        tag.store("target", net.minecraft.core.UUIDUtil.CODEC, this.targetUUID);
         return tag;
     }
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        this.targetUUID = nbt.getUUID("target");
+        this.targetUUID = nbt.read("target", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
     }
 }
 

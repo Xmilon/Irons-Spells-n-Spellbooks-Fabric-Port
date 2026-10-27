@@ -100,8 +100,8 @@ public class FangSwirlEntity extends AoeEntity {
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        if (compound.contains("startPos", Tag.TAG_COMPOUND)) {
-            this.startPos = NBT.readVec3(compound.getCompound("startPos"));
+        if (compound.contains("startPos")) {
+            this.startPos = NBT.readVec3(compound.getCompoundOrEmpty("startPos"));
         }
     }
 

@@ -107,8 +107,8 @@ public final class ContentPackManager {
 
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag tag) {
         enabledPacks.clear();
-        if (tag.contains(ENABLED_TAG, Tag.TAG_LIST)) {
-            ListTag list = tag.getList(ENABLED_TAG, Tag.TAG_STRING);
+        if (tag.contains(ENABLED_TAG)) {
+            ListTag list = tag.getListOrEmpty(ENABLED_TAG);
             for (Tag entry : list) {
                 enabledPacks.add(normalize(entry.getAsString()));
             }

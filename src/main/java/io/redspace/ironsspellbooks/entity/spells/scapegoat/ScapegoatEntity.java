@@ -207,7 +207,7 @@ public class ScapegoatEntity extends PathfinderMob implements AntiMagicSusceptib
     public void addAdditionalSaveData(CompoundTag compound) {
         super.addAdditionalSaveData(compound);
         if (this.ownerUUID != null) {
-            compound.putUUID("Owner", this.ownerUUID);
+            compound.store("Owner", net.minecraft.core.UUIDUtil.CODEC, this.ownerUUID);
         }
         if (this.targetPos != null) {
             compound.put("scapegoat_target", NbtUtils.writeBlockPos(this.targetPos));
@@ -220,12 +220,12 @@ public class ScapegoatEntity extends PathfinderMob implements AntiMagicSusceptib
     @Override
     public void readAdditionalSaveData(CompoundTag compound) {
         super.readAdditionalSaveData(compound);
-        if (compound.hasUUID("Owner")) {
-            this.ownerUUID = compound.getUUID("Owner");
+        if (compound.contains("Owner")) {
+            this.ownerUUID = compound.read("Owner", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
             this.cachedOwner = null;
         }
         NbtUtils.readBlockPos(compound, "scapegoat_target").ifPresent(p_325838_ -> this.targetPos = p_325838_);
-        this.durationRemaining = compound.getInt("duration_remaining");
+        this.durationRemaining = compound.getIntOr("duration_remaining", 0);
     }
 
     public static AttributeSupplier.Builder prepareAttributes() {

@@ -182,24 +182,24 @@ public class FireflySwarmProjectile extends PathfinderMob implements AntiMagicSu
     public void addAdditionalSaveData(CompoundTag pCompound) {
         super.addAdditionalSaveData(pCompound);
         if (this.targetUUID != null) {
-            pCompound.putUUID("Target", this.targetUUID);
+            pCompound.store("Target", net.minecraft.core.UUIDUtil.CODEC, this.targetUUID);
         }
         if (this.ownerUUID != null) {
-            pCompound.putUUID("Owner", this.ownerUUID);
+            pCompound.store("Owner", net.minecraft.core.UUIDUtil.CODEC, this.ownerUUID);
         }
         pCompound.putInt("Age", this.tickCount);
         pCompound.putFloat("Damage", this.damage);
     }
 
     public void readAdditionalSaveData(CompoundTag pCompound) {
-        if (pCompound.hasUUID("Target")) {
-            this.targetUUID = pCompound.getUUID("Target");
+        if (pCompound.contains("Target")) {
+            this.targetUUID = pCompound.read("Target", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
         }
-        if (pCompound.hasUUID("Owner")) {
-            this.ownerUUID = pCompound.getUUID("Owner");
+        if (pCompound.contains("Owner")) {
+            this.ownerUUID = pCompound.read("Owner", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
         }
-        this.tickCount = pCompound.getInt("Age");
-        this.damage = pCompound.getFloat("Damage");
+        this.tickCount = pCompound.getIntOr("Age", 0);
+        this.damage = pCompound.getFloatOr("Damage", 0f);
     }
 
     @Override

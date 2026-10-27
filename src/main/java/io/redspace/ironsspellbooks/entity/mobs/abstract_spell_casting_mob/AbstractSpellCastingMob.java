@@ -177,7 +177,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
             this.recreateSpell = true;
         }
         playerMagicData.setSyncedData(syncedSpellData);
-        hasUsedSingleAttack = pCompound.getBoolean("usedSpecial");
+        hasUsedSingleAttack = pCompound.getBooleanOr("usedSpecial", false);
     }
 
     public void cancelCast() {

@@ -209,7 +209,7 @@ public class IceTombEntity extends Entity implements PreventDismount, AntiMagicS
     @Override
     protected void addAdditionalSaveData(CompoundTag compound) {
         if (this.ownerUUID != null) {
-            compound.putUUID("Owner", this.ownerUUID);
+            compound.store("Owner", net.minecraft.core.UUIDUtil.CODEC, this.ownerUUID);
         }
         compound.putInt("age", tickCount);
         compound.putInt("lifetime", lifetime);
@@ -229,15 +229,15 @@ public class IceTombEntity extends Entity implements PreventDismount, AntiMagicS
 
     @Override
     protected void readAdditionalSaveData(CompoundTag compound) {
-        if (compound.hasUUID("Owner")) {
-            this.ownerUUID = compound.getUUID("Owner");
+        if (compound.contains("Owner")) {
+            this.ownerUUID = compound.read("Owner", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
             this.cachedOwner = null;
         }
-        this.tickCount = compound.getInt("age");
-        this.lifetime = compound.getInt("lifetime");
-        this.evil = compound.getBoolean("evil");
-        this.health = compound.getFloat("health");
-        this.healing = compound.getFloat("healing");
+        this.tickCount = compound.getIntOr("age", 0);
+        this.lifetime = compound.getIntOr("lifetime", 0);
+        this.evil = compound.getBooleanOr("evil", false);
+        this.health = compound.getFloatOr("health", 0f);
+        this.healing = compound.getFloatOr("healing", 0f);
     }
 
     public void refreshDimensions() {

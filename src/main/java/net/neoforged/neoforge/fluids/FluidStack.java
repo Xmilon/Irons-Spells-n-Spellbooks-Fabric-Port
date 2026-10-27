@@ -142,8 +142,8 @@ public class FluidStack {
         if (tag == null || !tag.contains("fluid")) {
             return EMPTY;
         }
-        Fluid fluid = BuiltInRegistries.FLUID.get(Identifier.parse(tag.getString("fluid")));
-        int amount = tag.getInt("amount");
+        Fluid fluid = BuiltInRegistries.FLUID.get(Identifier.parse(tag.getStringOr("fluid", "")));
+        int amount = tag.getIntOr("amount", 0);
         FluidStack stack = new FluidStack(fluid, amount);
 
         if (tag.contains("potion_contents")) {
@@ -151,7 +151,7 @@ public class FluidStack {
                     .ifPresent(value -> stack.set(DataComponents.POTION_CONTENTS, value));
         }
         if (tag.contains("potion_bottle_type")) {
-            String raw = tag.getString("potion_bottle_type");
+            String raw = tag.getStringOr("potion_bottle_type", "");
             for (PotionFluid.BottleType value : PotionFluid.BottleType.values()) {
                 if (Objects.equals(value.getSerializedName(), raw)) {
                     stack.set(ComponentRegistry.POTION_BOTTLE_TYPE, value);

@@ -102,9 +102,9 @@ public class PlayerCooldowns {
         if (listTag != null) {
             listTag.forEach(tag -> {
                 CompoundTag t = (CompoundTag) tag;
-                String spellId = t.getString(SPELL_ID);
-                int spellCooldown = t.getInt(SPELL_COOLDOWN);
-                int cooldownRemaining = t.getInt(COOLDOWN_REMAINING);
+                String spellId = t.getStringOr(SPELL_ID, "");
+                int spellCooldown = t.getIntOr(SPELL_COOLDOWN, 0);
+                int cooldownRemaining = t.getIntOr(COOLDOWN_REMAINING, 0);
                 spellCooldowns.put(spellId, new CooldownInstance(spellCooldown, cooldownRemaining));
             });
         }

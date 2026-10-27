@@ -79,8 +79,8 @@ public class SummonedEntitiesCastData implements ICastDataSerializable {
 
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
-        ListTag list = nbt.getList("summons", IntArrayTag.TAG_INT_ARRAY);
+        ListTag list = nbt.getListOrEmpty("summons");
         list.forEach(tag -> summons.add(NbtUtils.loadUUID(tag)));
-        this.maxHealthPool = nbt.getFloat("maxHealthPool");
+        this.maxHealthPool = nbt.getFloatOr("maxHealthPool", 0f);
     }
 }

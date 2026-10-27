@@ -86,7 +86,7 @@ public class ScrollForgeTile extends BlockEntity implements MenuProvider {
     protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
         super.loadAdditional(pTag, pRegistries);
         if (pTag.contains("inventory")) {
-            itemHandler.deserializeNBT(pRegistries, pTag.getCompound("inventory"));
+            itemHandler.deserializeNBT(pRegistries, pTag.getCompoundOrEmpty("inventory"));
         }
     }
 
