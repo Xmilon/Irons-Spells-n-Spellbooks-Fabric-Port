@@ -139,7 +139,7 @@ tasks.register('verifyBundledDependencies') {
 }
 
 // Keep the rendering migration check runnable while unrelated game APIs are being ported.
-def portCompileClasspath = files(providers.provider { sourceSets.main.compileClasspath.files })
+def portCompileClasspath = sourceSets.main.compileClasspath
 tasks.register('compilePortRendering', JavaCompile) {
 	source 'src/main/java/io/redspace/ironsspellbooks/render/RenderHelper.java',
 		'src/main/java/io/redspace/ironsspellbooks/render/GuiQuadRenderState.java',

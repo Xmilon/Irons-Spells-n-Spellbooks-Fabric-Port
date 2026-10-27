@@ -38,14 +38,23 @@ The old 1.21.1 loose helper JARs are no longer included in the development class
 
 ## Checks and remaining work
 
-`gradlew verifyBundledDependencies verifyPortRendering processResources :irons-lib:processResources`
+`gradlew verifyBundledDependencies verifyPortRendering processResources :irons-lib:build`
 checks pinned artifact integrity, nested helper presence, compilation of the native
-rendering helpers, deferred GUI snapshot ownership, clipping, bounds, and resource processing.
+rendering helpers, deferred GUI/cape/soul-fire state ownership, clipping, bounds,
+statue/remap codec round trips, resource processing, and the complete library build.
 These focused checks do not imply the full mod builds.
 
-Remaining: finish native library event/network/menu/client integration; replace
-main-mod compatibility classes and removed game APIs; migrate the remaining
-renderers, item models, player animation integration, HUD, particles, and fog.
+Library milestone verified on a dedicated 26.3 development server: fresh-world
+startup, statue and transmog-table placement, custom attributes on a pig,
+guaranteed dodge cancelling damage without reducing health, save/stop/restart,
+persisted attribute values and both blocks, and datapack reload. A second run
+included compatible external copies of Accessories and owo-lib; each mod ID
+loaded once. This tests library behavior, not the Spellbooks mod or its mana.
+
+Remaining: validate the library client visually; replace main-mod compatibility
+classes and removed game APIs; migrate the remaining renderers, item models,
+player animation integration, HUD, particles, and fog. The main mod currently
+reaches the compiler's 2,000-error limit; it has not reached a playable milestone.
 
 Before calling the port playable, build both projects and test dedicated server
 startup, multiplayer/reconnect, resource reload, equipment modifiers exactly once,
@@ -55,4 +64,7 @@ Vulkan and OpenGL with improved transparency enabled and disabled.
 The dark portal pipeline preserves its original destination-color blend factors.
 Correct ordering with improved transparency needs a custom accumulation shader;
 the current classic blend path is an explicitly documented intermediate limit.
-No client/server runtime or old-save migration has been validated yet.
+Client rendering, multiplayer, equipment bonuses, hostile statue-packet cases,
+and old-save migration remain unchecked. The community dependencies log nonfatal
+empty-refmap/client-mixin warnings on a dedicated server; keep these attributable
+to their original artifacts rather than silently modifying the pinned JARs.

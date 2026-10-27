@@ -60,5 +60,23 @@ tasks.register('verifyPortSnapshots', JavaExec) {
 }
 
 tasks.named('check') {
-    dependsOn 'verifyPortSnapshots'
+    dependsOn 'verifyPortSnapshots', 'verifyPortBehavior'
+}
+
+sourceSets {
+    portTest {
+        java.srcDir 'src/portTest/java'
+        compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+        runtimeClasspath += sourceSets.main.output + sourceSets.main.runtimeClasspath
+        // Plain JVM checks need the helper JARs that Fabric normally loads from inside owo.
+        runtimeClasspath += compileClasspath
+    }
+}
+
+tasks.register('verifyPortBehavior', JavaExec) {
+    dependsOn 'portTestClasses'
+    classpath = sourceSets.portTest.runtimeClasspath
+    mainClass = 'io.redspace.ironslib.LibraryPortChecks'
+    enableAssertions = true
+    javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(25) }
 }

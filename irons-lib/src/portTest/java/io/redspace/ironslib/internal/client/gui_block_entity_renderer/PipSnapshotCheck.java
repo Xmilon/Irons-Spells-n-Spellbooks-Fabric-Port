@@ -3,7 +3,7 @@ import io.redspace.ironslib.internal.client.gui_block_entity_renderer.GuiBlockEn
 import org.joml.Quaternionf;
 import org.joml.Vector3f;
 
-class PipSnapshotCheck {
+public class PipSnapshotCheck {
     public static void main(String[] args) {
         var translation = new Vector3f(1, 2, 3);
         var pivot = new Vector3f(4, 5, 6);
