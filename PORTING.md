@@ -91,3 +91,12 @@ listeners (Tyros particles), per-bone layer poses (eyes, charge, flame), and arm
 Known gaps: re-draw layers (swirl, ghost, soul) cannot tint per pass; the hard-coded mob cape layer and the
 Summoned Skeleton/Zombie vanilla-fallback renderers are not ported; player render layers (`*Layer.Vanilla`)
 and the GeckoLib armor item registration (`ExtendedArmorItem`) wait for the item/API phase.
+
+Item/registry/save status: armor items use `ArmorMaterial`/`ArmorType` with `Properties.humanoidArmor`; weapon tiers build
+a `ToolMaterial`. Items and blocks get their registry key through `ItemIdContext` (set by the `DeferredRegister` shim)
+and `ItemMixin`/`BlockBehaviourMixin` (`Properties.setId`); mixin application is untested. Entity saves use
+`ValueInput`/`ValueOutput`; legacy `CompoundTag` helpers are bridged by `ValueIO`, which nests their data under a key
+(not compatible with 1.21 saves). `CompoundTag` getters were moved to the `*Or` variants.
+Still needed: tag data for `irons_spellbooks:armor_repair/*` and `irons_spellbooks:weapon_repair`, equipment asset JSONs under
+`assets/irons_spellbooks/equipment/`, `SummonManager` entity save/load, remaining `Item` signatures (`useOn`,
+`releaseUsing`, `addCooldown`, `inventoryTick`), and particles.
