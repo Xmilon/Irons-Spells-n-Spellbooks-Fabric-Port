@@ -1,5 +1,5 @@
 plugins {
-	id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
+	id 'net.fabricmc.fabric-loom' version "${loom_version}"
 	id 'maven-publish'
 }
 
@@ -16,12 +16,7 @@ repositories {
 	// Loom adds the essential maven repositories to download Minecraft and libraries from automatically.
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
-	maven {
-		url = "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/"
-	}
-	maven {
-		url = "https://maven.kosmx.dev/"
-	}
+	maven { url = "https://api.modrinth.com/maven" }
 }
 
 loom {
@@ -43,16 +38,19 @@ fabricApi {
 }
 
 dependencies {
+	implementation project(':irons-lib')
+	include project(':irons-lib')
 	// To change the versions see the gradle.properties file
 	minecraft "com.mojang:minecraft:${project.minecraft_version}"
-	mappings loom.officialMojangMappings()
-	modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+	implementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
 	// Fabric API. This is technically optional, but you probably want it anyway.
-	modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
-	modImplementation "software.bernie.geckolib:geckolib-fabric-1.21:4.5.8"
-	modImplementation "dev.kosmx.player-anim:player-animation-lib-fabric:2.0.4+1.21.1"
-	modRuntimeOnly fileTree(dir: "libs", include: ["*.jar"])
+	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
+	implementation "maven.modrinth:geckolib:${project.geckolib_version}"
+	implementation "maven.modrinth:player-animation-library:${project.player_animation_version}"
+	implementation files("libs/26.3/accessories-fabric-1.4.3-beta+26.3.jar", "libs/26.3/owo-lib-0.13.1+26.3.jar")
+	include files("libs/26.3/accessories-fabric-1.4.3-beta+26.3.jar", "libs/26.3/owo-lib-0.13.1+26.3.jar")
+	compileOnly files(zipTree('libs/26.3/owo-lib-0.13.1+26.3.jar').matching { include 'META-INF/jars/*.jar' })
 	compileOnly "com.google.code.findbugs:jsr305:3.0.2"
 	compileOnly "com.google.j2objc:j2objc-annotations:2.8"
 	compileOnly "com.electronwill.night-config:core:3.8.1"
@@ -76,8 +74,10 @@ processResources {
 }
 
 tasks.withType(JavaCompile).configureEach {
-	it.options.release = 21
+	it.options.release = 25
 	it.options.compilerArgs << "-Xmaxerrs" << "2000"
+	// The unobfuscated game does not need Mixin's legacy refmap processor.
+	it.options.compilerArgs << "-proc:none"
 }
 
 java {
@@ -86,8 +86,7 @@ java {
 	// If you remove this line, sources will not be generated.
 	withSourcesJar()
 
-	sourceCompatibility = JavaVersion.VERSION_21
-	targetCompatibility = JavaVersion.VERSION_21
+	toolchain.languageVersion = JavaLanguageVersion.of(25)
 }
 
 sourceSets {
@@ -105,13 +104,61 @@ sourceSets {
 jar {
 	inputs.property "archivesName", project.base.archivesName
 
-	from("LICENSE") {
+	from("LICENSE.md") {
 		rename { "${it}_${inputs.properties.archivesName}"}
 	}
 }
 
 tasks.named("sourcesJar") {
 	duplicatesStrategy = DuplicatesStrategy.EXCLUDE
+}
+
+tasks.register('verifyBundledDependencies') {
+	def checksums = [
+		'accessories-fabric-1.4.3-beta+26.3.jar': '3bc31f765f1d145c36fdf2780d654efc17eee15e2129a31a8754c4c8d3c83234',
+		'owo-lib-0.13.1+26.3.jar': '879e155e9bdde306e9c8a6e4120abf52ccc05d22743a4246348ea87b7a78ba53'
+	]
+	inputs.files(checksums.keySet().collect { file("libs/26.3/${it}") })
+	doLast {
+		checksums.each { name, expected ->
+			def dependency = file("libs/26.3/${name}")
+			def actual = java.security.MessageDigest.getInstance('SHA-256').digest(dependency.bytes).encodeHex().toString()
+			if (actual != expected) {
+				throw new GradleException("Bundled dependency checksum mismatch: ${name}")
+			}
+			new java.util.zip.ZipFile(dependency).withCloseable { archive ->
+				def metadata = new groovy.json.JsonSlurper().parse(archive.getInputStream(archive.getEntry('fabric.mod.json')))
+				(metadata.jars ?: []).each { nested ->
+					if (archive.getEntry(nested.file) == null) {
+						throw new GradleException("Missing nested dependency ${nested.file} in ${name}")
+					}
+				}
+			}
+		}
+	}
+}
+
+// Keep the rendering migration check runnable while unrelated game APIs are being ported.
+def portCompileClasspath = files(providers.provider { sourceSets.main.compileClasspath.files })
+tasks.register('compilePortRendering', JavaCompile) {
+	source 'src/main/java/io/redspace/ironsspellbooks/render/RenderHelper.java',
+		'src/main/java/io/redspace/ironsspellbooks/render/GuiQuadRenderState.java',
+		'src/portTest/java/io/redspace/ironsspellbooks/render/GuiQuadSnapshotCheck.java'
+	classpath = portCompileClasspath
+	destinationDirectory = layout.buildDirectory.dir('port-rendering/classes')
+	javaCompiler = javaToolchains.compilerFor { languageVersion = JavaLanguageVersion.of(25) }
+}
+
+tasks.register('verifyPortRendering', JavaExec) {
+	dependsOn 'compilePortRendering'
+	classpath = files(tasks.named('compilePortRendering').flatMap { it.destinationDirectory }) + portCompileClasspath
+	mainClass = 'io.redspace.ironsspellbooks.render.GuiQuadSnapshotCheck'
+	enableAssertions = true
+	javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(25) }
+}
+
+tasks.named('check') {
+	dependsOn 'verifyBundledDependencies', 'verifyPortRendering'
 }
 
 // configure the maven publication

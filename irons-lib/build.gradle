@@ -1,0 +1,64 @@
+plugins {
+    id 'net.fabricmc.fabric-loom'
+}
+
+version = "2.3.0+${rootProject.minecraft_version}"
+group = 'io.redspace.ironslib'
+base.archivesName = 'irons-lib'
+
+loom {
+    accessWidenerPath = file('src/main/resources/irons_lib.accesswidener')
+}
+
+repositories {
+    maven { url = 'https://api.modrinth.com/maven' }
+}
+
+dependencies {
+    minecraft "com.mojang:minecraft:${rootProject.minecraft_version}"
+    implementation "net.fabricmc:fabric-loader:${rootProject.loader_version}"
+    implementation "net.fabricmc.fabric-api:fabric-api:${rootProject.fabric_api_version}"
+    implementation "maven.modrinth:geckolib:${rootProject.geckolib_version}"
+    implementation files(rootProject.file('libs/26.3/accessories-fabric-1.4.3-beta+26.3.jar'), rootProject.file('libs/26.3/owo-lib-0.13.1+26.3.jar'))
+    compileOnly files(zipTree(rootProject.file('libs/26.3/owo-lib-0.13.1+26.3.jar')).matching { include 'META-INF/jars/*.jar' })
+    compileOnly 'com.google.code.findbugs:jsr305:3.0.2'
+}
+
+java {
+    toolchain.languageVersion = JavaLanguageVersion.of(25)
+    withSourcesJar()
+}
+
+tasks.withType(JavaCompile).configureEach {
+    options.release = 25
+    options.compilerArgs += ['-Xmaxerrs', '1000', '-proc:none']
+}
+
+processResources {
+    inputs.property 'version', project.version
+    filesMatching('fabric.mod.json') {
+        expand version: project.version
+    }
+}
+
+def portCompileClasspath = files(providers.provider { sourceSets.main.compileClasspath.files })
+tasks.register('compilePortSnapshots', JavaCompile) {
+    source 'src/main/java/io/redspace/ironslib/internal/client/gui_block_entity_renderer/GuiBlockEntityRenderState.java',
+        'src/main/java/io/redspace/ironslib/internal/client/gui_block_entity_renderer/GuiBlockEntityRenderer.java',
+        'src/portTest/java/io/redspace/ironslib/internal/client/gui_block_entity_renderer/PipSnapshotCheck.java'
+    classpath = portCompileClasspath
+    destinationDirectory = layout.buildDirectory.dir('port-snapshots/classes')
+    javaCompiler = javaToolchains.compilerFor { languageVersion = JavaLanguageVersion.of(25) }
+}
+
+tasks.register('verifyPortSnapshots', JavaExec) {
+    dependsOn 'compilePortSnapshots'
+    classpath = files(tasks.named('compilePortSnapshots').flatMap { it.destinationDirectory }) + portCompileClasspath
+    mainClass = 'io.redspace.ironslib.internal.client.gui_block_entity_renderer.PipSnapshotCheck'
+    enableAssertions = true
+    javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(25) }
+}
+
+tasks.named('check') {
+    dependsOn 'verifyPortSnapshots'
+}

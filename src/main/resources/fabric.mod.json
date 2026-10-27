@@ -30,13 +30,14 @@
 		"irons_spellbooks.mixins.json"
 	],
 	"depends": {
-		"fabricloader": ">=0.18.4",
-		"minecraft": "~1.21.1",
-		"java": ">=21",
+		"fabricloader": ">=0.19.5",
+		"minecraft": "~26.3",
+		"java": ">=25",
 		"fabric-api": "*",
 		"geckolib": "*",
-		"playeranimator": "*",
-		"accessories": "*",
-		"owo": "*"
+		"irons_lib": ">=2.3.0",
+		"player_animation_library": ">=1.2.8",
+		"accessories": ">=1.4.3-beta",
+		"owo": ">=0.13.1+26.3"
 	}
 }

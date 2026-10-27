@@ -1,8 +1,7 @@
 {
   "required": true,
   "package": "io.redspace.ironsspellbooks.mixin",
-  "refmap": "irons_spellbooks.refmap.json",
-  "compatibilityLevel": "JAVA_21",
+  "compatibilityLevel": "JAVA_25",
   "plugin": "io.redspace.ironsspellbooks.mixin.MixinPlugin",
   "mixins": [
     "Compat$apothic_attributes$AttributeHandler",

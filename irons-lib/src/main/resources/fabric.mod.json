@@ -1,0 +1,26 @@
+{
+  "schemaVersion": 1,
+  "id": "irons_lib",
+  "version": "${version}",
+  "name": "Iron's Lib",
+  "description": "Common functionality for Iron431's mods, ported to Fabric.",
+  "authors": ["iron431"],
+  "license": "All Rights Reserved",
+  "environment": "*",
+  "entrypoints": {
+    "main": ["io.redspace.ironslib.IronsLib"],
+    "client": ["io.redspace.ironslib.internal.client.ClientSetup"]
+  },
+  "mixins": ["irons_lib.mixins.json"],
+  "accessWidener": "irons_lib.accesswidener",
+  "depends": {
+    "fabricloader": ">=0.19.5",
+    "fabric-api": "*",
+    "minecraft": "~26.3",
+    "java": ">=25",
+    "geckolib": ">=5.5.7"
+  },
+  "breaks": {
+    "irons_patreon_lib": "*"
+  }
+}
