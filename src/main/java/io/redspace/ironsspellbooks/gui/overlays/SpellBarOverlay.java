@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.gui.overlays;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.spells.SpellData;
 import io.redspace.ironsspellbooks.compat.TrinketsSlots;
@@ -9,17 +8,18 @@ import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.player.ClientRenderCache;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.LayeredDraw;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.phys.Vec2;
 
 import java.util.List;
 
-public class SpellBarOverlay implements LayeredDraw.Layer {
+public class SpellBarOverlay implements HudElement {
     public static final SpellBarOverlay instance = new SpellBarOverlay();
 
     public final static Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/icons.png");
@@ -47,10 +47,11 @@ public class SpellBarOverlay implements LayeredDraw.Layer {
     static float alpha;
     static int lastSpellCount;
 
-    public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {
+    @Override
+    public void extractRenderState(GuiGraphicsExtractor guiHelper, DeltaTracker deltaTracker) {
         var minecraft = Minecraft.getInstance();
         var player = minecraft.player;
-        if (minecraft.options.hideGui || player == null || player.isSpectator()) {
+        if (minecraft.gui.hud.isHidden() || player == null || player.isSpectator()) {
             return;
         }
         var screenWidth = guiHelper.guiWidth();
@@ -109,28 +110,28 @@ public class SpellBarOverlay implements LayeredDraw.Layer {
         //Slot Border
         prepTranslucency();
         for (Vec2 location : locations) {
-            guiHelper.blit(TEXTURE, centerX + (int) location.x, centerY + (int) location.y, 66, 84, 22, 22);
+            guiHelper.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, centerX + (int) location.x, centerY + (int) location.y, 66f, 84f, 22, 22, 256, 256, ARGB.colorFromFloat(alpha, 1f, 1f, 1f));
         }
         //Spell Icons
         for (int i = 0; i < locations.size(); i++) {
-            guiHelper.blit(spells.get(i).getSpell().getSpellIconResource(), centerX + (int) locations.get(i).x + 3, centerY + (int) locations.get(i).y + 3, 0, 0, 16, 16, 16, 16);
+            guiHelper.blit(RenderPipelines.GUI_TEXTURED, spells.get(i).getSpell().getSpellIconResource(), centerX + (int) locations.get(i).x + 3, centerY + (int) locations.get(i).y + 3, 0f, 0f, 16, 16, 16, 16, ARGB.colorFromFloat(alpha, 1f, 1f, 1f));
         }
         //Border + Cooldowns
         for (int i = 0; i < locations.size(); i++) {
             if (i != selectedSpellIndex) {
-                guiHelper.blit(TEXTURE, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 22 + (!ssm.getAllSpells().get(i).slot.equals(TrinketsSlots.SPELLBOOK_SLOT) ? 110 : 0), 84, 22, 22);
+                guiHelper.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, (float) (22 + (!ssm.getAllSpells().get(i).slot.equals(TrinketsSlots.SPELLBOOK_SLOT) ? 110 : 0)), 84f, 22, 22, 256, 256, ARGB.colorFromFloat(alpha, 1f, 1f, 1f));
             }
             float f = ClientMagicData.getCooldownPercent(spells.get(i).getSpell());
             if (f > 0) {
                 int pixels = (int) (16 * f + 1f);
-                guiHelper.blit(TEXTURE, centerX + (int) locations.get(i).x + 3, centerY + (int) locations.get(i).y + 19 - pixels, 47, 87, 16, pixels);
+                guiHelper.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, centerX + (int) locations.get(i).x + 3, centerY + (int) locations.get(i).y + 19 - pixels, 47f, 87f, 16, pixels, 256, 256, ARGB.colorFromFloat(alpha, 1f, 1f, 1f));
             }
         }
         //Selected Outline
         for (int i = 0; i < locations.size(); i++) {
             //setTranslucentTexture(TEXTURE);
             if (i == selectedSpellIndex) {
-                guiHelper.blit(TEXTURE, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 0, 84, 22, 22);
+                guiHelper.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, centerX + (int) locations.get(i).x, centerY + (int) locations.get(i).y, 0f, 84f, 22, 22, 256, 256, ARGB.colorFromFloat(alpha, 1f, 1f, 1f));
             }
         }
         flushTranslucency();
@@ -153,16 +154,8 @@ public class SpellBarOverlay implements LayeredDraw.Layer {
     }
 
     private static void prepTranslucency() {
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.setShader(GameRenderer::getRendertypeTranslucentShader);
-        RenderSystem.setShaderColor(1f, 1f, 1f, alpha);
     }
 
     private static void flushTranslucency() {
-        RenderSystem.disableBlend();
-        RenderSystem.depthMask(true);
-        RenderSystem.enableDepthTest();
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
     }
 }

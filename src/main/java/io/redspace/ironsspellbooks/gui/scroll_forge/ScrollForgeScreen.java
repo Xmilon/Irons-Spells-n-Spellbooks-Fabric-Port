@@ -12,7 +12,9 @@ import io.redspace.ironsspellbooks.network.ScrollForgeSelectSpellPacket;
 import io.redspace.ironsspellbooks.util.ModTags;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.input.MouseButtonEvent;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.network.chat.Component;
@@ -50,9 +52,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
     private boolean isScrollbarHeld;
 
     public ScrollForgeScreen(ScrollForgeMenu menu, Inventory inventory, Component title) {
-        super(menu, inventory, title);
-        this.imageWidth = 218;
-        this.imageHeight = 166;
+        super(menu, inventory, title, 218, 166);
     }
 
     @Override
@@ -83,18 +83,17 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
     }
 
     @Override
-    public void render(GuiGraphics guiHelper, int mouseX, int mouseY, float delta) {
-        super.render(guiHelper, mouseX, mouseY, delta);
-        renderTooltip(guiHelper, mouseX, mouseY);
+    public void extractRenderState(GuiGraphicsExtractor guiHelper, int mouseX, int mouseY, float delta) {
+        super.extractRenderState(guiHelper, mouseX, mouseY, delta);
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiHelper, float partialTick, int mouseX, int mouseY) {
-        //setTexture(TEXTURE);
+    public void extractBackground(GuiGraphicsExtractor guiHelper, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(guiHelper, mouseX, mouseY, partialTick);
 
-        guiHelper.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        guiHelper.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, leftPos, topPos, 0f, 0f, imageWidth, imageHeight, 256, 256);
         float scrollOffset = Mth.clamp((float) this.scrollOffset / (this.totalRowCount() - 3), 0, 1);
-        guiHelper.blit(TEXTURE, leftPos + SCROLL_BAR_X, (int) (topPos + SCROLL_BAR_Y + scrollOffset * (SCROLL_BAR_HEIGHT - 15)), imageWidth + (isScrollbarHeld ? 12 : 0), 0, 12, 15);
+        guiHelper.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, leftPos + SCROLL_BAR_X, (int) (topPos + SCROLL_BAR_Y + scrollOffset * (SCROLL_BAR_HEIGHT - 15)), (float) (imageWidth + (isScrollbarHeld ? 12 : 0)), 0f, 12, 15, 256, 256);
 //        if (lastFocusItem != menu.getFocusSlot().getItem()) {
 //            generateSpellList();
 //            lastFocusItem = menu.getFocusSlot().getItem();
@@ -118,7 +117,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
             return false;
     }
 
-    private void renderSpellList(GuiGraphics guiHelper, float partialTick, int mouseX, int mouseY) {
+    private void renderSpellList(GuiGraphicsExtractor guiHelper, float partialTick, int mouseX, int mouseY) {
         ItemStack inkStack = menu.getInkSlot().getItem();
 
         SpellRarity inkRarity = getRarityFromInk(inkStack.getItem());
@@ -151,7 +150,7 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
         }
 
         if (additionalTooltip != null) {
-            guiHelper.renderTooltip(font, additionalTooltip, mouseX, mouseY);
+            guiHelper.setTooltipForNextFrame(font, additionalTooltip, mouseX, mouseY);
         }
     }
 
@@ -205,29 +204,29 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
     }
 
     @Override
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        isScrollbarHeld = isHovering(SCROLL_BAR_X, SCROLL_BAR_Y, 12, 56, pMouseX, pMouseY);
-        return super.mouseClicked(pMouseX, pMouseY, pButton);
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        isScrollbarHeld = isHovering(SCROLL_BAR_X, SCROLL_BAR_Y, 12, 56, event.x(), event.y());
+        return super.mouseClicked(event, doubleClick);
     }
 
     @Override
-    public boolean mouseReleased(double pMouseX, double pMouseY, int pButton) {
+    public boolean mouseReleased(MouseButtonEvent event) {
         isScrollbarHeld = false;
-        return super.mouseReleased(pMouseX, pMouseY, pButton);
+        return super.mouseReleased(event);
     }
 
     @Override
-    public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
+    public boolean mouseDragged(MouseButtonEvent event, double pDragX, double pDragY) {
         int i = this.totalRowCount() - 3;
         if (this.isScrollbarHeld) {
             int j = this.topPos + SCROLL_BAR_Y;
             int k = j + SCROLL_BAR_HEIGHT;
-            var scrollOffs = ((float) pMouseY - (float) j - 7.5F) / ((float) (k - j) - 15.0F);
+            var scrollOffs = ((float) event.y() - (float) j - 7.5F) / ((float) (k - j) - 15.0F);
             scrollOffs = Mth.clamp(scrollOffs, 0.0F, 1.0F);
             this.scrollOffset = Math.max((int) ((double) (scrollOffs * (float) i) + 0.5D), 0);
             return true;
         } else {
-            return super.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
+            return super.mouseDragged(event, pDragX, pDragY);
         }
     }
 
@@ -258,25 +257,25 @@ public class ScrollForgeScreen extends AbstractContainerScreen<ScrollForgeMenu> 
             this.rarity = spell.getRarity(spellLevel);
         }
 
-        void draw(ScrollForgeScreen screen, GuiGraphics guiHelper, int x, int y, int mouseX, int mouseY) {
+        void draw(ScrollForgeScreen screen, GuiGraphicsExtractor guiHelper, int x, int y, int mouseX, int mouseY) {
             if (this.activityState == ActivityState.ENABLED || this.activityState == ActivityState.UNLEARNED_ERROR) {
                 //Draw with highlighted or regular color
                 if (spell == screen.getSelectedSpell())
-                    guiHelper.blit(TEXTURE, x, y, 0, 204, 108, 19);
+                    guiHelper.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0f, 204f, 108, 19, 256, 256);
                 else
-                    guiHelper.blit(TEXTURE, x, y, 0, 166, 108, 19);
+                    guiHelper.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0f, 166f, 108, 19, 256, 256);
             } else {
                 //"hidden" color
-                guiHelper.blit(TEXTURE, x, y, 0, 185, 108, 19);
+                guiHelper.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, x, y, 0f, 185f, 108, 19, 256, 256);
             }
             var texture = (this.activityState == ActivityState.ENABLED ? spell.getSpellIconResource() : SpellRegistry.none().getSpellIconResource());
-            guiHelper.blit(texture, x + 108 - 18, y + 1, 0, 0, 16, 16, 16, 16);
+            guiHelper.blit(RenderPipelines.GUI_TEXTURED, texture, x + 108 - 18, y + 1, 0f, 0f, 16, 16, 16, 16);
 
             int maxWidth = 108 - 20;
-            var text = trimText(font, getDisplayName().withStyle(this.activityState == ActivityState.ENABLED ? Style.EMPTY : Style.EMPTY.withFont(RUNIC_FONT)), maxWidth);
+            var text = trimText(font, getDisplayName().withStyle(this.activityState == ActivityState.ENABLED ? Style.EMPTY : Style.EMPTY.withFont(new FontDescription.Resource(RUNIC_FONT))), maxWidth);
             int textX = x + 2;
             int textY = y + 3;
-            guiHelper.drawWordWrap(font, text, textX, textY, maxWidth, 0xFFFFFF);
+            guiHelper.textWithWordWrap(font, text, textX, textY, maxWidth, 0xFFFFFF);
         }
 
         @Nullable

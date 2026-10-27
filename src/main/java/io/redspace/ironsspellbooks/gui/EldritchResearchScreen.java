@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.gui;
 
 import com.mojang.blaze3d.platform.InputConstants;
-import com.mojang.blaze3d.systems.RenderSystem;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
@@ -16,16 +15,19 @@ import io.redspace.ironsspellbooks.render.RenderHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.gui.screens.Screen;
+import net.minecraft.client.input.KeyEvent;
+import net.minecraft.client.input.MouseButtonEvent;
 import net.minecraft.client.player.LocalPlayer;
+import net.minecraft.client.resources.sounds.SimpleSoundInstance;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
+import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.sounds.SoundSource;
-import net.minecraft.util.FastColor;
+import net.minecraft.util.ARGB;
 import net.minecraft.util.FormattedCharSequence;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
@@ -124,8 +126,8 @@ public class EldritchResearchScreen extends Screen {
     }
 
     @Override
-    public void render(GuiGraphics guiGraphics, int mouseX, int mouseY, float partialTick) {
-        super.render(guiGraphics, mouseX, mouseY, partialTick);
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, int mouseX, int mouseY, float partialTick) {
+        super.extractRenderState(guiGraphics, mouseX, mouseY, partialTick);
         guiGraphics.fillGradient(0, 0, this.width, this.height, -1072689136, -804253680);
         drawBackdrop(guiGraphics, leftPos + WINDOW_INSIDE_X, topPos + WINDOW_INSIDE_Y);
 
@@ -140,12 +142,12 @@ public class EldritchResearchScreen extends Screen {
                 if (heldSpellTime > TIME_TO_HOLD) {
                     heldSpellTime = -1;
                     PacketDistributor.sendToServer(new LearnSpellPacket(this.activeHand, nodes.get(heldSpellIndex).spell.getSpellId()));
-                    player.playNotifySound(SoundRegistry.LEARN_ELDRITCH_SPELL.get(), SoundSource.MASTER, 1f, Utils.random.nextIntBetweenInclusive(9, 11) * .1f);
+                    playUiSound(SoundRegistry.LEARN_ELDRITCH_SPELL.get(), 1f, Utils.random.nextIntBetweenInclusive(9, 11) * .1f);
                 }
                 heldSpellTime++;
                 if (lastPlayerTick % 2 == 0) {
-                    player.playNotifySound(SoundEvents.SOUL_ESCAPE.value(), SoundSource.MASTER, 1f, Mth.lerp(heldSpellTime / (float) TIME_TO_HOLD, .5f, 1.5f));
-                    player.playNotifySound(SoundRegistry.UI_TICK.get(), SoundSource.MASTER, 1f, Mth.lerp(heldSpellTime / (float) TIME_TO_HOLD, .5f, 1.5f));
+                    playUiSound(SoundEvents.SOUL_ESCAPE.value(), 1f, Mth.lerp(heldSpellTime / (float) TIME_TO_HOLD, .5f, 1.5f));
+                    playUiSound(SoundRegistry.UI_TICK.get(), 1f, Mth.lerp(heldSpellTime / (float) TIME_TO_HOLD, .5f, 1.5f));
                 }
             } else if (heldSpellTime >= 0) {
                 heldSpellTime = Math.max(heldSpellTime - 3, -1);
@@ -160,11 +162,9 @@ public class EldritchResearchScreen extends Screen {
                 tooltip = buildTooltip(node.spell, font);
             }
         }
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        guiGraphics.blit(WINDOW_LOCATION, leftPos, topPos, 0, 0, WINDOW_WIDTH, WINDOW_HEIGHT);
+        guiGraphics.blit(RenderPipelines.GUI_TEXTURED, WINDOW_LOCATION, leftPos, topPos, 0f, 0f, WINDOW_WIDTH, WINDOW_HEIGHT, 256, 256);
         if (tooltip != null) {
-            guiGraphics.renderTooltip(Minecraft.getInstance().font, tooltip, mouseX, mouseY);
+            guiGraphics.setTooltipForNextFrame(Minecraft.getInstance().font, tooltip, mouseX, mouseY);
         }
 //        String mousePos = String.format("(%s\t%s)", mouseX, mouseY);
 //        String boundX = String.format("%s + %s - %s = %s", mouseX, (int) viewportOffset.x, leftPos, mouseX + (int) viewportOffset.x - leftPos);
@@ -172,22 +172,26 @@ public class EldritchResearchScreen extends Screen {
 //        String pX = String.format("%s", (mouseX + (int) viewportOffset.x - leftPos) / (float)WINDOW_WIDTH);
 //        String pY = String.format("%s", (mouseY + (int) viewportOffset.y - topPos) / (float)WINDOW_HEIGHT);
 //        String sx = String.format("x:%s", ( Math.clamp(Mth.clamp(mouseX + viewportOffset.x - leftPos, 0, WINDOW_WIDTH)/20f,0,1)) / (float)WINDOW_WIDTH);
-//        guiGraphics.drawString(font, mousePos, 0, 0, 0xFFFFFF);
-//        guiGraphics.drawString(font, boundX, 0, 10, 0xFFFFFF);
-//        guiGraphics.drawString(font, boundY, 0, 20, 0xFFFFFF);
-//        guiGraphics.drawString(font, pX, 0, 30, 0xFFFFFF);
-//        guiGraphics.drawString(font, pY, 0, 40, 0xFFFFFF);
-//        guiGraphics.drawString(font, sx, 0, 50, 0xFFFFFF);
+//        guiGraphics.text(font, mousePos, 0, 0, 0xFFFFFF);
+//        guiGraphics.text(font, boundX, 0, 10, 0xFFFFFF);
+//        guiGraphics.text(font, boundY, 0, 20, 0xFFFFFF);
+//        guiGraphics.text(font, pX, 0, 30, 0xFFFFFF);
+//        guiGraphics.text(font, pY, 0, 40, 0xFFFFFF);
+//        guiGraphics.text(font, sx, 0, 50, 0xFFFFFF);
 
     }
 
-    private void renderProgressOverlay(GuiGraphics gui, int x, int y, float progress) {
+    private static void playUiSound(SoundEvent sound, float volume, float pitch) {
+        Minecraft.getInstance().getSoundManager().play(SimpleSoundInstance.forUI(sound, pitch, volume));
+    }
+
+    private void renderProgressOverlay(GuiGraphicsExtractor gui, int x, int y, float progress) {
         x += (int) viewportOffset.x;
         y += (int) viewportOffset.y;
-        gui.fill(x, y, x + Mth.ceil(16.0F * progress), y + 16, FastColor.ARGB32.color(127, 244, 65, 255));
+        gui.fill(x, y, x + Mth.ceil(16.0F * progress), y + 16, ARGB.color(127, 244, 65, 255));
     }
 
-    private void drawNode(GuiGraphics guiGraphics, SpellNode node, LocalPlayer player, boolean drawProgress) {
+    private void drawNode(GuiGraphicsExtractor guiGraphics, SpellNode node, LocalPlayer player, boolean drawProgress) {
         drawWithClipping(node.spell.getSpellIconResource(),
                 guiGraphics,
                 node.x,
@@ -211,7 +215,7 @@ public class EldritchResearchScreen extends Screen {
                 WINDOW_INSIDE_WIDTH, WINDOW_INSIDE_HEIGHT);
     }
 
-    private void drawWithClipping(Identifier texture, GuiGraphics guiGraphics, int x, int y, int uvx, int uvy, int width, int height, int imageWidth, int imageHeight, int bbx, int bby, int bbw, int bbh) {
+    private void drawWithClipping(Identifier texture, GuiGraphicsExtractor guiGraphics, int x, int y, int uvx, int uvy, int width, int height, int imageWidth, int imageHeight, int bbx, int bby, int bbw, int bbh) {
         x += (int) viewportOffset.x;
         if (x < bbx) {
             int xDiff = bbx - x;
@@ -233,7 +237,7 @@ public class EldritchResearchScreen extends Screen {
             height -= yDiff;
         }
         if (width > 0 && height > 0) {
-            guiGraphics.blit(texture, x, y, width, height, uvx, uvy, width, height, imageWidth, imageHeight);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, texture, x, y, (float) uvx, (float) uvy, width, height, width, height, imageWidth, imageHeight);
         }
     }
 
@@ -252,9 +256,8 @@ public class EldritchResearchScreen extends Screen {
         return hoverText;
     }
 
-    private void handleConnections(GuiGraphics guiGraphics, float partialTick) {
+    private void handleConnections(GuiGraphicsExtractor guiGraphics, float partialTick) {
         guiGraphics.fill(0, 0, this.width, this.height, 0);
-        RenderSystem.enableDepthTest();
         float f = Mth.sin((Minecraft.getInstance().player.tickCount + partialTick) * .1f);
         float glowIntensity = f * f * .8f + .2f;
         var color = new Vector4f(135 / 255f, 154 / 255f, 174 / 255f, 0.5f);
@@ -286,7 +289,7 @@ public class EldritchResearchScreen extends Screen {
         }
     }
 
-    private Vector4f fadeOutTowardEdges(GuiGraphics guiGraphics, double x, double y, Vector4f color) {
+    private Vector4f fadeOutTowardEdges(GuiGraphicsExtractor guiGraphics, double x, double y, Vector4f color) {
         float margin = 40;
         int maxWidth = WINDOW_WIDTH;
         int maxHeight = WINDOW_HEIGHT;
@@ -310,7 +313,7 @@ public class EldritchResearchScreen extends Screen {
         return (r << 24) + (g << 16) + (b << 8) + (a);
     }
 
-    private void drawBackdrop(GuiGraphics guiGraphics, int left, int top) {
+    private void drawBackdrop(GuiGraphicsExtractor guiGraphics, int left, int top) {
         float f = Minecraft.getInstance().player != null ? Minecraft.getInstance().player.tickCount * .02f : 0f;
         float color = (Mth.sin(f) + 1) * .25f + .15f;
         var definitelynothowabuilderworks = RenderHelper.quadBuilder()
@@ -333,9 +336,9 @@ public class EldritchResearchScreen extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double pMouseX, double pMouseY, int pButton) {
-        int mouseX = (int) pMouseX;
-        int mouseY = (int) pMouseY;
+    public boolean mouseClicked(MouseButtonEvent event, boolean doubleClick) {
+        int mouseX = (int) event.x();
+        int mouseY = (int) event.y();
         //Only allow initiating the learn process if they are holding a manuscript
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.getItemInHand(activeHand).is(ItemRegistry.ELDRITCH_PAGE.get())) {
             for (int i = 0; i < nodes.size(); i++) {
@@ -352,7 +355,7 @@ public class EldritchResearchScreen extends Screen {
             }
         }
 
-        return super.mouseClicked(pMouseX, pMouseY, pButton);
+        return super.mouseClicked(event, doubleClick);
     }
 
     public boolean isHoveringNode(SpellNode node, int mouseX, int mouseY) {
@@ -361,29 +364,30 @@ public class EldritchResearchScreen extends Screen {
     }
 
     @Override
-    public boolean mouseReleased(double pMouseX, double pMouseY, int pButton) {
+    public boolean mouseReleased(MouseButtonEvent event) {
         isMouseHoldingSpell = false;
         isMouseDragging = false;
-        return super.mouseReleased(pMouseX, pMouseY, pButton);
+        return super.mouseReleased(event);
     }
 
     @Override
-    public boolean mouseDragged(double pMouseX, double pMouseY, int pButton, double pDragX, double pDragY) {
+    public boolean mouseDragged(MouseButtonEvent event, double pDragX, double pDragY) {
         if (this.isMouseDragging && false) {
             viewportOffset = new Vec2((float) (viewportOffset.x + pDragX), (float) (viewportOffset.y + pDragY));
             return true;
         } else {
-            return super.mouseDragged(pMouseX, pMouseY, pButton, pDragX, pDragY);
+            return super.mouseDragged(event, pDragX, pDragY);
         }
     }
 
 
-    public boolean keyPressed(int pKeyCode, int pScanCode, int pModifiers) {
-        if (this.minecraft.options.keyInventory.matches(pKeyCode, pScanCode)) {
+    @Override
+    public boolean keyPressed(KeyEvent event) {
+        if (this.minecraft.options.keyInventory.matches(event)) {
             this.onClose();
             return true;
         }
-        return super.keyPressed(pKeyCode, pScanCode, pModifiers);
+        return super.keyPressed(event);
     }
 
     @Override

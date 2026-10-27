@@ -9,12 +9,13 @@ import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Gui;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.LayeredDraw;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 
-public class ManaBarOverlay implements LayeredDraw.Layer {
+public class ManaBarOverlay implements HudElement {
     public static final ManaBarOverlay instance = new ManaBarOverlay();
 
     public final static Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/icons.png");
@@ -46,12 +47,13 @@ public class ManaBarOverlay implements LayeredDraw.Layer {
     static final int HUNGER_BAR_OFFSET = 50;
     static final int HUNGER_BAR_RIGHT_OFFSET = 97;
     static final int SCREEN_BORDER_MARGIN = 20;
-    static final int TEXT_COLOR = ChatFormatting.AQUA.getColor();
+    static final int TEXT_COLOR = 0x55FFFF;
 
-    public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {
+    @Override
+    public void extractRenderState(GuiGraphicsExtractor guiHelper, DeltaTracker deltaTracker) {
         var minecraft = Minecraft.getInstance();
         var player = minecraft.player;
-        if (minecraft.options.hideGui || player == null || player.isSpectator()) {
+        if (minecraft.gui.hud.isHidden() || player == null || player.isSpectator()) {
             return;
         }
         var screenWidth = guiHelper.guiWidth();
@@ -82,8 +84,8 @@ public class ManaBarOverlay implements LayeredDraw.Layer {
         int imageWidth = anchor == Anchor.XP ? XP_IMAGE_WIDTH : DEFAULT_IMAGE_WIDTH;
         int spriteX = anchor == Anchor.XP ? 68 : 0;
         int spriteY = anchor == Anchor.XP ? 40 : 0;
-        guiHelper.blit(TEXTURE, barX, barY, spriteX, spriteY, imageWidth, IMAGE_HEIGHT, 256, 256);
-        guiHelper.blit(TEXTURE, barX, barY, spriteX, spriteY + IMAGE_HEIGHT, (int) (imageWidth * Math.min((mana / (double) maxMana), 1)), IMAGE_HEIGHT);
+        guiHelper.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, barX, barY, (float) (spriteX), (float) (spriteY), imageWidth, IMAGE_HEIGHT, 256, 256);
+        guiHelper.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, barX, barY, (float) (spriteX), (float) (spriteY + IMAGE_HEIGHT), (int) (imageWidth * Math.min((mana / (double) maxMana), 1)), IMAGE_HEIGHT, 256, 256);
 
         int textX, textY;
         String manaFraction = (mana) + "/" + maxMana;
@@ -92,7 +94,7 @@ public class ManaBarOverlay implements LayeredDraw.Layer {
         textY = ClientConfigs.safeGet(ClientConfigs.MANA_TEXT_Y_OFFSET) + barY + (anchor == Anchor.XP ? ICON_ROW_HEIGHT / 3 : ICON_ROW_HEIGHT);
 
         if (ClientConfigs.safeGet(ClientConfigs.MANA_BAR_TEXT_VISIBLE)) {
-            guiHelper.drawString(Minecraft.getInstance().font, manaFraction, textX, textY, TEXT_COLOR);
+            guiHelper.text(Minecraft.getInstance().font, manaFraction, textX, textY, TEXT_COLOR);
             //gui.getFont().draw(poseStack, manaFraction, textX, textY, TEXT_COLOR);
         }
     }

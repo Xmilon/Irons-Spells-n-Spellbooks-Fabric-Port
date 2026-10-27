@@ -1,17 +1,18 @@
 package io.redspace.ironsspellbooks.gui.overlays;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
+import io.redspace.ironsspellbooks.api.util.BossbarManager;
 import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.LayeredDraw;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.minecraft.resources.Identifier;
+import net.minecraft.util.ARGB;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.EventPriority;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -20,7 +21,7 @@ import net.neoforged.neoforge.client.event.CustomizeGuiOverlayEvent;
 import org.joml.Vector3f;
 
 @EventBusSubscriber(Dist.CLIENT)
-public class RecastOverlay implements LayeredDraw.Layer {
+public class RecastOverlay implements HudElement {
     public static RecastOverlay instance = new RecastOverlay();
 
     public final static Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/icons.png");
@@ -52,10 +53,11 @@ public class RecastOverlay implements LayeredDraw.Layer {
 
     int bossbarOffset;
 
-    public void render(GuiGraphics guiGraphics, DeltaTracker deltaTracker) {
+    @Override
+    public void extractRenderState(GuiGraphicsExtractor guiGraphics, DeltaTracker deltaTracker) {
         var minecraft = Minecraft.getInstance();
         var player = minecraft.player;
-        if (minecraft.options.hideGui || player == null || player.isSpectator()) {
+        if (minecraft.gui.hud.isHidden() || player == null || player.isSpectator()) {
             return;
         }
         var screenWidth = guiGraphics.guiWidth();
@@ -65,9 +67,6 @@ public class RecastOverlay implements LayeredDraw.Layer {
         int totalHeightPerBar = 18;
         int screenTopBuffer = 6;
         var activeRecasts = ClientMagicData.getRecasts().getActiveRecasts();
-
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         Anchor anchor = ClientConfigs.safeGet(ClientConfigs.RECAST_ANCHOR);
         for (int castIndex = 0; castIndex < activeRecasts.size(); castIndex++) {
             var recastInstance = activeRecasts.get(castIndex);
@@ -82,32 +81,30 @@ public class RecastOverlay implements LayeredDraw.Layer {
                 barX -= totalWidth / 2;
             }
             if (anchor == Anchor.TopCenter) {
-                barY += screenTopBuffer + bossbarOffset;
+                barY += screenTopBuffer + BossbarManager.getFrameBossbarHeight();
             }
             barX += ClientConfigs.safeGet(ClientConfigs.RECAST_X_OFFSET);
             barY += ClientConfigs.safeGet(ClientConfigs.RECAST_Y_OFFSET);
             barY += totalHeightPerBar * castIndex;
 
             var poseStack = guiGraphics.pose();
-            poseStack.pushPose();
-            poseStack.translate(barX - 18, barY - 2, 0);
-            poseStack.scale(0.85f, 0.85f, 0.85f);
-            RenderSystem.setShaderTexture(0, spell.getSpellIconResource());
-            guiGraphics.blit(spell.getSpellIconResource(), 0, 0, 0, 0, 16, 16, 16, 16);
-            RenderSystem.setShaderTexture(0, TEXTURE);
-            guiGraphics.blit(TEXTURE, -2, -2, 116, 0, 20, 20, 256, 256);
-            poseStack.popPose();
+            poseStack.pushMatrix();
+            poseStack.translate(barX - 18, barY - 2);
+            poseStack.scale(0.85f, 0.85f);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, spell.getSpellIconResource(), 0, 0, 0f, 0f, 16, 16, 16, 16);
+            guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, -2, -2, 116f, 0f, 20, 20, 256, 256);
+            poseStack.popMatrix();
 
             for (int i = 0; i < total; i++) {
                 int orbX = barX + (ORB_WIDTH + CONNECTOR_WIDTH) * i;
                 int connectorX = orbX + ORB_WIDTH;
                 if (i + 1 < total) {
                     // connector
-                    guiGraphics.blit(TEXTURE, connectorX, barY + 3, CONNECTOR_TEXTURE_OFFSET_X, CONNECTOR_TEXTURE_OFFSET_Y, 6, 4, 256, 256);
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, connectorX, barY + 3, (float) (CONNECTOR_TEXTURE_OFFSET_X), (float) (CONNECTOR_TEXTURE_OFFSET_Y), 6, 4, 256, 256);
                 }
                 //orb filling
                 boolean charged = i < remaining;
-                guiGraphics.blit(TEXTURE, orbX, barY, ORB_TEXTURE_OFFSET_X + (charged ? 0 : 10), ORB_TEXTURE_OFFSET_Y + 21, ORB_WIDTH, ORB_WIDTH, 256, 256);
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, orbX, barY, (float) (ORB_TEXTURE_OFFSET_X + (charged ? 0 : 10)), (float) (ORB_TEXTURE_OFFSET_Y + 21), ORB_WIDTH, ORB_WIDTH, 256, 256);
                 if (charged) {
 //                    RenderSystem.setShader(GameRenderer::getRendertypeEyesShader);
 //                    Vector3f color = SpellRegistry.getSpell(recastInstance.getKey()).getSchoolType().getTargetingColor();
@@ -116,18 +113,16 @@ public class RecastOverlay implements LayeredDraw.Layer {
 //                    RenderSystem.setShader(GameRenderer::getPositionTexShader);
 //                    RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
                     Vector3f color = spell.getSchoolType().getTargetingColor();
-                    RenderSystem.setShaderColor(color.x(), color.y(), color.z(), 1f);
-                    guiGraphics.blit(TEXTURE, orbX, barY, ORB_TEXTURE_OFFSET_X + (charged ? 0 : 10), ORB_TEXTURE_OFFSET_Y + 21, ORB_WIDTH, ORB_WIDTH, 256, 256);
-                    RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+                    guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, orbX, barY, (float) (ORB_TEXTURE_OFFSET_X + (charged ? 0 : 10)), (float) (ORB_TEXTURE_OFFSET_Y + 21), ORB_WIDTH, ORB_WIDTH, 256, 256, ARGB.colorFromFloat(1f, color.x(), color.y(), color.z()));
                     //int color = SpellRegistry.getSpell(recastInstance.getSpellId()).getSchoolType().getDisplayName().getStyle().getColor().getValue();
                     //fillGradient(poseStack, orbX + 3, barY + 3, orbX + 7, barY + 7, color, color, 0);
                 }
                 //orb
-                guiGraphics.blit(TEXTURE, orbX, barY, ORB_TEXTURE_OFFSET_X, ORB_TEXTURE_OFFSET_Y, ORB_WIDTH, ORB_WIDTH, 256, 256);
+                guiGraphics.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, orbX, barY, (float) (ORB_TEXTURE_OFFSET_X), (float) (ORB_TEXTURE_OFFSET_Y), ORB_WIDTH, ORB_WIDTH, 256, 256);
             }
 
             int textX = (barX + (ORB_WIDTH + CONNECTOR_WIDTH) * total);
-            guiGraphics.drawString(Minecraft.getInstance().font, formatTime(recastInstance.getTicksRemaining(), recastInstance.getTicksToLive()), textX, barY + (ORB_WIDTH - Minecraft.getInstance().font.lineHeight) / 2, ChatFormatting.WHITE.getColor());
+            guiGraphics.text(Minecraft.getInstance().font, formatTime(recastInstance.getTicksRemaining(), recastInstance.getTicksToLive()), textX, barY + (ORB_WIDTH - Minecraft.getInstance().font.lineHeight) / 2, 0xFFFFFF);
         }
 
         bossbarOffset = 0; // reset for next render frame
@@ -146,11 +141,5 @@ public class RecastOverlay implements LayeredDraw.Layer {
         }
         time += remainingSeconds % 10;
         return time + "s";
-    }
-
-    @SubscribeEvent(priority = EventPriority.LOWEST, receiveCanceled = true)
-    public static void countBossBars(CustomizeGuiOverlayEvent.BossEventProgress event) {
-        // called every render frame by every boss bar rendered. we keep running tally
-        RecastOverlay.instance.bossbarOffset += event.getIncrement();
     }
 }

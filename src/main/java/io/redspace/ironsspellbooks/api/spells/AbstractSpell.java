@@ -59,7 +59,7 @@ import java.util.Optional;
 import static io.redspace.ironsspellbooks.api.spells.SpellAnimations.*;
 
 public abstract class AbstractSpell {
-    public static final Style ELDRITCH_OBFUSCATED_STYLE = Style.EMPTY.withObfuscated(true).withFont(Identifier.withDefaultNamespace("alt"));
+    public static final Style ELDRITCH_OBFUSCATED_STYLE = Style.EMPTY.withObfuscated(true).withFont(new FontDescription.Resource(Identifier.withDefaultNamespace("alt")));
 
     private String spellID = null;
     private String deathMessageId = null;

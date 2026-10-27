@@ -12,7 +12,8 @@ import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.gui.Font;
-import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
 import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.resources.sounds.SimpleSoundInstance;
@@ -58,9 +59,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     private int inscriptionErrorCode = 0;
 
     public InscriptionTableScreen(InscriptionTableMenu menu, Inventory playerInventory, Component title) {
-        super(menu, playerInventory, title);
-        this.imageWidth = 256;
-        this.imageHeight = 166;
+        super(menu, playerInventory, title, 256, 166);
 
     }
 
@@ -83,20 +82,19 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
     }
 
     @Override
-    public void render(GuiGraphics guiHelper, int mouseX, int mouseY, float delta) {
+    public void extractRenderState(GuiGraphicsExtractor guiHelper, int mouseX, int mouseY, float delta) {
         try {
-            super.render(guiHelper, mouseX, mouseY, delta);
-            renderTooltip(guiHelper, mouseX, mouseY);
+            super.extractRenderState(guiHelper, mouseX, mouseY, delta);
         } catch (Exception ignore) {
             onClose();
         }
     }
 
     @Override
-    protected void renderBg(GuiGraphics guiHelper, float partialTick, int mouseX, int mouseY) {
-        //setTexture(TEXTURE);
+    public void extractBackground(GuiGraphicsExtractor guiHelper, int mouseX, int mouseY, float partialTick) {
+        super.extractBackground(guiHelper, mouseX, mouseY, partialTick);
 
-        guiHelper.blit(TEXTURE, leftPos, topPos, 0, 0, imageWidth, imageHeight);
+        guiHelper.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, leftPos, topPos, 0f, 0f, imageWidth, imageHeight, 256, 256);
 
 
         inscribeButton.active = isValidInscription() && inscriptionErrorCode == 0;
@@ -120,9 +118,9 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
         if (inscriptionErrorCode > 0) {
             //X over arrow
-            guiHelper.blit(TEXTURE, leftPos + 35, topPos + 51, 0, 213, 28, 22);
+            guiHelper.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, leftPos + 35, topPos + 51, 0f, 213f, 28, 22, 256, 256);
             if (isHovering(leftPos + 35, topPos + 51, 28, 22, mouseX, mouseY)) {
-                guiHelper.renderTooltip(font, getErrorMessage(inscriptionErrorCode), mouseX, mouseY);
+                guiHelper.setTooltipForNextFrame(font, getErrorMessage(inscriptionErrorCode), mouseX, mouseY);
             }
         }
     }
@@ -144,7 +142,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
             return Component.empty();
     }
 
-    private void renderSpells(GuiGraphics guiHelper, int mouseX, int mouseY) {
+    private void renderSpells(GuiGraphicsExtractor guiHelper, int mouseX, int mouseY) {
         if (isDirty) {
             generateSpellSlots();
         }
@@ -161,7 +159,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
 
     }
 
-    private void renderButtons(GuiGraphics guiHelper, int mouseX, int mouseY) {
+    private void renderButtons(GuiGraphicsExtractor guiHelper, int mouseX, int mouseY) {
         //
         //  Rendering inscription Button
         //
@@ -170,38 +168,38 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         if (inscribeButton.active) {
             if (isHovering(inscribeButton.getX(), inscribeButton.getY(), 14, 14, mouseX, mouseY)) {
                 //highlighted
-                guiHelper.blit(TEXTURE, inscribeButton.getX(), inscribeButton.getY(), 28, 185, 14, 14);
+                guiHelper.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, inscribeButton.getX(), inscribeButton.getY(), 28f, 185f, 14, 14, 256, 256);
             } else {
                 //regular
-                guiHelper.blit(TEXTURE, inscribeButton.getX(), inscribeButton.getY(), 14, 185, 14, 14);
+                guiHelper.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, inscribeButton.getX(), inscribeButton.getY(), 14f, 185f, 14, 14, 256, 256);
             }
         } else {
             //disabled
-            guiHelper.blit(TEXTURE, inscribeButton.getX(), inscribeButton.getY(), 0, 185, 14, 14);
+            guiHelper.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, inscribeButton.getX(), inscribeButton.getY(), 0f, 185f, 14, 14, 256, 256);
         }
 
     }
 
-    private void renderSpellSlot(GuiGraphics guiHelper, Vec2 pos, int mouseX, int mouseY, int index, SpellSlotInfo slot) {
+    private void renderSpellSlot(GuiGraphicsExtractor guiHelper, Vec2 pos, int mouseX, int mouseY, int index, SpellSlotInfo slot) {
         //setTexture(TEXTURE);
         boolean hovering = isHovering((int) pos.x, (int) pos.y, 19, 19, mouseX, mouseY);
         int iconToDraw = hovering ? 38 : slot.hasSpell() ? 19 : 0;
-        guiHelper.blit(TEXTURE, (int) pos.x, (int) pos.y, iconToDraw, 166, 19, 19);
+        guiHelper.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, (int) pos.x, (int) pos.y, (float) (iconToDraw), 166f, 19, 19, 256, 256);
         if (slot.hasSpell()) {
             drawSpellIcon(guiHelper, pos, slot);
             if (hovering && !slot.spellSlot.spellData().canRemove())
-                guiHelper.blit(TEXTURE, (int) pos.x, (int) pos.y, 76, 166, 19, 19);
+                guiHelper.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, (int) pos.x, (int) pos.y, 76f, 166f, 19, 19, 256, 256);
         }
         if (index == selectedSpellIndex)
-            guiHelper.blit(TEXTURE, (int) pos.x, (int) pos.y, 57, 166, 19, 19);
+            guiHelper.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, (int) pos.x, (int) pos.y, 57f, 166f, 19, 19, 256, 256);
     }
 
-    private void drawSpellIcon(GuiGraphics guiHelper, Vec2 pos, SpellSlotInfo slot) {
+    private void drawSpellIcon(GuiGraphicsExtractor guiHelper, Vec2 pos, SpellSlotInfo slot) {
         //setTexture(slot.containedSpell.getSpellType().getIdentifier());
-        guiHelper.blit(slot.spellSlot.getSpell().getSpellIconResource(), (int) pos.x + 2, (int) pos.y + 2, 0, 0, 15, 15, 16, 16);
+        guiHelper.blit(RenderPipelines.GUI_TEXTURED, slot.spellSlot.getSpell().getSpellIconResource(), (int) pos.x + 2, (int) pos.y + 2, 0f, 0f, 15, 15, 16, 16);
     }
 
-    private void renderLorePage(GuiGraphics guiHelper, float partialTick, int mouseX, int mouseY) {
+    private void renderLorePage(GuiGraphicsExtractor guiHelper, float partialTick, int mouseX, int mouseY) {
         int x = leftPos + LORE_PAGE_X;
         int y = topPos;
         int margin = 2;
@@ -220,11 +218,11 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         for (FormattedCharSequence line : titleLines) {
             int titleWidth = font.width(line);
             int titleX = x + (LORE_PAGE_WIDTH - titleWidth) / 2;
-            guiHelper.drawString(font, line, titleX, titleY, 0xFFFFFF, false);
+            guiHelper.text(font, line, titleX, titleY, 0xFFFFFF, false);
 
             //show description if hovering
             if (spellSelected && isHovering(titleX, titleY, titleWidth, font.lineHeight, mouseX, mouseY)) {
-                guiHelper.renderTooltip(font, TooltipsUtils.createSpellDescriptionTooltip(spellSlots.get(selectedSpellIndex).spellSlot.getSpell(), font), mouseX, mouseY);
+                guiHelper.setTooltipForNextFrame(font, TooltipsUtils.createSpellDescriptionTooltip(spellSlots.get(selectedSpellIndex).spellSlot.getSpell(), font), mouseX, mouseY);
             }
 
             //increment y for next line
@@ -249,7 +247,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         float reverseScale = 1 / textScale;
 
         Component school = spell.getSchoolType().getDisplayName();
-        poseStack.scale(textScale, textScale, textScale);
+        poseStack.scale(textScale, textScale);
 
 
         //
@@ -262,7 +260,7 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         // Level
         //
         var levelText = Component.translatable("ui.irons_spellbooks.level", spellLevel).withStyle(textColor);
-        guiHelper.drawString(font, levelText, x + (LORE_PAGE_WIDTH - font.width(levelText.getString())) / 2, descLine, 0xFFFFFF, false);
+        guiHelper.text(font, levelText, x + (LORE_PAGE_WIDTH - font.width(levelText.getString())) / 2, descLine, 0xFFFFFF, false);
         descLine += font.lineHeight * textScale * 2;
 
         //
@@ -290,24 +288,24 @@ public class InscriptionTableScreen extends AbstractContainerScreen<InscriptionT
         }
 
 
-        poseStack.scale(reverseScale, reverseScale, reverseScale);
+        poseStack.scale(reverseScale, reverseScale);
     }
 
-    private void drawTextWithShadow(Font font, GuiGraphics guiHelper, Component text, int x, int y, int color, float scale) {
+    private void drawTextWithShadow(Font font, GuiGraphicsExtractor guiHelper, Component text, int x, int y, int color, float scale) {
         x /= scale;
         y /= scale;
-        guiHelper.drawString(font, text, x, y, color);
+        guiHelper.text(font, text, x, y, color);
     }
 
-    private int drawText(Font font, GuiGraphics guiHelper, Component text, int x, int y, int color, float scale) {
+    private int drawText(Font font, GuiGraphicsExtractor guiHelper, Component text, int x, int y, int color, float scale) {
         x /= scale;
         y /= scale;
-        guiHelper.drawWordWrap(font, text, x, y, LORE_PAGE_WIDTH, color);
+        guiHelper.textWithWordWrap(font, text, x, y, LORE_PAGE_WIDTH, color);
         return font.wordWrapHeight(text, LORE_PAGE_WIDTH);
 
     }
 
-    private int drawStatText(Font font, GuiGraphics guiHelper, int x, int y, String translationKey, Style textStyle, MutableComponent stat, Style statStyle, float scale) {
+    private int drawStatText(Font font, GuiGraphicsExtractor guiHelper, int x, int y, String translationKey, Style textStyle, MutableComponent stat, Style statStyle, float scale) {
 //        x /= scale;
 //        y /= scale;
         return drawText(font, guiHelper, Component.translatable(translationKey, stat.withStyle(statStyle)).withStyle(textStyle), x, y, 0xFFFFFF, scale);

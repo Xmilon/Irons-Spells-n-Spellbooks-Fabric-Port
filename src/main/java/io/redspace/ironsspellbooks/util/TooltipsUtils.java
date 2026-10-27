@@ -291,7 +291,7 @@ public class TooltipsUtils {
     }
 
 //    private static void obfuscateStat(MutableComponent component) {
-//        var style = Style.EMPTY.withObfuscated(true).withFont(RUNIC_FONT);
+//        var style = Style.EMPTY.withObfuscated(true).withFont(new FontDescription.Resource(RUNIC_FONT));
 //        component.setStyle(style);
 //    }
 }

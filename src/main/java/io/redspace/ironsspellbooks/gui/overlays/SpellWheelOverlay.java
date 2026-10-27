@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.gui.overlays;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
@@ -9,13 +8,14 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
+import io.redspace.ironsspellbooks.render.RenderHelper;
 import io.redspace.ironsspellbooks.util.TooltipsUtils;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.LayeredDraw;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.Style;
@@ -26,7 +26,7 @@ import net.minecraft.world.phys.Vec2;
 import org.joml.Matrix4f;
 import org.joml.Vector4f;
 
-public class SpellWheelOverlay implements LayeredDraw.Layer {
+public class SpellWheelOverlay implements HudElement {
     public static SpellWheelOverlay instance = new SpellWheelOverlay();
 
     public final static Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/icons.png");
@@ -64,16 +64,17 @@ public class SpellWheelOverlay implements LayeredDraw.Layer {
         Minecraft.getInstance().mouseHandler.grabMouse();
     }
 
-    public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {
+    @Override
+    public void extractRenderState(GuiGraphicsExtractor guiHelper, DeltaTracker deltaTracker) {
         var minecraft = Minecraft.getInstance();
         var player = minecraft.player;
-        if (minecraft.options.hideGui || player == null || player.isSpectator() || !active) {
+        if (minecraft.gui.hud.isHidden() || player == null || player.isSpectator() || !active) {
             return;
         }
         var screenWidth = guiHelper.guiWidth();
         var screenHeight = guiHelper.guiHeight();
 
-        if (minecraft.screen != null || minecraft.mouseHandler.isMouseGrabbed()) {
+        if (minecraft.gui.screen() != null || minecraft.mouseHandler.isMouseGrabbed()) {
             close();
             return;
         }
@@ -89,8 +90,8 @@ public class SpellWheelOverlay implements LayeredDraw.Layer {
             close();
             return;
         }
-        PoseStack poseStack = guiHelper.pose();
-        poseStack.pushPose();
+        var poseStack = guiHelper.pose();
+        poseStack.pushMatrix();
         float guiScale = 1f;
         if (ClientConfigs.safeGet(ClientConfigs.SPELL_WHEEL_CONSISTENT_SIZE)) {
             float invertedGuiScaleFactor = (float) (1 / minecraft.getWindow().getGuiScale());
@@ -99,8 +100,8 @@ public class SpellWheelOverlay implements LayeredDraw.Layer {
         }
         int centerX = screenWidth / 2;
         int centerY = screenHeight / 2;
-        poseStack.translate(centerX, centerY, 0);
-        poseStack.scale(guiScale, guiScale, 1);
+        poseStack.translate(centerX, centerY);
+        poseStack.scale(guiScale, guiScale);
         centerX = 0;
         centerY = 0;
 
@@ -145,21 +146,21 @@ public class SpellWheelOverlay implements LayeredDraw.Layer {
         var cooldownTime = Component.translatable("tooltip.irons_spellbooks.cooldown_length_seconds", Utils.timeFromTicks(cooldownTicks, 2)).withStyle(ChatFormatting.YELLOW);
 
         drawTextBackground(guiHelper, centerX, centerY, ringOuterEdge + textHeight - textTitleMargin - font.lineHeight, textCenterMargin, Math.max(2, info.size()) * font.lineHeight);
-        guiHelper.drawString(font, title, (int) (centerX - font.width(title) / 2), (int) (centerY - (ringOuterEdge + textHeight)), 0xFFFFFF, true);
+        guiHelper.text(font, title, (int) (centerX - font.width(title) / 2), (int) (centerY - (ringOuterEdge + textHeight)), 0xFFFFFF, true);
         int infoHeight = (int) (centerY - (ringOuterEdge + textHeight) + font.lineHeight + textTitleMargin);
-        guiHelper.drawString(font, level, (int) (centerX - font.width(level) - textCenterMargin), infoHeight, 0xFFFFFF, true);
+        guiHelper.text(font, level, (int) (centerX - font.width(level) - textCenterMargin), infoHeight, 0xFFFFFF, true);
         if (spell.getManaCost(spellLevel) > 0) {
             infoHeight += font.lineHeight;
-            guiHelper.drawString(font, mana, (int) (centerX - font.width(mana) - textCenterMargin), infoHeight, 0xFFFFFF, true);
+            guiHelper.text(font, mana, (int) (centerX - font.width(mana) - textCenterMargin), infoHeight, 0xFFFFFF, true);
         }
         if (cooldownTicks > 0) {
             infoHeight += font.lineHeight;
-            guiHelper.drawString(font, cooldownTime, (int) (centerX - font.width(cooldownTime) - textCenterMargin), infoHeight, 0xFFFFFF, true);
+            guiHelper.text(font, cooldownTime, (int) (centerX - font.width(cooldownTime) - textCenterMargin), infoHeight, 0xFFFFFF, true);
         }
 
         for (int i = 0; i < info.size(); i++) {
             var line = info.get(i);
-            guiHelper.drawString(font, line, (int) (centerX + textCenterMargin), (int) (centerY - (ringOuterEdgeMax + textHeight) + font.lineHeight * (i + 1) + textTitleMargin), 0x3be33b, true);
+            guiHelper.text(font, line, (int) (centerX + textCenterMargin), (int) (centerY - (ringOuterEdgeMax + textHeight) + font.lineHeight * (i + 1) + textTitleMargin), 0x3be33b, true);
         }
 
         //Spell Icons
@@ -173,40 +174,37 @@ public class SpellWheelOverlay implements LayeredDraw.Layer {
             var currentSpell = swsm.getSpellData(i);
             if (currentSpell != null) {
                 var texture = currentSpell.getSpell().getSpellIconResource();
-                poseStack.pushPose();
-                poseStack.translate(centerX, centerY, 0);
-                poseStack.scale(scale, scale, scale);
+                poseStack.pushMatrix();
+                poseStack.translate(centerX, centerY);
+                poseStack.scale(scale, scale);
 
                 //Icon
                 int iconWidth = 16 / 2;
                 int borderWidth = 32 / 2;
                 int cdWidth = 16 / 2;
-                guiHelper.blit(texture, (int) locations[i].x - iconWidth, (int) locations[i].y - iconWidth, 0, 0, 16, 16, 16, 16);
+                guiHelper.blit(RenderPipelines.GUI_TEXTURED, texture, (int) locations[i].x - iconWidth, (int) locations[i].y - iconWidth, 0f, 0f, 16, 16, 16, 16);
                 /*
                 Border
                  */
-                guiHelper.blit(TEXTURE, (int) locations[i].x - borderWidth, (int) locations[i].y - borderWidth, swsm.getSelectionIndex() == i ? 32 : 0, 106, 32, 32);
+                guiHelper.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, (int) locations[i].x - borderWidth, (int) locations[i].y - borderWidth, (float) (swsm.getSelectionIndex() == i ? 32 : 0), 106f, 32, 32, 256, 256);
                 /*
                 Cooldown
                  */
                 float f = ClientMagicData.getCooldownPercent(currentSpell.getSpell());
                 if (f > 0) {
-                    RenderSystem.enableBlend();
                     int pixels = (int) (16 * f + 1f);
-                    guiHelper.blit(TEXTURE, (int) locations[i].x - cdWidth, (int) locations[i].y + cdWidth - pixels, 47, 87, 16, pixels);
+                    guiHelper.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, (int) locations[i].x - cdWidth, (int) locations[i].y + cdWidth - pixels, 47f, 87f, 16, pixels, 256, 256);
                 }
-                poseStack.popPose();
+                poseStack.popMatrix();
             }
         }
 
 
-        poseStack.popPose();
+        poseStack.popMatrix();
     }
 
-    private void drawTextBackground(GuiGraphics guiHelper, float centerX, float centerY, float textYOffset, int textCenterMargin, int textHeight) {
+    private void drawTextBackground(GuiGraphicsExtractor guiHelper, float centerX, float centerY, float textYOffset, int textCenterMargin, int textHeight) {
 //        guiHelper.fill(0, 0, (int) (centerX * 2), (int) (centerY * 2), 0);
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
         //final Tesselator tesselator = Tesselator.getInstance();
         //final BufferBuilder buffer = tesselator.getBuilder();
         //buffer.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.POSITION_COLOR);
@@ -220,21 +218,21 @@ public class SpellWheelOverlay implements LayeredDraw.Layer {
         widthMin = -1;
         widthMax = 1;
 
-        final VertexConsumer vertexConsumer = guiHelper.bufferSource().getBuffer(RenderType.gui());
-        Matrix4f m = guiHelper.pose().last().pose();
 //        vertexConsumer.addVertex(m, centerX + widthMin, centerY + heightMin, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0);
 //        vertexConsumer.addVertex(m, centerX + widthMin, centerY + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w());
 //        vertexConsumer.addVertex(m, centerX + widthMax, centerY + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w());
 //        vertexConsumer.addVertex(m, centerX + widthMax, centerY + heightMin, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0);
 
-        vertexConsumer.addVertex(m, centerX + widthMin, centerY + heightMin + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w());
-        vertexConsumer.addVertex(m, centerX + widthMin, centerY + heightMax + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0);
-        vertexConsumer.addVertex(m, centerX + widthMax, centerY + heightMax + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0);
-        vertexConsumer.addVertex(m, centerX + widthMax, centerY + heightMin + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w());
-        vertexConsumer.addVertex(m, centerX + widthMin, centerY + heightMin, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0);
-        vertexConsumer.addVertex(m, centerX + widthMin, centerY + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w());
-        vertexConsumer.addVertex(m, centerX + widthMax, centerY + heightMax, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w());
-        vertexConsumer.addVertex(m, centerX + widthMax, centerY + heightMin, 0f).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0);
+        RenderHelper.quadBuilder()
+                .vertex(centerX + widthMin, centerY + heightMin + heightMax).color(new Vector4f(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w()))
+                .vertex(centerX + widthMin, centerY + heightMax + heightMax).color(new Vector4f(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0))
+                .vertex(centerX + widthMax, centerY + heightMax + heightMax).color(new Vector4f(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0))
+                .vertex(centerX + widthMax, centerY + heightMin + heightMax).color(new Vector4f(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w())).build(guiHelper);
+        RenderHelper.quadBuilder()
+                .vertex(centerX + widthMin, centerY + heightMin).color(new Vector4f(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0))
+                .vertex(centerX + widthMin, centerY + heightMax).color(new Vector4f(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w()))
+                .vertex(centerX + widthMax, centerY + heightMax).color(new Vector4f(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w()))
+                .vertex(centerX + widthMax, centerY + heightMin).color(new Vector4f(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0)).build(guiHelper);
 //
 //        buffer.vertex(centerX - widthMax, centerY - heightMax, getBlitOffset()).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), 0);
 //        buffer.vertex(centerX - widthMax, centerY - heightMin, getBlitOffset()).setColor(radialButtonColor.x(), radialButtonColor.y(), radialButtonColor.z(), radialButtonColor.w());
@@ -244,10 +242,9 @@ public class SpellWheelOverlay implements LayeredDraw.Layer {
 
         //tesselator.end();
         //FIXME: 1.21: still necessary after removal of buffer builder? still necessary post 1.20 at all?
-        RenderSystem.disableBlend();
     }
 
-    private void drawRadialBackgrounds(GuiGraphics guiGraphics, float centerX, float centerY, int selectedSpellIndex) {
+    private void drawRadialBackgrounds(GuiGraphicsExtractor guiGraphics, float centerX, float centerY, int selectedSpellIndex) {
         float quarterCircle = Mth.HALF_PI;
         int totalSpellsAvailable = ClientMagicData.getSpellSelectionManager().getSpellCount();
         int segments;
@@ -278,13 +275,12 @@ public class SpellWheelOverlay implements LayeredDraw.Layer {
             Vector4f color = radialButtonColor;
             if (isHighlighted) color = highlightColor;
 
-            final VertexConsumer vertexConsumer = guiGraphics.bufferSource().getBuffer(RenderType.gui());
-            final Matrix4f m = guiGraphics.pose().last().pose();
 
-            vertexConsumer.addVertex(m, centerX + x1m1, centerY + y1m1, 0).setColor(color.x(), color.y(), color.z(), color.w());
-            vertexConsumer.addVertex(m, centerX + x2m1, centerY + y2m1, 0).setColor(color.x(), color.y(), color.z(), color.w());
-            vertexConsumer.addVertex(m, centerX + x2m2, centerY + y2m2, 0).setColor(color.x(), color.y(), color.z(), 0);
-            vertexConsumer.addVertex(m, centerX + x1m2, centerY + y1m2, 0).setColor(color.x(), color.y(), color.z(), 0);
+            RenderHelper.quadBuilder()
+                    .vertex(centerX + x1m1, centerY + y1m1).color(new Vector4f(color.x(), color.y(), color.z(), color.w()))
+                    .vertex(centerX + x2m1, centerY + y2m1).color(new Vector4f(color.x(), color.y(), color.z(), color.w()))
+                    .vertex(centerX + x2m2, centerY + y2m2).color(new Vector4f(color.x(), color.y(), color.z(), 0))
+                    .vertex(centerX + x1m2, centerY + y1m2).color(new Vector4f(color.x(), color.y(), color.z(), 0)).build(guiGraphics);
 
             //Category line
             color = lineColor;
@@ -296,15 +292,16 @@ public class SpellWheelOverlay implements LayeredDraw.Layer {
             final float y1m3 = Mth.sin(beginRadians) * categoryLineOuterEdge;
             final float y2m3 = Mth.sin(endRadians) * categoryLineOuterEdge;
 
-            vertexConsumer.addVertex(m, centerX + x1m1, centerY + y1m1, 0).setColor(color.x(), color.y(), color.z(), color.w());
-            vertexConsumer.addVertex(m, centerX + x2m1, centerY + y2m1, 0).setColor(color.x(), color.y(), color.z(), color.w());
-            vertexConsumer.addVertex(m, centerX + x2m3, centerY + y2m3, 0).setColor(color.x(), color.y(), color.z(), color.w());
-            vertexConsumer.addVertex(m, centerX + x1m3, centerY + y1m3, 0).setColor(color.x(), color.y(), color.z(), color.w());
+            RenderHelper.quadBuilder()
+                    .vertex(centerX + x1m1, centerY + y1m1).color(new Vector4f(color.x(), color.y(), color.z(), color.w()))
+                    .vertex(centerX + x2m1, centerY + y2m1).color(new Vector4f(color.x(), color.y(), color.z(), color.w()))
+                    .vertex(centerX + x2m3, centerY + y2m3).color(new Vector4f(color.x(), color.y(), color.z(), color.w()))
+                    .vertex(centerX + x1m3, centerY + y1m3).color(new Vector4f(color.x(), color.y(), color.z(), color.w())).build(guiGraphics);
 
         }
     }
 
-    private void drawDividingLines(GuiGraphics guiHelper, float centerX, float centerY) {
+    private void drawDividingLines(GuiGraphicsExtractor guiHelper, float centerX, float centerY) {
         int totalSpellsAvailable = ClientMagicData.getSpellSelectionManager().getSpellCount();
 
         if (totalSpellsAvailable <= 1)
@@ -333,28 +330,19 @@ public class SpellWheelOverlay implements LayeredDraw.Layer {
             final float y2m2 = Mth.sin(endFarRadians) * ringOuterEdge * 1.4f;
 
             Vector4f color = lineColor;
-            final VertexConsumer vertexConsumer = guiHelper.bufferSource().getBuffer(RenderType.gui());
-            Matrix4f m = guiHelper.pose().last().pose();
 
-            vertexConsumer.addVertex(m, centerX + x1m1, centerY + y1m1, 0).setColor(color.x(), color.y(), color.z(), color.w());
-            vertexConsumer.addVertex(m, centerX + x2m1, centerY + y2m1, 0).setColor(color.x(), color.y(), color.z(), color.w());
-            vertexConsumer.addVertex(m, centerX + x2m2, centerY + y2m2, 0).setColor(color.x(), color.y(), color.z(), 0);
-            vertexConsumer.addVertex(m, centerX + x1m2, centerY + y1m2, 0).setColor(color.x(), color.y(), color.z(), 0);
+            RenderHelper.quadBuilder()
+                    .vertex(centerX + x1m1, centerY + y1m1).color(new Vector4f(color.x(), color.y(), color.z(), color.w()))
+                    .vertex(centerX + x2m1, centerY + y2m1).color(new Vector4f(color.x(), color.y(), color.z(), color.w()))
+                    .vertex(centerX + x2m2, centerY + y2m2).color(new Vector4f(color.x(), color.y(), color.z(), 0))
+                    .vertex(centerX + x1m2, centerY + y1m2).color(new Vector4f(color.x(), color.y(), color.z(), 0)).build(guiHelper);
         }
     }
 
     private void setOpaqueTexture(Identifier texture) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        RenderSystem.setShaderTexture(0, texture);
     }
 
     private void setTranslucentTexture(Identifier texture) {
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.setShader(GameRenderer::getRendertypeTranslucentShader);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        RenderSystem.setShaderTexture(0, texture);
     }
 
     private boolean inTriangle(final double x1, final double y1, final double x2, final double y2,

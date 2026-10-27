@@ -174,9 +174,9 @@ public class RuinedBookItem extends Item implements ILecternPlaceable {
                     23 * 2,
                     23 * 2
             })
-    ).withStyle(Style.EMPTY.withFont(Identifier.withDefaultNamespace("alt")));
+    ).withStyle(Style.EMPTY.withFont(new FontDescription.Resource(Identifier.withDefaultNamespace("alt"))));
     public static Component PAGE2 = PAGE.copy().withStyle(ChatFormatting.OBFUSCATED);
-    public static Component DARKNESS = Component.literal("Darkness").withStyle(Style.EMPTY.withFont(Identifier.withDefaultNamespace("alt")));
+    public static Component DARKNESS = Component.literal("Darkness").withStyle(Style.EMPTY.withFont(new FontDescription.Resource(Identifier.withDefaultNamespace("alt"))));
     public static Component DARKNESS2 = DARKNESS.copy().withStyle(ChatFormatting.OBFUSCATED);
     public static Identifier LECTERN_LOCATION = IronsSpellbooks.id("textures/entity/lectern/ruined_book.png");
 

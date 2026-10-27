@@ -72,9 +72,10 @@ import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.HudRenderCallback;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
 import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
-import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.client.gui.screen.v1.ScreenEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import io.redspace.ironsspellbooks.item.WaywardCompass;
@@ -116,9 +117,6 @@ public class IronsSpellbooksClient implements ClientModInitializer {
         registerItemProperties();
         registerHudOverlays();
         io.redspace.ironsspellbooks.setup.ClientEventBridge.init();
-        // Order matters: BossbarManager adjusts the increment that RecastOverlay then tallies.
-        net.neoforged.neoforge.common.NeoForge.EVENT_BUS.register(io.redspace.ironsspellbooks.api.util.BossbarManager.class);
-        net.neoforged.neoforge.common.NeoForge.EVENT_BUS.register(RecastOverlay.class);
         registerModelLayers();
         registerEntityRenderers();
         registerPlayerRenderLayers();
@@ -238,14 +236,24 @@ public class IronsSpellbooksClient implements ClientModInitializer {
     }
 
     private static void registerHudOverlays() {
-        HudRenderCallback.EVENT.register((guiGraphics, deltaTracker) -> {
-            ScreenEffectsOverlay.instance.render(guiGraphics, deltaTracker);
-            ManaBarOverlay.instance.render(guiGraphics, deltaTracker);
-            ActiveSpellOverlay.instance.render(guiGraphics, deltaTracker);
-            RecastOverlay.instance.render(guiGraphics, deltaTracker);
-            SpellWheelOverlay.instance.render(guiGraphics, deltaTracker);
-            ScreenTooltipOverlay.instance.render(guiGraphics, deltaTracker);
-        });
+        HudElementRegistry.addFirst(IronsSpellbooks.id("screen_effects"), ScreenEffectsOverlay.instance);
+        HudElementRegistry.addFirst(IronsSpellbooks.id("spell_bar"), SpellBarOverlay.instance);
+        HudElementRegistry.addLast(IronsSpellbooks.id("mana_bar"), ManaBarOverlay.instance);
+        HudElementRegistry.addLast(IronsSpellbooks.id("active_spell"), ActiveSpellOverlay.instance);
+        // after the vanilla boss bar, so the recast bar can stack below it
+        HudElementRegistry.addLast(IronsSpellbooks.id("recast"), RecastOverlay.instance);
+        HudElementRegistry.addLast(IronsSpellbooks.id("spell_wheel"), SpellWheelOverlay.instance);
+        HudElementRegistry.addLast(IronsSpellbooks.id("screen_tooltip"), ScreenTooltipOverlay.instance);
+        // the mana bar takes the experience bar's place when anchored to it
+        for (var vanilla : new Identifier[]{VanillaHudElements.INFO_BAR, VanillaHudElements.EXPERIENCE_LEVEL}) {
+            HudElementRegistry.replaceElement(vanilla, original -> (graphics, deltaTracker) -> {
+                var player = Minecraft.getInstance().player;
+                if (ClientConfigs.safeGet(ClientConfigs.MANA_BAR_ANCHOR) == ManaBarOverlay.Anchor.XP && ManaBarOverlay.shouldShowManaBar(player)) {
+                    return;
+                }
+                original.extractRenderState(graphics, deltaTracker);
+            });
+        }
     }
 
     private static void registerTooltipCallbacks() {

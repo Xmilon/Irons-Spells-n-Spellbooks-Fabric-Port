@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.gui.overlays;
 
-import com.mojang.blaze3d.systems.RenderSystem;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
@@ -11,26 +10,27 @@ import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.LayeredDraw;
-import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 
 
-public class ActiveSpellOverlay implements LayeredDraw.Layer {
+public class ActiveSpellOverlay implements HudElement {
     public static ActiveSpellOverlay instance = new ActiveSpellOverlay();
 
     protected static final Identifier WIDGETS_LOCATION = Identifier.withDefaultNamespace("textures/gui/widgets.png");
     public final static Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/icons.png");
     protected static final Identifier FRAME_LOCATION = Identifier.withDefaultNamespace("textures/gui/sprites/hud/hotbar_offhand_left.png");
 
-    public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {
+    @Override
+    public void extractRenderState(GuiGraphicsExtractor guiHelper, DeltaTracker deltaTracker) {
         var minecraft = Minecraft.getInstance();
         var player = minecraft.player;
-        if (minecraft.options.hideGui || player == null || player.isSpectator()) {
+        if (minecraft.gui.hud.isHidden() || player == null || player.isSpectator()) {
             return;
         }
         var screenWidth = guiHelper.guiWidth();
@@ -75,35 +75,19 @@ public class ActiveSpellOverlay implements LayeredDraw.Layer {
         //  Render Spells
         //
         //Slot Border
-        guiHelper.blit(FRAME_LOCATION, centerX, centerY, 0, 0, 29, 24, 29, 24);
+        guiHelper.blit(RenderPipelines.GUI_TEXTURED, FRAME_LOCATION, centerX, centerY, 0f, 0f, 29, 24, 29, 24);
         //Spell Icon
-        guiHelper.blit(spell.getSpellIconResource(), centerX + 3, centerY + 4, 0, 0, 16, 16, 16, 16);
+        guiHelper.blit(RenderPipelines.GUI_TEXTURED, spell.getSpellIconResource(), centerX + 3, centerY + 4, 0f, 0f, 16, 16, 16, 16);
         //Border + Cooldowns
         float f = ClientMagicData.getCooldownPercent(spell);
         if (f > 0 && !stack.getItem().equals(ItemRegistry.SCROLL.get())) {
-            RenderSystem.enableBlend();
-            RenderSystem.defaultBlendFunc();
             int pixels = (int) (16 * f + 1f);
-            guiHelper.blit(TEXTURE, centerX + 3, centerY + 20 - pixels, 47, 87, 16, pixels);
+            guiHelper.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, centerX + 3, centerY + 20 - pixels, 47f, 87f, 16, pixels, 256, 256);
         }
     }
 
     private static boolean hasRightClickCasting(Item item) {
         //TODO: check configs when implemented
         return item instanceof Scroll || item instanceof CastingItem;
-    }
-
-    private static void setOpaqueTexture(Identifier texture) {
-        RenderSystem.setShader(GameRenderer::getPositionTexShader);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        RenderSystem.setShaderTexture(0, texture);
-    }
-
-    private static void setTranslucentTexture(Identifier texture) {
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
-        RenderSystem.setShader(GameRenderer::getRendertypeTranslucentShader);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        RenderSystem.setShaderTexture(0, texture);
     }
 }

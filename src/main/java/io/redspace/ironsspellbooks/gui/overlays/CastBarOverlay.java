@@ -6,12 +6,13 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.LayeredDraw;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.minecraft.client.renderer.RenderPipelines;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.minecraft.resources.Identifier;
 
 
-public class CastBarOverlay implements LayeredDraw.Layer {
+public class CastBarOverlay implements HudElement {
     public static CastBarOverlay instance = new CastBarOverlay();
 
     public final static Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/gui/icons.png");
@@ -19,8 +20,9 @@ public class CastBarOverlay implements LayeredDraw.Layer {
     static final int COMPLETION_BAR_WIDTH = 44;
     static final int IMAGE_HEIGHT = 21;
 
-    public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {
-        if (Minecraft.getInstance().options.hideGui || Minecraft.getInstance().player.isSpectator()) {
+    @Override
+    public void extractRenderState(GuiGraphicsExtractor guiHelper, DeltaTracker deltaTracker) {
+        if (Minecraft.getInstance().gui.hud.isHidden() || Minecraft.getInstance().player.isSpectator()) {
             return;
         }
         var screenWidth = guiHelper.guiWidth();
@@ -44,8 +46,8 @@ public class CastBarOverlay implements LayeredDraw.Layer {
         //RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         //RenderSystem.setShaderTexture(0, TEXTURE);
 
-        guiHelper.blit(TEXTURE, barX, barY, 0, IMAGE_HEIGHT * 2, IMAGE_WIDTH, IMAGE_HEIGHT, 256, 256);
-        guiHelper.blit(TEXTURE, barX, barY, 0, IMAGE_HEIGHT * 3, (int) (COMPLETION_BAR_WIDTH * castCompletionPercent + (IMAGE_WIDTH - COMPLETION_BAR_WIDTH) / 2), IMAGE_HEIGHT);
+        guiHelper.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, barX, barY, 0f, (float) (IMAGE_HEIGHT * 2), IMAGE_WIDTH, IMAGE_HEIGHT, 256, 256);
+        guiHelper.blit(RenderPipelines.GUI_TEXTURED, TEXTURE, barX, barY, 0f, (float) (IMAGE_HEIGHT * 3), (int) (COMPLETION_BAR_WIDTH * castCompletionPercent + (IMAGE_WIDTH - COMPLETION_BAR_WIDTH) / 2), IMAGE_HEIGHT, 256, 256);
 
         int textX, textY;
         var font = Minecraft.getInstance().font;
@@ -53,6 +55,6 @@ public class CastBarOverlay implements LayeredDraw.Layer {
         textX = barX + (IMAGE_WIDTH - font.width(castTimeString)) / 2;
         textY = barY + IMAGE_HEIGHT / 2 - font.lineHeight / 2 + 1;
 
-        guiHelper.drawString(font, castTimeString, textX, textY, 0xFFFFFF);
+        guiHelper.text(font, castTimeString, textX, textY, 0xFFFFFF);
     }
 }

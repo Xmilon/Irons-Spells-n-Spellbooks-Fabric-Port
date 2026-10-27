@@ -162,7 +162,7 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpell
                 var desc = Component.translatable(slot.getSpell().getComponentId() + ".guide").withStyle(ChatFormatting.BLACK);
                 var page = Component.literal("").append(title).append("\n\n").append(desc);
                 if (hideStats) {
-                    page = page.withStyle(page.getStyle().applyTo(Style.EMPTY.withFont(Identifier.withDefaultNamespace("alt"))));
+                    page = page.withStyle(page.getStyle().applyTo(Style.EMPTY.withFont(new FontDescription.Resource(Identifier.withDefaultNamespace("alt")))));
                 }
                 return (Component) page;
             }).toList();

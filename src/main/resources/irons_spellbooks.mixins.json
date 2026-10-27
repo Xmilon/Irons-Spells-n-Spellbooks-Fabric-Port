@@ -42,7 +42,6 @@
     "EntityRendererMixin",
     "CameraMixin",
     "FogRendererMixin",
-    "GuiMixin",
     "KeyboardInputMixin",
     "ItemRendererMixin",
     "LivingEntityRendererAccessor",

@@ -2,8 +2,8 @@ package io.redspace.ironsspellbooks.gui.overlays;
 
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.GuiGraphics;
-import net.minecraft.client.gui.LayeredDraw;
+import net.minecraft.client.gui.GuiGraphicsExtractor;
+import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTextTooltip;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipComponent;
 import net.minecraft.client.gui.screens.inventory.tooltip.ClientTooltipPositioner;
@@ -18,7 +18,7 @@ import java.util.List;
 import java.util.Optional;
 
 
-public class ScreenTooltipOverlay implements LayeredDraw.Layer {
+public class ScreenTooltipOverlay implements HudElement {
     public static final ScreenTooltipOverlay instance = new ScreenTooltipOverlay();
 
     private record RenderInfo(List<Component> tooltip, ClientTooltipPositioner positioner, Optional<Vector4i> colors) {
@@ -26,15 +26,14 @@ public class ScreenTooltipOverlay implements LayeredDraw.Layer {
 
     RenderInfo toRender = null;
 
-    public void render(GuiGraphics guiHelper, DeltaTracker deltaTracker) {
-        if (Minecraft.getInstance().options.hideGui || toRender == null) {
+    @Override
+    public void extractRenderState(GuiGraphicsExtractor guiHelper, DeltaTracker deltaTracker) {
+        if (Minecraft.getInstance().gui.hud.isHidden() || toRender == null) {
             return;
         }
 
         // manually render tooltip for extra control (mainly color/opacity)
-        //guiHelper.renderTooltip(Minecraft.getInstance().font, Language.getInstance().getVisualOrder(toRender.tooltip.stream().map(ScreenTooltipOverlay::cast).toList()), toRender.positioner, 0, 0);
-        var pose = guiHelper.pose();
-
+        //guiHelper.setTooltipForNextFrame(Minecraft.getInstance().font, Language.getInstance().getVisualOrder(toRender.tooltip.stream().map(ScreenTooltipOverlay::cast).toList()), toRender.positioner, 0, 0);
         var font = Minecraft.getInstance().font;
         var components = Language.getInstance().getVisualOrder(toRender.tooltip.stream().map(ScreenTooltipOverlay::cast).toList()).stream().map(ClientTextTooltip::new).toList();
         int maxTextWidth = 0;
@@ -46,29 +45,26 @@ public class ScreenTooltipOverlay implements LayeredDraw.Layer {
                 maxTextWidth = k;
             }
 
-            totalHeight += clienttooltipcomponent.getHeight();
+            totalHeight += clienttooltipcomponent.getHeight(font);
         }
 
         Vector2ic vector2ic = toRender.positioner.positionTooltip(guiHelper.guiWidth(), guiHelper.guiHeight(), 0, 0, maxTextWidth, totalHeight);
         int x = vector2ic.x();
         int y = vector2ic.y();
-        pose.pushPose();
         //0xf0100010, 0x505000FF, 0x5028007f
         var bgColor1 = toRender.colors.map(Vector4i::x).orElse(0x90100010);
         var bgColor2 = toRender.colors.map(Vector4i::y).orElse(0x90100010);
         var edgeColor1 = toRender.colors.map(Vector4i::z).orElse(0x705000FF);
         var edgeColor2 = toRender.colors.map(Vector4i::w).orElse(0x7028007f);
-        TooltipRenderUtil.renderTooltipBackground(guiHelper, x, y, maxTextWidth, totalHeight, 400);
-        guiHelper.flush();
-        pose.translate(0.0F, 0.0F, 400.0F);
+        TooltipRenderUtil.extractTooltipBackground(guiHelper, x, y, maxTextWidth, totalHeight, null);
+        guiHelper.nextStratum();
         int lineY = y;
 
         for (int l1 = 0; l1 < components.size(); l1++) {
             ClientTooltipComponent clienttooltipcomponent1 = components.get(l1);
-            clienttooltipcomponent1.renderText(font, x, lineY, pose.last().pose(), guiHelper.bufferSource());
-            lineY += clienttooltipcomponent1.getHeight() + (l1 == 0 ? 2 : 0);
+            clienttooltipcomponent1.extractText(guiHelper, font, x, lineY);
+            lineY += clienttooltipcomponent1.getHeight(font) + (l1 == 0 ? 2 : 0);
         }
-        pose.popPose();
 
 
         toRender = null;
