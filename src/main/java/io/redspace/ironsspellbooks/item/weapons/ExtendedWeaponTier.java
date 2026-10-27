@@ -7,13 +7,12 @@ import net.minecraft.tags.TagKey;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Items;
-import net.minecraft.world.item.Tier;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.level.block.Block;
 
 import java.util.function.Supplier;
 
-public class ExtendedWeaponTier implements Tier, IronsWeaponTier {
+public class ExtendedWeaponTier implements IronsWeaponTier {
     public static ExtendedWeaponTier HELLRAZOR = new ExtendedWeaponTier(2031, 12, -2.6f, 16, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, () -> Ingredient.of(Items.NETHERITE_SCRAP));
     public static ExtendedWeaponTier LEGIONNAIRE_FLAMBERGE = new ExtendedWeaponTier(2031, 10, -2.5f, 4, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, () -> Ingredient.of(Items.NETHERITE_SCRAP), new AttributeContainer(Attributes.ARMOR, 4, AttributeModifier.Operation.ADD_VALUE));
     public static ExtendedWeaponTier DECREPIT_FLAMBERGE = new ExtendedWeaponTier(1000, 10, -2.7f, 4, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, () -> Ingredient.of(Items.NETHERITE_SCRAP), new AttributeContainer(Attributes.ARMOR, 4, AttributeModifier.Operation.ADD_VALUE));
@@ -29,6 +28,13 @@ public class ExtendedWeaponTier implements Tier, IronsWeaponTier {
     public static ExtendedWeaponTier ICE_GREATSWORD = new ExtendedWeaponTier(2031, 15, -3.1f, 16, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, () -> Ingredient.of(Items.ICE));
     public static ExtendedWeaponTier TWILIGHT_GALE = new ExtendedWeaponTier(2031, 12, -2.6f, 16, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, () -> Ingredient.of(ItemRegistry.LIGHTNING_BOTTLE.get()));
     public static ExtendedWeaponTier VOID_ICHOR = new ExtendedWeaponTier(2031, 8, -2f, 12, BlockTags.INCORRECT_FOR_NETHERITE_TOOL, () -> Ingredient.of(Items.DIAMOND), new AttributeContainer(AttributeRegistry.COOLDOWN_REDUCTION, .15, AttributeModifier.Operation.ADD_MULTIPLIED_BASE));
+
+    /** shortcut: a single shared repair tag stands in for the per-tier repair ingredients. */
+    private static final net.minecraft.tags.TagKey<net.minecraft.world.item.Item> REPAIR_ITEMS = net.minecraft.tags.TagKey.create(net.minecraft.core.registries.Registries.ITEM, io.redspace.ironsspellbooks.IronsSpellbooks.id("weapon_repair"));
+
+    public net.minecraft.world.item.ToolMaterial toolMaterial() {
+        return new net.minecraft.world.item.ToolMaterial(incorrectBlocksForDrops, uses, 1f, damage, enchantmentValue, REPAIR_ITEMS);
+    }
 
     int uses;
     float damage;
@@ -48,7 +54,6 @@ public class ExtendedWeaponTier implements Tier, IronsWeaponTier {
         this.attributes = attributes;
     }
 
-    @Override
     public int getUses() {
         return uses;
     }
@@ -63,17 +68,14 @@ public class ExtendedWeaponTier implements Tier, IronsWeaponTier {
         return damage;
     }
 
-    @Override
     public TagKey<Block> getIncorrectBlocksForDrops() {
         return incorrectBlocksForDrops;
     }
 
-    @Override
     public int getEnchantmentValue() {
         return enchantmentValue;
     }
 
-    @Override
     public Ingredient getRepairIngredient() {
         return repairIngredient.get();
     }

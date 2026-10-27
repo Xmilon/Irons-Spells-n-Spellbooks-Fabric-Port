@@ -122,7 +122,6 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpell
         if (player != null) {
             lines.addAll(TooltipsUtils.formatSpellbookStatsTooltip(itemStack, player));
         }
-        super.appendHoverText(itemStack, context, lines, flag);
     }
 
     @NotNull

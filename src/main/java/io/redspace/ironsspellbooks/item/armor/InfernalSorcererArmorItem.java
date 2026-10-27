@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.item.armor;
 
+import net.minecraft.world.item.Item;
+
 import net.minecraft.world.item.equipment.ArmorMaterial;
 
 import net.minecraft.world.item.equipment.ArmorType;
@@ -32,8 +34,13 @@ public class InfernalSorcererArmorItem extends ImbuableChestplateArmorItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack stack, TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
-        super.appendHoverText(stack, context, tooltipComponents, tooltipFlag);
+    public void appendHoverText(ItemStack stack, Item.TooltipContext context, net.minecraft.world.item.component.TooltipDisplay display, java.util.function.Consumer<Component> tooltipAdder, TooltipFlag tooltipFlag) {
+        List<Component> tooltipComponents = new java.util.ArrayList<>();
+        appendLegacyTooltip(stack, context, tooltipComponents, tooltipFlag);
+        tooltipComponents.forEach(tooltipAdder);
+    }
+
+    private void appendLegacyTooltip(ItemStack stack, Item.TooltipContext context, List<Component> tooltipComponents, TooltipFlag tooltipFlag) {
         tooltipComponents.add(
                 Component.translatable(
                         "tooltip.irons_spellbooks.passive_ability_no_cooldown",

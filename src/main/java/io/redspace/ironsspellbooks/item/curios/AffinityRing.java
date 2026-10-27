@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.item.curios;
 
+import net.minecraft.world.item.Item;
+
 import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
 import io.redspace.ironsspellbooks.render.AffinityRingRenderer;
 import net.minecraft.ChatFormatting;
@@ -19,7 +21,13 @@ public class AffinityRing extends CurioBaseItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, TooltipContext context, List<Component> tooltip, TooltipFlag pIsAdvanced) {
+    public void appendHoverText(ItemStack pStack, Item.TooltipContext context, net.minecraft.world.item.component.TooltipDisplay display, java.util.function.Consumer<Component> tooltipAdder, TooltipFlag pIsAdvanced) {
+        List<Component> tooltip = new java.util.ArrayList<>();
+        appendLegacyTooltip(pStack, context, tooltip, pIsAdvanced);
+        tooltip.forEach(tooltipAdder);
+    }
+
+    private void appendLegacyTooltip(ItemStack pStack, Item.TooltipContext context, List<Component> tooltip, TooltipFlag pIsAdvanced) {
         var affinity = AffinityData.getAffinityData(pStack);
         if (affinity != AffinityData.NONE && !affinity.affinityData().isEmpty()) {
             tooltip.add(Component.empty());

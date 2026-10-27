@@ -32,8 +32,13 @@ public class EldritchManuscript extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, TooltipContext pContext, List<Component> lines, TooltipFlag pIsAdvanced) {
-        super.appendHoverText(pStack, pContext, lines, pIsAdvanced);
+    public void appendHoverText(ItemStack pStack, Item.TooltipContext pContext, net.minecraft.world.item.component.TooltipDisplay display, java.util.function.Consumer<Component> tooltipAdder, TooltipFlag pIsAdvanced) {
+        List<Component> lines = new java.util.ArrayList<>();
+        appendLegacyTooltip(pStack, pContext, lines, pIsAdvanced);
+        lines.forEach(tooltipAdder);
+    }
+
+    private void appendLegacyTooltip(ItemStack pStack, Item.TooltipContext pContext, List<Component> lines, TooltipFlag pIsAdvanced) {
         lines.add(description);
     }
 }

@@ -23,7 +23,7 @@
 //import net.minecraft.resources.Identifier;
 //import net.minecraft.world.damagesource.DamageSource;
 //import net.minecraft.world.entity.Entity;
-//import net.minecraft.world.item.UseAnim;
+//import net.minecraft.world.item.ItemUseAnimation;
 //
 //import java.util.ArrayList;
 //import java.util.Arrays;
@@ -146,10 +146,10 @@
 //        };
 //    }
 //
-//    public UseAnim getUseAnim() {
+//    public ItemUseAnimation getUseAnim() {
 //        return switch (this) {
-//            case LIGHTNING_LANCE_SPELL -> UseAnim.SPEAR;
-//            default -> UseAnim.BOW;
+//            case LIGHTNING_LANCE_SPELL -> ItemUseAnimation.SPEAR;
+//            default -> ItemUseAnimation.BOW;
 //        };
 //    }
 //

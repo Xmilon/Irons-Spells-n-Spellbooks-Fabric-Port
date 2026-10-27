@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.item;
 
+import net.minecraft.world.item.Item;
+
 import net.minecraft.network.chat.FontDescription;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
@@ -43,8 +45,13 @@ public class ArchevokerLogbookItem extends ReadableLoreItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, TooltipContext pContext, List<Component> pTooltipComponents, TooltipFlag pTooltipFlag) {
-        super.appendHoverText(pStack, pContext, pTooltipComponents, pTooltipFlag);
+    public void appendHoverText(ItemStack pStack, Item.TooltipContext pContext, net.minecraft.world.item.component.TooltipDisplay display, java.util.function.Consumer<Component> tooltipAdder, TooltipFlag pTooltipFlag) {
+        List<Component> pTooltipComponents = new java.util.ArrayList<>();
+        appendLegacyTooltip(pStack, pContext, pTooltipComponents, pTooltipFlag);
+        pTooltipComponents.forEach(tooltipAdder);
+    }
+
+    private void appendLegacyTooltip(ItemStack pStack, Item.TooltipContext pContext, List<Component> pTooltipComponents, TooltipFlag pTooltipFlag) {
         if (translated) {
             pTooltipComponents.add(Component.translatable("tooltip.irons_spellbooks.translated").withStyle(ChatFormatting.YELLOW));
         } else {

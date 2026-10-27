@@ -6,13 +6,13 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.item.SwordItem;
-import net.minecraft.world.item.Tier;
+import net.minecraft.world.item.Item;
+import io.redspace.ironsspellbooks.item.weapons.ExtendedWeaponTier;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 
-public class ExtendedSwordItem extends SwordItem {
-    public ExtendedSwordItem(Tier pTier, Properties pProperties) {
-        super(pTier, pProperties);
+public class ExtendedSwordItem extends Item {
+    public ExtendedSwordItem(ExtendedWeaponTier pTier, Properties pProperties) {
+        super(pProperties.sword(pTier.toolMaterial(), pTier.getAttackDamageBonus(), pTier.getSpeed()).attributes(createAttributes(pTier)));
     }
 
     public static ItemAttributeModifiers createAttributes(IronsWeaponTier pTier) {

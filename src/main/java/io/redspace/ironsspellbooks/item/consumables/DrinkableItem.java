@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.item.consumables;
 
+import net.minecraft.world.item.Item;
+
 import net.minecraft.world.InteractionResult;
 
 import net.minecraft.ChatFormatting;
@@ -68,8 +70,8 @@ public class DrinkableItem extends Item {
     }
 
     @Override
-    public UseAnim getUseAnimation(ItemStack pStack) {
-        return UseAnim.DRINK;
+    public ItemUseAnimation getUseAnimation(ItemStack pStack) {
+        return ItemUseAnimation.DRINK;
     }
 
     @Override
@@ -78,8 +80,13 @@ public class DrinkableItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, TooltipContext context, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        super.appendHoverText(pStack, context, pTooltipComponents, pIsAdvanced);
+    public void appendHoverText(ItemStack pStack, Item.TooltipContext context, net.minecraft.world.item.component.TooltipDisplay display, java.util.function.Consumer<Component> tooltipAdder, TooltipFlag pIsAdvanced) {
+        List<Component> pTooltipComponents = new java.util.ArrayList<>();
+        appendLegacyTooltip(pStack, context, pTooltipComponents, pIsAdvanced);
+        pTooltipComponents.forEach(tooltipAdder);
+    }
+
+    private void appendLegacyTooltip(ItemStack pStack, Item.TooltipContext context, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         if (showDesc) {
             pTooltipComponents.add(Component.empty());
             pTooltipComponents.add(Component.translatable("potion.whenDrank").withStyle(ChatFormatting.DARK_PURPLE));

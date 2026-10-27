@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.item;
 
+import net.minecraft.world.item.Item;
+
 import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
@@ -25,7 +27,6 @@ public class CursedDollSpellbookItem extends SpellBook {
 
     @Override
     public void appendHoverText(@NotNull ItemStack itemStack, TooltipContext context, @NotNull List<Component> lines, @NotNull TooltipFlag flag) {
-        super.appendHoverText(itemStack, context, lines, flag);
         var affinityData = AffinityData.getAffinityData(itemStack);
         if (!affinityData.affinityData().isEmpty()) {
             int i = TooltipsUtils.indexOfComponent(lines, "tooltip.irons_spellbooks.spellbook_spell_count");

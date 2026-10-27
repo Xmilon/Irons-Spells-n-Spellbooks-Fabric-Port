@@ -14,8 +14,13 @@ public class SimpleDescriptiveItem extends Item {
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, TooltipContext context, List<Component> lines, TooltipFlag pIsAdvanced) {
-        super.appendHoverText(pStack, context, lines, pIsAdvanced);
+    public void appendHoverText(ItemStack pStack, Item.TooltipContext context, net.minecraft.world.item.component.TooltipDisplay display, java.util.function.Consumer<Component> tooltipAdder, TooltipFlag pIsAdvanced) {
+        List<Component> lines = new java.util.ArrayList<>();
+        appendLegacyTooltip(pStack, context, lines, pIsAdvanced);
+        lines.forEach(tooltipAdder);
+    }
+
+    private void appendLegacyTooltip(ItemStack pStack, Item.TooltipContext context, List<Component> lines, TooltipFlag pIsAdvanced) {
         lines.add(Component.translatable(String.format("%s.description", this.getDescriptionId())).withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
     }
 }

@@ -28,7 +28,6 @@ public class TinctureOfForgetfulnessItem extends Item {
 
     @Override
     public void appendHoverText(@NotNull ItemStack pStack, @NotNull TooltipContext context, @NotNull List<Component> pTooltipComponents, @NotNull TooltipFlag pIsAdvanced) {
-        super.appendHoverText(pStack, context, pTooltipComponents, pIsAdvanced);
         pTooltipComponents.add(DESCRIPTION);
     }
 

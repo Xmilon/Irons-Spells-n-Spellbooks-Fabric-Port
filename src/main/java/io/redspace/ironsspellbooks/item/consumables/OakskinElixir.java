@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.item.consumables;
 
+import net.minecraft.world.item.Item;
+
 import io.redspace.ironsspellbooks.effect.CustomDescriptionMobEffect;
 import io.redspace.ironsspellbooks.effect.OakskinData;
 import net.minecraft.network.chat.Component;
@@ -45,7 +47,13 @@ public class OakskinElixir extends DrinkableItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, TooltipContext context, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
+    public void appendHoverText(ItemStack pStack, Item.TooltipContext context, net.minecraft.world.item.component.TooltipDisplay display, java.util.function.Consumer<Component> tooltipAdder, TooltipFlag pIsAdvanced) {
+        List<Component> pTooltipComponents = new java.util.ArrayList<>();
+        appendLegacyTooltip(pStack, context, pTooltipComponents, pIsAdvanced);
+        pTooltipComponents.forEach(tooltipAdder);
+    }
+
+    private void appendLegacyTooltip(ItemStack pStack, Item.TooltipContext context, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         Iterable<MobEffectInstance> iterable = List.of(this.getMobEffect());
         PotionContents.addPotionTooltip(iterable, pTooltipComponents::add, 1f, context.tickRate());
         if (this.potionEffect.get().getEffect().value() instanceof CustomDescriptionMobEffect customDescriptionMobEffect) {

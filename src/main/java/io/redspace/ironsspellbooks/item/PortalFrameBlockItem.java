@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.item;
 
+import net.minecraft.world.item.Item;
+
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -15,8 +17,13 @@ public class PortalFrameBlockItem extends BlockItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, TooltipContext pContext, List<Component> pTooltipComponents, TooltipFlag pTooltipFlag) {
-        super.appendHoverText(pStack, pContext, pTooltipComponents, pTooltipFlag);
+    public void appendHoverText(ItemStack pStack, Item.TooltipContext pContext, net.minecraft.world.item.component.TooltipDisplay display, java.util.function.Consumer<Component> tooltipAdder, TooltipFlag pTooltipFlag) {
+        List<Component> pTooltipComponents = new java.util.ArrayList<>();
+        appendLegacyTooltip(pStack, pContext, pTooltipComponents, pTooltipFlag);
+        pTooltipComponents.forEach(tooltipAdder);
+    }
+
+    private void appendLegacyTooltip(ItemStack pStack, Item.TooltipContext pContext, List<Component> pTooltipComponents, TooltipFlag pTooltipFlag) {
         pTooltipComponents.add(DESCRIPTION);
     }
 }

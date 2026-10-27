@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.item.weapons;
 
+import net.minecraft.world.item.Item;
+
 import net.minecraft.world.InteractionResult;
 
 import com.mojang.serialization.Codec;
@@ -139,10 +141,15 @@ public class AutoloaderCrossbow extends CrossbowItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, TooltipContext context, List<Component> pTooltip, TooltipFlag pFlag) {
+    public void appendHoverText(ItemStack pStack, Item.TooltipContext context, net.minecraft.world.item.component.TooltipDisplay display, java.util.function.Consumer<Component> tooltipAdder, TooltipFlag pFlag) {
+        List<Component> pTooltip = new java.util.ArrayList<>();
+        appendLegacyTooltip(pStack, context, pTooltip, pFlag);
+        pTooltip.forEach(tooltipAdder);
+    }
+
+    private void appendLegacyTooltip(ItemStack pStack, Item.TooltipContext context, List<Component> pTooltip, TooltipFlag pFlag) {
         TooltipsUtils.addShiftTooltip(pTooltip, List.of(
                 Component.translatable("item.irons_spellbooks.autoloader_crossbow.desc").withStyle(ChatFormatting.YELLOW)));
-        super.appendHoverText(pStack, context, pTooltip, pFlag);
     }
 
     public record LoadStateComponent(boolean isLoading, int loadTimestamp) {

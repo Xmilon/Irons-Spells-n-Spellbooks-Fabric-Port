@@ -47,7 +47,15 @@ public class DeferredRegister<T> {
     public void register(IEventBus eventBus) {
         Registry<T> registry = resolveRegistry();
         for (DeferredHolder<T, ? extends T> entry : entries) {
-            T value = entry.get();
+            if (registryKey.equals(net.minecraft.core.registries.Registries.ITEM)) {
+                io.redspace.ironsspellbooks.util.ItemIdContext.set(entry.getLocation());
+            }
+            T value;
+            try {
+                value = entry.get();
+            } finally {
+                io.redspace.ironsspellbooks.util.ItemIdContext.clear();
+            }
             if (registry != null) {
                 Identifier id = entry.getLocation();
                 if (!registry.containsKey(id)) {

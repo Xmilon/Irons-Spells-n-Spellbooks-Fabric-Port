@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.item.consumables;
 
+import net.minecraft.world.item.Item;
+
 import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
@@ -26,8 +28,13 @@ public class NetherwardTinctureItem extends DrinkableItem {
     }
 
     @Override
-    public void appendHoverText(ItemStack pStack, TooltipContext context, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
-        super.appendHoverText(pStack, context, pTooltipComponents, pIsAdvanced);
+    public void appendHoverText(ItemStack pStack, Item.TooltipContext context, net.minecraft.world.item.component.TooltipDisplay display, java.util.function.Consumer<Component> tooltipAdder, TooltipFlag pIsAdvanced) {
+        List<Component> pTooltipComponents = new java.util.ArrayList<>();
+        appendLegacyTooltip(pStack, context, pTooltipComponents, pIsAdvanced);
+        pTooltipComponents.forEach(tooltipAdder);
+    }
+
+    private void appendLegacyTooltip(ItemStack pStack, Item.TooltipContext context, List<Component> pTooltipComponents, TooltipFlag pIsAdvanced) {
         pTooltipComponents.add(description);
     }
 
