@@ -69,6 +69,6 @@ public class DeferredRegister<T> {
     @SuppressWarnings("unchecked")
     private Registry<T> resolveRegistry() {
         Registry<? extends Registry<?>> root = BuiltInRegistries.REGISTRY;
-        return (Registry<T>) root.get(registryKey.identifier());
+        return (Registry<T>) root.getValue(registryKey.identifier());
     }
 }
