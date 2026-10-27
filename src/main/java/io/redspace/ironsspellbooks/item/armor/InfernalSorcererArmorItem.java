@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.item.armor;
 
+import net.minecraft.world.item.equipment.ArmorMaterial;
+
+import net.minecraft.world.item.equipment.ArmorType;
+
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.effect.ImmolateEffect;
@@ -20,7 +24,7 @@ import java.util.List;
 public class InfernalSorcererArmorItem extends ImbuableChestplateArmorItem {
     public static final int COOLDOWN_TICKS = 1 * 20;
 
-    public InfernalSorcererArmorItem(Type type, Properties settings) {
+    public InfernalSorcererArmorItem(ArmorType type, Properties settings) {
         super(ArmorMaterialRegistry.INFERNAL_SORCERER, type, settings,
                 new AttributeContainer(AttributeRegistry.MAX_MANA, 150, AttributeModifier.Operation.ADD_VALUE),
                 new AttributeContainer(AttributeRegistry.SPELL_POWER, 0.10, AttributeModifier.Operation.ADD_MULTIPLIED_BASE)
@@ -44,7 +48,7 @@ public class InfernalSorcererArmorItem extends ImbuableChestplateArmorItem {
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public GeoArmorRenderer<?> supplyRenderer() {
+    public GeoArmorRenderer<?, ?> supplyRenderer() {
         return ArmorClientRenderers.create(this);
     }
 

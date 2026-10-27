@@ -1,16 +1,19 @@
 package io.redspace.ironsspellbooks.item.armor;
 
+import net.minecraft.world.item.equipment.ArmorMaterial;
+
+import net.minecraft.world.item.equipment.ArmorType;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.registries.ArmorMaterialRegistry;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.item.ArmorItem;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import com.geckolib.renderer.GeoArmorRenderer;
 
 public class ElectromancerArmorItem extends ImbuableChestplateArmorItem implements IArmorCapeProvider {
-    public ElectromancerArmorItem(ArmorItem.Type slot, Properties settings) {
+    public ElectromancerArmorItem(ArmorType slot, Properties settings) {
         super(ArmorMaterialRegistry.SCHOOL, slot, settings, schoolAttributes(AttributeRegistry.LIGHTNING_SPELL_POWER));
     }
 
@@ -21,7 +24,7 @@ public class ElectromancerArmorItem extends ImbuableChestplateArmorItem implemen
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public GeoArmorRenderer<?> supplyRenderer() {
+    public GeoArmorRenderer<?, ?> supplyRenderer() {
         return ArmorClientRenderers.create(this);
     }
 

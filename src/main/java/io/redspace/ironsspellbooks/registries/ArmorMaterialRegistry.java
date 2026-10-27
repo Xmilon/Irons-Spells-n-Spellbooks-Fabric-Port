@@ -5,123 +5,125 @@ import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.util.Util;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
+import net.minecraft.resources.ResourceKey;
+import net.minecraft.tags.TagKey;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.equipment.ArmorType;
+import net.minecraft.world.item.equipment.EquipmentAssets;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.equipment.ArmorMaterial;
-import net.minecraft.world.item.Items;
-import net.minecraft.world.item.crafting.Ingredient;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.neoforge.common.Tags;
-import net.neoforged.neoforge.registries.DeferredHolder;
-import net.neoforged.neoforge.registries.DeferredRegister;
 
 import java.util.EnumMap;
-import java.util.List;
-import java.util.function.Supplier;
 
 public class ArmorMaterialRegistry {
-    private static final DeferredRegister<ArmorMaterial> ARMOR_MATERIALS = DeferredRegister.create(Registries.ARMOR_MATERIAL, IronsSpellbooks.MODID);
 
+    /** Materials are plain values in 26.3; kept so the mod entrypoint keeps one call per registry. */
     public static void register(IEventBus eventBus) {
-        ARMOR_MATERIALS.register(eventBus);
     }
 
-    public static DeferredHolder<ArmorMaterial, ArmorMaterial> TARNISHED = register("tarnished",
+    public static ArmorMaterial TARNISHED = register("tarnished",
             makeArmorMap(0, 0, 0, 0),
             15,
             SoundEvents.ARMOR_EQUIP_DIAMOND,
-            () -> Ingredient.of(Tags.Items.INGOTS_IRON),
+            Tags.Items.INGOTS_IRON,
             0,
             0);
 
-    public static DeferredHolder<ArmorMaterial, ArmorMaterial> WANDERING_MAGICIAN = register("wandering_magician",
+    public static ArmorMaterial WANDERING_MAGICIAN = register("wandering_magician",
             makeArmorMap(2, 6, 5, 2),
             15,
             SoundEvents.ARMOR_EQUIP_LEATHER,
-            () -> Ingredient.of(Tags.Items.LEATHERS),
+            Tags.Items.LEATHERS,
             0,
             0);
 
-    public static DeferredHolder<ArmorMaterial, ArmorMaterial> PUMPKIN = register("pumpkin",
+    public static ArmorMaterial PUMPKIN = register("pumpkin",
             schoolArmorMap(),
             15,
             SoundEvents.ARMOR_EQUIP_TURTLE,
-            () -> Ingredient.of(Items.HAY_BLOCK),
+            repairTag("pumpkin"),
             0,
             0);
 
-    public static DeferredHolder<ArmorMaterial, ArmorMaterial> SCHOOL = register("school_armor",
+    public static ArmorMaterial SCHOOL = register("school_armor",
             schoolArmorMap(),
             20,
             SoundEvents.ARMOR_EQUIP_LEATHER,
-            () -> Ingredient.of(ItemRegistry.MAGIC_CLOTH.get()),
+            repairTag("school_armor"),
             0,
             0);
 
-    public static DeferredHolder<ArmorMaterial, ArmorMaterial> NETHERITE_BATTLEMAGE = register("netherite_battlemage",
+    public static ArmorMaterial NETHERITE_BATTLEMAGE = register("netherite_battlemage",
             schoolArmorMap(),
             20,
             SoundEvents.ARMOR_EQUIP_NETHERITE,
-            () -> Ingredient.of(Tags.Items.INGOTS_NETHERITE),
+            Tags.Items.INGOTS_NETHERITE,
             3,
             0);
 
-    public static DeferredHolder<ArmorMaterial, ArmorMaterial> PALADIN = register("paladin",
+    public static ArmorMaterial PALADIN = register("paladin",
             schoolArmorMap(),
             40,
             SoundEvents.ARMOR_EQUIP_NETHERITE,
-            () -> Ingredient.of(ModTags.MITHRIL_INGOT),
+            ModTags.MITHRIL_INGOT,
             4,
             0.4f);
 
-    public static DeferredHolder<ArmorMaterial, ArmorMaterial> INFERNAL_SORCERER = register("infernal_sorcerer",
+    public static ArmorMaterial INFERNAL_SORCERER = register("infernal_sorcerer",
             schoolArmorMap(),
             40,
             SoundEvents.ARMOR_EQUIP_NETHERITE,
-            () -> Ingredient.of(ModTags.MITHRIL_INGOT),
+            ModTags.MITHRIL_INGOT,
             0,
             0f);
 
-    public static DeferredHolder<ArmorMaterial, ArmorMaterial> BOOTS_OF_SPEED = register("speed_boots",
+    public static ArmorMaterial BOOTS_OF_SPEED = register("speed_boots",
             schoolArmorMap(),
             40,
             SoundEvents.ARMOR_EQUIP_LEATHER,
-            () -> Ingredient.of(ModTags.MITHRIL_INGOT),
+            ModTags.MITHRIL_INGOT,
             0,
             0f);
 
-    public static DeferredHolder<ArmorMaterial, ArmorMaterial> DEV = register("dev",
+    public static ArmorMaterial DEV = register("dev",
             makeArmorMap(20, 20, 20, 20),
             20,
             SoundEvents.ARMOR_EQUIP_GOLD,
-            () -> Ingredient.of(Tags.Items.INGOTS_GOLD),
+            Tags.Items.INGOTS_GOLD,
             20,
             20);
 
-    private static DeferredHolder<ArmorMaterial, ArmorMaterial> register(
+    private static ArmorMaterial register(
             String name,
-            EnumMap<ArmorItem.Type, Integer> defense,
+            EnumMap<ArmorType, Integer> defense,
             int enchantmentValue,
             Holder<SoundEvent> equipSound,
-            Supplier<Ingredient> repairIngredient,
+            TagKey<Item> repairItems,
             float toughness,
             float knockbackResistance
     ) {
-        List<ArmorMaterial.Layer> list = List.of(new ArmorMaterial.Layer(IronsSpellbooks.id(name)));
-        return ARMOR_MATERIALS.register(name, ()-> new ArmorMaterial(defense, enchantmentValue, equipSound, repairIngredient, list, toughness, knockbackResistance));
+        // shortcut: one base durability for every set (the old items passed per-set multipliers of 22-37 on each piece)
+        return new ArmorMaterial(37, defense, enchantmentValue, equipSound, toughness, knockbackResistance, repairItems,
+                ResourceKey.create(EquipmentAssets.ROOT_ID, IronsSpellbooks.id(name)));
     }
 
-    static public EnumMap<ArmorItem.Type, Integer> makeArmorMap(int helmet, int chestplate, int leggings, int boots) {
-        return Util.make(new EnumMap<>(ArmorItem.Type.class), (p_266655_) -> {
-            p_266655_.put(ArmorItem.Type.BOOTS, boots);
-            p_266655_.put(ArmorItem.Type.LEGGINGS, leggings);
-            p_266655_.put(ArmorItem.Type.CHESTPLATE, chestplate);
-            p_266655_.put(ArmorItem.Type.HELMET, helmet);
+    private static TagKey<Item> repairTag(String name) {
+        return TagKey.create(Registries.ITEM, IronsSpellbooks.id("armor_repair/" + name));
+    }
+
+    static public EnumMap<ArmorType, Integer> makeArmorMap(int helmet, int chestplate, int leggings, int boots) {
+        return Util.make(new EnumMap<>(ArmorType.class), (p_266655_) -> {
+            p_266655_.put(ArmorType.BOOTS, boots);
+            p_266655_.put(ArmorType.LEGGINGS, leggings);
+            p_266655_.put(ArmorType.CHESTPLATE, chestplate);
+            p_266655_.put(ArmorType.HELMET, helmet);
         });
     }
 
-    static public EnumMap<ArmorItem.Type, Integer> schoolArmorMap() {
+    static public EnumMap<ArmorType, Integer> schoolArmorMap() {
         return makeArmorMap(3, 8, 6, 3);
     }
 }

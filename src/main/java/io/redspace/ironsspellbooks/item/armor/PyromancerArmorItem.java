@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.item.armor;
 
+import net.minecraft.world.item.equipment.ArmorMaterial;
+
+import net.minecraft.world.item.equipment.ArmorType;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.registries.ArmorMaterialRegistry;
@@ -9,7 +13,7 @@ import net.neoforged.api.distmarker.OnlyIn;
 import com.geckolib.renderer.GeoArmorRenderer;
 
 public class PyromancerArmorItem extends ImbuableChestplateArmorItem implements IArmorCapeProvider {
-    public PyromancerArmorItem(Type slot, Properties settings) {
+    public PyromancerArmorItem(ArmorType slot, Properties settings) {
         super(ArmorMaterialRegistry.SCHOOL, slot, settings, schoolAttributes(AttributeRegistry.FIRE_SPELL_POWER));
     }
 
@@ -20,7 +24,7 @@ public class PyromancerArmorItem extends ImbuableChestplateArmorItem implements 
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public GeoArmorRenderer<?> supplyRenderer() {
+    public GeoArmorRenderer<?, ?> supplyRenderer() {
         return ArmorClientRenderers.create(this);
     }
 }

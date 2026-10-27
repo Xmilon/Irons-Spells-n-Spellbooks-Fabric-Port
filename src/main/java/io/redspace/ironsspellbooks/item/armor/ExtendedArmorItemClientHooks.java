@@ -16,10 +16,10 @@ public final class ExtendedArmorItemClientHooks {
 
     public static void createGeoRenderer(ExtendedArmorItem armorItem, Consumer<GeoRenderProvider> consumer) {
         consumer.accept(new GeoRenderProvider() {
-            private GeoArmorRenderer<?> renderer;
+            private GeoArmorRenderer<?, ?> renderer;
 
             @Override
-            public <T extends LivingEntity> HumanoidModel<?> getGeoArmorRenderer(@Nullable T livingEntity, ItemStack itemStack, @Nullable EquipmentSlot equipmentSlot, @Nullable HumanoidModel<T> original) {
+            public GeoArmorRenderer<?, ?> getGeoArmorRenderer(ItemStack itemStack, EquipmentSlot equipmentSlot) {
                 if (this.renderer == null) {
                     this.renderer = armorItem.supplyRenderer();
                 }

@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.datagen;
 
+import net.minecraft.world.item.equipment.ArmorType;
+
 import io.redspace.ironsspellbooks.api.registry.SchoolRegistry;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.fluids.PotionFluid;
@@ -18,7 +20,6 @@ import net.minecraft.data.recipes.*;
 import net.minecraft.resources.Identifier;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.tags.TagKey;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -213,9 +214,9 @@ public class IronRecipeProvider extends RecipeProvider {
      */
     public static void schoolArmorSmithing(RecipeOutput output, SchoolType school, String armorName) {
         var base = new TagKey<?>[]{ModTags.BASE_WIZARD_BOOTS, ModTags.BASE_WIZARD_LEGGINGS, ModTags.BASE_WIZARD_CHESTPLATE, ModTags.BASE_WIZARD_HELMET};
-        var slots = new ArmorItem.Type[]{ArmorItem.Type.BOOTS, ArmorItem.Type.LEGGINGS, ArmorItem.Type.CHESTPLATE, ArmorItem.Type.HELMET};
+        var slots = new ArmorType[]{ArmorType.BOOTS, ArmorType.LEGGINGS, ArmorType.CHESTPLATE, ArmorType.HELMET};
 //        var armors = new Item[]{ItemRegistry.WIZARD_BOOTS.get(), ItemRegistry.WIZARD_LEGGINGS.get(), ItemRegistry.WIZARD_CHESTPLATE.get(), ItemRegistry.WIZARD_HELMET.get()};
-//        var slots = new ArmorItem.Type[]{ArmorItem.Type.BOOTS, ArmorItem.Type.LEGGINGS, ArmorItem.Type.CHESTPLATE, ArmorItem.Type.HELMET};
+//        var slots = new ArmorType[]{ArmorType.BOOTS, ArmorType.LEGGINGS, ArmorType.CHESTPLATE, ArmorType.HELMET};
         Identifier schoolId = SchoolRegistry.REGISTRY.getKey(school);
         for (int i = 0; i < 4; i++) {
             var tag = (TagKey<Item>) base[i];

@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.item.armor;
 
+import net.minecraft.world.item.equipment.ArmorMaterial;
+
+import net.minecraft.world.item.equipment.ArmorType;
+
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.spells.IPresetSpellContainer;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
@@ -8,14 +12,13 @@ import io.redspace.ironsspellbooks.registries.ArmorMaterialRegistry;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
 import com.geckolib.renderer.GeoArmorRenderer;
 
 public class TarnishedCrownArmorItem extends ExtendedArmorItem implements IPresetSpellContainer {
-    public TarnishedCrownArmorItem(ArmorItem.Type slot, Properties settings) {
+    public TarnishedCrownArmorItem(ArmorType slot, Properties settings) {
         super(ArmorMaterialRegistry.TARNISHED, slot, settings,
                 new AttributeContainer(AttributeRegistry.MAX_MANA, 150, AttributeModifier.Operation.ADD_VALUE),
                 new AttributeContainer(AttributeRegistry.MANA_REGEN, 0.25, AttributeModifier.Operation.ADD_MULTIPLIED_BASE),
@@ -25,7 +28,7 @@ public class TarnishedCrownArmorItem extends ExtendedArmorItem implements IPrese
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public GeoArmorRenderer<?> supplyRenderer() {
+    public GeoArmorRenderer<?, ?> supplyRenderer() {
         return ArmorClientRenderers.create(this);
     }
 

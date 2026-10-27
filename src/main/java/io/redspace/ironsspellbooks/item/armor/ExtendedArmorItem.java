@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.item.armor;
 
+import com.geckolib.animation.state.AnimationTest;
+
 import com.geckolib.animation.object.PlayState;
 import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.animation.RawAnimation;
@@ -15,7 +17,8 @@ import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
-import net.minecraft.world.item.ArmorItem;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.neoforged.api.distmarker.Dist;
@@ -30,20 +33,21 @@ import com.geckolib.util.GeckoLibUtil;
 import java.util.function.Consumer;
 import java.util.function.Supplier;
 
-public abstract class ExtendedArmorItem extends ArmorItem implements GeoItem {
-    private final Supplier<ItemAttributeModifiers> defaultModifiers;
+public abstract class ExtendedArmorItem extends Item implements GeoItem {
+    private final ArmorType armorType;
 
-    public ExtendedArmorItem(Holder<ArmorMaterial> pMaterial, Type pType, Properties pProperties, AttributeContainer... attributes) {
-        super(pMaterial, pType, pProperties.attributes(createArmorAttributes(pMaterial, pType, attributes)));
-        //Shadow of ArmorItem's defaultModifiers. This system is deprecated and will likely change (good)
-        this.defaultModifiers = Suppliers.memoize(
-                () -> createArmorAttributes(pMaterial, pType, attributes)
-        );
+    public ExtendedArmorItem(ArmorMaterial pMaterial, ArmorType pType, Properties pProperties, AttributeContainer... attributes) {
+        super(pProperties.humanoidArmor(pMaterial, pType).attributes(createArmorAttributes(pMaterial, pType, attributes)));
+        this.armorType = pType;
     }
 
-    private static ItemAttributeModifiers createArmorAttributes(Holder<ArmorMaterial> material, Type type, AttributeContainer... attributes) {
-        int armor = material.value().getDefense(type);
-        float toughness = material.value().toughness();
+    public ArmorType getArmorType() {
+        return armorType;
+    }
+
+    private static ItemAttributeModifiers createArmorAttributes(ArmorMaterial material, ArmorType type, AttributeContainer... attributes) {
+        int armor = material.defense().getOrDefault(type, 0);
+        float toughness = material.toughness();
         ItemAttributeModifiers.Builder builder = ItemAttributeModifiers.builder();
         EquipmentSlotGroup slotGroup = EquipmentSlotGroup.bySlot(type.getSlot());
         Identifier id = Identifier.withDefaultNamespace("armor." + type.getName());
@@ -53,7 +57,7 @@ public abstract class ExtendedArmorItem extends ArmorItem implements GeoItem {
         builder.add(
                 Attributes.ARMOR_TOUGHNESS, new AttributeModifier(id, toughness, AttributeModifier.Operation.ADD_VALUE), slotGroup
         );
-        float knockbackResistance = material.value().knockbackResistance();
+        float knockbackResistance = material.knockbackResistance();
         if (knockbackResistance > 0.0F) {
             builder.add(
                     Attributes.KNOCKBACK_RESISTANCE,
@@ -80,10 +84,6 @@ public abstract class ExtendedArmorItem extends ArmorItem implements GeoItem {
     }
 
 
-    @Override
-    public ItemAttributeModifiers getDefaultAttributeModifiers() {
-        return this.defaultModifiers.get();
-    }
 
     /*
     GECKOLIB IMPL
@@ -96,7 +96,7 @@ public abstract class ExtendedArmorItem extends ArmorItem implements GeoItem {
         controllerRegistrar.add(new AnimationController<>("controller", 20, this::predicate));
     }
 
-    private PlayState predicate(AnimationState<ExtendedArmorItem> extendedArmorItemAnimationState) {
+    private PlayState predicate(AnimationTest<ExtendedArmorItem> extendedArmorItemAnimationState) {
         extendedArmorItemAnimationState.controller().setAnimation(RawAnimation.begin().thenLoop("idle"));
         return PlayState.CONTINUE;
     }
@@ -115,5 +115,5 @@ public abstract class ExtendedArmorItem extends ArmorItem implements GeoItem {
     }
 
     @OnlyIn(Dist.CLIENT)
-    public abstract GeoArmorRenderer<?> supplyRenderer();
+    public abstract GeoArmorRenderer<?, ?> supplyRenderer();
 }

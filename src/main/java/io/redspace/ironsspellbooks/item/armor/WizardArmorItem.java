@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.item.armor;
 
+import net.minecraft.world.item.equipment.ArmorMaterial;
+
+import net.minecraft.world.item.equipment.ArmorType;
+
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.registries.ArmorMaterialRegistry;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
@@ -16,7 +20,7 @@ public class WizardArmorItem extends ImbuableChestplateArmorItem implements IDis
     private static final String descIdHat = "item.irons_spellbooks.wizard_helmet.hat";
     private static final String descIdHood = "item.irons_spellbooks.wizard_helmet.hood";
 
-    public WizardArmorItem(Type type, Properties settings) {
+    public WizardArmorItem(ArmorType type, Properties settings) {
         super(ArmorMaterialRegistry.SCHOOL, type, settings, withManaAndSpellPowerAttribute(125, 0.05));
     }
 
@@ -31,7 +35,7 @@ public class WizardArmorItem extends ImbuableChestplateArmorItem implements IDis
 
     @Override
     @OnlyIn(Dist.CLIENT)
-    public GeoArmorRenderer<?> supplyRenderer() {
+    public GeoArmorRenderer<?, ?> supplyRenderer() {
         return ArmorClientRenderers.create(this);
     }
 }

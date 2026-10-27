@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.item.armor;
 
+import net.minecraft.world.item.equipment.ArmorType;
+
 import io.redspace.ironsspellbooks.api.spells.IPresetSpellContainer;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
@@ -11,7 +13,7 @@ import net.minecraft.world.item.ItemStack;
 
 public abstract class ImbuableChestplateArmorItem extends ExtendedArmorItem implements IPresetSpellContainer {
 
-    public ImbuableChestplateArmorItem(Holder<ArmorMaterial> pMaterial, Type pType, Properties pProperties, AttributeContainer... attributes) {
+    public ImbuableChestplateArmorItem(ArmorMaterial pMaterial, ArmorType pType, Properties pProperties, AttributeContainer... attributes) {
         super(pMaterial, pType, pProperties, attributes);
     }
 
