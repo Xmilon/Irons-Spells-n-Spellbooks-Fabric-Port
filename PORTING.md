@@ -80,12 +80,15 @@ does not guarantee that deferred drawing sees the extracted values. Shared `Mode
 submission is deferred, so offset through the `PoseStack` or pose inside `submitCustomGeometry`.
 
 Firebolt, Icicle, Electrocute, and Portal now use native `EntityRenderer` states, alongside
-the existing Shield rewrite. Portal also captures its selected type during extraction,
+the existing Shield rewrite. Placed portal frames use native `BlockEntityRenderer` states,
+capturing connection visibility, facing, type, tint, and animation time. Portal also captures its selected type during extraction,
 preserving the Undead Rift's blood portal selection. Electrocute copies its beam cache and clears captured
 geometry when its owner disappears. Firebolt retains its particle-only appearance.
 `verifySpellRenderSnapshots` (part of `check`, requires the full main compilation) checks
-cache mutation isolation, state reuse, and entity-free state fields. Focused compilation
-of these renderers and Undead Rift against the 26.3 game
+cache mutation isolation, state reuse, entity-free state fields, disconnected portal visibility,
+balanced transforms in all four facings, and deferred portal tint/animation after state changes.
+The standalone check initializes Minecraft's vanilla bootstrap. Focused compilation
+of these renderers, Portal Frame, and Undead Rift against the 26.3 game
 APIs passed, using the cached 1.21.1 mod binary only for unchanged entity type signatures.
 This does not validate the current entity implementations or in-game rendering. Existing
 GUI checks and the complete Iron's Lib build/checks also passed. A fresh full compiler run
