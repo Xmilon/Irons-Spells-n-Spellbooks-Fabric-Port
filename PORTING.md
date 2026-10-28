@@ -72,11 +72,24 @@ to their original artifacts rather than silently modifying the pinned JARs.
 ## Main-mod migration progress
 
 Done: HUD overlays (Fabric `HudElementRegistry`, `GuiGraphicsExtractor`), container screens,
-boss-bar customization (`BossHealthOverlayMixin` + `BossbarManager`), and the non-GeckoLib
-spell-entity renderers. Those renderers extend `render/EntityBackedRenderer`, which keeps the
-entity in the render state and reads it in `submit` (shortcut: copy fields into the state if
-submission ever leaves the client thread). Shared `ModelPart`s must not be mutated per entity:
+boss-bar customization (`BossHealthOverlayMixin` + `BossbarManager`), and initial submission
+API changes in the non-GeckoLib spell-entity renderers. Many still extend
+`render/EntityBackedRenderer`, which keeps a live entity in the render state. These need
+native extraction rewrites to satisfy the rendering milestone; staying on the client thread
+does not guarantee that deferred drawing sees the extracted values. Shared `ModelPart`s must not be mutated per entity:
 submission is deferred, so offset through the `PoseStack` or pose inside `submitCustomGeometry`.
+
+Firebolt, Icicle, Electrocute, and Portal now use native `EntityRenderer` states, alongside
+the existing Shield rewrite. Portal also captures its selected type during extraction,
+preserving the Undead Rift's blood portal selection. Electrocute copies its beam cache and clears captured
+geometry when its owner disappears. Firebolt retains its particle-only appearance.
+`verifySpellRenderSnapshots` (part of `check`, requires the full main compilation) checks
+cache mutation isolation, state reuse, and entity-free state fields. Focused compilation
+of these renderers and Undead Rift against the 26.3 game
+APIs passed, using the cached 1.21.1 mod binary only for unchanged entity type signatures.
+This does not validate the current entity implementations or in-game rendering. Existing
+GUI checks and the complete Iron's Lib build/checks also passed. A fresh full compiler run
+on 2026-10-28 reported 3,178 errors before this renderer change; the build remains blocked.
 
 Open in the render phase: every GeckoLib 5 renderer, model and layer (`GeoEntityRenderer` is now
 `<T, R extends EntityRenderState>` with `RenderPassInfo`), mob/humanoid renderers, block-entity

@@ -90,6 +90,10 @@ java {
 }
 
 sourceSets {
+	portTest {
+		compileClasspath += sourceSets.main.output + sourceSets.main.compileClasspath
+		runtimeClasspath += sourceSets.main.output + sourceSets.main.runtimeClasspath
+	}
 	main {
 		java {
 			exclude "io/redspace/ironsspellbooks/jei/**"
@@ -158,7 +162,15 @@ tasks.register('verifyPortRendering', JavaExec) {
 }
 
 tasks.named('check') {
-	dependsOn 'verifyBundledDependencies', 'verifyPortRendering'
+	dependsOn 'verifyBundledDependencies', 'verifyPortRendering', 'verifySpellRenderSnapshots'
+}
+
+tasks.register('verifySpellRenderSnapshots', JavaExec) {
+	dependsOn 'portTestClasses'
+	classpath = sourceSets.portTest.runtimeClasspath
+	mainClass = 'io.redspace.ironsspellbooks.render.SpellRenderSnapshotCheck'
+	enableAssertions = true
+	javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(25) }
 }
 
 // configure the maven publication

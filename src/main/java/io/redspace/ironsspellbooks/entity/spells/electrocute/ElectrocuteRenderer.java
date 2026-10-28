@@ -7,70 +7,67 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.render.RenderHelper;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
-import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
-import io.redspace.ironsspellbooks.render.EntityBackedRenderer;
+import net.minecraft.client.renderer.entity.EntityRenderer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import org.joml.Matrix3f;
-import org.joml.Matrix4f;
 
 import java.util.List;
 
-@OnlyIn(Dist.CLIENT)
-public class ElectrocuteRenderer extends EntityBackedRenderer<ElectrocuteProjectile> {
-    private static Identifier TEXTURES[] = {
-            IronsSpellbooks.id("textures/entity/electric_beams/beam_1.png"),
-            IronsSpellbooks.id("textures/entity/electric_beams/beam_2.png"),
-            IronsSpellbooks.id("textures/entity/electric_beams/beam_3.png"),
-            IronsSpellbooks.id("textures/entity/electric_beams/beam_4.png")
-    };
-    private static Identifier SOLID = IronsSpellbooks.id("textures/entity/electric_beams/solid.png");
+public class ElectrocuteRenderer extends EntityRenderer<ElectrocuteProjectile, ElectrocuteRenderer.ElectrocuteRenderState> {
+    private static final Identifier SOLID = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/electric_beams/solid.png");
 
     public ElectrocuteRenderer(Context context) {
         super(context);
     }
 
     @Override
-    protected void submit(ElectrocuteProjectile entity, float partialTicks, int light, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
-        if (entity.getOwner() == null)
-            return;
+    public ElectrocuteRenderState createRenderState() {
+        return new ElectrocuteRenderState();
+    }
+
+    @Override
+    public void extractRenderState(ElectrocuteProjectile entity, ElectrocuteRenderState state, float partialTick) {
+        super.extractRenderState(entity, state, partialTick);
+        var owner = entity.getOwner();
+        if (owner == null) {
+            state.captureBeam(0, 0, 0, List.of());
+        } else {
+            state.captureBeam(owner.getYRot(), owner.getXRot(), entity.getEyeHeight() * .5f, entity.getBeamCache());
+        }
+    }
+
+    @Override
+    public void submit(ElectrocuteRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
+        super.submit(state, poseStack, collector, camera);
+        if (state.segments.isEmpty()) return;
         poseStack.pushPose();
-
-//        RenderSystem.disableDepthTest();
-//        RenderSystem.enableBlend();
-//        RenderSystem.blendFunc(GlStateManager.SourceFactor.SRC_ALPHA,GlStateManager.DestFactor.ONE);
-
-        //VertexConsumer consumer = bufferSource.getBuffer(RenderTypes.lightning());
-        poseStack.translate(0, entity.getEyeHeight() * .5f, 0);
-        poseStack.rotateDegrees(Axis.YP, -entity.getOwner().getYRot());
-        poseStack.rotateDegrees(Axis.XP, entity.getOwner().getXRot());
+        poseStack.translate(0, state.eyeOffset, 0);
+        poseStack.rotateDegrees(Axis.YP, -state.yaw);
+        poseStack.rotateDegrees(Axis.XP, state.pitch);
         poseStack.translate(0, 0, 0.1);
 
 
-        List<Vec3> segments = entity.getBeamCache();
-        //irons_spellbooks.LOGGER.debug("ElectrocuteRenderer.segments.length: {}",segments.size());
+        List<Vec3> segments = state.segments;
 
         float width = .3f;
         float height = width;
-        Vec3 start = Vec3.ZERO;//entity.getOwner().getEyePosition().add(entity.getForward().normalize().scale(.15f));
         for (int i = 0; i < segments.size() - 1; i += 2) {
-            var from = segments.get(i).add(start);
-            var to = segments.get(i + 1).add(start);
-            collector.submitCustomGeometry(poseStack, RenderTypes.entityTranslucentEmissive(getTextureLocation(entity)), (pose, consumer) -> {
+            var from = segments.get(i);
+            var to = segments.get(i + 1);
+            collector.submitCustomGeometry(poseStack, RenderTypes.entityTranslucentEmissive(SOLID), (pose, consumer) -> {
                 drawHull(from, to, width, height, pose, consumer, 0, 156, 255, 30);
                 drawHull(from, to, width * .55f, height * .55f, pose, consumer, 63, 178, 255, 30);
             });
         }
 
         for (int i = 0; i < segments.size() - 1; i += 2) {
-            var from = segments.get(i).add(start);
-            var to = segments.get(i + 1).add(start);
-            collector.submitCustomGeometry(poseStack, RenderHelper.CustomerRenderType.magicNoCull(getTextureLocation(entity)), (pose, consumer) -> {
+            var from = segments.get(i);
+            var to = segments.get(i + 1);
+            collector.submitCustomGeometry(poseStack, RenderHelper.CustomerRenderType.magicNoCull(SOLID), (pose, consumer) -> {
                 drawHull(from, to, width * .2f, height * .2f, pose, consumer, 255, 255, 255, 255);
             });
         }
@@ -100,7 +97,20 @@ public class ElectrocuteRenderer extends EntityBackedRenderer<ElectrocuteProject
     }
 
     public Identifier getTextureLocation(ElectrocuteProjectile p_115264_) {
-        //return TEXTURES[(int) (Math.random() * 4)];
         return SOLID;
+    }
+
+    public static class ElectrocuteRenderState extends EntityRenderState {
+        public float yaw;
+        public float pitch;
+        public float eyeOffset;
+        private List<Vec3> segments = List.of();
+
+        public void captureBeam(float yaw, float pitch, float eyeOffset, List<Vec3> segments) {
+            this.yaw = yaw;
+            this.pitch = pitch;
+            this.eyeOffset = eyeOffset;
+            this.segments = List.copyOf(segments);
+        }
     }
 }

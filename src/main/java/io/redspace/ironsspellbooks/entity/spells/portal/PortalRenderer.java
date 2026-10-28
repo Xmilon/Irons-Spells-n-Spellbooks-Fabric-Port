@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.portal;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.PoseStack.Pose;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
@@ -9,15 +8,23 @@ import io.redspace.ironsspellbooks.render.RenderHelper;
 import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
-import io.redspace.ironsspellbooks.render.EntityBackedRenderer;
+import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider.Context;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.Entity;
 import org.joml.Matrix3f;
 import org.joml.Matrix4f;
 
-public class PortalRenderer<T extends Entity> extends EntityBackedRenderer<T> {
+public class PortalRenderer<T extends Entity> extends EntityRenderer<T, PortalRenderer.PortalRenderState> {
+    public static class PortalRenderState extends EntityRenderState {
+        public float yaw;
+        public int animationTick;
+        public float partialTick;
+        public PortalType portalType;
+    }
+
     /**
      * Holder class to resolve texture location of portal sprites given the following format:
      * <br>
@@ -55,15 +62,11 @@ public class PortalRenderer<T extends Entity> extends EntityBackedRenderer<T> {
         }
     }
 
-    public static final PortalType NORMAL = new PortalType(IronsSpellbooks.id("textures/entity/portal/portal"), true, true);
-    public static final PortalType POCKET_DIMENSION = new PortalType(IronsSpellbooks.id("textures/entity/portal/pocket_dimension_portal"), true, false);
-    public static final PortalType BLOOD = new PortalType(IronsSpellbooks.id("textures/entity/portal/blood_portal"), false, false);
+    public static final PortalType NORMAL = new PortalType(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/portal/portal"), true, true);
+    public static final PortalType POCKET_DIMENSION = new PortalType(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/portal/pocket_dimension_portal"), true, false);
+    public static final PortalType BLOOD = new PortalType(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/portal/blood_portal"), false, false);
 
-    private static final Identifier ROUND_PORTAL = IronsSpellbooks.id("textures/entity/portal/portal_round.png");
-    private static final Identifier ELDRITCH_ROUND_PORTAL = IronsSpellbooks.id("textures/entity/portal/pocket_dimension_portal_round.png");
-    private static final Identifier ELDRITCH_SQUARE_PORTAL = IronsSpellbooks.id("textures/entity/portal/pocket_dimension_portal_square.png");
-    private static final Identifier SQUARE_PORTAL = IronsSpellbooks.id("textures/entity/portal/portal_square.png");
-    private static final Identifier SQUARE_COLOR_PORTAL = IronsSpellbooks.id("textures/entity/portal/portal_square_color.png");
+    private static final Identifier ROUND_PORTAL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/portal/portal_round.png");
 
     private final PortalType portalType;
     public PortalRenderer(Context context, PortalType portalType) {
@@ -75,13 +78,28 @@ public class PortalRenderer<T extends Entity> extends EntityBackedRenderer<T> {
     }
 
     @Override
-    protected void submit(T entity, float partialTicks, int light, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
-        poseStack.pushPose();
-        poseStack.rotateDegrees(Axis.YP, -entity.getYRot());
+    public PortalRenderState createRenderState() {
+        return new PortalRenderState();
+    }
 
-        renderPortal(getPortalType(entity), poseStack, collector, entity.tickCount, partialTicks, true, -1);
+    @Override
+    public void extractRenderState(T entity, PortalRenderState state, float partialTick) {
+        super.extractRenderState(entity, state, partialTick);
+        state.yaw = entity.getYRot();
+        state.animationTick = entity.tickCount;
+        state.partialTick = partialTick;
+        state.portalType = getPortalType(entity);
+    }
+
+    @Override
+    public void submit(PortalRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
+        poseStack.pushPose();
+        poseStack.rotateDegrees(Axis.YP, -state.yaw);
+
+        renderPortal(state.portalType, poseStack, collector, state.animationTick, state.partialTick, true, -1);
 
         poseStack.popPose();
+        super.submit(state, poseStack, collector, camera);
     }
 
     protected PortalType getPortalType(T entity) {
