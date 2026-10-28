@@ -53,8 +53,8 @@ loaded once. This tests library behavior, not the Spellbooks mod or its mana.
 
 Remaining: validate the library client visually; replace main-mod compatibility
 classes and removed game APIs; migrate the remaining renderers, item models,
-player animation integration, HUD, particles, and fog. The main mod currently
-reaches the compiler's 2,000-error limit; it has not reached a playable milestone.
+player animation integration, HUD, particles, and fog. The main mod still has
+thousands of compiler errors; it has not reached a playable milestone.
 
 Before calling the port playable, build both projects and test dedicated server
 startup, multiplayer/reconnect, resource reload, equipment modifiers exactly once,
@@ -92,7 +92,8 @@ of these renderers, Portal Frame, and Undead Rift against the 26.3 game
 APIs passed, using the cached 1.21.1 mod binary only for unchanged entity type signatures.
 This does not validate the current entity implementations or in-game rendering. Existing
 GUI checks and the complete Iron's Lib build/checks also passed. A fresh full compiler run
-on 2026-10-28 reported 3,178 errors before this renderer change; the build remains blocked.
+on 2026-10-28 reported 3,178 errors before these renderer changes and 3,173 afterward,
+with none in the changed renderers. The build remains blocked.
 
 Open in the render phase: every GeckoLib 5 renderer, model and layer (`GeoEntityRenderer` is now
 `<T, R extends EntityRenderState>` with `RenderPassInfo`), mob/humanoid renderers, block-entity
