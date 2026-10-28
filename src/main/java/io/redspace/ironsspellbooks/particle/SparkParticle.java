@@ -2,19 +2,17 @@ package io.redspace.ironsspellbooks.particle;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
-import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 
-public class SparkParticle extends TextureSheetParticle {
+public class SparkParticle extends SingleQuadParticle {
     float targetR, targetG, targetB;
     int colorTime;
 
-    public SparkParticle(SparkParticleOptions options, ClientLevel level, double xCoord, double yCoord, double zCoord, double xd, double yd, double zd) {
-        super(level, xCoord, yCoord, zCoord, xd, yd, zd);
+    public SparkParticle(SparkParticleOptions options, ClientLevel level, double xCoord, double yCoord, double zCoord, double xd, double yd, double zd, SpriteSet spriteSet) {
+        super(level, xCoord, yCoord, zCoord, xd, yd, zd, spriteSet.first());
         this.scale(this.random.nextFloat() * .65f + .4f);
         this.lifetime = 20 + (int) (Math.random() * 45);
         this.gravity = 1.3F;
@@ -57,11 +55,9 @@ public class SparkParticle extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
+    public Layer getLayer() {
+        return Layer.OPAQUE;
     }
-
-    @OnlyIn(Dist.CLIENT)
     public static class Provider implements ParticleProvider<SparkParticleOptions> {
         private final SpriteSet sprites;
 
@@ -71,16 +67,15 @@ public class SparkParticle extends TextureSheetParticle {
 
         public Particle createParticle(@NotNull SparkParticleOptions options, ClientLevel level,
                                        double x, double y, double z,
-                                       double dx, double dy, double dz) {
-            var particle = new SparkParticle(options, level, x, y, z, dx, dy, dz);
-            particle.pickSprite(this.sprites);
+                                       double dx, double dy, double dz, net.minecraft.util.RandomSource random) {
+            var particle = new SparkParticle(options, level, x, y, z, dx, dy, dz, this.sprites);
+            particle.setSprite(this.sprites.get(random));
             return particle;
         }
     }
 
     @Override
-    public int getLightColor(float p_107564_) {
-        return LightTexture.FULL_BRIGHT;
+    public int getLightCoords(float p_107564_) {
+        return LightCoordsUtil.FULL_BRIGHT;
     }
 }
-

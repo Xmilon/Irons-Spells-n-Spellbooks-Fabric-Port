@@ -114,7 +114,7 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
                 }
                 for (int i = 0; i < 5; i++) {
                     Vec3 random = Utils.getRandomVec3(0.08);
-                    entity.level().addParticle(ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), pos.x + random.x, pos.y + random.y, pos.z + random.z, random.x, random.y, random.z);
+                    entity.level().addParticle(ParticleRegistry.EMBEROUS_ASH_PARTICLE, pos.x + random.x, pos.y + random.y, pos.z + random.z, random.x, random.y, random.z);
                 }
                 entity.clientDaggerParticles = false;
             });
@@ -126,7 +126,7 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
                     lastTick = entity.tickCount;
                     for (int i = 0; i < particles; i++) {
                         Vec3 random = Utils.getRandomVec3(0.5);
-                        entity.level().addParticle(ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), pos.x + random.x, pos.y + 1 + random.y * 2, pos.z + random.z, 200, 0, 0);
+                        entity.level().addParticle(ParticleRegistry.EMBEROUS_ASH_PARTICLE, pos.x + random.x, pos.y + 1 + random.y * 2, pos.z + random.z, 200, 0, 0);
                     }
                 }
             });

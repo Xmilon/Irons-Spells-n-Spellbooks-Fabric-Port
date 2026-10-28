@@ -60,7 +60,6 @@ public class FogParticleOptions implements ParticleOptions {
             ).apply(object, FogParticleOptions::new
             ));
     public @NotNull ParticleType<FogParticleOptions> getType() {
-        return ParticleRegistry.FOG_PARTICLE.get();
+        return ParticleRegistry.FOG_PARTICLE;
     }
 }
-

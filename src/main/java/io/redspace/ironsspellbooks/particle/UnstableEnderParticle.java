@@ -3,18 +3,16 @@ package io.redspace.ironsspellbooks.particle;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
-import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
-public class UnstableEnderParticle extends TextureSheetParticle {
+public class UnstableEnderParticle extends SingleQuadParticle {
     private final SpriteSet sprites;
 
     public UnstableEnderParticle(ClientLevel level, double xCoord, double yCoord, double zCoord, SpriteSet spriteSet, double xd, double yd, double zd) {
 
-        super(level, xCoord, yCoord, zCoord, xd, yd, zd);
+        super(level, xCoord, yCoord, zCoord, xd, yd, zd, spriteSet.first());
 
 
         this.friction = .77f;
@@ -49,11 +47,9 @@ public class UnstableEnderParticle extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
+    public Layer getLayer() {
+        return Layer.OPAQUE;
     }
-
-    @OnlyIn(Dist.CLIENT)
     public static class Provider implements ParticleProvider<SimpleParticleType> {
         private final SpriteSet sprites;
 
@@ -63,14 +59,14 @@ public class UnstableEnderParticle extends TextureSheetParticle {
 
         public Particle createParticle(SimpleParticleType particleType, ClientLevel level,
                                        double x, double y, double z,
-                                       double dx, double dy, double dz) {
+                                       double dx, double dy, double dz, net.minecraft.util.RandomSource random) {
             return new UnstableEnderParticle(level, x, y, z, this.sprites, dx, dy, dz);
         }
     }
 
     @Override
-    public int getLightColor(float p_107564_) {
-        return LightTexture.FULL_BRIGHT;
+    public int getLightCoords(float p_107564_) {
+        return LightCoordsUtil.FULL_BRIGHT;
     }
 
     @Override
@@ -82,4 +78,3 @@ public class UnstableEnderParticle extends TextureSheetParticle {
         return this.quadSize * f;
     }
 }
-

@@ -6,10 +6,6 @@ import net.minecraft.client.particle.SpellParticle;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.client.player.LocalPlayer;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-
-@OnlyIn(Dist.CLIENT)
 public class FadingTrialOmenSpellParticle extends SpellParticle {
     public FadingTrialOmenSpellParticle(
             ClientLevel level,

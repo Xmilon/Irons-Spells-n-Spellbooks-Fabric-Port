@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.particle;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
@@ -10,7 +11,7 @@ import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.stream.IntStream;
+import java.util.List;
 
 public class SoulfireRayParticleOptions implements ParticleOptions {
     public static StreamCodec<? super ByteBuf, SoulfireRayParticleOptions> STREAM_CODEC = StreamCodec.of(
@@ -24,12 +25,14 @@ public class SoulfireRayParticleOptions implements ParticleOptions {
 
     public static MapCodec<SoulfireRayParticleOptions> MAP_CODEC = RecordCodecBuilder.mapCodec(object ->
             object.group(
-                    Codec.INT_STREAM.fieldOf("destination").forGetter((option) -> IntStream.of((int) option.destination.x * 10, (int) option.destination.y * 10, (int) option.destination.z * 10))
-            ).apply(object, (stream) -> {
-                        var array = stream.toArray();
-                        return new SoulfireRayParticleOptions(new Vec3(array[0] , array[1], array[2] ));
-                    }
-            ));
+                    Codec.INT.listOf().validate(values -> values.size() == 3
+                            ? DataResult.success(values) : DataResult.error(() -> "Destination must contain exactly three coordinates"))
+                            .fieldOf("destination").forGetter((option) -> List.of(
+                                    (int) Math.round(option.destination.x * 10),
+                                    (int) Math.round(option.destination.y * 10),
+                                    (int) Math.round(option.destination.z * 10)))
+            ).apply(object, values -> new SoulfireRayParticleOptions(new Vec3(
+                    values.get(0) / 10.0, values.get(1) / 10.0, values.get(2) / 10.0))));
 
     private final Vec3 destination;
 
@@ -42,7 +45,7 @@ public class SoulfireRayParticleOptions implements ParticleOptions {
     }
 
     public ParticleType<SoulfireRayParticleOptions> getType() {
-        return ParticleRegistry.SOULFIRE_RAY_PARTICLE.get();
+        return ParticleRegistry.SOULFIRE_RAY_PARTICLE;
     }
 
     public Vec3 getDestination() {

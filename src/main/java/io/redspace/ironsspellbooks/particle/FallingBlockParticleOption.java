@@ -23,7 +23,7 @@ public class FallingBlockParticleOption implements ParticleOptions {
             BlockState.CODEC, BuiltInRegistries.BLOCK.byNameCodec(), Block::defaultBlockState
     );
     private static final StreamCodec<ByteBuf, BlockState> BLOCK_STATE_STREAM_CODEC = ByteBufCodecs.idMapper(Block.BLOCK_STATE_REGISTRY);
-    private static final StreamCodec<RegistryFriendlyByteBuf, Vec3> VEC3_STREAM_CODEC = StreamCodec.of(FriendlyByteBuf::writeVec3, FriendlyByteBuf::readVec3);
+    private static final StreamCodec<ByteBuf, Vec3> VEC3_STREAM_CODEC = Vec3.STREAM_CODEC;
     private final ParticleType<FallingBlockParticleOption> type;
     private final BlockState state;
 
@@ -60,7 +60,7 @@ public class FallingBlockParticleOption implements ParticleOptions {
     }
 
     public FallingBlockParticleOption(BlockState state, Vec3 motion) {
-        this(ParticleRegistry.FALLING_BLOCK_PARTICLE.get(), state, motion);
+        this(ParticleRegistry.FALLING_BLOCK_PARTICLE, state, motion);
     }
 
     public FallingBlockParticleOption(BlockState state) {
@@ -77,6 +77,3 @@ public class FallingBlockParticleOption implements ParticleOptions {
     }
 
 }
-
-
-

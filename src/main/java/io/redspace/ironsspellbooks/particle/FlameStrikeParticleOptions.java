@@ -50,7 +50,6 @@ public class FlameStrikeParticleOptions implements ParticleOptions {
             ));
 
     public @NotNull ParticleType<FlameStrikeParticleOptions> getType() {
-        return ParticleRegistry.FLAME_STRIKE_PARTICLE.get();
+        return ParticleRegistry.FLAME_STRIKE_PARTICLE;
     }
 }
-

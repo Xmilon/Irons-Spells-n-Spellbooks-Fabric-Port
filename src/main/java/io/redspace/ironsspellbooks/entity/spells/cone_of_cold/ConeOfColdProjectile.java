@@ -50,7 +50,7 @@ public class ConeOfColdProjectile extends AbstractConeProjectile {
         }
 //        if (tickCount % 12 == 0) {
 //            var forward = rotation.scale(.5f);
-//            level().addParticle(ParticleRegistry.RING_SMOKE_PARTICLE.get(), x, y, z, forward.x, forward.y, forward.z);
+//            level().addParticle(ParticleRegistry.RING_SMOKE_PARTICLE, x, y, z, forward.x, forward.y, forward.z);
 //        }
     }
 
@@ -62,5 +62,3 @@ public class ConeOfColdProjectile extends AbstractConeProjectile {
     }
 
 }
-
-

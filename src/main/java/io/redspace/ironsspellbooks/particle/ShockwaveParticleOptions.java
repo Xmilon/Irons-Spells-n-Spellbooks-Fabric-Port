@@ -40,7 +40,7 @@ public class ShockwaveParticleOptions implements ParticleOptions {
             p_175793_.group(ExtraCodecs.VECTOR3F.fieldOf("color").forGetter((option) -> option.color),
                     Codec.FLOAT.fieldOf("scale").forGetter((option) -> option.scale),
                     Codec.BOOL.fieldOf("fullbright").forGetter((option) -> option.fullbright)
-            ).apply(p_175793_, ShockwaveParticleOptions::new));
+            ).apply(p_175793_, (color, scale, fullbright) -> new ShockwaveParticleOptions(new Vector3f(color), scale, fullbright)));
 
     public static StreamCodec<? super ByteBuf, ShockwaveParticleOptions> STREAM_CODEC = StreamCodec.of(
             (buf, option) -> {
@@ -56,7 +56,6 @@ public class ShockwaveParticleOptions implements ParticleOptions {
     );
 
     public @NotNull ParticleType<ShockwaveParticleOptions> getType() {
-        return ParticleRegistry.SHOCKWAVE_PARTICLE.get();
+        return ParticleRegistry.SHOCKWAVE_PARTICLE;
     }
 }
-

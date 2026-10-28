@@ -1,31 +1,29 @@
 package io.redspace.ironsspellbooks.particle;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
-import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Matrix4f;
 
-public class SoulfireRayParticle extends TextureSheetParticle {
+public class SoulfireRayParticle extends MeshParticle {
 
     Vec3 destination;
     boolean firsttick = false;
 
-    SoulfireRayParticle(ClientLevel pLevel, double pX, double pY, double pZ, double xd, double yd, double zd, SoulfireRayParticleOptions options) {
-        super(pLevel, pX, pY, pZ, 0, 0, 0);
+    SoulfireRayParticle(ClientLevel pLevel, double pX, double pY, double pZ, double xd, double yd, double zd, SoulfireRayParticleOptions options, SpriteSet sprites) {
+        super(pLevel, pX, pY, pZ, 0, 0, 0, sprites.first());
         this.setSize(1, 1);
         this.quadSize = 1f;
         this.destination = options.getDestination();
@@ -59,8 +57,8 @@ public class SoulfireRayParticle extends TextureSheetParticle {
     }
 
     @Override
-    public void render(VertexConsumer consumer, Camera camera, float partialTick) {
-        Vec3 vec3 = camera.getPosition();
+    public void extractMesh(ParticleMeshRenderState consumer, Camera camera, float partialTick) {
+        Vec3 vec3 = camera.position();
         float f = (float) (Mth.lerp((double) partialTick, this.xo, this.x) - vec3.x());
         float f1 = (float) (Mth.lerp((double) partialTick, this.yo, this.y) - vec3.y());
         float f2 = (float) (Mth.lerp((double) partialTick, this.zo, this.z) - vec3.z());
@@ -70,10 +68,11 @@ public class SoulfireRayParticle extends TextureSheetParticle {
         float baseWidth = 1f;
         float hullLength = 3 * baseWidth;
         double distance = rayVector.length();
-        int hulls = (int) (distance / hullLength);
+        if (distance < 1.0E-6) return;
+        int hulls = Math.max(1, (int) (distance / hullLength));
         double zmargin = distance / (hulls * hullLength); // make up marginal differences caused by truncation of hull unit length
         rayVector = rayVector.normalize();
-        Vec2 rotation = Utils.rotationFromDirection(rayVector);
+        Vec2 rotation = new Vec2((float) Math.asin(rayVector.y), (float) Math.atan2(rayVector.x, rayVector.z));
         poseStack.rotate(Axis.YP.rotation(rotation.y));
         poseStack.rotate(Axis.XP.rotation(-rotation.x));
         poseStack.rotate(Axis.ZP.rotationDegrees((age + partialTick) * 360 / lifetime));
@@ -89,7 +88,12 @@ public class SoulfireRayParticle extends TextureSheetParticle {
         }
     }
 
-    public void drawHull(Vec3 from, Vec3 to, float width, float height, PoseStack poseStack, VertexConsumer consumer) {
+    private void captureVertex(ParticleMeshRenderState state, Matrix4f pose, float x, float y, float z, float u, float v, int light) {
+        var position = pose.transformPosition(new org.joml.Vector3f(x, y, z));
+        state.addVertex(getLayer(), position.x, position.y, position.z, u, v,
+                net.minecraft.util.ARGB.colorFromFloat(this.alpha, this.rCol, this.bCol, this.gCol), light);
+    }
+    public void drawHull(Vec3 from, Vec3 to, float width, float height, PoseStack poseStack, ParticleMeshRenderState consumer) {
         poseStack.pushPose();
         for (int i = 0; i < 4; i++) {
             drawQuad(from.subtract(0, height * .5f, 0), to.subtract(0, height * .5f, 0), width, 0, poseStack.last(), consumer);
@@ -98,35 +102,33 @@ public class SoulfireRayParticle extends TextureSheetParticle {
         poseStack.popPose();
     }
 
-    public void drawQuad(Vec3 from, Vec3 to, float width, float height, PoseStack.Pose pose, VertexConsumer consumer) {
+    public void drawQuad(Vec3 from, Vec3 to, float width, float height, PoseStack.Pose pose, ParticleMeshRenderState consumer) {
         Matrix4f poseMatrix = pose.pose();
         float halfWidth = width * .5f;
         float halfHeight = height * .5f;
-        int light = getLightColor(0);
-        consumer.addVertex(poseMatrix, (float) from.x - halfWidth, (float) from.y - halfHeight, (float) from.z).setColor(this.rCol, this.bCol, this.gCol, this.alpha).setUv(getU0(), getV0()).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0f, 1f, 0f);
-        consumer.addVertex(poseMatrix, (float) from.x + halfWidth, (float) from.y + halfHeight, (float) from.z).setColor(this.rCol, this.bCol, this.gCol, this.alpha).setUv(getU1(), getV0()).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0f, 1f, 0f);
-        consumer.addVertex(poseMatrix, (float) to.x + halfWidth, (float) to.y + halfHeight, (float) to.z).setColor(this.rCol, this.bCol, this.gCol, this.alpha).setUv(getU1(), getV1()).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0f, 1f, 0f);
-        consumer.addVertex(poseMatrix, (float) to.x - halfWidth, (float) to.y - halfHeight, (float) to.z).setColor(this.rCol, this.bCol, this.gCol, this.alpha).setUv(getU0(), getV1()).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0f, 1f, 0f);
+        int light = getLightCoords(0);
+        captureVertex(consumer, poseMatrix, (float) from.x - halfWidth, (float) from.y - halfHeight, (float) from.z, getU0(), getV0(), light);
+        captureVertex(consumer, poseMatrix, (float) from.x + halfWidth, (float) from.y + halfHeight, (float) from.z, getU1(), getV0(), light);
+        captureVertex(consumer, poseMatrix, (float) to.x + halfWidth, (float) to.y + halfHeight, (float) to.z, getU1(), getV1(), light);
+        captureVertex(consumer, poseMatrix, (float) to.x - halfWidth, (float) to.y - halfHeight, (float) to.z, getU0(), getV1(), light);
         //backface
-        consumer.addVertex(poseMatrix, (float) to.x - halfWidth, (float) to.y - halfHeight, (float) to.z).setColor(this.rCol, this.bCol, this.gCol, this.alpha).setUv(getU0(), getV1()).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0f, 1f, 0f);
-        consumer.addVertex(poseMatrix, (float) to.x + halfWidth, (float) to.y + halfHeight, (float) to.z).setColor(this.rCol, this.bCol, this.gCol, this.alpha).setUv(getU1(), getV1()).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0f, 1f, 0f);
-        consumer.addVertex(poseMatrix, (float) from.x + halfWidth, (float) from.y + halfHeight, (float) from.z).setColor(this.rCol, this.bCol, this.gCol, this.alpha).setUv(getU1(), getV0()).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0f, 1f, 0f);
-        consumer.addVertex(poseMatrix, (float) from.x - halfWidth, (float) from.y - halfHeight, (float) from.z).setColor(this.rCol, this.bCol, this.gCol, this.alpha).setUv(getU0(), getV0()).setOverlay(OverlayTexture.NO_OVERLAY).setLight(light).setNormal(0f, 1f, 0f);
+        captureVertex(consumer, poseMatrix, (float) to.x - halfWidth, (float) to.y - halfHeight, (float) to.z, getU0(), getV1(), light);
+        captureVertex(consumer, poseMatrix, (float) to.x + halfWidth, (float) to.y + halfHeight, (float) to.z, getU1(), getV1(), light);
+        captureVertex(consumer, poseMatrix, (float) from.x + halfWidth, (float) from.y + halfHeight, (float) from.z, getU1(), getV0(), light);
+        captureVertex(consumer, poseMatrix, (float) from.x - halfWidth, (float) from.y - halfHeight, (float) from.z, getU0(), getV0(), light);
     }
 
     @NotNull
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    public Layer getLayer() {
+        return Layer.TRANSLUCENT;
     }
 
 
     @Override
-    protected int getLightColor(float pPartialTick) {
-        return LightTexture.FULL_BRIGHT;
+    protected int getLightCoords(float pPartialTick) {
+        return LightCoordsUtil.FULL_BRIGHT;
     }
-
-    @OnlyIn(Dist.CLIENT)
     public static class Provider implements ParticleProvider<SoulfireRayParticleOptions> {
         private final SpriteSet sprite;
 
@@ -134,9 +136,9 @@ public class SoulfireRayParticle extends TextureSheetParticle {
             this.sprite = pSprite;
         }
 
-        public Particle createParticle(@NotNull SoulfireRayParticleOptions options, @NotNull ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed) {
-            var particle = new SoulfireRayParticle(pLevel, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed, options);
-            particle.pickSprite(this.sprite);
+        public Particle createParticle(@NotNull SoulfireRayParticleOptions options, @NotNull ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed, net.minecraft.util.RandomSource random) {
+            var particle = new SoulfireRayParticle(pLevel, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed, options, this.sprite);
+            particle.setSprite(this.sprite.get(random));
             particle.setAlpha(1.0F);
             return particle;
         }

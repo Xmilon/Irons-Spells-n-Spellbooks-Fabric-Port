@@ -3,14 +3,12 @@ package io.redspace.ironsspellbooks.particle;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
-import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.joml.Vector3f;
 
-public class FireflyParticle extends TextureSheetParticle {
+public class FireflyParticle extends SingleQuadParticle {
     private final SpriteSet sprites;
     private boolean lit;
     private float litTween;
@@ -24,7 +22,7 @@ public class FireflyParticle extends TextureSheetParticle {
 
     public FireflyParticle(ClientLevel level, double xCoord, double yCoord, double zCoord, SpriteSet spriteSet, double xd, double yd, double zd) {
 
-        super(level, xCoord, yCoord, zCoord, xd, yd, zd);
+        super(level, xCoord, yCoord, zCoord, xd, yd, zd, spriteSet.first());
 
         //this.friction = 1.0f;
         this.xd = xd;
@@ -82,21 +80,19 @@ public class FireflyParticle extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
+    public Layer getLayer() {
+        return Layer.OPAQUE;
     }
 
     @Override
-    protected int getLightColor(float pPartialTick) {
+    protected int getLightCoords(float pPartialTick) {
 
-        return LightTexture.FULL_BRIGHT;
-//        float litColor = LightTexture.FULL_BRIGHT;
-//        float darkColor = super.getLightColor(pPartialTick);
+        return LightCoordsUtil.FULL_BRIGHT;
+//        float litColor = LightCoordsUtil.FULL_BRIGHT;
+//        float darkColor = super.getLightCoords(pPartialTick);
 //
 //        return (int) Mth.lerp(litTween, darkColor, litColor);
     }
-
-    @OnlyIn(Dist.CLIENT)
     public static class Provider implements ParticleProvider<SimpleParticleType> {
 
         private final SpriteSet sprites;
@@ -107,10 +103,9 @@ public class FireflyParticle extends TextureSheetParticle {
 
         public Particle createParticle(SimpleParticleType particleType, ClientLevel level,
                                        double x, double y, double z,
-                                       double dx, double dy, double dz) {
+                                       double dx, double dy, double dz, net.minecraft.util.RandomSource random) {
             return new FireflyParticle(level, x, y, z, this.sprites, dx, dy, dz);
         }
 
     }
 }
-

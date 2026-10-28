@@ -418,7 +418,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.serverTriggerAnimation("fire_boss_break_stance");
         this.playSound(SoundRegistry.BOSS_STANCE_BREAK.get(), 3, 1);
         Vec3 vec3 = this.getBoundingBox().getCenter();
-        MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), vec3.x, vec3.y, vec3.z, 25, 0.2, 0.2, 0.2, 0.12, false);
+        MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE, vec3.x, vec3.y, vec3.z, 25, 0.2, 0.2, 0.2, 0.12, false);
     }
 
     protected SoundEvent getHurtSound(DamageSource pDamageSource) {
@@ -762,7 +762,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         // discard
         this.playSound(SoundRegistry.FIRE_BOSS_ACCENT.get(), 5, 1);
         Vec3 vec3 = this.getBoundingBox().getCenter();
-        MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), vec3.x, vec3.y, vec3.z, 25, 0.2, 0.2, 0.2, 0.12, false);
+        MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE, vec3.x, vec3.y, vec3.z, 25, 0.2, 0.2, 0.2, 0.12, false);
         killNearbySummonedKnights();
         remove(RemovalReason.DISCARDED);
         IronsSpellbooks.LOGGER.info("{} despawned due to inactivity", this);
@@ -828,7 +828,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             this.serverTriggerEvent(STOP_MUSIC);
             this.playSound(SoundRegistry.FIRE_BOSS_DEATH.get(), 5, 1);
             Vec3 vec3 = this.getBoundingBox().getCenter();
-            MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), vec3.x, vec3.y, vec3.z, 25, 0.2, 0.2, 0.2, 0.12, false);
+            MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE, vec3.x, vec3.y, vec3.z, 25, 0.2, 0.2, 0.2, 0.12, false);
             killNearbySummonedKnights();
             level.getEntitiesOfClass(FieryDaggerEntity.class, this.getBoundingBox().inflate(2, 3, 2)).stream().filter(dagger -> dagger.getOwner() == this).forEach(Entity::discard);
         }
@@ -859,7 +859,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             if (this.deathTime >= 160 && !this.level().isClientSide() && !this.isRemoved()) {
                 this.bossLoot.spawnPreparedDrops(this);
                 this.remove(Entity.RemovalReason.KILLED);
-                MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), vec3.x, vec3.y + 1, vec3.z, 50, 0.3, 0.3, 0.3, 0.2 * scale, true);
+                MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE, vec3.x, vec3.y + 1, vec3.z, 50, 0.3, 0.3, 0.3, 0.2 * scale, true);
                 this.playSound(SoundRegistry.FIRE_BOSS_ACCENT.get(), 4, .9f);
             }
         }
@@ -871,7 +871,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         int particles = (int) Mth.lerp(Math.clamp((deathTime - 20) / 60f, 0, 1), 0, 5 * scale);
         float range = Mth.lerp(Math.clamp((deathTime - 20) / 80f, 0, 1), 0, 0.4f * scale);
         if (particles > 0) {
-            MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), vec3.x, vec3.y + 1, vec3.z, particles, range, range, range, 100, false);
+            MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE, vec3.x, vec3.y + 1, vec3.z, particles, range, range, range, 100, false);
         }
     }
 

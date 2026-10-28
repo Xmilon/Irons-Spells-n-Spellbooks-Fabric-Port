@@ -64,7 +64,6 @@ public class BlastwaveParticleOptions implements ParticleOptions {
             ));
 
     public @NotNull ParticleType<BlastwaveParticleOptions> getType() {
-        return ParticleRegistry.BLASTWAVE_PARTICLE.get();
+        return ParticleRegistry.BLASTWAVE_PARTICLE;
     }
 }
-

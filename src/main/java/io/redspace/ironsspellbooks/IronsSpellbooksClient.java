@@ -68,7 +68,7 @@ import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
 import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
-import net.fabricmc.fabric.api.client.particle.v1.ParticleFactoryRegistry;
+
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
@@ -123,7 +123,7 @@ public class IronsSpellbooksClient implements ClientModInitializer {
         registerFallbackEntityRenderers();
         registerBlockEntityRenderers();
         registerBlockRenderLayers();
-        registerParticleFactories();
+        io.redspace.ironsspellbooks.particle.ParticleProviders.register();
         MenuScreens.register(MenuRegistry.INSCRIPTION_TABLE_MENU.get(), InscriptionTableScreen::new);
         MenuScreens.register(MenuRegistry.SCROLL_FORGE_MENU.get(), ScrollForgeScreen::new);
         MenuScreens.register(MenuRegistry.ARCANE_ANVIL_MENU.get(), ArcaneAnvilScreen::new);
@@ -427,42 +427,6 @@ public class IronsSpellbooksClient implements ClientModInitializer {
                 BlockRegistry.POCKET_PORTAL_FRAME.get());
     }
 
-    private static void registerParticleFactories() {
-        var factory = ParticleFactoryRegistry.getInstance();
-        factory.register(ParticleRegistry.BLOOD_PARTICLE.get(), io.redspace.ironsspellbooks.particle.BloodParticle.Provider::new);
-        factory.register(ParticleRegistry.WISP_PARTICLE.get(), io.redspace.ironsspellbooks.particle.WispParticle.Provider::new);
-        factory.register(ParticleRegistry.BLOOD_GROUND_PARTICLE.get(), io.redspace.ironsspellbooks.particle.BloodGroundParticle.Provider::new);
-        factory.register(ParticleRegistry.SNOWFLAKE_PARTICLE.get(), io.redspace.ironsspellbooks.particle.SnowflakeParticle.Provider::new);
-        factory.register(ParticleRegistry.ELECTRICITY_PARTICLE.get(), io.redspace.ironsspellbooks.particle.ElectricityParticle.Provider::new);
-        factory.register(ParticleRegistry.UNSTABLE_ENDER_PARTICLE.get(), io.redspace.ironsspellbooks.particle.UnstableEnderParticle.Provider::new);
-        factory.register(ParticleRegistry.DRAGON_FIRE_PARTICLE.get(), io.redspace.ironsspellbooks.particle.DragonFireParticle.Provider::new);
-        factory.register(ParticleRegistry.FIRE_PARTICLE.get(), io.redspace.ironsspellbooks.particle.FireParticle.Provider::new);
-        factory.register(ParticleRegistry.EMBER_PARTICLE.get(), io.redspace.ironsspellbooks.particle.EmberParticle.Provider::new);
-        factory.register(ParticleRegistry.SIPHON_PARTICLE.get(), io.redspace.ironsspellbooks.particle.SiphonParticle.Provider::new);
-        factory.register(ParticleRegistry.ACID_PARTICLE.get(), io.redspace.ironsspellbooks.particle.AcidParticle.Provider::new);
-        factory.register(ParticleRegistry.ACID_BUBBLE_PARTICLE.get(), io.redspace.ironsspellbooks.particle.AcidBubbleParticle.Provider::new);
-        factory.register(ParticleRegistry.SNOW_DUST.get(), io.redspace.ironsspellbooks.particle.SnowDustParticle.Provider::new);
-        factory.register(ParticleRegistry.RING_SMOKE_PARTICLE.get(), io.redspace.ironsspellbooks.particle.RingSmokeParticle.Provider::new);
-        factory.register(ParticleRegistry.FOG_PARTICLE.get(), io.redspace.ironsspellbooks.particle.FogParticle.Provider::new);
-        factory.register(ParticleRegistry.SHOCKWAVE_PARTICLE.get(), io.redspace.ironsspellbooks.particle.ShockwaveParticle.Provider::new);
-        factory.register(ParticleRegistry.ZAP_PARTICLE.get(), io.redspace.ironsspellbooks.particle.ZapParticle.Provider::new);
-        factory.register(ParticleRegistry.FIREFLY_PARTICLE.get(), io.redspace.ironsspellbooks.particle.FireflyParticle.Provider::new);
-        factory.register(ParticleRegistry.PORTAL_FRAME_PARTICLE.get(), io.redspace.ironsspellbooks.particle.PortalFrameParticle.Provider::new);
-        factory.register(ParticleRegistry.BLASTWAVE_PARTICLE.get(), io.redspace.ironsspellbooks.particle.BlastwaveParticle.Provider::new);
-        factory.register(ParticleRegistry.SPARK_PARTICLE.get(), io.redspace.ironsspellbooks.particle.SparkParticle.Provider::new);
-        factory.register(ParticleRegistry.CLEANSE_PARTICLE.get(), io.redspace.ironsspellbooks.particle.CleanseParticle.Provider::new);
-        factory.register(ParticleRegistry.FLAME_STRIKE_PARTICLE.get(), io.redspace.ironsspellbooks.particle.FlameStrikeParticle.Provider::new);
-        factory.register(ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), io.redspace.ironsspellbooks.particle.EmberousAshParticle.Provider::new);
-        factory.register(ParticleRegistry.FIERY_SMOKE_PARTICLE.get(), io.redspace.ironsspellbooks.particle.FierySmokeParticle.Provider::new);
-        factory.register(ParticleRegistry.ENDER_SLASH_PARTICLE.get(), io.redspace.ironsspellbooks.particle.EnderSlashParticle.Provider::new);
-        factory.register(ParticleRegistry.TRACE_PARTICLE.get(), io.redspace.ironsspellbooks.particle.TraceParticle.Provider::new);
-        factory.register(ParticleRegistry.FALLING_BLOCK_PARTICLE.get(), sprites -> new io.redspace.ironsspellbooks.particle.FallingBlockParticle.Provider());
-        factory.register(ParticleRegistry.SWIRLING_PARTICLE.get(), sprites -> new io.redspace.ironsspellbooks.particle.SwirlingParticle.Provider());
-        factory.register(ParticleRegistry.SOULFIRE_RAY_PARTICLE.get(), SoulfireRayParticle.Provider::new);
-        factory.register(ParticleRegistry.SOUL_FIRE_PARTICLE.get(), DragonFireParticle.Provider::new);
-        factory.register(ParticleRegistry.TINTED_BUBBLE_POP_PARTICLE.get(), TintedBubblePopParticle.Provider::new);
-        factory.register(ParticleRegistry.FALLING_SPARKLE_PARTICLE.get(), FallingSparkleParticle.Provider::new);
-    }
 
     @SuppressWarnings({"rawtypes", "unchecked"})
     private static void registerFallbackEntityRenderers() {

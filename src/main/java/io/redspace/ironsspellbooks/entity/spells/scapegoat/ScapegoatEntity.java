@@ -190,7 +190,7 @@ public class ScapegoatEntity extends PathfinderMob implements AntiMagicSusceptib
     public void poofParticles(int amount, float strength) {
         if (level().isClientSide()) return;
         Vec3 pos = this.getBoundingBox().getCenter();
-        MagicManager.spawnParticles(level(), ParticleRegistry.FALLING_SPARKLE_PARTICLE.get(), pos.x, pos.y + 0.5, pos.z, amount, .1, .1, .1, .3 * strength, false);
+        MagicManager.spawnParticles(level(), ParticleRegistry.FALLING_SPARKLE_PARTICLE, pos.x, pos.y + 0.5, pos.z, amount, .1, .1, .1, .3 * strength, false);
     }
 
     @Override

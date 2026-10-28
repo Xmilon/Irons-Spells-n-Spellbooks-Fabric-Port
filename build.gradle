@@ -162,13 +162,21 @@ tasks.register('verifyPortRendering', JavaExec) {
 }
 
 tasks.named('check') {
-	dependsOn 'verifyBundledDependencies', 'verifyPortRendering', 'verifySpellRenderSnapshots'
+	dependsOn 'verifyBundledDependencies', 'verifyPortRendering', 'verifySpellRenderSnapshots', 'verifyPortParticles'
 }
 
 tasks.register('verifySpellRenderSnapshots', JavaExec) {
 	dependsOn 'portTestClasses'
 	classpath = sourceSets.portTest.runtimeClasspath
 	mainClass = 'io.redspace.ironsspellbooks.render.SpellRenderSnapshotCheck'
+	enableAssertions = true
+	javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(25) }
+}
+
+tasks.register('verifyPortParticles', JavaExec) {
+	dependsOn 'portTestClasses'
+	classpath = sourceSets.portTest.runtimeClasspath
+	mainClass = 'io.redspace.ironsspellbooks.particle.ParticlePortCheck'
 	enableAssertions = true
 	javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(25) }
 }

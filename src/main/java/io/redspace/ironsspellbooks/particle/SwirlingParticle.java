@@ -1,8 +1,8 @@
 package io.redspace.ironsspellbooks.particle;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import io.redspace.ironsspellbooks.mixin.ParticleAccessor;
-import net.minecraft.client.Camera;
+
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
@@ -11,8 +11,6 @@ import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.core.particles.ParticleOptions;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.jetbrains.annotations.Nullable;
 
@@ -91,41 +89,6 @@ public class SwirlingParticle extends Particle {
         move(xd, yd, zd);
     }
 
-    private static final double MAXIMUM_COLLISION_VELOCITY_SQUARED = Mth.square(100.0);
-
-//    public void move(double x, double y, double z) {
-//        if (!((ParticleAccessor) this).irons_spellbooks$isStoppedByCollision()) {
-//            double d0 = x;
-//            double d1 = y;
-//            double d2 = z;
-//            if (this.hasPhysics
-//                    && (x != 0.0 || y != 0.0 || z != 0.0)
-//                    && x * x + y * y + z * z < MAXIMUM_COLLISION_VELOCITY_SQUARED) {
-//                Vec3 vec3 = Entity.collideBoundingBox(null, new Vec3(x, y, z), this.getBoundingBox(), this.level, List.of());
-//                if (x != vec3.x || y != vec3.y || z != vec3.z) {
-//                    this.remove();
-//                    // release particle
-//                    if (particle != null) {
-//                        Vec3 p1 = calculatePos();
-//                        cycle += speed;
-//                        Vec3 p2 = calculatePos();
-//                        Vec3 motion = p2.subtract(p1).add(new Vec3(xd, yd, zd).scale(0.5));
-//                        ((ParticleAccessor) particle).irons_spellbooks$stoppedByCollision(false);
-//                        ((ParticleAccessor) particle).irons_spellbooks$xd(motion.x);
-//                        ((ParticleAccessor) particle).irons_spellbooks$yd(motion.y);
-//                        ((ParticleAccessor) particle).irons_spellbooks$zd(motion.z);
-//                    }
-//                    return;
-//                }
-//            }
-//
-//            if (x != 0.0 || y != 0.0 || z != 0.0) {
-//                this.setBoundingBox(this.getBoundingBox().move(x, y, z));
-//                this.setLocationFromBoundingbox();
-//            }
-//        }
-//    }
-
     private Vec3 calculatePos() {
         float f = cycle * Mth.DEG_TO_RAD;
         return this.getPos()
@@ -137,26 +100,17 @@ public class SwirlingParticle extends Particle {
         return new Vec3(this.x, this.y, this.z);
     }
 
-
     @Override
-    public void render(VertexConsumer buffer, Camera camera, float partialTicks) {
-
-    }
-
-    @Override
-    public ParticleRenderType getRenderType() {
+    public ParticleRenderType getGroup() {
         return ParticleRenderType.NO_RENDER;
     }
-
-    @OnlyIn(Dist.CLIENT)
     public static class Provider implements ParticleProvider<SwirlingParticleOptions> {
 
         public Provider() {
         }
 
-        public Particle createParticle(@NotNull SwirlingParticleOptions options, @NotNull ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed) {
+        public Particle createParticle(@NotNull SwirlingParticleOptions options, @NotNull ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed, net.minecraft.util.RandomSource random) {
             return new SwirlingParticle(pLevel, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed, options);
         }
     }
 }
-

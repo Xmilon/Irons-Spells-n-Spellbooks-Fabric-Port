@@ -1,27 +1,25 @@
 package io.redspace.ironsspellbooks.particle;
 
-import com.mojang.blaze3d.vertex.VertexConsumer;
+
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
-import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
-public class FlameStrikeParticle extends TextureSheetParticle {
+public class FlameStrikeParticle extends MeshParticle {
     private final SpriteSet sprites;
     private final Vec3 forward;
     private final boolean mirror, vertical;
     private final Vector3f[] localVertices;
 
     FlameStrikeParticle(ClientLevel pLevel, double pX, double pY, double pZ, SpriteSet spriteSet, double xd, double yd, double zd, FlameStrikeParticleOptions options) {
-        super(pLevel, pX, pY, pZ, 0, 0, 0);
+        super(pLevel, pX, pY, pZ, 0, 0, 0, spriteSet.first());
 
         this.xd = xd;
         this.yd = yd;
@@ -112,9 +110,9 @@ public class FlameStrikeParticle extends TextureSheetParticle {
     }
 
     @Override
-    public void render(VertexConsumer buffer, Camera camera, float partialTick) {
+    public void extractMesh(ParticleMeshRenderState buffer, Camera camera, float partialTick) {
         boolean mirrored = !this.mirror; // based on animation, we actually want the default to be mirrored
-        Vec3 vec3 = camera.getPosition();
+        Vec3 vec3 = camera.position();
         float f = (float) (Mth.lerp(partialTick, this.xo, this.x) - vec3.x());
         float f1 = (float) (Mth.lerp(partialTick, this.yo, this.y) - vec3.y());
         float f2 = (float) (Mth.lerp(partialTick, this.zo, this.z) - vec3.z());
@@ -125,7 +123,7 @@ public class FlameStrikeParticle extends TextureSheetParticle {
             vertices[i].mul(this.getQuadSize(partialTick));
             vertices[i].add(f, f1, f2);
         }
-        int j = this.getLightColor(partialTick);
+        int j = this.getLightCoords(partialTick);
         this.makeCornerVertex(buffer, vertices[0], this.getU1(), mirrored ? this.getV0() : this.getV1(), j);
         this.makeCornerVertex(buffer, vertices[1], this.getU1(), mirrored ? this.getV1() : this.getV0(), j);
         this.makeCornerVertex(buffer, vertices[2], this.getU0(), mirrored ? this.getV1() : this.getV0(), j);
@@ -138,22 +136,20 @@ public class FlameStrikeParticle extends TextureSheetParticle {
 
     }
 
-    private void makeCornerVertex(VertexConsumer pConsumer, Vector3f pVec3f, float p_233996_, float p_233997_, int p_233998_) {
-        pConsumer.addVertex(pVec3f.x(), pVec3f.y(), pVec3f.z()).setUv(p_233996_, p_233997_).setColor(this.rCol, this.gCol, this.bCol, this.alpha).setLight(p_233998_);
+    private void makeCornerVertex(ParticleMeshRenderState pConsumer, Vector3f pVec3f, float p_233996_, float p_233997_, int p_233998_) {
+        pConsumer.addVertex(getLayer(), pVec3f.x(), pVec3f.y(), pVec3f.z(), p_233996_, p_233997_, net.minecraft.util.ARGB.colorFromFloat(this.alpha, this.rCol, this.gCol, this.bCol), p_233998_);
     }
 
     @NotNull
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
+    public Layer getLayer() {
+        return Layer.OPAQUE;
     }
 
     @Override
-    protected int getLightColor(float pPartialTick) {
-        return LightTexture.FULL_BRIGHT;
+    protected int getLightCoords(float pPartialTick) {
+        return LightCoordsUtil.FULL_BRIGHT;
     }
-
-    @OnlyIn(Dist.CLIENT)
     public static class Provider implements ParticleProvider<FlameStrikeParticleOptions> {
         private final SpriteSet sprite;
 
@@ -161,7 +157,7 @@ public class FlameStrikeParticle extends TextureSheetParticle {
             this.sprite = pSprite;
         }
 
-        public Particle createParticle(@NotNull FlameStrikeParticleOptions options, @NotNull ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed) {
+        public Particle createParticle(@NotNull FlameStrikeParticleOptions options, @NotNull ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed, net.minecraft.util.RandomSource random) {
             FlameStrikeParticle shriekparticle = new FlameStrikeParticle(pLevel, pX, pY, pZ, sprite, pXSpeed, pYSpeed, pZSpeed, options);
             shriekparticle.setSpriteFromAge(this.sprite);
             shriekparticle.setAlpha(1.0F);
@@ -170,4 +166,3 @@ public class FlameStrikeParticle extends TextureSheetParticle {
     }
 
 }
-

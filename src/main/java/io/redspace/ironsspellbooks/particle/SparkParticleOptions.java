@@ -44,7 +44,6 @@ public class SparkParticleOptions implements ParticleOptions {
 
     @Override
     public ParticleType<?> getType() {
-        return ParticleRegistry.SPARK_PARTICLE.get();
+        return ParticleRegistry.SPARK_PARTICLE;
     }
 }
-

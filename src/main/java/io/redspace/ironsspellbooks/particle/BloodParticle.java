@@ -4,15 +4,13 @@ import io.redspace.ironsspellbooks.util.ParticleHelper;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
-public class BloodParticle extends TextureSheetParticle {
+public class BloodParticle extends SingleQuadParticle {
     private final SpriteSet sprites;
 
     public BloodParticle(ClientLevel level, double xCoord, double yCoord, double zCoord, SpriteSet spriteSet, double xd, double yd, double zd) {
 
-        super(level, xCoord, yCoord, zCoord, xd, yd, zd);
+        super(level, xCoord, yCoord, zCoord, xd, yd, zd, spriteSet.first());
 
         //this.friction = 1.0f;
         this.xd = xd;
@@ -41,11 +39,9 @@ public class BloodParticle extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
+    public Layer getLayer() {
+        return Layer.OPAQUE;
     }
-
-    @OnlyIn(Dist.CLIENT)
     public static class Provider implements ParticleProvider<SimpleParticleType> {
         private final SpriteSet sprites;
 
@@ -55,10 +51,8 @@ public class BloodParticle extends TextureSheetParticle {
 
         public Particle createParticle(SimpleParticleType particleType, ClientLevel level,
                                        double x, double y, double z,
-                                       double dx, double dy, double dz) {
+                                       double dx, double dy, double dz, net.minecraft.util.RandomSource random) {
             return new BloodParticle(level, x, y, z, this.sprites, dx, dy, dz);
         }
     }
 }
-
-

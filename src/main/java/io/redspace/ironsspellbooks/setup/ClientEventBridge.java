@@ -2,7 +2,6 @@ package io.redspace.ironsspellbooks.setup;
 
 import io.redspace.ironsspellbooks.api.util.FogManager;
 import io.redspace.ironsspellbooks.api.util.MusicManager;
-import io.redspace.ironsspellbooks.particle.ClientShieldHelper;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientEntityEvents;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
@@ -21,7 +20,7 @@ public final class ClientEventBridge {
     }
 
     public static void init() {
-        for (Class<?> handlers : new Class<?>[]{FogManager.class, MusicManager.class, ClientShieldHelper.class}) {
+        for (Class<?> handlers : new Class<?>[]{FogManager.class, MusicManager.class}) {
             NeoForge.EVENT_BUS.register(handlers);
         }
         ClientTickEvents.START_CLIENT_TICK.register(client -> NeoForge.EVENT_BUS.post(new ClientTickEvent.Pre()));

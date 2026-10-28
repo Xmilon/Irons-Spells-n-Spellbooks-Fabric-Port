@@ -1,40 +1,28 @@
 package io.redspace.ironsspellbooks.particle;
 
-import com.mojang.blaze3d.platform.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import com.mojang.blaze3d.vertex.*;
-import io.redspace.ironsspellbooks.api.util.Utils;
-import net.minecraft.util.Util;
 import net.minecraft.client.Camera;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
-import net.minecraft.client.renderer.GameRenderer;
-import net.minecraft.client.renderer.LightTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
-import net.minecraft.client.renderer.texture.TextureManager;
 import net.minecraft.util.Mth;
+import net.minecraft.util.ARGB;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.RandomSource;
-import net.minecraft.world.phys.AABB;
+
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
-public class ZapParticle extends TextureSheetParticle {
-    private static final Vector3f ROTATION_VECTOR = Util.make(new Vector3f(0.5F, 0.5F, 0.5F), Vector3f::normalize);
-    private static final Vector3f TRANSFORM_VECTOR = new Vector3f(-1.0F, -1.0F, 0.0F);
-    private static final float DEGREES_90 = Mth.PI / 2f;
+public class ZapParticle extends MeshParticle {
 
     Vec3 destination;
 
-    ZapParticle(ClientLevel pLevel, double pX, double pY, double pZ, double xd, double yd, double zd, ZapParticleOption options) {
-        super(pLevel, pX, pY, pZ, 0, 0, 0);
+    ZapParticle(ClientLevel pLevel, double pX, double pY, double pZ, double xd, double yd, double zd, ZapParticleOption options, SpriteSet sprites) {
+        super(pLevel, pX, pY, pZ, 0, 0, 0, sprites.first());
         this.setSize(1, 1);
         this.quadSize = 1f;
         this.destination = options.getDestination();
-        this.lifetime = Utils.random.nextIntBetweenInclusive(3, 8);
+        this.lifetime = this.random.nextIntBetweenInclusive(3, 8);
         this.rCol = 1;
         this.gCol = 1;
         this.bCol = 1;
@@ -64,8 +52,8 @@ public class ZapParticle extends TextureSheetParticle {
 
 
     @Override
-    public void render(VertexConsumer consumer, Camera camera, float partialTick) {
-        Vec3 vec3 = camera.getPosition();
+    public void extractMesh(ParticleMeshRenderState consumer, Camera camera, float partialTick) {
+        Vec3 vec3 = camera.position();
         float f = (float) (Mth.lerp((double) partialTick, this.xo, this.x) - vec3.x());
         float f1 = (float) (Mth.lerp((double) partialTick, this.yo, this.y) - vec3.y());
         float f2 = (float) (Mth.lerp((double) partialTick, this.zo, this.z) - vec3.z());
@@ -88,8 +76,9 @@ public class ZapParticle extends TextureSheetParticle {
         }
     }
 
-    private void drawLightningBeam(VertexConsumer consumer, float partialTick, float f, float f1, float f2, Vector3f start, Vector3f end, float chanceToBranch, RandomSource randomSource) {
+    private void drawLightningBeam(ParticleMeshRenderState consumer, float partialTick, float f, float f1, float f2, Vector3f start, Vector3f end, float chanceToBranch, RandomSource randomSource) {
         Vector3f d = new Vector3f(end.x() - start.x(), end.y() - start.y(), end.z() - start.z());
+        if (d.lengthSquared() < 1.0e-12f) return;
         d.normalize();
         Vec2 heading = new Vec2((float) Math.asin(-d.y()), (float) -Mth.atan2(d.x(), d.z()));
         //quaternion.mul(Vector3f.XP.rotation((float) Math.asin(-d.y())));
@@ -110,7 +99,7 @@ public class ZapParticle extends TextureSheetParticle {
         }
     }
 
-    private void tube(VertexConsumer consumer, float partialTick, float f, float f1, float f2, Vec2 heading, Vector3f start, Vector3f end, float width) {
+    private void tube(ParticleMeshRenderState consumer, float partialTick, float f, float f1, float f2, Vec2 heading, Vector3f start, Vector3f end, float width) {
         float h = width * .5f;
 
         Vector3f[] left = new Vector3f[]{
@@ -144,11 +133,11 @@ public class ZapParticle extends TextureSheetParticle {
         quad(consumer, partialTick, f, f1, f2, bottom);
     }
 
-    private void makeCornerVertex(VertexConsumer pConsumer, Vector3f pVec3f, float p_233996_, float p_233997_, int p_233998_) {
-        pConsumer.addVertex((float) pVec3f.x(), (float) pVec3f.y(), (float) pVec3f.z()).setUv(p_233996_, p_233997_).setColor(this.rCol, this.gCol, this.bCol, this.alpha).setLight(p_233998_);
+    private void makeCornerVertex(ParticleMeshRenderState pConsumer, Vector3f pVec3f, float p_233996_, float p_233997_, int p_233998_) {
+        pConsumer.addVertex(getLayer(), pVec3f.x(), pVec3f.y(), pVec3f.z(), p_233996_, p_233997_, ARGB.colorFromFloat(this.alpha, this.rCol, this.gCol, this.bCol), p_233998_);
     }
 
-    private void quad(VertexConsumer pConsumer, float partialTick, float f, float f1, float f2, Vector3f[] avector3f) {
+    private void quad(ParticleMeshRenderState pConsumer, float partialTick, float f, float f1, float f2, Vector3f[] avector3f) {
         float f3 = this.getQuadSize(partialTick);
 
         for (int i = 0; i < 4; ++i) {
@@ -159,7 +148,7 @@ public class ZapParticle extends TextureSheetParticle {
             vector3f.add(f, f1, f2);
         }
 
-        int j = this.getLightColor(partialTick);
+        int j = this.getLightCoords(partialTick);
         this.makeCornerVertex(pConsumer, avector3f[0], this.getU1(), this.getV1(), j);
         this.makeCornerVertex(pConsumer, avector3f[1], this.getU1(), this.getV0(), j);
         this.makeCornerVertex(pConsumer, avector3f[2], this.getU0(), this.getV0(), j);
@@ -168,45 +157,16 @@ public class ZapParticle extends TextureSheetParticle {
 
     @NotNull
     @Override
-    public ParticleRenderType getRenderType() {
-        return PARTICLE_EMISSIVE;
+    public Layer getLayer() {
+        return ParticleRenderLayers.ADDITIVE;
     }
 
-
-    public AABB getRenderBoundingBox(float partialTicks) {
-        return new AABB(Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY, Double.NEGATIVE_INFINITY,
-                Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY, Double.POSITIVE_INFINITY);
-    }
-
-    public static ParticleRenderType PARTICLE_EMISSIVE = new ParticleRenderType() {
-        @Override
-        public BufferBuilder begin(Tesselator tesselator, TextureManager textureManager) {
-            RenderSystem.depthMask(true);
-            RenderSystem.setShaderTexture(0, TextureAtlas.LOCATION_PARTICLES);
-            RenderSystem.enableBlend();
-            RenderSystem.disableCull();
-            RenderSystem.setShader(GameRenderer::getParticleShader);
-            RenderSystem.blendFunc(GlStateManager.SourceFactor.ONE, GlStateManager.DestFactor.ONE);
-            return tesselator.begin(VertexFormat.Mode.QUADS, DefaultVertexFormat.PARTICLE);
-        }
-
-
-        public boolean isTranslucent() {
-            return true;
-        }
-
-        @Override
-        public String toString() {
-            return "irons_spellbooks:particle_emissive";
-        }
-    };
 
     @Override
-    protected int getLightColor(float pPartialTick) {
-        return LightTexture.FULL_BRIGHT;
+    protected int getLightCoords(float pPartialTick) {
+        return LightCoordsUtil.FULL_BRIGHT;
     }
 
-    @OnlyIn(Dist.CLIENT)
     public static class Provider implements ParticleProvider<ZapParticleOption> {
         private final SpriteSet sprite;
 
@@ -214,13 +174,12 @@ public class ZapParticle extends TextureSheetParticle {
             this.sprite = pSprite;
         }
 
-        public Particle createParticle(@NotNull ZapParticleOption options, @NotNull ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed) {
-            var particle = new ZapParticle(pLevel, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed, options);
-            particle.pickSprite(this.sprite);
+        public Particle createParticle(@NotNull ZapParticleOption options, @NotNull ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed, RandomSource random) {
+            var particle = new ZapParticle(pLevel, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed, options, this.sprite);
+            particle.setSprite(this.sprite.get(random));
             particle.setAlpha(1.0F);
             return particle;
         }
     }
 
 }
-

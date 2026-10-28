@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.particle;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.netty.buffer.ByteBuf;
@@ -10,29 +11,31 @@ import net.minecraft.core.particles.ParticleType;
 import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.phys.Vec3;
 
-import java.util.stream.IntStream;
+import java.util.List;
 
 public class ZapParticleOption implements ParticleOptions {
-    //truncate to 1 decimal place for packet space because we are so optimized
+    // Keep the existing three-int wire format, quantized to tenths of a block.
     public static StreamCodec<? super ByteBuf, ZapParticleOption> STREAM_CODEC = StreamCodec.of(
             (buf, option) -> {
-                buf.writeInt((int) option.destination.x * 10);
-                buf.writeInt((int) option.destination.y * 10);
-                buf.writeInt((int) option.destination.z * 10);
+                buf.writeInt((int) Math.round(option.destination.x * 10));
+                buf.writeInt((int) Math.round(option.destination.y * 10));
+                buf.writeInt((int) Math.round(option.destination.z * 10));
             },
             (buf) -> {
-                return new ZapParticleOption(buf.readInt() / 10f, buf.readInt() / 10f, buf.readInt() / 10f);
+                return new ZapParticleOption(new Vec3(buf.readInt() / 10.0, buf.readInt() / 10.0, buf.readInt() / 10.0));
             }
     );
 
     public static MapCodec<ZapParticleOption> MAP_CODEC = RecordCodecBuilder.mapCodec(object ->
             object.group(
-                    Codec.INT_STREAM.fieldOf("destination").forGetter((option) -> IntStream.of((int) option.destination.x * 10, (int) option.destination.y * 10, (int) option.destination.z * 10))
-            ).apply(object, (stream) -> {
-                        var array = stream.toArray();
-                        return new ZapParticleOption(new Vec3(array[0] / 10f, array[1] / 10f, array[2] / 10f));
-                    }
-            ));
+                    Codec.INT.listOf().validate(values -> values.size() == 3
+                            ? DataResult.success(values) : DataResult.error(() -> "Destination must contain exactly three coordinates"))
+                            .fieldOf("destination").forGetter((option) -> List.of(
+                                    (int) Math.round(option.destination.x * 10),
+                                    (int) Math.round(option.destination.y * 10),
+                                    (int) Math.round(option.destination.z * 10)))
+            ).apply(object, values -> new ZapParticleOption(new Vec3(
+                    values.get(0) / 10.0, values.get(1) / 10.0, values.get(2) / 10.0))));
 
     private final Vec3 destination;
 
@@ -45,7 +48,7 @@ public class ZapParticleOption implements ParticleOptions {
     }
 
     public ParticleType<ZapParticleOption> getType() {
-        return ParticleRegistry.ZAP_PARTICLE.get();
+        return ParticleRegistry.ZAP_PARTICLE;
     }
 
     public Vec3 getDestination() {
@@ -53,4 +56,3 @@ public class ZapParticleOption implements ParticleOptions {
     }
 
 }
-

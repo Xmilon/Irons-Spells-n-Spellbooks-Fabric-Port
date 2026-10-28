@@ -1,148 +1,128 @@
 package io.redspace.ironsspellbooks.particle;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import io.redspace.ironsspellbooks.api.util.Utils;
+import net.fabricmc.fabric.api.client.particle.v1.ParticleGroupRegistry;
 import net.minecraft.client.Camera;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.Particle;
+import net.minecraft.client.particle.ParticleEngine;
+import net.minecraft.client.particle.ParticleGroup;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
-import net.minecraft.client.particle.TextureSheetParticle;
-import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.block.BlockModelRenderState;
+import net.minecraft.client.renderer.block.BlockModelResolver;
+import net.minecraft.client.renderer.block.model.BlockDisplayContext;
+import net.minecraft.client.renderer.culling.Frustum;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
+import net.minecraft.client.renderer.state.level.ParticleGroupRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.core.BlockPos;
-import net.minecraft.core.particles.BlockParticleOption;
-import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.level.block.RenderShape;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.phys.AABB;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.client.event.RenderLevelStageEvent;
-import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.rendering.v1.WorldRenderEvents;
-import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.List;
 
-public class FallingBlockParticle extends TextureSheetParticle {
+public class FallingBlockParticle extends Particle {
+    public static final ParticleRenderType GROUP = new ParticleRenderType("irons_spellbooks:falling_block", "ISSB_BLOCK");
     private final BlockState blockState;
-    private final boolean particlesOnImpact;
-    private final BlockPos originalPos;
-    private static final List<Renderable> toRender = new ArrayList<>();
 
-    static {
-        WorldRenderEvents.AFTER_ENTITIES.register(context -> {
-            var dispatcher = Minecraft.getInstance().getBlockRenderer();
-            var level = Minecraft.getInstance().level;
-            if (level == null) {
-                toRender.clear();
-                return;
-            }
-            synchronized (toRender) {
-                if (toRender.isEmpty()) {
-                    return;
-                }
-                var bufs = Minecraft.getInstance().renderBuffers();
-                var buf = bufs.bufferSource();
-                context.matrixStack().pushPose();
-                for (Renderable particle : toRender) {
-                    context.matrixStack().pushPose();
-                    context.matrixStack().translate(particle.relativePos.x, particle.relativePos.y, particle.relativePos.z);
-                    dispatcher.renderSingleBlock(particle.state, context.matrixStack(), buf, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY);
-                    context.matrixStack().popPose();
-                }
-                context.matrixStack().popPose();
-                toRender.clear();
-            }
-        });
+    public static void registerGroup() {
+        ParticleGroupRegistry.register(GROUP, Group::new);
+        ParticleGroupRegistry.registerOrdering(ParticleRenderType.SINGLE_QUADS, GROUP);
     }
 
-    record Renderable(BlockPos worldPos, BlockPos originalPos, Vec3 relativePos, BlockState state) {
-    }
-
-    FallingBlockParticle(ClientLevel pLevel, double pX, double pY, double pZ, double xd, double yd, double zd, FallingBlockParticleOption options) {
-        super(pLevel, pX, pY, pZ, 0, 0, 0);
+    FallingBlockParticle(ClientLevel level, double x, double y, double z, FallingBlockParticleOption options) {
+        super(level, x, y, z, 0, 0, 0);
         this.xd = options.getMotion().x;
         this.yd = options.getMotion().y;
         this.zd = options.getMotion().z;
-
         this.lifetime = 200;
-        this.quadSize = 1;
-
         this.blockState = options.getState();
-
         this.gravity = 0.08f;
-        this.originalPos = BlockPos.containing(x, y, z);
-        //todo: control over this?
-        this.particlesOnImpact = false;
     }
 
     @Override
     public void tick() {
-        //todo: idk how this works
-        boolean onGround = this.onGround;
+        boolean wasOnGround = this.onGround;
         age++;
         this.xo = this.x;
         this.yo = this.y;
         this.zo = this.z;
         move(xd, yd, zd);
         yd -= gravity;
-        if (this.blockState.isAir() || onGround || age > lifetime) {
-            if (onGround) {
-                if (particlesOnImpact) {
-                    double speed = Math.sqrt(xd * xd + yd * yd + zd * zd);
-                    for (int i = 0; i < 25; i++) {
-                        Vec3 random = Utils.getRandomVec3(1).multiply(1, 0.25, 1).normalize().scale(speed * 10 + 0.1);
-                        level.addParticle(new BlockParticleOption(ParticleTypes.BLOCK, this.blockState), this.x, this.y, this.z, random.x, random.y, random.z);
-                    }
-                }
-            }
+        if (this.blockState.isAir() || wasOnGround || age > lifetime) {
             this.remove();
         }
     }
 
     @Override
-    public void render(VertexConsumer buffer, Camera camera, float partialTick) {
-        if (blockState.getRenderShape() == RenderShape.MODEL) {
-            Vec3 vec3 = camera.getPosition();
-            float f = (float) (Mth.lerp(partialTick, this.xo, this.x) - vec3.x());
-            float f1 = (float) (Mth.lerp(partialTick, this.yo, this.y) - vec3.y());
-            float f2 = (float) (Mth.lerp(partialTick, this.zo, this.z) - vec3.z());
-            toRender.add(new Renderable(BlockPos.containing(x, y, z), this.originalPos, new Vec3(f, f1, f2), this.blockState));
-        }
+    public ParticleRenderType getGroup() {
+        return GROUP;
     }
 
-    @NotNull
-    @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.TERRAIN_SHEET;
-    }
-
-    @Override
-    protected int getLightColor(float pPartialTick) {
-        return LightTexture.FULL_BRIGHT;
-    }
-
-    @OnlyIn(Dist.CLIENT)
     public static class Provider implements ParticleProvider<FallingBlockParticleOption> {
-
-        public Provider() {
-        }
-
-        public Particle createParticle(@NotNull FallingBlockParticleOption options, @NotNull ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed) {
-            return new FallingBlockParticle(pLevel, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed, options);
+        @Override
+        public Particle createParticle(FallingBlockParticleOption options, ClientLevel level,
+                                       double x, double y, double z, double xd, double yd, double zd, RandomSource random) {
+            return new FallingBlockParticle(level, x, y, z, options);
         }
     }
 
+    public record BlockInstance(Vec3 relativePosition, BlockModelRenderState model) {
+    }
+
+    public record RenderState(List<BlockInstance> blocks) implements ParticleGroupRenderState {
+        public RenderState {
+            blocks = List.copyOf(blocks);
+        }
+
+        @Override
+        public void submit(SubmitNodeCollector collector, CameraRenderState camera) {
+            var poses = new PoseStack();
+            for (var block : blocks) {
+                poses.pushPose();
+                try {
+                    Vec3 position = block.relativePosition();
+                    poses.translate(position.x, position.y, position.z);
+                    block.model().submit(poses, collector, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, 0);
+                } finally {
+                    poses.popPose();
+                }
+            }
+        }
+    }
+
+    private static class Group extends ParticleGroup<FallingBlockParticle> {
+        private final BlockModelResolver modelResolver;
+        private final BlockDisplayContext displayContext = BlockDisplayContext.create();
+
+        private Group(ParticleEngine engine) {
+            super(engine);
+            modelResolver = new BlockModelResolver(Minecraft.getInstance().getModelManager());
+        }
+
+        @Override
+        public ParticleGroupRenderState extractRenderState(Frustum frustum, Camera camera, float partialTick) {
+            var blocks = new ArrayList<BlockInstance>();
+            Vec3 cameraPosition = camera.position();
+            for (var particle : particles) {
+                if (particle.blockState.getRenderShape() != RenderShape.MODEL) continue;
+                double x = Mth.lerp(partialTick, particle.xo, particle.x);
+                double y = Mth.lerp(partialTick, particle.yo, particle.y);
+                double z = Mth.lerp(partialTick, particle.zo, particle.z);
+                if (!frustum.isVisible(new AABB(x, y, z, x + 1, y + 1, z + 1))) continue;
+                var model = new BlockModelRenderState();
+                modelResolver.update(model, particle.blockState, displayContext);
+                blocks.add(new BlockInstance(new Vec3(x, y, z).subtract(cameraPosition), model));
+            }
+            return new RenderState(blocks);
+        }
+    }
 }
-
-
-

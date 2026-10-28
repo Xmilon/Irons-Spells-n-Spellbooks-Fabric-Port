@@ -161,7 +161,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
             riseAnimTick--;
             if (!level().isClientSide()) {
                 Vec3 vec3 = this.getBoundingBox().getCenter();
-                MagicManager.spawnParticles(level(), ParticleRegistry.EMBEROUS_ASH_PARTICLE.get(), vec3.x, vec3.y, vec3.z, 5, 0.2, 0.2, 0.2, 0.05, false);
+                MagicManager.spawnParticles(level(), ParticleRegistry.EMBEROUS_ASH_PARTICLE, vec3.x, vec3.y, vec3.z, 5, 0.2, 0.2, 0.2, 0.05, false);
             }
         }
     }
@@ -364,5 +364,3 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
         return super.isAlliedTo(pEntity) || pEntity.getType().is(ModTags.INFERNAL_ALLIES);
     }
 }
-
-

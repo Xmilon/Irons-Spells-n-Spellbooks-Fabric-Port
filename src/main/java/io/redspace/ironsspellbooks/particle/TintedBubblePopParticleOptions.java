@@ -33,6 +33,6 @@ public class TintedBubblePopParticleOptions implements ParticleOptions {
 
     @Override
     public ParticleType<TintedBubblePopParticleOptions> getType() {
-        return ParticleRegistry.TINTED_BUBBLE_POP_PARTICLE.get();
+        return ParticleRegistry.TINTED_BUBBLE_POP_PARTICLE;
     }
 }

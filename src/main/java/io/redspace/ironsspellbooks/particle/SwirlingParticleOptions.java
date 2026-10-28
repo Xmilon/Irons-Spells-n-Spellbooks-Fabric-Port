@@ -39,7 +39,6 @@ public record SwirlingParticleOptions(
             ));
 
     public @NotNull ParticleType<SwirlingParticleOptions> getType() {
-        return ParticleRegistry.SWIRLING_PARTICLE.get();
+        return ParticleRegistry.SWIRLING_PARTICLE;
     }
 }
-

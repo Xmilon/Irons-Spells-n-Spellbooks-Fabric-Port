@@ -55,7 +55,6 @@ public class EnderSlashParticleOptions implements ParticleOptions {
             ));
 
     public @NotNull ParticleType<EnderSlashParticleOptions> getType() {
-        return ParticleRegistry.ENDER_SLASH_PARTICLE.get();
+        return ParticleRegistry.ENDER_SLASH_PARTICLE;
     }
 }
-

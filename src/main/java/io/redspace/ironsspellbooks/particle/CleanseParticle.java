@@ -4,11 +4,7 @@ import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-
-@OnlyIn(Dist.CLIENT)
-public class CleanseParticle extends TextureSheetParticle {
+public class CleanseParticle extends SingleQuadParticle {
     private final SpriteSet sprites;
     private static final int BASE_LIFETIME = 8;
 
@@ -23,7 +19,7 @@ public class CleanseParticle extends TextureSheetParticle {
         float pSizeMultiplier,
         SpriteSet pSprites
     ) {
-        super(pLevel, pX, pY, pZ, 0.0, 0.0, 0.0);
+        super(pLevel, pX, pY, pZ, 0.0, 0.0, 0.0, pSprites.first());
         this.sprites = pSprites;
         this.friction = 0.96F;
         this.gravity = -0.1F;
@@ -42,12 +38,12 @@ public class CleanseParticle extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
+    public Layer getLayer() {
+        return Layer.OPAQUE;
     }
 
     @Override
-    public int getLightColor(float pPartialTick) {
+    public int getLightCoords(float pPartialTick) {
         return 240;
     }
 
@@ -66,8 +62,6 @@ public class CleanseParticle extends TextureSheetParticle {
     public float getQuadSize(float pScaleFactor) {
         return this.quadSize * Mth.clamp(((float)this.age + pScaleFactor) / (float)this.lifetime * 32.0F, 0.0F, 1.0F);
     }
-
-    @OnlyIn(Dist.CLIENT)
     public static class Provider implements ParticleProvider<SimpleParticleType> {
         private final SpriteSet sprites;
 
@@ -84,9 +78,8 @@ public class CleanseParticle extends TextureSheetParticle {
             double pXSpeed,
             double pYSpeed,
             double pZSpeed
-        ) {
+        , net.minecraft.util.RandomSource random) {
             return new CleanseParticle(pLevel, pX, pY, pZ, pXSpeed, pYSpeed, pZSpeed, 1.5F, this.sprites);
         }
     }
 }
-

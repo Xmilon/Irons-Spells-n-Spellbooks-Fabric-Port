@@ -2,17 +2,15 @@ package io.redspace.ironsspellbooks.particle;
 
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
-import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
-public class EmberousAshParticle extends TextureSheetParticle {
-    public EmberousAshParticle(ClientLevel level, double xCoord, double yCoord, double zCoord, double xd, double yd, double zd) {
-        super(level, xCoord, yCoord, zCoord, xd, yd, zd);
+public class EmberousAshParticle extends SingleQuadParticle {
+    public EmberousAshParticle(ClientLevel level, double xCoord, double yCoord, double zCoord, double xd, double yd, double zd, SpriteSet spriteSet) {
+        super(level, xCoord, yCoord, zCoord, xd, yd, zd, spriteSet.first());
         this.scale(this.random.nextFloat() * .65f + .4f);
         this.lifetime = 40 + (int) (Math.random() * 45);
         this.gravity = 0;
@@ -73,11 +71,9 @@ public class EmberousAshParticle extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_OPAQUE;
+    public Layer getLayer() {
+        return Layer.OPAQUE;
     }
-
-    @OnlyIn(Dist.CLIENT)
     public static class Provider implements ParticleProvider<SimpleParticleType> {
         private final SpriteSet sprites;
 
@@ -87,17 +83,15 @@ public class EmberousAshParticle extends TextureSheetParticle {
 
         public Particle createParticle(SimpleParticleType particleType, ClientLevel level,
                                        double x, double y, double z,
-                                       double dx, double dy, double dz) {
-            var p = new EmberousAshParticle(level, x, y, z, dx, dy, dz);
-            p.pickSprite(this.sprites);
+                                       double dx, double dy, double dz, net.minecraft.util.RandomSource random) {
+            var p = new EmberousAshParticle(level, x, y, z, dx, dy, dz, this.sprites);
+            p.setSprite(this.sprites.get(random));
             return p;
         }
     }
 
     @Override
-    public int getLightColor(float p_107564_) {
-        return LightTexture.FULL_BRIGHT;
+    public int getLightCoords(float p_107564_) {
+        return LightCoordsUtil.FULL_BRIGHT;
     }
 }
-
-

@@ -52,7 +52,7 @@ public class IronsSpellbooks implements ModInitializer {
         EntityRegistry.register(eventBus);
         LootRegistry.register(eventBus);
         MobEffectRegistry.register(eventBus);
-        ParticleRegistry.register(eventBus);
+        ParticleRegistry.register();
         SoundRegistry.register(eventBus);
         FeatureRegistry.register(eventBus);
         PotionRegistry.register(eventBus);
@@ -84,4 +84,3 @@ public class IronsSpellbooks implements ModInitializer {
         return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, path);
     }
 }
-

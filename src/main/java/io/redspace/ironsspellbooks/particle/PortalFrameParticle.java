@@ -3,19 +3,17 @@ package io.redspace.ironsspellbooks.particle;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.client.multiplayer.ClientLevel;
 import net.minecraft.client.particle.*;
-import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
-public class PortalFrameParticle extends TextureSheetParticle {
+public class PortalFrameParticle extends SingleQuadParticle {
     float pathWidth, pathHeight, yRad, rotSpeed, rot;
     final Vec3 origin;
 
-    public PortalFrameParticle(ClientLevel level, double xCoord, double yCoord, double zCoord, double pathWidth, double pathHeight, double yDegrees) {
-        super(level, xCoord, yCoord, zCoord, pathWidth, pathHeight, yDegrees);
+    public PortalFrameParticle(ClientLevel level, double xCoord, double yCoord, double zCoord, double pathWidth, double pathHeight, double yDegrees, SpriteSet spriteSet) {
+        super(level, xCoord, yCoord, zCoord, pathWidth, pathHeight, yDegrees, spriteSet.first());
         this.origin = new Vec3(xCoord, yCoord, zCoord);
         this.pathWidth = (float) pathWidth * .5f;
         this.pathHeight = (float) pathHeight * .5f;
@@ -69,11 +67,9 @@ public class PortalFrameParticle extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    public Layer getLayer() {
+        return Layer.TRANSLUCENT;
     }
-
-    @OnlyIn(Dist.CLIENT)
     public static class Provider implements ParticleProvider<SimpleParticleType> {
         private final SpriteSet sprites;
 
@@ -83,16 +79,15 @@ public class PortalFrameParticle extends TextureSheetParticle {
 
         public Particle createParticle(SimpleParticleType particleType, ClientLevel level,
                                        double x, double y, double z,
-                                       double dx, double dy, double dz) {
-            var particle = new PortalFrameParticle(level, x, y, z, dx, dy, dz);
-            particle.pickSprite(this.sprites);
+                                       double dx, double dy, double dz, net.minecraft.util.RandomSource random) {
+            var particle = new PortalFrameParticle(level, x, y, z, dx, dy, dz, this.sprites);
+            particle.setSprite(this.sprites.get(random));
             return particle;
         }
     }
 
     @Override
-    public int getLightColor(float p_107564_) {
-        return LightTexture.FULL_BRIGHT;
+    public int getLightCoords(float p_107564_) {
+        return LightCoordsUtil.FULL_BRIGHT;
     }
 }
-

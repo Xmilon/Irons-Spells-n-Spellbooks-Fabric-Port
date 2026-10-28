@@ -95,11 +95,51 @@ GUI checks and the complete Iron's Lib build/checks also passed. A fresh full co
 on 2026-10-28 reported 3,178 errors before these renderer changes and 3,173 afterward,
 with none in the changed renderers. The build remains blocked.
 
-Open in the render phase: every GeckoLib 5 renderer, model and layer (`GeoEntityRenderer` is now
-`<T, R extends EntityRenderState>` with `RenderPassInfo`), mob/humanoid renderers, block-entity
-renderers, particles (`MultiBufferSource`/`LightTexture` users), item render hooks and the
-render mixins. The heartstop vignette alpha-blends instead of adding until a GUI additive
+Open in the render phase: finish validating the GeckoLib 5 renderers described below,
+remaining mob/humanoid and block-entity renderers, item render hooks, and render mixins.
+Particle implementation migration is complete at the focused compilation/test level;
+client/backend validation is still open. The heartstop vignette alpha-blends instead of adding until a GUI additive
 pipeline exists.
+
+## Particle milestone (2026-10-28)
+
+All particle implementations, options, native providers, the registry, and particle collision
+mixins compile together against 26.3. The focused check uses the cached 1.21.1 mod binary only
+for unrelated, unchanged configuration/entity/utility signatures; it compiles the current
+particle sources rather than substituting old particle implementations. The particle package
+has no NeoForge integration imports or old OpenGL state mutations.
+
+- All 33 particle types use direct vanilla registry values. IDs and limiter flags are preserved;
+  all callers now use those values. Providers use Fabric's `ParticleProviderRegistry` and
+  the current `RandomSource` signature. Non-sprite controllers register directly.
+- Sprite particles use `SingleQuadParticle`, native layers, and current lighting. Ground
+  pulses capture both faces, their original UV orientation, and their .08-block offset.
+- Custom rings, fog, trails, slashes, and lightning capture primitive mesh vertices in a
+  native particle group. Drawing consumes these snapshots through Minecraft's quad-particle
+  renderer and its transparency pipelines. The additive lightning layer has an OIT pipeline.
+  Large mesh effects are intentionally not culled by their origin, which could hide visible
+  beams or ground effects; tighter mesh bounds remain a possible performance improvement.
+- Falling blocks capture a fresh `BlockModelRenderState` and relative position per particle;
+  the old global render queue and world-render callback are removed. Drawing reads no world
+  or live particle. Particle collision tracking uses native Fabric entity/disconnect callbacks,
+  and the shield-collision mixin targets the current `CollisionContext` signature.
+- Short Soulfire beams now render without division by zero; zero-size shockwaves have a
+  nonzero lifetime. Zap and Soulfire JSON destination codecs reject malformed coordinate
+  arrays and preserve fractional positions to tenths. Zap retains three wire integers;
+  Soulfire retains three wire doubles. Soulfire JSON decoding no longer scales positions tenfold.
+
+`verifyPortParticles` is part of `check` and requires the full main compilation. Its standalone
+focused run passed ground geometry/UV checks, source mutation and state reuse checks, short
+beam checks, mixed mesh/native-quad submission, codec round trips and malformed inputs, and
+falling-block list ownership. An isolated Fabric test mod initialized all 33 real particle
+registrations and their codecs, reached dedicated-server startup, and stopped cleanly. The
+temporary probe JAR was removed afterward. Dependency integrity, GUI snapshots, and Iron's
+Lib build/checks also passed.
+
+The full compiler report dropped from 3,173 to 1,750 errors with no diagnostics in the particle
+package, particle registry, or particle mixins. This is not a playable build. Actual client
+resource reload, particle/shield collisions, performance, and Vulkan/OpenGL appearance with
+improved transparency on/off remain untested until the main mod builds.
 
 GeckoLib 5 status: animation API, model resources, procedural bone animation (`TransformStack` over
 `BoneSnapshots`), `IronsGeoEntityRenderer`, the Geo render layers, `HumanoidRenderer`, the Dead King,
@@ -116,4 +156,4 @@ and `ItemMixin`/`BlockBehaviourMixin` (`Properties.setId`); mixin application is
 (not compatible with 1.21 saves). `CompoundTag` getters were moved to the `*Or` variants.
 Still needed: tag data for `irons_spellbooks:armor_repair/*` and `irons_spellbooks:weapon_repair`, equipment asset JSONs under
 `assets/irons_spellbooks/equipment/`, `SummonManager` entity save/load, remaining `Item` signatures (`useOn`,
-`releaseUsing`, `addCooldown`, `inventoryTick`), and particles.
+`releaseUsing`, `addCooldown`, `inventoryTick`), and particle runtime validation.

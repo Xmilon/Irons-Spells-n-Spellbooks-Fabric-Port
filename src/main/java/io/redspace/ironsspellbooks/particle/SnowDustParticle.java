@@ -8,8 +8,6 @@ import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
 public class SnowDustParticle extends SnowflakeParticle {
     float maxSize, minSize;
@@ -26,11 +24,9 @@ public class SnowDustParticle extends SnowflakeParticle {
         this.quadSize = Mth.clampedLerp(minSize, maxSize, this.age / (float) this.lifetime);
     }
 
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    public Layer getLayer() {
+        return Layer.TRANSLUCENT;
     }
-
-    @OnlyIn(Dist.CLIENT)
     public static class Provider implements ParticleProvider<SimpleParticleType> {
         private final SpriteSet sprites;
 
@@ -38,7 +34,7 @@ public class SnowDustParticle extends SnowflakeParticle {
             this.sprites = pSprites;
         }
 
-        public Particle createParticle(SimpleParticleType pType, ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed) {
+        public Particle createParticle(SimpleParticleType pType, ClientLevel pLevel, double pX, double pY, double pZ, double pXSpeed, double pYSpeed, double pZSpeed, net.minecraft.util.RandomSource random) {
             SnowDustParticle snowflakeparticle = new SnowDustParticle(pLevel, pX, pY, pZ, this.sprites, pXSpeed, pYSpeed, pZSpeed);
             snowflakeparticle.setColor(0.923F, 0.964F, 0.999F);
             snowflakeparticle.setAlpha(.5f);
@@ -46,4 +42,3 @@ public class SnowDustParticle extends SnowflakeParticle {
         }
     }
 }
-

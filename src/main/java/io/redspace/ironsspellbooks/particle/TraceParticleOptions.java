@@ -51,7 +51,6 @@ public class TraceParticleOptions implements ParticleOptions {
 
     @Override
     public ParticleType<?> getType() {
-        return ParticleRegistry.TRACE_PARTICLE.get();
+        return ParticleRegistry.TRACE_PARTICLE;
     }
 }
-

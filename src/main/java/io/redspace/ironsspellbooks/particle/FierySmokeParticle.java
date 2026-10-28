@@ -6,20 +6,18 @@ import net.minecraft.client.particle.Particle;
 import net.minecraft.client.particle.ParticleProvider;
 import net.minecraft.client.particle.ParticleRenderType;
 import net.minecraft.client.particle.SpriteSet;
-import net.minecraft.client.particle.TextureSheetParticle;
+import net.minecraft.client.particle.SingleQuadParticle;
 import net.minecraft.client.player.LocalPlayer;
-import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.core.particles.SimpleParticleType;
 import net.minecraft.util.Mth;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
-public class FierySmokeParticle extends TextureSheetParticle {
+public class FierySmokeParticle extends SingleQuadParticle {
     private final SpriteSet sprites;
     private final boolean mirrored;
 
     public FierySmokeParticle(ClientLevel level, double xCoord, double yCoord, double zCoord, SpriteSet spriteSet, double xd, double yd, double zd) {
-        super(level, xCoord, yCoord, zCoord, xd, yd, zd);
+        super(level, xCoord, yCoord, zCoord, xd, yd, zd, spriteSet.first());
         this.xd = xd;
         this.yd = yd;
         this.zd = zd;
@@ -37,7 +35,7 @@ public class FierySmokeParticle extends TextureSheetParticle {
         if (player == null/* || !minecraft.options.getCameraType().isFirstPerson()*/) {
             return 1f;
         }
-        float factor = (float) ((minecraft.getEntityRenderDispatcher().camera.getPosition().distanceToSqr(this.x, this.y, this.z) - 1) / range);
+        float factor = (float) ((minecraft.getEntityRenderDispatcher().camera.position().distanceToSqr(this.x, this.y, this.z) - 1) / range);
         return Mth.clamp(factor, min, 1.0F);
     }
 
@@ -71,11 +69,9 @@ public class FierySmokeParticle extends TextureSheetParticle {
     }
 
     @Override
-    public ParticleRenderType getRenderType() {
-        return ParticleRenderType.PARTICLE_SHEET_TRANSLUCENT;
+    public Layer getLayer() {
+        return Layer.TRANSLUCENT;
     }
-
-    @OnlyIn(Dist.CLIENT)
     public static class Provider implements ParticleProvider<SimpleParticleType> {
         private final SpriteSet sprites;
 
@@ -85,13 +81,13 @@ public class FierySmokeParticle extends TextureSheetParticle {
 
         public Particle createParticle(SimpleParticleType particleType, ClientLevel level,
                                        double x, double y, double z,
-                                       double dx, double dy, double dz) {
+                                       double dx, double dy, double dz, net.minecraft.util.RandomSource random) {
             return new FierySmokeParticle(level, x, y, z, this.sprites, dx, dy, dz);
         }
     }
 
     @Override
-    public int getLightColor(float p_107564_) {
-        return LightTexture.FULL_BRIGHT;
+    public int getLightCoords(float p_107564_) {
+        return LightCoordsUtil.FULL_BRIGHT;
     }
 }

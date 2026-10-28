@@ -78,7 +78,7 @@ public class FrostwaveSpell extends AbstractSpell {
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
         float radius = getRadius(spellLevel, entity);
         MagicManager.spawnParticles(level, new BlastwaveParticleOptions(SchoolRegistry.ICE.get().getTargetingColor(), radius), entity.getX(), entity.getY() + .165f, entity.getZ(), 1, 0, 0, 0, 0, true);
-        PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new ShockwaveParticlesPacket(new Vec3(entity.getX(), entity.getY() + .165f, entity.getZ()), radius, ParticleRegistry.SNOWFLAKE_PARTICLE.get()));
+        PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new ShockwaveParticlesPacket(new Vec3(entity.getX(), entity.getY() + .165f, entity.getZ()), radius, ParticleRegistry.SNOWFLAKE_PARTICLE));
         level.getEntities(entity, entity.getBoundingBox().inflate(radius, 4, radius), (target) ->
                         !DamageSources.isFriendlyFireBetween(target, entity)
                         && Utils.hasLineOfSight(level, entity, target, true))
@@ -109,6 +109,3 @@ public class FrostwaveSpell extends AbstractSpell {
         return SpellAnimations.TOUCH_GROUND_ANIMATION;
     }
 }
-
-
-
