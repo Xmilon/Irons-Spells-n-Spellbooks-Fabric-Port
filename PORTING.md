@@ -208,3 +208,17 @@ The latest full compiler report is 1,503 errors (down from 1,750 after particles
 mod is not playable yet. Next: remaining block/entity renderers, native gameplay API changes,
 startup mixins and complete registry validation. FireBoss's dedicated dagger model shortcut,
 remaining live-entity render states, actual equipment/casting visuals and backend testing remain open.
+
+## Pedestal and scroll-forge rendering (2026-10-29)
+
+Both renderers now extract native item render states, lighting, facing and animation values.
+Submission reads no live block entity, world or item stack. Tool/sword pedestal tilt uses
+native item tags; the existing item scale, offsets, rotations and paper UV winding are kept.
+The scroll-forge paper callback captures lighting before deferred drawing.
+
+`verifyBlockItemSnapshots` is wired into `check` and awaits full main compilation. Focused
+compilation against 26.3 and snapshot checks passed: empty/reused item states, tool tilt,
+all four forge facings, paper UV/light capture, and balanced transforms. The fixture supplies
+baked item layers through a test resolver; actual world extraction/resource reload and
+in-game block appearance remain untested. Cached old mod types supply only unrelated tile
+signatures during focused compilation, not renderer implementations.
