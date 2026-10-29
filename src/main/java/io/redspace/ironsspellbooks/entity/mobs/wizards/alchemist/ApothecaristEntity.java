@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.alchemist;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntitySpawnReason;
 
 import net.minecraft.world.level.storage.ValueOutput;
@@ -86,7 +87,7 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
         //this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, AbstractPiglin.class, true));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isHostileTowards));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, (target, serverLevel) -> isHostileTowards(target)));
         this.targetSelector.addGoal(5, new ResetUniversalAngerTargetGoal<>(this, false));
 
     }
@@ -143,11 +144,11 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
     }
 
     @Override
-    protected void customServerAiStep() {
-        super.customServerAiStep();
+    protected void customServerAiStep(ServerLevel aiLevel) {
+        super.customServerAiStep(aiLevel);
         if (this.tickCount % 60 == 0) {
             this.level().getEntitiesOfClass(AbstractPiglin.class, this.getBoundingBox().inflate(this.getAttributeValue(Attributes.FOLLOW_RANGE))).forEach((piggy) -> {
-                if (piggy.getTarget() == null && TargetingConditions.forCombat().test(piggy, this)) {
+                if (piggy.getTarget() == null && TargetingConditions.forCombat().test(aiLevel, piggy, this)) {
                     piggy.setTarget(this);
                 }
             });

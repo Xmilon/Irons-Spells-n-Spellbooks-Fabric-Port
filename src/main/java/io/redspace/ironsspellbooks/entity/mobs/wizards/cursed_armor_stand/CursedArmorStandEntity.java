@@ -288,8 +288,8 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
     }
 
     @Override
-    protected void customServerAiStep() {
-        super.customServerAiStep();
+    protected void customServerAiStep(ServerLevel aiLevel) {
+        super.customServerAiStep(aiLevel);
         if (this.spawn == null) {
             this.spawn = this.position();
         }

@@ -300,3 +300,27 @@ Next shared causes, ranked by impact:
 Compiler counts describe migration work, not a percentage of playable feature completion.
 The main mod still does not build; Vulkan/OpenGL, multiplayer, actual equipment and spell
 behavior, and a complete fresh-world datapack/structure load remain unvalidated.
+
+## Server AI and native targeting goals (2026-10-29)
+
+All twelve custom server AI hooks now receive/pass the native `ServerLevel` argument. Nearest
+attack selectors use the current two-argument selector without changing their hostility
+predicates. Priest/alchemist combat checks pass the server context explicitly. Neutral-mob
+anger persistence and damage overrides still require their own coordinated migration.
+
+The support goal now extends native `TargetGoal` directly. It keeps non-combat conditions,
+search cadence, follow-distance limits and support/combat separation without assigning the
+now-final nearest-attack conditions. Stop clears its own support state while preserving a
+combat target acquired by another goal. Nearby-target and village-defence queries use the
+server API. Village defence clears its previous candidate before each search, preventing a
+stale hostile target from surviving when witnesses disappear. Revenge uses the native universal
+anger game rule and retains attacker exclusions.
+
+`compilePortTargeting` independently compiles the four shared goals, support interface and
+real-server probe against 26.3 without the old mod binary. The isolated Fabric probe passed
+nearest injured support selection, selector server context, recovery checks, stop/combat
+isolation, stale village target cleanup and revenge exclusions. Fixture entities were discarded,
+the existing library world saved cleanly, and the temporary probe JAR was removed. The concrete
+wizard/spider/summon implementations are not playable yet; their broader AI behavior remains
+untested. The latest full compile reports 1,368 errors, with no diagnostics in those four goals,
+server AI hook signatures or nearest-attack selector calls.

@@ -188,7 +188,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
 
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, Player.class, true));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Mob.class, true, (entity) -> !(entity.typeHolder().is(ModTags.INFERNAL_ALLIES))));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Mob.class, true, (entity, serverLevel) -> !(entity.typeHolder().is(ModTags.INFERNAL_ALLIES))));
     }
 
     @Override

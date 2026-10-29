@@ -30,9 +30,11 @@ public class GenericDefendVillageTargetGoal extends TargetGoal {
      * method as well.
      */
     public boolean canUse() {
+        potentialTarget = null;
+        var level = getServerLevel(protector);
         AABB aabb = this.protector.getBoundingBox().inflate(10.0D, 8.0D, 10.0D);
-        List<Villager> list = this.protector.level().getNearbyEntities(Villager.class, this.attackTargeting, this.protector, aabb);
-        List<Player> list1 = this.protector.level().getNearbyPlayers(this.attackTargeting, this.protector, aabb);
+        List<Villager> list = level.getNearbyEntities(Villager.class, this.attackTargeting, this.protector, aabb);
+        List<Player> list1 = level.getNearbyPlayers(this.attackTargeting, this.protector, aabb);
 
         for (Villager villager : list) {
             for (Player player : list1) {

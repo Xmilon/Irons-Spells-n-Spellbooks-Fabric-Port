@@ -567,8 +567,8 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     @Override
-    protected void customServerAiStep() {
-        super.customServerAiStep();
+    protected void customServerAiStep(ServerLevel aiLevel) {
+        super.customServerAiStep(aiLevel);
         float maxHealth = this.getMaxHealth();
         float currentHealth = this.getHealth();
         if (stanceBreakCounter == 0) {

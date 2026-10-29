@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.storage.ValueOutput;
 
 import net.minecraft.world.level.storage.ValueInput;
@@ -243,8 +244,8 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     }
 
     @Override
-    protected void customServerAiStep() {
-        super.customServerAiStep();
+    protected void customServerAiStep(ServerLevel aiLevel) {
+        super.customServerAiStep(aiLevel);
         if (recreateSpell) {
             recreateSpell = false;
             var syncedSpellData = playerMagicData.getSyncedData();

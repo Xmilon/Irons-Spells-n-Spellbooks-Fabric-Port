@@ -229,6 +229,24 @@ tasks.register('verifyStructureProcessors', JavaExec) {
 	javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(25) }
 }
 
+// Native goals can be checked independently while their concrete mobs are still being ported.
+tasks.register('compilePortTargeting', JavaCompile) {
+	dependsOn ':irons-lib:compileJava'
+	source 'src/main/java/io/redspace/ironsspellbooks/entity/mobs/SupportMob.java',
+		'src/main/java/io/redspace/ironsspellbooks/entity/mobs/goals/FindSupportableTargetGoal.java',
+		'src/main/java/io/redspace/ironsspellbooks/entity/mobs/goals/AcquireTargetNearLocationGoal.java',
+		'src/main/java/io/redspace/ironsspellbooks/entity/mobs/goals/GenericDefendVillageTargetGoal.java',
+		'src/main/java/io/redspace/ironsspellbooks/entity/mobs/goals/GenericHurtByTargetGoal.java',
+		'src/portTest/java/io/redspace/ironsspellbooks/entity/mobs/goals/TargetingPortProbe.java'
+	classpath = portCompileClasspath
+	destinationDirectory = layout.buildDirectory.dir('port-targeting/classes')
+	javaCompiler = javaToolchains.compilerFor { languageVersion = JavaLanguageVersion.of(25) }
+}
+
+tasks.named('check') {
+	dependsOn 'compilePortTargeting'
+}
+
 // Resource baking is independent of the incomplete main-mod compilation.
 tasks.register('compilePortGeckoResources', JavaCompile) {
 	source 'src/portTest/java/io/redspace/ironsspellbooks/render/GeckoResourcePortCheck.java'

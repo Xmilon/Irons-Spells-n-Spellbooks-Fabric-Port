@@ -12,7 +12,7 @@ import net.minecraft.world.phys.Vec3;
 
 import javax.annotation.Nullable;
 import java.util.EnumSet;
-import java.util.function.Predicate;
+
 
 public class AcquireTargetNearLocationGoal<T extends LivingEntity> extends TargetGoal {
     private Vec3 targetSearchPos;
@@ -25,7 +25,7 @@ public class AcquireTargetNearLocationGoal<T extends LivingEntity> extends Targe
      */
     protected TargetingConditions targetConditions;
 
-    public AcquireTargetNearLocationGoal(Mob pMob, Class<T> pTargetType, int pRandomInterval, boolean pMustSee, boolean pMustReach, Vec3 targetSearchPos, @Nullable Predicate<LivingEntity> pTargetPredicate) {
+    public AcquireTargetNearLocationGoal(Mob pMob, Class<T> pTargetType, int pRandomInterval, boolean pMustSee, boolean pMustReach, Vec3 targetSearchPos, @Nullable TargetingConditions.Selector pTargetPredicate) {
         super(pMob, pMustSee, pMustReach);
         this.targetType = pTargetType;
         this.randomInterval = reducedTickDelay(pRandomInterval);
@@ -61,10 +61,10 @@ public class AcquireTargetNearLocationGoal<T extends LivingEntity> extends Targe
                 //irons_spellbooks.LOGGER.debug("AcquireTargetNearLocationGoal.findTarget.2 {}", potentialTarget.getName().getString());
                 return true;
             });
-            this.target = this.mob.level().getNearestEntity(entitiesOfClass, this.targetConditions, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
+            this.target = getServerLevel(mob).getNearestEntity(entitiesOfClass, this.targetConditions, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
         } else {
             //irons_spellbooks.LOGGER.debug("AcquireTargetNearLocationGoal.findTarget.6");
-            this.target = this.mob.level().getNearestPlayer(this.targetConditions, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
+            this.target = getServerLevel(mob).getNearestPlayer(this.targetConditions, this.mob, this.mob.getX(), this.mob.getEyeY(), this.mob.getZ());
         }
     }
 

@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.summoned_weapons;
 
+import net.minecraft.server.level.ServerLevel;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
@@ -74,8 +75,8 @@ public class SummonedClaymoreEntity extends SummonedWeaponEntity {
     }
 
     @Override
-    protected void customServerAiStep() {
-        super.customServerAiStep();
+    protected void customServerAiStep(ServerLevel aiLevel) {
+        super.customServerAiStep(aiLevel);
         if (isTaunting()) {
             zza = 0;
             xxa = 0;

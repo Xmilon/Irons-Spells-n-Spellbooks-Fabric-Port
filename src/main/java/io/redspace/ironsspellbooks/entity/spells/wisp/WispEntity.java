@@ -189,7 +189,7 @@ public class WispEntity extends PathfinderMob implements GeoEntity {
     }
 
     @Override
-    protected void customServerAiStep() {
+    protected void customServerAiStep(ServerLevel aiLevel) {
         if (this.cachedOwner == null || !this.cachedOwner.isAlive()) {
             this.discard();
         }

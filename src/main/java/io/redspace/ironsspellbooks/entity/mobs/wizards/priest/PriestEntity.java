@@ -115,13 +115,13 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
 
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new GenericDefendVillageTargetGoal(this));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isHostileTowards));
-        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Mob.class, 5, false, false, (mob) -> mob instanceof Enemy && !(mob instanceof Creeper)));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, (target, serverLevel) -> isHostileTowards(target)));
+        this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Mob.class, 5, false, false, (mob, serverLevel) -> mob instanceof Enemy && !(mob instanceof Creeper)));
         this.targetSelector.addGoal(5, new ResetUniversalAngerTargetGoal<>(this, false));
 
         this.supportTargetSelector = new GoalSelector(this.level().getProfilerSupplier());
         this.supportTargetSelector.addGoal(0, new FindSupportableTargetGoal<>(this, LivingEntity.class, true,
-                (mob) -> !isAngryAt(mob) && mob.getHealth() * 1.25f < mob.getMaxHealth() && (mob.typeHolder().is(ModTags.VILLAGE_ALLIES) || mob instanceof Player))
+                (mob, serverLevel) -> !isAngryAt(mob) && mob.getHealth() * 1.25f < mob.getMaxHealth() && (mob.typeHolder().is(ModTags.VILLAGE_ALLIES) || mob instanceof Player))
         );
     }
 
@@ -231,8 +231,8 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     }
 
     @Override
-    protected void customServerAiStep() {
-        super.customServerAiStep();
+    protected void customServerAiStep(ServerLevel aiLevel) {
+        super.customServerAiStep(aiLevel);
         if (shouldLookForPoi) {
             if (this.level() instanceof ServerLevel serverLevel) {
                 Optional<BlockPos> optional1 = serverLevel.getPoiManager().find((poiTypeHolder) -> poiTypeHolder.is(PoiTypes.MEETING),
@@ -246,7 +246,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         }
         if (this.tickCount % 60 == 0) {
             this.level().getEntities(this, this.getBoundingBox().inflate(this.getAttributeValue(Attributes.FOLLOW_RANGE)), (entity) -> entity instanceof Enemy && !(entity instanceof Creeper || entity instanceof IMagicSummon || entity instanceof TamableAnimal)).forEach((enemy) -> {
-                if (enemy instanceof Mob mob && mob.getTarget() == null && TargetingConditions.forCombat().test(mob, this)) {
+                if (enemy instanceof Mob mob && mob.getTarget() == null && TargetingConditions.forCombat().test(aiLevel, mob, this)) {
                     mob.setTarget(this);
                 }
             });

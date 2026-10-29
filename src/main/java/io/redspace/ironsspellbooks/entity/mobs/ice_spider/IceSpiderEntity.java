@@ -188,8 +188,8 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     }
 
     @Override
-    protected void customServerAiStep() {
-        super.customServerAiStep();
+    protected void customServerAiStep(ServerLevel aiLevel) {
+        super.customServerAiStep(aiLevel);
         tickGrapple();
         tickSatiationRegen();
         tickSatiationDecay();
@@ -435,10 +435,10 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         this.goalSelector.addGoal(8, new RandomLookAroundGoal(this));
 
         this.targetSelector.addGoal(1, new MomentHurtByTargetGoal(this, IceSpiderEntity.class));
-        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, LivingEntity.class, true, livingEntity ->
+        this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, LivingEntity.class, true, (livingEntity, serverLevel) ->
                 livingEntity instanceof Player
                         || livingEntity instanceof IronGolem));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, LivingEntity.class, true, livingEntity -> {
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, LivingEntity.class, true, (livingEntity, serverLevel) -> {
             if (livingEntity instanceof Animal) {
                 return this.canHuntAnimals();
             }

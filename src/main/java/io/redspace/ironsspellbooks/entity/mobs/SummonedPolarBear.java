@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.storage.ValueOutput;
 
 import net.minecraft.world.level.storage.ValueInput;
@@ -92,8 +93,8 @@ public class SummonedPolarBear extends PolarBear implements IMagicSummon {
     }
 
     @Override
-    protected void customServerAiStep() {
-        super.customServerAiStep();
+    protected void customServerAiStep(ServerLevel aiLevel) {
+        super.customServerAiStep(aiLevel);
         if (this.tickCount % 80 == 0) {
             heal(1);
         }

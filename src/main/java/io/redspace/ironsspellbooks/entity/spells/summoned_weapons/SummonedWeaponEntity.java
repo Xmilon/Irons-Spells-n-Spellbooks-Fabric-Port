@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.summoned_weapons;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntitySpawnReason;
 
 import net.minecraft.world.level.storage.ValueOutput;
@@ -103,8 +104,8 @@ public abstract class SummonedWeaponEntity extends AbstractSpellCastingMob imple
     }
 
     @Override
-    protected void customServerAiStep() {
-        super.customServerAiStep();
+    protected void customServerAiStep(ServerLevel aiLevel) {
+        super.customServerAiStep(aiLevel);
         if (this.tickCount % 8 == 0) {
             //fixme: not very consistent
             var owner = getSummoner();

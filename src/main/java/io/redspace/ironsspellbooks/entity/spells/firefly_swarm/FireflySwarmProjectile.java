@@ -79,8 +79,8 @@ public class FireflySwarmProjectile extends PathfinderMob implements AntiMagicSu
     }
 
     @Override
-    protected void customServerAiStep() {
-        super.customServerAiStep();
+    protected void customServerAiStep(ServerLevel aiLevel) {
+        super.customServerAiStep(aiLevel);
 
         LivingEntity target = getTarget();
         if (target != null) {

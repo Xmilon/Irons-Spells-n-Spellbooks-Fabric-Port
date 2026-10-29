@@ -42,7 +42,7 @@ public class GenericHurtByTargetGoal extends TargetGoal {
         if (livingentity == null || livingentity.isAlliedTo(mob))
             return false;
         if (i != this.timestamp && livingentity != null) {
-            if (livingentity.getType() == EntityType.PLAYER && this.mob.level().getGameRules().getBoolean(GameRules.RULE_UNIVERSAL_ANGER)) {
+            if (livingentity instanceof net.minecraft.world.entity.player.Player && getServerLevel(mob).getGameRules().get(GameRules.UNIVERSAL_ANGER)) {
                 return false;
             } else {
                 if (toIgnoreDamage.test(livingentity))
