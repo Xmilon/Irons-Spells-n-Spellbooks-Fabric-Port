@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.summoned_weapons;
 
+import net.minecraft.server.level.ServerLevel;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.goals.melee.AttackAnimationData;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.GenericAnimatedWarlockAttackGoal;
@@ -57,7 +58,7 @@ public class SummonedRapierEntity extends SummonedWeaponEntity {
     }
 
     @Override
-    public boolean hurt(DamageSource pSource, float pAmount) {
+    public boolean hurtServer(ServerLevel damageLevel, DamageSource pSource, float pAmount) {
         if (!level().isClientSide() && pSource.getEntity() != null && !pSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             // first, ignore summoner damage
             if (shouldIgnoreDamage(pSource)) {
@@ -69,7 +70,7 @@ public class SummonedRapierEntity extends SummonedWeaponEntity {
                 return false;
             }
         }
-        return super.hurt(pSource, pAmount);
+        return super.hurtServer(damageLevel, pSource, pAmount);
     }
 
     public void performSidestep(Entity damager) {

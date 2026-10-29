@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.ice_spider;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.storage.ValueOutput;
 
 import net.minecraft.world.level.storage.ValueInput;
@@ -71,8 +72,8 @@ public class IceSpiderPartEntity extends PartEntity<IceSpiderEntity> implements 
     }
 
     @Override
-    public boolean hurt(DamageSource pSource, float pAmount) {
-        return parentMob.hurt(this, pSource, pAmount);
+    public boolean hurtServer(ServerLevel damageLevel, DamageSource pSource, float pAmount) {
+        return parentMob.hurtPart(damageLevel, this, pSource, pAmount);
     }
 
     /**

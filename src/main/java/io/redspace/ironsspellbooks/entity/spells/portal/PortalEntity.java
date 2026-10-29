@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.portal;
 
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.storage.ValueOutput;
 
 import net.minecraft.world.level.storage.ValueInput;
@@ -256,6 +258,11 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
 
         public long gameTick;
         public int loopCount;
+    }
+
+    @Override
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        return false;
     }
 }
 

@@ -9,6 +9,7 @@ import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.resources.ResourceKey;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.damagesource.DamageType;
 import net.minecraft.world.entity.Entity;
@@ -33,7 +34,7 @@ public class DamageSources {
     }
 
     public static Holder<DamageType> getHolderFromResource(Entity entity, ResourceKey<DamageType> damageTypeResourceKey) {
-        var option = entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolder(damageTypeResourceKey);
+        var option = entity.level().registryAccess().lookupOrThrow(Registries.DAMAGE_TYPE).get(damageTypeResourceKey);
         if (option.isPresent()) {
             return option.get();
         } else {
@@ -42,6 +43,7 @@ public class DamageSources {
     }
 
     public static boolean applyDamage(Entity target, float baseAmount, DamageSource damageSource) {
+        if (!(target.level() instanceof ServerLevel serverLevel)) return false;
         if (target instanceof LivingEntity livingTarget && damageSource instanceof SpellDamageSource spellDamageSource) {
             var e = new SpellDamageEvent(livingTarget, baseAmount, spellDamageSource);
             if (NeoForge.EVENT_BUS.post(e).isCanceled()) {
@@ -49,26 +51,26 @@ public class DamageSources {
             }
             baseAmount = e.getAmount();
             float adjustedDamage = baseAmount * getResist(livingTarget, spellDamageSource.spell.getSchoolType());
-            if (damageSource.getDirectEntity() instanceof NoKnockbackProjectile) {
-                ignoreNextKnockback(livingTarget);
-            }
             if (damageSource.getEntity() instanceof LivingEntity livingAttacker) {
                 if (isFriendlyFireBetween(livingAttacker, livingTarget)) {
                     return false;
                 }
                 livingAttacker.setLastHurtMob(target);
             }
-            return livingTarget.hurt(damageSource, adjustedDamage);
+            if (damageSource.getDirectEntity() instanceof NoKnockbackProjectile) {
+                ignoreNextKnockback(livingTarget);
+            }
+            return livingTarget.hurtServer(serverLevel, damageSource, adjustedDamage);
         } else {
-            return target.hurt(damageSource, baseAmount);
+            return target.hurtServer(serverLevel, damageSource, baseAmount);
         }
     }
 
     private static final HashMap<UUID, Integer> knockbackImmunes = new HashMap<>();
 
     public static void ignoreNextKnockback(LivingEntity livingEntity) {
-        if (livingEntity.getServer() != null) {
-            var tickCount = livingEntity.getServer().getTickCount();
+        if (livingEntity.level() instanceof ServerLevel serverLevel) {
+            var tickCount = serverLevel.getServer().getTickCount();
             //help manage memory
             knockbackImmunes.entrySet().removeIf(entry -> tickCount - entry.getValue() >= 10);
             //enter entity
@@ -80,8 +82,8 @@ public class DamageSources {
     public static void cancelKnockback(LivingKnockBackEvent event) {
         //IronsSpellbooks.LOGGER.debug("DamageSources.cancelKnockback {}", event.getEntity().getName().getString());
         var entity = event.getEntity();
-        if (entity.getServer() != null && knockbackImmunes.containsKey(event.getEntity().getUUID())) {
-            if (entity.getServer().getTickCount() - knockbackImmunes.get(entity.getUUID()) <= 1) {
+        if (entity.level() instanceof ServerLevel serverLevel && knockbackImmunes.containsKey(event.getEntity().getUUID())) {
+            if (serverLevel.getServer().getTickCount() - knockbackImmunes.get(entity.getUUID()) <= 1) {
                 event.setCanceled(true);
             }
             knockbackImmunes.remove(entity.getUUID());

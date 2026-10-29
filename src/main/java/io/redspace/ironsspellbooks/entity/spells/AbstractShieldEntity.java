@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.storage.ValueOutput;
 
 import net.minecraft.world.level.storage.ValueInput;
@@ -140,6 +141,11 @@ public abstract class AbstractShieldEntity extends Entity implements AntiMagicSu
     @Override
     public void onAntiMagic(MagicData playerMagicData) {
         this.discard();
+    }
+
+    @Override
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        return false;
     }
 }
 

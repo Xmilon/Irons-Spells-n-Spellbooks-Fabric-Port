@@ -209,11 +209,11 @@ public class EnderChain extends Entity implements AntiMagicSusceptible, IEntityW
     }
 
     @Override
-    public boolean hurt(@NotNull DamageSource source, float amount) {
+    public boolean hurtServer(ServerLevel damageLevel, @NotNull DamageSource source, float amount) {
         if (getInvulnerableTime() > 0) {
             return false;
         }
-        if (level().isClientSide() || isInvulnerableTo(source)) {
+        if (level().isClientSide() || isInvulnerableToBase(source)) {
             return false;
         }
         if (DamageSources.isFriendlyFireBetween(source.getEntity(), getOwner())) {

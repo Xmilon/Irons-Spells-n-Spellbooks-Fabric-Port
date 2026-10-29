@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
+import net.minecraft.server.level.ServerLevel;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.damage.DamageSources;
@@ -37,10 +38,11 @@ public class FireEruptionAoe extends AoeEntity {
 
     @Override
     public void applyEffect(LivingEntity target) {
+        if (!(level() instanceof ServerLevel damageLevel)) return;
         //todo: real damage source
         var damageSource = SpellRegistry.RAISE_HELL_SPELL.get().getDamageSource(this.getOwner() == null ? this : this.getOwner());
         DamageSources.ignoreNextKnockback(target);
-        if (target.hurt(damageSource, getDamage())) {
+        if (target.hurtServer(damageLevel, damageSource, getDamage())) {
             target.igniteForSeconds(5);
             target.setDeltaMovement(target.getDeltaMovement().add(0, .65, 0));
             target.syncVelocity = true;

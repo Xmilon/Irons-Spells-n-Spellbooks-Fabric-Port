@@ -267,8 +267,8 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
     }
 
     @Override
-    public boolean hurt(DamageSource pSource, float pAmount) {
-        if (level().isClientSide() || this.isInvulnerableTo(pSource) || getInvulnerableTime() > 0)
+    public boolean hurtServer(ServerLevel damageLevel, DamageSource pSource, float pAmount) {
+        if (level().isClientSide() || this.isInvulnerableTo(damageLevel, pSource) || getInvulnerableTime() > 0)
             return false;
         setInvulnerableTime(10);
         doPuffDamage();

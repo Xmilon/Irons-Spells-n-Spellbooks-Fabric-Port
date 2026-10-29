@@ -139,12 +139,12 @@ public class IceTombEntity extends Entity implements PreventDismount, AntiMagicS
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
+    public boolean hurtServer(ServerLevel damageLevel, DamageSource source, float amount) {
         if (!this.level().isClientSide() && health > 0) {
             if (DamageSources.isFriendlyFireBetween(source.getEntity(), this.getFirstPassenger())) {
                 return false;
             }
-            if (!isInvulnerableTo(source) && (source.getEntity() == null || !isPassengerOfSameVehicle(source.getEntity()))) {
+            if (!isInvulnerableToBase(source) && (source.getEntity() == null || !isPassengerOfSameVehicle(source.getEntity()))) {
                 health -= amount;
                 if (health <= 0) {
                     die(source, amount);
@@ -152,7 +152,7 @@ public class IceTombEntity extends Entity implements PreventDismount, AntiMagicS
                 return true;
             }
         }
-        return super.hurt(source, amount);
+        return false;
     }
 
     public void die(DamageSource damageSource, float amount) {

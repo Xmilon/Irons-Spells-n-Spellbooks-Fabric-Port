@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss;
 
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.level.storage.ValueOutput;
 
 import net.minecraft.world.level.storage.ValueInput;
@@ -163,5 +164,10 @@ public class DeadKingSoulEntity extends Entity implements AntiMagicSusceptible {
         this.playSound(SoundEvents.APPLY_EFFECT_BAD_OMEN, 2f, 1f);
         MagicManager.spawnParticles(level(), ParticleHelper.SOUL_FIRE, getX(), getY(), getZ(), 50, .1, .1, .1, 0.3, false);
         this.discard();
+    }
+
+    @Override
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        return false;
     }
 }

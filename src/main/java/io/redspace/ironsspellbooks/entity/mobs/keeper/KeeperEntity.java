@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.keeper;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntitySpawnReason;
 
 import net.minecraft.world.level.storage.ValueOutput;
@@ -270,7 +271,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
     }
 
     @Override
-    public boolean hurt(DamageSource pSource, float pAmount) {
+    public boolean hurtServer(ServerLevel damageLevel, DamageSource pSource, float pAmount) {
         if (pSource.getDirectEntity() instanceof Projectile projectile) {
             pAmount *= .75f;
         }
@@ -278,7 +279,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
             Utils.doMobBreakSuffocatingBlocks(this);
         }
 
-        return super.hurt(pSource, pAmount);
+        return super.hurtServer(damageLevel, pSource, pAmount);
     }
 
     @Override

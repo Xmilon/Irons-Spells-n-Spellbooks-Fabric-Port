@@ -165,6 +165,7 @@ public class ThrownSpear extends AbstractArrow {
      */
     @Override
     protected void onHitEntity(EntityHitResult result) {
+        if (!(level() instanceof ServerLevel damageLevel)) return;
         Entity victim = result.getEntity();
         float f = (float) getBaseDamage();
         Entity owner = this.getOwner();
@@ -180,7 +181,7 @@ public class ThrownSpear extends AbstractArrow {
         }
 
         this.dealtDamage = true;
-        if (victim.hurt(damagesource, f)) {
+        if (victim.hurtServer(damageLevel, damagesource, f)) {
             if (victim.getType() == EntityTypes.ENDERMAN) {
                 return;
             }

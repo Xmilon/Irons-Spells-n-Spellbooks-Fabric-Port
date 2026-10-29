@@ -452,7 +452,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     }
 
     @Override
-    public boolean hurt(DamageSource pSource, float pAmount) {
+    public boolean hurtServer(ServerLevel damageLevel, DamageSource pSource, float pAmount) {
         if (pSource == level.damageSources().lava()) {
             return false;
         }
@@ -466,7 +466,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
             float damageReduction = Mth.clampedLerp(1, 0.5f, (distance - 8) / 16); // reduce damage from 8-24 blocks away, down to 50%
             pAmount *= damageReduction;
         }
-        return super.hurt(pSource, pAmount);
+        return super.hurtServer(damageLevel, pSource, pAmount);
     }
 
     @Override

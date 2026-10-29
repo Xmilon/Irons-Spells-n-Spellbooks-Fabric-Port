@@ -980,7 +980,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     @Override
-    public boolean hurt(DamageSource pSource, float pAmount) {
+    public boolean hurtServer(ServerLevel damageLevel, DamageSource pSource, float pAmount) {
         if (level.isClientSide()) {
             return false;
         }
@@ -1026,7 +1026,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             Utils.doMobBreakSuffocatingBlocks(this);
             destroyBlockDelay = 40;
         }
-        return super.hurt(pSource, pAmount);
+        return super.hurtServer(damageLevel, pSource, pAmount);
     }
 
     @Override

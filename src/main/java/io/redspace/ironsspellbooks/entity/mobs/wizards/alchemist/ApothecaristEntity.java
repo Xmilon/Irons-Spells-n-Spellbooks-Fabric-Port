@@ -87,7 +87,7 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
         //this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
         this.targetSelector.addGoal(2, new NearestAttackableTargetGoal<>(this, AbstractPiglin.class, true));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, (target, serverLevel) -> isHostileTowards(target)));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isHostileTowards));
         this.targetSelector.addGoal(5, new ResetUniversalAngerTargetGoal<>(this, false));
 
     }
@@ -121,12 +121,12 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
     }
 
     @Override
-    public boolean hurt(DamageSource pSource, float pAmount) {
+    public boolean hurtServer(ServerLevel damageLevel, DamageSource pSource, float pAmount) {
         if (pSource.is(DamageTypes.INDIRECT_MAGIC) && pSource.getEntity() == this) {
             //prevent our own harm potions from affecting us
             return false;
         }
-        return super.hurt(pSource, pAmount);
+        return super.hurtServer(damageLevel, pSource, pAmount);
     }
 
     @Override

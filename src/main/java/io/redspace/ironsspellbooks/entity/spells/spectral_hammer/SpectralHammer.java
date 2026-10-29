@@ -88,7 +88,7 @@ public class SpectralHammer extends LivingEntity implements GeoEntity {
     }
 
     @Override
-    public boolean hurt(DamageSource pSource, float pAmount) {
+    public boolean hurtServer(ServerLevel damageLevel, DamageSource pSource, float pAmount) {
         return false;
     }
 

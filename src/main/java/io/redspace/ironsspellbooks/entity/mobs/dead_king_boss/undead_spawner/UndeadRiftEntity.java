@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.undead_spawner;
 
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.EntitySpawnReason;
 
 import net.minecraft.world.level.storage.ValueOutput;
@@ -197,5 +198,10 @@ public class UndeadRiftEntity extends Entity implements IMagicSummon {
     @Override
     public void onUnSummon() {
         //todo: implement
+    }
+
+    @Override
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        return false;
     }
 }

@@ -1,5 +1,7 @@
 package io.redspace.ironsspellbooks.entity.spells.ray_of_frost;
 
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.storage.ValueOutput;
 
 import net.minecraft.world.level.storage.ValueInput;
@@ -73,6 +75,11 @@ public class RayOfFrostVisualEntity extends Entity implements IEntityWithComplex
     @Override
     public void readSpawnData(RegistryFriendlyByteBuf additionalData) {
         this.distance = additionalData.readInt() / 10f;
+    }
+
+    @Override
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        return false;
     }
 }
 

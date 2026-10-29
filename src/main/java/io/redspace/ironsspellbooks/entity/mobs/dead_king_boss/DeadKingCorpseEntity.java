@@ -136,7 +136,7 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
     }
 
     @Override
-    public boolean hurt(DamageSource pSource, float pAmount) {
+    public boolean hurtServer(ServerLevel damageLevel, DamageSource pSource, float pAmount) {
         if (pSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             discard();
             return true;

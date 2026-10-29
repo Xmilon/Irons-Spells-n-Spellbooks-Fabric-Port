@@ -226,8 +226,8 @@ public class OminousFireOrbEntity extends Entity implements AntiMagicSusceptible
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
-        if (level().isClientSide() || getFuseProgressTicks() == 0 || this.isInvulnerableTo(source) || DamageSources.isFriendlyFireBetween(source.getEntity(), this)) {
+    public boolean hurtServer(ServerLevel damageLevel, DamageSource source, float amount) {
+        if (level().isClientSide() || getFuseProgressTicks() == 0 || this.isInvulnerableToBase(source) || DamageSources.isFriendlyFireBetween(source.getEntity(), this)) {
             return false;
         } else {
             this.markHurt();

@@ -238,7 +238,7 @@ public class WispEntity extends PathfinderMob implements GeoEntity {
 
     }
 
-    public boolean hurt(DamageSource pSource, float pAmount) {
+    public boolean hurtServer(ServerLevel damageLevel, DamageSource pSource, float pAmount) {
         if (!this.level().isClientSide()) {
             this.popAndDie();
         }

@@ -523,9 +523,9 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         return super.isInvulnerableTo(source) || getPose().equals(Pose.EMERGING);
     }
 
-    public boolean hurt(IceSpiderPartEntity bodypart, DamageSource source, float amount) {
+    public boolean hurtPart(ServerLevel damageLevel, IceSpiderPartEntity bodypart, DamageSource source, float amount) {
         //todo: can do cool damage manipulations based on bodypart (ie headshots)
-        return hurt(source, amount);
+        return hurtServer(damageLevel, source, amount);
     }
 
     @Override

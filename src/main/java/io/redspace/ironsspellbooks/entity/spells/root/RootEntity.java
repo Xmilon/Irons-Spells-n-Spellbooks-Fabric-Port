@@ -297,7 +297,7 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
     }
 
     @Override
-    public boolean hurt(DamageSource pSource, float pAmount) {
+    public boolean hurtServer(ServerLevel damageLevel, DamageSource pSource, float pAmount) {
         if (pSource.is(DamageTypeTags.BYPASSES_INVULNERABILITY)) {
             this.removeRoot();
             return true;

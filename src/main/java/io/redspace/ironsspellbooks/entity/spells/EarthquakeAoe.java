@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.storage.ValueOutput;
 
 import net.minecraft.world.level.storage.ValueInput;
@@ -47,9 +48,10 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
 
     @Override
     public void applyEffect(LivingEntity target) {
+        if (!(level() instanceof ServerLevel damageLevel)) return;
         var damageSource = SpellRegistry.EARTHQUAKE_SPELL.get().getDamageSource(this, getOwner());
         DamageSources.ignoreNextKnockback(target);
-        if (target.hurt(damageSource, getDamage())) {
+        if (target.hurtServer(damageLevel, damageSource, getDamage())) {
             target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 120, slownessAmplifier));
             target.setDeltaMovement(target.getDeltaMovement().add(0, .5, 0));
             target.syncVelocity = true;

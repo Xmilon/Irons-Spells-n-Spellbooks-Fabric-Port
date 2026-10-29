@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.storage.ValueOutput;
 
 import net.minecraft.world.level.storage.ValueInput;
@@ -40,7 +41,7 @@ public class ShieldPart extends PartEntity<AbstractShieldEntity> {
     }
 
     @Override
-    public boolean hurt(DamageSource pSource, float pAmount) {
+    public boolean hurtServer(ServerLevel damageLevel, DamageSource pSource, float pAmount) {
         if (!level().isClientSide()) {
             if (!parentEntity.hurtThisTick) {
                 parentEntity.takeDamage(pSource, pAmount, this.getBoundingBox().getCenter());

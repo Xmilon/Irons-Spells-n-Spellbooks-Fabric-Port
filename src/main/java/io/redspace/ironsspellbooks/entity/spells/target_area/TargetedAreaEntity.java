@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.target_area;
 
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.level.storage.ValueOutput;
 
 import net.minecraft.world.level.storage.ValueInput;
@@ -229,6 +230,11 @@ public class TargetedAreaEntity extends Entity {
             this.setOwner(entity);
         }
 
+    }
+
+    @Override
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        return false;
     }
 }
 

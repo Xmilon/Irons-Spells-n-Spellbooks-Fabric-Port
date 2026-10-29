@@ -370,3 +370,30 @@ production data checks for increments/caps, overflow, decay boundaries, legacy s
 round trips, reused-state clearing, malformed-row isolation and forgiveness. The actual
 wizard/armor-stand entity implementations remain blocked by other migration work, so their
 spawn/reload behavior and guarded-block event callbacks still require runtime validation.
+
+## Native server damage dispatch (2026-10-29)
+
+All reviewed two-argument entity damage overrides now implement `hurtServer(ServerLevel,
+DamageSource, float)`. Super calls and multipart forwarding preserve accepted/rejected results,
+including summon immunity, boss reductions/parries, cursed-stand wake-up, tomb/chain health,
+scapegoat hit effects and frozen-entity shattering. The spider's part-aware overload is now
+`hurtPart` and forwards its server context. Non-damageable visuals/controllers explicitly
+return false, preserving their previous inherited `Entity.hurt` behavior; shield damage still
+runs through its existing part/takeDamage boundary.
+
+The shared damage dispatcher rejects client execution and returns native server damage results.
+Native damage-type lookup and knockback timing use current registry/server APIs. Friendly-fire
+rejection happens before marking a no-knockback spell hit. Earthquake, fire eruption, fire field
+and thrown-spear conditional hit effects run only after accepted native server damage.
+This is not a complete damage-event integration: legacy pre/post-hit callbacks, knockback
+cancellation, other effect listeners and their mixins still require a coordinated native
+Fabric rewrite. Their lifesteal/freeze/fire behavior is not claimed as working by this milestone.
+
+The expanded isolated server probe passed native anger reference/end-time save round trips,
+restored hostility, and actual accepted/rejected vanilla damage. It waits for a ticking loaded
+fixture chunk before querying mobs, discards fixtures and restores its temporary forced-chunk
+change. Those SDK contract checks do not instantiate the unfinished custom mobs. Custom damage,
+multipart collision, AoE effects, multiplayer and old-world migration remain untested in-game.
+The probe JAR was removed after shutdown. Anger data checks and targeting compilation also pass.
+The full main compile reports 1,195 errors, down from 1,313 before this pass; no diagnostics
+remain in the changed anger data, shared damage dispatcher or native damage-hook signatures.

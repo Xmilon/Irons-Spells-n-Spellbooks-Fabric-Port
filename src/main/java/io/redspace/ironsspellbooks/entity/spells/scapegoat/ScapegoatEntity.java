@@ -155,8 +155,8 @@ public class ScapegoatEntity extends PathfinderMob implements AntiMagicSusceptib
     }
 
     @Override
-    public boolean hurt(DamageSource source, float amount) {
-        if (!DamageSources.isFriendlyFireBetween(source.getEntity(), this.getOwner()) && super.hurt(source, amount)) {
+    public boolean hurtServer(ServerLevel damageLevel, DamageSource source, float amount) {
+        if (!DamageSources.isFriendlyFireBetween(source.getEntity(), this.getOwner()) && super.hurtServer(damageLevel, source, amount)) {
             if (level() instanceof ServerLevel serverLevel) {
                 poofParticles(10, 0.4f);
             }

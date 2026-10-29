@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.magma_ball;
 
+import net.minecraft.server.level.ServerLevel;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.damage.ISSDamageTypes;
 import io.redspace.ironsspellbooks.entity.spells.AoeEntity;
@@ -28,12 +29,13 @@ public class FireField extends AoeEntity {
 
     @Override
     public void applyEffect(LivingEntity target) {
+        if (!(level() instanceof ServerLevel damageLevel)) return;
         if (damageSource == null) {
             damageSource = new DamageSource(DamageSources.getHolderFromResource(target, ISSDamageTypes.FIRE_FIELD), this, getOwner());
         }
         if (!DamageSources.isFriendlyFireBetween(this.getOwner(), target)) {
             DamageSources.ignoreNextKnockback(target);
-            if (target.hurt(damageSource, getDamage())) {
+            if (target.hurtServer(damageLevel, damageSource, getDamage())) {
                 target.setRemainingFireTicks(60);
             }
         }

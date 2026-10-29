@@ -151,10 +151,10 @@ public class SummonedPolarBear extends PolarBear implements IMagicSummon {
     }
 
     @Override
-    public boolean hurt(DamageSource pSource, float pAmount) {
+    public boolean hurtServer(ServerLevel damageLevel, DamageSource pSource, float pAmount) {
         if (shouldIgnoreDamage(pSource))
             return false;
-        return super.hurt(pSource, pAmount);
+        return super.hurtServer(damageLevel, pSource, pAmount);
     }
 
     public static AttributeSupplier.Builder createAttributes() {

@@ -104,11 +104,11 @@ public class SummonedClaymoreEntity extends SummonedWeaponEntity {
     }
 
     @Override
-    public boolean hurt(DamageSource pSource, float pAmount) {
+    public boolean hurtServer(ServerLevel damageLevel, DamageSource pSource, float pAmount) {
         if (isTaunting()) {
             pAmount *= .2f;
         }
-        return super.hurt(pSource, pAmount);
+        return super.hurtServer(damageLevel, pSource, pAmount);
     }
 
     public static class ClaymoreTauntGoal extends AnimatedActionGoal<SummonedClaymoreEntity> {
