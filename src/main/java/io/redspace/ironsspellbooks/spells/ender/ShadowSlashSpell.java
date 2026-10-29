@@ -107,7 +107,7 @@ public class ShadowSlashSpell extends AbstractSpell {
             var damageSource = this.getDamageSource(entity);
             boolean projectileEffects = false;
             for (Entity targetEntity : damageEntities) {
-                if (targetEntity instanceof Projectile projectile && !projectile.noPhysics && !projectile.getType().is(ModTags.CANT_PARRY)) {
+                if (targetEntity instanceof Projectile projectile && !projectile.noPhysics && !projectile.typeHolder().is(ModTags.CANT_PARRY)) {
                     projectileEffects = true;
                     projectile.setOwner(entity);
                     projectile.shoot(forward.x, forward.y, forward.z, (float) projectile.getDeltaMovement().length(), 0f);

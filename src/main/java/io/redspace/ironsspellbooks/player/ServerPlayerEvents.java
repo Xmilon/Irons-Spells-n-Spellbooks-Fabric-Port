@@ -510,7 +510,7 @@ public class ServerPlayerEvents {
         var entity = event.getEntity();
         if (newTarget != null) {
             //Prevent Village allies (ie preists/iron golems) from aggroing eachother
-            if (newTarget.getType().is(ModTags.VILLAGE_ALLIES) && entity.getType().is(ModTags.VILLAGE_ALLIES)) {
+            if (newTarget.typeHolder().is(ModTags.VILLAGE_ALLIES) && entity.typeHolder().is(ModTags.VILLAGE_ALLIES)) {
                 event.setCanceled(true);
                 return;
             }
@@ -578,11 +578,11 @@ public class ServerPlayerEvents {
     public static void handleResistanceAttributesOnSpawn(FinalizeSpawnEvent event) {
         var mob = event.getEntity();
         //Attributes should never be null because all living entities have these attributes
-        if (mob.getType().is(EntityTypeTags.UNDEAD)) {
+        if (mob.typeHolder().is(EntityTypeTags.UNDEAD)) {
             //Undead take extra holy damage, and less blood (necromantic) damage
             setIfNonNull(mob, AttributeRegistry.HOLY_MAGIC_RESIST, 0.5);
             setIfNonNull(mob, AttributeRegistry.BLOOD_MAGIC_RESIST, 1.5);
-        } else if (mob.getType().is(EntityTypeTags.SENSITIVE_TO_IMPALING)) {
+        } else if (mob.typeHolder().is(EntityTypeTags.SENSITIVE_TO_IMPALING)) {
             //Water mobs take extra lightning damage
             setIfNonNull(mob, AttributeRegistry.LIGHTNING_MAGIC_RESIST, 0.5);
         }

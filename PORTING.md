@@ -275,3 +275,28 @@ real registrations, round-tripped their native dispatch codecs, checked stair/sl
 against loaded vanilla tags and stopped cleanly. It used the existing library test world;
 this is not a fresh-world/main-mod worldgen test. Its temporary probe JAR was removed. Actual
 foundation writes, portal-frame cleanup and complete structure placement remain untested.
+
+## Remaining-error assessment and entity tags (2026-10-29)
+
+The latest full compile reports 1,399 errors, down from 1,477 before the packet/processor
+milestones. There are no compiler diagnostics in the changed particle payload or structure
+processor implementations. Sixteen entity-type tag queries across twelve files now use
+`Entity.typeHolder().is(tag)`, preserving existing tag IDs and predicates. These affect ally
+selection, healing, parrying, portal filtering, blood collection, rooting and ricochets.
+No new compatibility wrapper was introduced. Full compilation type-checks these calls;
+in-game behavior is still blocked by the wider migration.
+
+Next shared causes, ranked by impact:
+
+1. Client renderers/mixins still reference removed immediate drawing APIs and live-entity states.
+2. Mob targeting now requires server-aware selectors; combat/damage overrides and several
+   entity fields have changed. Preserve server validation rather than replacing boolean damage
+   checks with unconditional success.
+3. Loot functions/registries now expose codecs directly, while old global loot integration
+   needs a native Fabric replacement. Recipe interfaces also need a coordinated migration.
+4. Block neighbor updates, interactions and block-entity lifecycle hooks have changed.
+5. Entity save/load, teleport transitions and startup registry/mixin validation remain open.
+
+Compiler counts describe migration work, not a percentage of playable feature completion.
+The main mod still does not build; Vulkan/OpenGL, multiplayer, actual equipment and spell
+behavior, and a complete fresh-world datapack/structure load remain unvalidated.

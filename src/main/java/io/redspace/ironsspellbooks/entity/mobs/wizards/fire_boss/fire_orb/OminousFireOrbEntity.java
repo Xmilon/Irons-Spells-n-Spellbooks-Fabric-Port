@@ -222,7 +222,7 @@ public class OminousFireOrbEntity extends Entity implements AntiMagicSusceptible
 
     @Override
     public boolean isAlliedTo(Entity entity) {
-        return super.isAlliedTo(entity) || entity.getType().is(ModTags.INFERNAL_ALLIES);
+        return super.isAlliedTo(entity) || entity.typeHolder().is(ModTags.INFERNAL_ALLIES);
     }
 
     @Override

@@ -59,7 +59,7 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
         if (entity instanceof LivingEntity livingEntity &&
                 livingEntity.getBoundingBox().intersects(cauldron.defaultBlockState().getInteractionShape(level, pos).bounds().move(pos)) &&
                 livingEntity.hurt(DamageSources.get(level, ISSDamageTypes.CAULDRON), 2) &&
-                !livingEntity.getType().is(ModTags.CANT_PRODUCE_BLOOD)) {
+                !livingEntity.typeHolder().is(ModTags.CANT_PRODUCE_BLOOD)) {
             MagicManager.spawnParticles(level, ParticleHelper.BLOOD, entity.getX(), entity.getY() + entity.getBbHeight() / 2, entity.getZ(), 20, .05, .05, .05, .1, false);
             if (Utils.random.nextDouble() <= .5 && !isCauldronFull(blockState)) {
                 execution.execute();

@@ -84,7 +84,7 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
     @SubscribeEvent
     public static void onProjectileShot(EntityJoinLevelEvent event) {
         if (event.getLevel() instanceof ServerLevel serverLevel) {
-            if (!INSTANCE.trackedEntities.isEmpty() && event.getEntity() instanceof Projectile projectile && !projectile.getType().is(ModTags.GUIDING_BOLT_IMMUNE)) {
+            if (!INSTANCE.trackedEntities.isEmpty() && event.getEntity() instanceof Projectile projectile && !projectile.typeHolder().is(ModTags.GUIDING_BOLT_IMMUNE)) {
                 INSTANCE.dirtyProjectiles.computeIfAbsent(serverLevel.dimension(), (key) -> new ArrayList<>()).add(projectile);
             }
         }

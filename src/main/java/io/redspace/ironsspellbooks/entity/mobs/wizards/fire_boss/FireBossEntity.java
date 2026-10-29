@@ -1152,7 +1152,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     @Override
     public boolean isAlliedTo(Entity pEntity) {
-        return super.isAlliedTo(pEntity) || pEntity.getType().is(ModTags.INFERNAL_ALLIES);
+        return super.isAlliedTo(pEntity) || pEntity.typeHolder().is(ModTags.INFERNAL_ALLIES);
     }
 
     @Override

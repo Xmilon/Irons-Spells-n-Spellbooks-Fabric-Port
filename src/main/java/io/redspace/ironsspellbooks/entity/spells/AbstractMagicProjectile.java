@@ -520,7 +520,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
 
     @UnstableApi
     public boolean canRicochet() {
-        return !getType().is(ModTags.CANT_RICOCHET) && getRicochetLevel() != 0;
+        return !typeHolder().is(ModTags.CANT_RICOCHET) && getRicochetLevel() != 0;
     }
 
     @Override

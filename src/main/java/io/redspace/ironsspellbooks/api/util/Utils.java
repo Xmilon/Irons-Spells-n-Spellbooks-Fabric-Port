@@ -556,7 +556,7 @@ public class Utils {
             return false;
         } else if (healer == target) {
             return true;
-        } else if (target.getType().is(ModTags.ALWAYS_HEAL) && !(healer instanceof Enemy)) {
+        } else if (target.typeHolder().is(ModTags.ALWAYS_HEAL) && !(healer instanceof Enemy)) {
             //This tag is for things like iron golems, villagers, farm animals, etc
             return true;
         } else if (target.isAlliedTo(healer) || healer.isAlliedTo(target)) {
