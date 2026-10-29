@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.wizards.cultist;
 
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.EntitySpawnReason;
 
 import com.geckolib.animation.object.PlayState;
@@ -114,7 +115,7 @@ public class CultistEntity extends NeutralWizard implements Enemy, IAnimatedAtta
         //this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         //this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, (target, serverLevel) -> isHostileTowards(target)));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isHostileTowards));
         this.targetSelector.addGoal(5, new ResetUniversalAngerTargetGoal<>(this, false));
     }
 
@@ -190,8 +191,8 @@ public class CultistEntity extends NeutralWizard implements Enemy, IAnimatedAtta
     }
 
     @Override
-    public boolean isHostileTowards(LivingEntity pTarget) {
-        return super.isHostileTowards(pTarget) || AttributeRegistry.getValueOrDefault(pTarget, AttributeRegistry.BLOOD_SPELL_POWER, 1.0D) < 1.15;
+    public boolean isHostileTowards(LivingEntity pTarget, ServerLevel level) {
+        return super.isHostileTowards(pTarget, level) || AttributeRegistry.getValueOrDefault(pTarget, AttributeRegistry.BLOOD_SPELL_POWER, 1.0D) < 1.15;
     }
 
     @Override

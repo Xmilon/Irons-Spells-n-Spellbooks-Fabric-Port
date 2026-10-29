@@ -1,18 +1,9 @@
 package io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob;
 
-import net.minecraft.world.level.storage.ValueOutput;
-
-import net.minecraft.world.level.storage.ValueInput;
-
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
-import it.unimi.dsi.fastutil.objects.Object2IntArrayMap;
-import it.unimi.dsi.fastutil.objects.Object2IntMap;
-import it.unimi.dsi.fastutil.objects.ObjectIterator;
+import net.minecraft.core.UUIDUtil;
 import net.minecraft.core.particles.ParticleTypes;
-import net.minecraft.nbt.CompoundTag;
-import net.minecraft.nbt.ListTag;
-import net.minecraft.nbt.Tag;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.util.TimeUtil;
@@ -20,190 +11,117 @@ import net.minecraft.util.valueproviders.UniformInt;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.*;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.level.gamerules.GameRules;
 import net.minecraft.world.level.Level;
-import org.jetbrains.annotations.NotNull;
+import net.minecraft.world.level.gamerules.GameRules;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
+import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nullable;
-import java.util.*;
+import java.util.Optional;
 
 public class NeutralWizard extends AbstractSpellCastingMob implements NeutralMob {
-    protected NeutralWizard(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
-        super(pEntityType, pLevel);
+    protected NeutralWizard(EntityType<? extends PathfinderMob> entityType, Level level) {
+        super(entityType, level);
     }
 
     private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
-    private int remainingPersistentAngerTime;
-    @Nullable
-    private UUID persistentAngerTarget;
-    private int lastAngerLevelUpdate;
-    /**
-     * Tracks spectrum of anger on a per-entity basis, allowing for more nuanced behavior than just "is angry", as well as "anger = hostility"
-     * <br>
-     * Logically only supports players
-     * <br>
-     * Serialized to disk
-     */
-    private final Object2IntArrayMap<UUID> angerLevels = new Object2IntArrayMap<>();
+    private long persistentAngerEndTime = NeutralMob.NO_ANGER_END_TIME;
+    @Nullable private EntityReference<LivingEntity> persistentAngerTarget;
+    private final WizardAngerData anger = new WizardAngerData();
 
+    @Override
     public void startPersistentAngerTimer() {
-        this.setRemainingPersistentAngerTime(PERSISTENT_ANGER_TIME.sample(this.random));
+        setTimeToRemainAngry(PERSISTENT_ANGER_TIME.sample(random));
     }
 
-    public void setRemainingPersistentAngerTime(int pTime) {
-        this.remainingPersistentAngerTime = pTime;
-    }
+    @Override
+    public long getPersistentAngerEndTime() { return persistentAngerEndTime; }
 
-    public int getRemainingPersistentAngerTime() {
-        return this.remainingPersistentAngerTime;
-    }
+    @Override
+    public void setPersistentAngerEndTime(long time) { persistentAngerEndTime = time; }
 
-    public void setPersistentAngerTarget(@javax.annotation.Nullable UUID pTarget) {
-        this.persistentAngerTarget = pTarget;
-    }
+    @Override
+    public void setPersistentAngerTarget(@Nullable EntityReference<LivingEntity> target) { persistentAngerTarget = target; }
 
+    @Override
     @Nullable
-    public UUID getPersistentAngerTarget() {
-        return this.persistentAngerTarget;
+    public EntityReference<LivingEntity> getPersistentAngerTarget() { return persistentAngerTarget; }
+
+    @Override
+    public void addAdditionalSaveData(ValueOutput output) {
+        super.addAdditionalSaveData(output);
+        addPersistentAngerSaveData(output);
+        anger.save(output);
     }
 
     @Override
-    public void addAdditionalSaveData(ValueOutput pCompound) {
-        this.addPersistentAngerSaveData(pCompound);
-        if (!angerLevels.isEmpty()) {
-            ListTag levels = new ListTag();
-            for (Map.Entry<UUID, Integer> entry : angerLevels.object2IntEntrySet()) {
-                CompoundTag tag = new CompoundTag();
-                tag.store("player", net.minecraft.core.UUIDUtil.CODEC, entry.getKey());
-                tag.putInt("anger", entry.getValue());
-                levels.add(tag);
-            }
-            pCompound.put("angerLevels", levels);
-        }
-        super.addAdditionalSaveData(pCompound);
-    }
-
-    @Override
-    public void readAdditionalSaveData(ValueInput pCompound) {
-        this.readPersistentAngerSaveData(this.level(), pCompound);
-        if (pCompound.contains("angerLevels")) {
-            ListTag entries = pCompound.getListOrEmpty("angerLevels");
-            for (Tag tag : entries) {
-                try {
-                    this.angerLevels.put(((CompoundTag) tag).read("player", net.minecraft.core.UUIDUtil.CODEC).orElse(null), ((CompoundTag) tag).getIntOr("anger", 0));
-                } catch (Exception exception) {
-                    continue;
-                }
-            }
-        }
-
-        super.readAdditionalSaveData(pCompound);
+    public void readAdditionalSaveData(ValueInput input) {
+        super.readAdditionalSaveData(input);
+        anger.load(input);
+        readPersistentAngerSaveData(level(), input);
     }
 
     @Override
     public void aiStep() {
         super.aiStep();
-        if (!this.level().isClientSide()) {
-            this.updatePersistentAnger((ServerLevel) this.level(), true);
-        }
-        if (!angerLevels.isEmpty() && lastAngerLevelUpdate + 20 * 20 < tickCount) {
-            ObjectIterator<Object2IntMap.Entry<UUID>> it = angerLevels.object2IntEntrySet().iterator();
-            while (it.hasNext()) {
-                Object2IntMap.Entry<UUID> entry = it.next();
-                int newLevel = entry.getIntValue() - 1;
-                if (newLevel == 0) {
-                    it.remove();
-                } else {
-                    angerLevels.put(entry.getKey(), newLevel);
-                }
-            }
-            lastAngerLevelUpdate = tickCount;
+        if (level() instanceof ServerLevel serverLevel) {
+            updatePersistentAnger(serverLevel, true);
+            anger.decay(tickCount);
         }
     }
 
     @Override
-    public boolean hurt(DamageSource pSource, float pAmount) {
-        if (pSource.getEntity() instanceof Player player && !player.isCreative()) {
-            increaseAngerLevel(player, (int) Math.ceil(pAmount), !isHostileTowards(player));
+    public boolean hurtServer(ServerLevel level, DamageSource source, float amount) {
+        if (source.getEntity() instanceof Player player && !player.isCreative()) {
+            increaseAngerLevel(player, (int) Math.ceil(amount), !isHostileTowards(player, level));
         }
-        return super.hurt(pSource, pAmount);
+        return super.hurtServer(level, source, amount);
     }
 
-    public void increaseAngerLevel(Player angryAt, int levels, boolean showParticles) {
-        if (this.level().isClientSide()) {
-            return;
+    public void increaseAngerLevel(Player player, int levels, boolean showParticles) {
+        if (!(level() instanceof ServerLevel serverLevel) || levels <= 0) return;
+        int value = anger.increase(player.getUUID(), levels, tickCount);
+        if (value < getAngerThreshold() && showParticles) {
+            MagicManager.spawnParticles(serverLevel, ParticleTypes.ANGRY_VILLAGER, getX(), getY() + 1.25, getZ(), 15, .3, .2, .3, 0, false);
+            getAngerSound().ifPresent(sound -> playSound(sound, getSoundVolume(), getVoicePitch()));
         }
-        int anger = Math.min(angerLevels.getOrDefault(angryAt.getUUID(), 0) + levels, 10);
-        angerLevels.put(angryAt.getUUID(), anger);
-        lastAngerLevelUpdate = tickCount;
-        if (anger < getAngerThreshold() && showParticles) {
-            MagicManager.spawnParticles(this.level(), ParticleTypes.ANGRY_VILLAGER, getX(), getY() + 1.25, getZ(), 15, .3, .2, .3, 0, false);
-            getAngerSound().ifPresent((sound) -> playSound(sound, getSoundVolume(), getVoicePitch()));
-        }
-        if (anger >= getAngerThreshold()) {
-            setPersistentAngerTarget(angryAt.getUUID());
-        }
+        if (value >= getAngerThreshold()) setPersistentAngerTarget(EntityReference.of(player));
     }
 
     @Deprecated
     public void increaseAngerLevel(int levels, boolean showParticles) {
         IronsSpellbooks.LOGGER.warn("Warning! Use of deprecated NeutralWizard#increaseAngerLevel");
-        ObjectIterator<Object2IntMap.Entry<UUID>> it = angerLevels.object2IntEntrySet().iterator();
-        while (it.hasNext()) {
-            Object2IntMap.Entry<UUID> entry = it.next();
-            int newLevel = entry.getIntValue() + 1;
-            entry.setValue(newLevel);
-        }
+        if (level() instanceof ServerLevel) anger.increaseAll(levels, tickCount);
     }
 
-    public Optional<SoundEvent> getAngerSound() {
-        return Optional.empty();
-    }
+    public Optional<SoundEvent> getAngerSound() { return Optional.empty(); }
+    public int getAngerThreshold() { return 2; }
 
-    /**
-     * @return The amount of anger triggers (ie chests opened, amount of damage taken) that must be met in order to become hostile
-     */
-    public int getAngerThreshold() {
-        return 2;
-    }
-
-    public boolean isHostileTowards(LivingEntity entity) {
-        return isAngryAt(entity) && (entity.getType() != EntityTypes.PLAYER || angerLevels.getOrDefault(entity.getUUID(), 0) >= getAngerThreshold());
+    public boolean isHostileTowards(LivingEntity entity, ServerLevel level) {
+        return isAngryAt(entity, level) && (!(entity instanceof Player) || anger.level(entity.getUUID()) >= getAngerThreshold());
     }
 
     @Override
-    public boolean isAngryAt(LivingEntity pTarget) {
-        return (pTarget.getType() == EntityTypes.PLAYER && angerLevels.containsKey(pTarget.getUUID()))
-                || NeutralMob.super.isAngryAt(pTarget);
+    public boolean isAngryAt(LivingEntity target, ServerLevel level) {
+        return (target instanceof Player && anger.contains(target.getUUID())) || NeutralMob.super.isAngryAt(target, level);
     }
 
-    /**
-     * @return Returns whether this entity cares to guard {@link io.redspace.ironsspellbooks.util.ModTags#GUARDED_BY_WIZARDS} (ie chests)
-     */
-    public boolean guardsBlocks() {
-        return true;
-    }
+    public boolean guardsBlocks() { return true; }
 
     @Override
-    public void readPersistentAngerSaveData(Level level, CompoundTag tag) {
-        this.setRemainingPersistentAngerTime(tag.getIntOr("AngerTime", 0));
-        if (level instanceof ServerLevel) {
-            if (!tag.contains("AngryAt")) {
-                this.setPersistentAngerTarget(null);
-            } else {
-                UUID uuid = tag.read("AngryAt", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
-                this.setPersistentAngerTarget(uuid);
+    public void readPersistentAngerSaveData(Level level, ValueInput input) {
+        NeutralMob.super.readPersistentAngerSaveData(level, input);
+        if (level instanceof ServerLevel serverLevel) {
+            if (persistentAngerTarget == null) {
+                input.read("AngryAt", UUIDUtil.CODEC).ifPresent(uuid -> setPersistentAngerTarget(EntityReference.of(uuid)));
             }
+            if (getTarget() instanceof Player player && !isHostileTowards(player, serverLevel)) setTarget(null);
         }
     }
 
     @Override
-    public void playerDied(@NotNull Player player) {
-        NeutralMob.super.playerDied(player);
-        if (player.level().getGameRules().getBoolean(GameRules.RULE_FORGIVE_DEAD_PLAYERS)) {
-            angerLevels.removeInt(player.getUUID());
-        }
+    public void playerDied(ServerLevel level, Player player) {
+        NeutralMob.super.playerDied(level, player);
+        if (level.getGameRules().get(GameRules.FORGIVE_DEAD_PLAYERS)) anger.forgive(player.getUUID());
     }
 }
-
-

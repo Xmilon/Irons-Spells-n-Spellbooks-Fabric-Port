@@ -352,9 +352,9 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
     }
 
     @Override
-    public boolean hurt(DamageSource pSource, float pAmount) {
+    public boolean hurtServer(ServerLevel level, DamageSource pSource, float pAmount) {
         setArmorStandFrozen(false);
-        return super.hurt(pSource, pAmount);
+        return super.hurtServer(level, pSource, pAmount);
     }
 
     @Override
@@ -434,34 +434,43 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
     Neutral mob impl
      */
     private static final UniformInt PERSISTENT_ANGER_TIME = TimeUtil.rangeOfSeconds(20, 39);
-    private int remainingPersistentAngerTime;
+    private long persistentAngerEndTime = NeutralMob.NO_ANGER_END_TIME;
     @Nullable
-    private UUID persistentAngerTarget;
+    private EntityReference<LivingEntity> persistentAngerTarget;
 
     @Override
-    public int getRemainingPersistentAngerTime() {
-        return remainingPersistentAngerTime;
+    public long getPersistentAngerEndTime() {
+        return persistentAngerEndTime;
     }
 
     @Override
-    public void setRemainingPersistentAngerTime(int pRemainingPersistentAngerTime) {
-        remainingPersistentAngerTime = pRemainingPersistentAngerTime;
+    public void setPersistentAngerEndTime(long time) {
+        persistentAngerEndTime = time;
     }
 
     @org.jetbrains.annotations.Nullable
     @Override
-    public UUID getPersistentAngerTarget() {
+    public EntityReference<LivingEntity> getPersistentAngerTarget() {
         return persistentAngerTarget;
     }
 
     @Override
-    public void setPersistentAngerTarget(@org.jetbrains.annotations.Nullable UUID pPersistentAngerTarget) {
+    public void setPersistentAngerTarget(@org.jetbrains.annotations.Nullable EntityReference<LivingEntity> pPersistentAngerTarget) {
         persistentAngerTarget = pPersistentAngerTarget;
     }
 
     @Override
+    public void readPersistentAngerSaveData(Level level, ValueInput input) {
+        NeutralMob.super.readPersistentAngerSaveData(level, input);
+        if (level instanceof ServerLevel && persistentAngerTarget == null) {
+            input.read("AngryAt", net.minecraft.core.UUIDUtil.CODEC)
+                    .ifPresent(uuid -> setPersistentAngerTarget(EntityReference.of(uuid)));
+        }
+    }
+
+    @Override
     public void startPersistentAngerTimer() {
-        this.setRemainingPersistentAngerTime(PERSISTENT_ANGER_TIME.sample(this.random));
+        setTimeToRemainAngry(PERSISTENT_ANGER_TIME.sample(random));
     }
 }
 

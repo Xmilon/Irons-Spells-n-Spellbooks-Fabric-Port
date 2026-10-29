@@ -76,7 +76,7 @@ public class CryomancerEntity  extends NeutralWizard implements IMerchantWizard 
         //this.goalSelector.addGoal(6, new LookAtPlayerGoal(this, Player.class, 8.0F));
         //this.goalSelector.addGoal(6, new RandomLookAroundGoal(this));
         this.targetSelector.addGoal(1, new HurtByTargetGoal(this));
-        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, (target, serverLevel) -> isHostileTowards(target)));
+        this.targetSelector.addGoal(3, new NearestAttackableTargetGoal<>(this, Player.class, 10, true, false, this::isHostileTowards));
         this.targetSelector.addGoal(5, new ResetUniversalAngerTargetGoal<>(this, false));
     }
 

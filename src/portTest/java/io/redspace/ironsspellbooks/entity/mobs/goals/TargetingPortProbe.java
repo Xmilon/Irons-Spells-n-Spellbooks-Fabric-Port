@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.entity.mobs.goals;
 import io.redspace.ironsspellbooks.entity.mobs.SupportMob;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
@@ -12,11 +13,29 @@ import java.util.List;
 
 /** Real server fixtures exercise the production goals without loading the incomplete main mod. */
 public final class TargetingPortProbe implements ModInitializer {
+    private boolean prepared;
+    private boolean addedForce;
+    private boolean finished;
+    private int waitTicks;
+
     @Override
     public void onInitialize() {
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+            addedForce = server.overworld().setChunkForced(0, 0, true);
+            server.overworld().getChunk(0, 0);
+            prepared = true;
+        });
+        ServerTickEvents.END_SERVER_TICK.register(server -> {
+            if (!prepared || finished) return;
             var level = server.overworld();
-            level.getChunk(0, 0);
+            if (!level.areEntitiesActuallyLoadedAndTicking(net.minecraft.world.level.ChunkPos.ZERO)) {
+                if (++waitTicks >= 200) {
+                    if (addedForce) level.setChunkForced(0, 0, false);
+                    throw new AssertionError("Fixture chunk did not become ready");
+                }
+                return;
+            }
+            finished = true;
             var healer = new SupportZombie(level);
             var near = new Zombie(level);
             var far = new Zombie(level);
@@ -74,10 +93,33 @@ public final class TargetingPortProbe implements ModInitializer {
                 healer.commonTick();
                 require(healer.getInvulnerableTime() == 9, "Native common tick did not decrement invulnerability exactly once");
                 System.out.println("Native entity API server checks passed: impulse synchronization and one-tick invulnerability countdown");
+                var bear = new net.minecraft.world.entity.animal.polarbear.PolarBear(net.minecraft.world.entity.EntityTypes.POLAR_BEAR, level);
+                bear.setTimeToRemainAngry(40);
+                bear.setPersistentAngerTarget(net.minecraft.world.entity.EntityReference.of(far));
+                long angerEnd = bear.getPersistentAngerEndTime();
+                require(angerEnd == level.getGameTime() + 40, "Anger duration did not become an absolute end time");
+                var savedAnger = net.minecraft.world.level.storage.TagValueOutput.createWithContext(net.minecraft.util.ProblemReporter.DISCARDING, server.registryAccess());
+                bear.addPersistentAngerSaveData(savedAnger);
+                bear.setPersistentAngerTarget(null);
+                bear.setPersistentAngerEndTime(-1);
+                bear.readPersistentAngerSaveData(level, net.minecraft.world.level.storage.TagValueInput.create(
+                        net.minecraft.util.ProblemReporter.DISCARDING, server.registryAccess(), savedAnger.buildResult()));
+                require(bear.getPersistentAngerEndTime() == angerEnd && bear.getPersistentAngerTarget().matches(far), "Native anger reference/end-time save round trip failed");
+                require(bear.isAngryAt(far, level), "Restored anger did not match its target");
+                far.setInvulnerableTime(0);
+                far.setHealth(far.getMaxHealth());
+                boolean accepted = far.hurtServer(level, far.damageSources().generic(), 2);
+                require(accepted && far.getHealth() < far.getMaxHealth(), "Server damage acceptance result lost");
+                far.setPermanentlyInvulnerable(true);
+                float health = far.getHealth();
+                require(!far.hurtServer(level, far.damageSources().generic(), 2) && far.getHealth() == health, "Rejected server damage reported success");
+                bear.discard();
+                System.out.println("Native anger/damage server checks passed: reference/end-time persistence, hostility and accepted/rejected damage results");
             } catch (ReflectiveOperationException exception) {
                 throw new AssertionError(exception);
             } finally {
                 mobs.forEach(LivingEntity::discard);
+                if (addedForce) level.setChunkForced(0, 0, false);
             }
             server.halt(false);
         });

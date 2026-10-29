@@ -346,3 +346,27 @@ or private invulnerability-field access remains in the changed sources. Next com
 native neutral-mob anger references/end times and coordinated `hurtServer` overrides, preserving
 conditional effects and server-side damage results. Rendering, loot/recipes, teleport/save
 APIs and startup validation remain substantial outstanding groups.
+
+## Native wizard anger state (2026-10-29)
+
+Neutral wizards and cursed armor stands implement current `NeutralMob` end-time and
+`EntityReference<LivingEntity>` contracts. Timers use native game time rather than a second
+manual countdown. Both readers retain the old `AngryAt` UUID fallback; vanilla's reader
+already accepts `AngerTime`. These narrow readers do not establish complete old-world migration.
+Wizard hostility, cultist overrides, healing and taunting pass the native server context.
+When loading, per-player levels are restored before anger references; a saved player target
+below that wizard's hostility threshold is cleared rather than being promoted into combat
+by vanilla's default reader.
+
+`WizardAngerData` owns the real per-player state and writes the same `angerLevels` list of
+`player` UUID / `anger` integer compounds through native `ValueInput`/`ValueOutput`. Reload
+clears stale rows, malformed UUID/nonpositive entries are skipped, and values cap at ten
+without integer overflow. Decay keeps the original strict greater-than-400-tick interval.
+The deprecated bulk-increase overload now honors its amount and cap instead of always adding
+one; nonpositive increases no longer create permanently negative anger entries.
+
+`verifyWizardAngerData` runs independently of the incomplete main compilation and passed
+production data checks for increments/caps, overflow, decay boundaries, legacy save shape,
+round trips, reused-state clearing, malformed-row isolation and forgiveness. The actual
+wizard/armor-stand entity implementations remain blocked by other migration work, so their
+spawn/reload behavior and guarded-block event callbacks still require runtime validation.

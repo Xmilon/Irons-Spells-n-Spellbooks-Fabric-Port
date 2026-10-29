@@ -552,7 +552,7 @@ public class Utils {
     }
 
     public static boolean shouldHealEntity(Entity healer, Entity target) {
-        if (healer instanceof NeutralMob neutralMob && target instanceof LivingEntity livingEntity && neutralMob.isAngryAt(livingEntity)) {
+        if (healer instanceof NeutralMob neutralMob && target instanceof LivingEntity livingEntity && healer.level() instanceof ServerLevel serverLevel && neutralMob.isAngryAt(livingEntity, serverLevel)) {
             return false;
         } else if (healer == target) {
             return true;
@@ -1007,7 +1007,7 @@ public class Utils {
 
     public static Predicate<Entity> tauntPredicate(Entity taunter) {
         return entity -> (entity instanceof Enemy ^ taunter instanceof Enemy && !taunter.isAlliedTo(entity))
-                || ((taunter instanceof LivingEntity livingEntity && entity instanceof NeutralMob neutralMob) && neutralMob.isAngryAt(livingEntity));
+                || ((taunter instanceof LivingEntity livingEntity && entity instanceof NeutralMob neutralMob) && entity.level() instanceof ServerLevel serverLevel && neutralMob.isAngryAt(livingEntity, serverLevel));
     }
 
     public static MobEffectInstance addEffectStack(LivingEntity entity, Holder<MobEffect> effect, int amplifierCap, int defaultDuration) {

@@ -245,6 +245,23 @@ tasks.register('compilePortTargeting', JavaCompile) {
 
 tasks.named('check') {
 	dependsOn 'compilePortTargeting'
+	dependsOn 'verifyWizardAngerData'
+}
+
+tasks.register('compileWizardAngerData', JavaCompile) {
+	source 'src/main/java/io/redspace/ironsspellbooks/entity/mobs/abstract_spell_casting_mob/WizardAngerData.java',
+		'src/portTest/java/io/redspace/ironsspellbooks/entity/mobs/goals/WizardAngerDataCheck.java'
+	classpath = portCompileClasspath
+	destinationDirectory = layout.buildDirectory.dir('port-wizard-anger/classes')
+	javaCompiler = javaToolchains.compilerFor { languageVersion = JavaLanguageVersion.of(25) }
+}
+
+tasks.register('verifyWizardAngerData', JavaExec) {
+	dependsOn 'compileWizardAngerData'
+	classpath = files(tasks.named('compileWizardAngerData').flatMap { it.destinationDirectory }) + portCompileClasspath
+	mainClass = 'io.redspace.ironsspellbooks.entity.mobs.goals.WizardAngerDataCheck'
+	enableAssertions = true
+	javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(25) }
 }
 
 // Resource baking is independent of the incomplete main-mod compilation.
