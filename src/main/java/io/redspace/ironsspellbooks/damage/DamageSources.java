@@ -2,6 +2,12 @@ package io.redspace.ironsspellbooks.damage;
 
 import io.redspace.ironsspellbooks.api.entity.NoKnockbackProjectile;
 import io.redspace.ironsspellbooks.api.events.SpellDamageEvent;
+import io.redspace.ironsspellbooks.api.events.LivingDamageEvents;
+import io.redspace.ironsspellbooks.effect.*;
+import io.redspace.ironsspellbooks.item.curios.BetrayerSignetRingItem;
+import io.redspace.ironsspellbooks.item.curios.ExpulsionRing;
+import io.redspace.ironsspellbooks.item.curios.LurkerRing;
+import io.redspace.ironsspellbooks.player.ServerPlayerEvents;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.spells.SchoolType;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -16,18 +22,11 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.Level;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
-import net.neoforged.neoforge.event.entity.living.LivingKnockBackEvent;
 import org.jetbrains.annotations.Nullable;
 
 import java.util.HashMap;
 import java.util.UUID;
 
-@EventBusSubscriber
 public class DamageSources {
     public static DamageSource get(Level level, ResourceKey<DamageType> damageType) {
         return level.damageSources().source(damageType);
@@ -43,13 +42,15 @@ public class DamageSources {
     }
 
     public static boolean applyDamage(Entity target, float baseAmount, DamageSource damageSource) {
-        if (!(target.level() instanceof ServerLevel serverLevel)) return false;
+        if (!(target.level() instanceof ServerLevel serverLevel) || !Float.isFinite(baseAmount) || baseAmount < 0) return false;
         if (target instanceof LivingEntity livingTarget && damageSource instanceof SpellDamageSource spellDamageSource) {
             var e = new SpellDamageEvent(livingTarget, baseAmount, spellDamageSource);
-            if (NeoForge.EVENT_BUS.post(e).isCanceled()) {
+            SpellDamageEvent.EVENT.invoker().onDamage(e);
+            if (e.isCanceled()) {
                 return false;
             }
             baseAmount = e.getAmount();
+            if (!Float.isFinite(baseAmount) || baseAmount < 0) return false;
             float adjustedDamage = baseAmount * getResist(livingTarget, spellDamageSource.spell.getSchoolType());
             if (damageSource.getEntity() instanceof LivingEntity livingAttacker) {
                 if (isFriendlyFireBetween(livingAttacker, livingTarget)) {
@@ -78,61 +79,51 @@ public class DamageSources {
         }
     }
 
-    @SubscribeEvent
-    public static void cancelKnockback(LivingKnockBackEvent event) {
-        //IronsSpellbooks.LOGGER.debug("DamageSources.cancelKnockback {}", event.getEntity().getName().getString());
-        var entity = event.getEntity();
-        if (entity.level() instanceof ServerLevel serverLevel && knockbackImmunes.containsKey(event.getEntity().getUUID())) {
-            if (serverLevel.getServer().getTickCount() - knockbackImmunes.get(entity.getUUID()) <= 1) {
-                event.setCanceled(true);
+    public static void registerNativeEvents() {
+        LivingDamageEvents.ALLOW_DAMAGE.register((level, target, source, amount) -> {
+            var summon = summonSource(source);
+            if (summon != null && summon.getSummoner() != null && summon.getSummoner().getUUID().equals(target.getUUID())) return false;
+            return ServerPlayerEvents.onLivingIncomingDamage(level, target, source, amount);
+        });
+        LivingDamageEvents.MODIFY_DAMAGE.register((level, target, source, amount) -> {
+            var summon = summonSource(source);
+            if (summon != null && summon.getSummoner() instanceof LivingEntity owner) {
+                amount *= (float) AttributeRegistry.getValueOrDefault(owner, AttributeRegistry.SUMMON_DAMAGE, 1);
             }
-            knockbackImmunes.remove(entity.getUUID());
-        }
+            amount = BlightEffect.reduceDamageOutput(source, amount);
+            amount = OakskinEffect.reduceDamage(target, amount);
+            amount = SpiderAspectEffect.increaseDamage(target, source, amount);
+            TrueInvisibilityEffect.onDealDamage(source);
+            amount = BetrayerSignetRingItem.handleAbility(target, source, amount);
+            ExpulsionRing.handleAbility(target, source, amount);
+            return LurkerRing.handleAbility(target, source, amount);
+        });
+        LivingDamageEvents.MODIFY_HEALTH_DAMAGE.register(ServerPlayerEvents::onBeforeDamageTaken);
+        LivingDamageEvents.AFTER_DAMAGE.register((level, target, source, amount) -> {
+            if (source instanceof SpellDamageSource spell) {
+                SpellHitEffects.apply(target, source.getEntity(), amount, spell.getLifestealPercent(), spell.getFreezeTicks(), spell.getFireTime());
+            }
+            if (amount > 0) EchoingStrikesEffect.createEcho(target, source, amount);
+        });
+        LivingDamageEvents.AFTER_HIT.register((level, target, source, amount) -> {
+            if (source instanceof SpellDamageSource spell && spell.getIFrames() >= 0) target.damageCooldownTime = spell.getIFrames();
+        });
+        LivingDamageEvents.ALLOW_KNOCKBACK.register((target, source) -> !cancelKnockback(target));
+        LivingDamageEvents.MODIFY_HEALING.register(BlightEffect::reduceHealing);
+        LivingDamageEvents.MODIFY_HEALING.register(SoulBurnMobEffect::soulBurnReduceHealing);
+        LivingDamageEvents.FINISH_USING_ITEM.register(GluttonyEffect::finishEating);
     }
 
-    @SubscribeEvent
-    public static void postHitEffects(LivingDamageEvent.Post event) {
-        var damageSource = event.getSource();
-        if (damageSource instanceof SpellDamageSource spellDamageSource && spellDamageSource.hasPostHitEffects()) {
-            float actualDamage = event.getNewDamage();
-            var target = event.getEntity();
-            var attacker = event.getSource().getEntity();
-            if (attacker instanceof LivingEntity livingAttacker) {
-                if (spellDamageSource.getLifestealPercent() > 0) {
-                    livingAttacker.heal(spellDamageSource.getLifestealPercent() * actualDamage);
-                }
-            }
-            if (spellDamageSource.getFreezeTicks() > 0 && target.canFreeze()) {
-                //Freeze ticks count down by 2, so we * 2 so the spell damages source can be dumb
-                target.setTicksFrozen(target.getTicksFrozen() + spellDamageSource.getFreezeTicks() * 2);
-            }
-            if (spellDamageSource.getFireTime() > 0 && target instanceof LivingEntity) {
-                target.igniteForTicks(spellDamageSource.getFireTime());
-            }
-        }
+    private static @Nullable IMagicSummon summonSource(DamageSource source) {
+        return source.getDirectEntity() instanceof IMagicSummon summon ? summon
+                : source.getEntity() instanceof IMagicSummon summon ? summon : null;
     }
 
-    @SubscribeEvent
-    public static void preHitEffects(LivingIncomingDamageEvent event) {
-        var damageSource = event.getSource();
-        if (damageSource instanceof SpellDamageSource spellDamageSource) {
-            if (spellDamageSource.getIFrames() >= 0) {
-                event.getContainer().setPostAttackInvulnerabilityTicks(spellDamageSource.getIFrames());
-            }
-        }
-        IMagicSummon fromSummon = damageSource.getDirectEntity() instanceof IMagicSummon summon ? summon : damageSource.getEntity() instanceof IMagicSummon summon ? summon : null;
-        if (fromSummon != null) {
-            var summoner = fromSummon.getSummoner();
-            if (summoner != null && summoner.getUUID().equals(event.getEntity().getUUID())) {
-                event.setCanceled(true);
-                return;
-            }
-            if (summoner instanceof LivingEntity livingSummoner) {
-            event.setAmount(event.getAmount() * (float) AttributeRegistry.getValueOrDefault(livingSummoner, AttributeRegistry.SUMMON_DAMAGE, 1.0D));
-            }
-        }
+    private static boolean cancelKnockback(LivingEntity entity) {
+        if (!(entity.level() instanceof ServerLevel level)) return false;
+        var tick = knockbackImmunes.remove(entity.getUUID());
+        return tick != null && level.getServer().getTickCount() - tick <= 1;
     }
-
     public static boolean isFriendlyFireBetween(@Nullable Entity attacker, @Nullable Entity target) {
         if (attacker == null || target == null) {
             return false;

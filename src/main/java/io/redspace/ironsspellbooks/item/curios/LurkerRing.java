@@ -5,11 +5,7 @@ import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
-@EventBusSubscriber
 public class LurkerRing extends PassiveAbilityCurio {
     public static final int COOLDOWN_IN_TICKS = 15 * 20;
     public static final float MULTIPLIER = 1.5f;
@@ -30,14 +26,14 @@ public class LurkerRing extends PassiveAbilityCurio {
         return COOLDOWN_IN_TICKS;
     }
 
-    @SubscribeEvent
-    public static void handleAbility(LivingIncomingDamageEvent event) {
+    public static float handleAbility(net.minecraft.world.entity.LivingEntity target, net.minecraft.world.damagesource.DamageSource source, float amount) {
         var RING = ((LurkerRing) ItemRegistry.LURKER_RING.get());
-        if (event.getSource().getEntity() instanceof ServerPlayer attackingPlayer) {
+        if (source.getEntity() instanceof ServerPlayer attackingPlayer) {
             if (attackingPlayer.isInvisible() && RING.isEquippedBy(attackingPlayer) && RING.tryProcCooldown(attackingPlayer)) {
-                event.setAmount(event.getAmount() * MULTIPLIER);
+                return amount * MULTIPLIER;
             }
         }
+        return amount;
     }
 }
 

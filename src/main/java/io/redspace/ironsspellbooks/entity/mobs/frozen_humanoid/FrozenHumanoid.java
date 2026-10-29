@@ -171,7 +171,7 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
         if (!(entityToCopy instanceof Player)) {
             setEntityTypeToCopy(entityToCopy.getType());
         }
-        this.setInvulnerableTime(1);
+        this.damageCooldownTime = 1;
         setSummoner(entityToCopy);
     }
 
@@ -268,9 +268,9 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
 
     @Override
     public boolean hurtServer(ServerLevel damageLevel, DamageSource pSource, float pAmount) {
-        if (level().isClientSide() || this.isInvulnerableTo(damageLevel, pSource) || getInvulnerableTime() > 0)
+        if (level().isClientSide() || this.isInvulnerableTo(damageLevel, pSource) || damageCooldownTime > 0)
             return false;
-        setInvulnerableTime(10);
+        damageCooldownTime = 10;
         doPuffDamage();
         spawnIcicleShards(this.getEyePosition(), this.shatterProjectileDamage);
         this.playHurtSound(pSource);

@@ -333,13 +333,19 @@ unchanged. Old entity `hurtMarked` writes now use `syncVelocity`; impulse writes
 matching the current engine's `markHurt` and `push` implementations. The serializable
 `ImpulseCastData.hasImpulse` field is preserved.
 
-Invulnerability accesses use native getters/setters with the same durations. Ender Chain's
+Nonliving invulnerability accesses use native getters/setters with the same durations. Ender Chain's
 manual decrement is removed: 26.3 already decrements this timer in `Entity.commonTick`, so
 retaining both would halve its immunity window. The actual server probe confirmed that a
 native ten-tick timer becomes nine after one common tick and that `push` requests native
 synchronization. Targeting regressions still passed and the temporary probe was removed.
 Ender Chain's complete damage/multipart logic and affected spells remain untested in-game;
 this native timer proof does not establish full spell/entity compatibility.
+
+Correction from the subsequent damage tests: living entities use `damageCooldownTime` for
+damage i-frames, distinct from `Entity` general invulnerability. Dash, strike, echo, dagger,
+scapegoat, frozen-humanoid and boss melee writes now use that living timer. Mixed targets retain
+the general timer only for nonliving entities. The earlier common-tick test proved only the
+general timer, not living repeated-hit behavior.
 
 The full compile is down from 1,399 to 1,313 errors across this pass. No removed motion-field
 or private invulnerability-field access remains in the changed sources. Next combat work:
@@ -397,3 +403,28 @@ multipart collision, AoE effects, multiplayer and old-world migration remain unt
 The probe JAR was removed after shutdown. Anger data checks and targeting compilation also pass.
 The full main compile reports 1,195 errors, down from 1,313 before this pass; no diagnostics
 remain in the changed anger data, shared damage dispatcher or native damage-hook signatures.
+
+## Native living damage pipeline (2026-10-29)
+
+Replaced the legacy damage/healing/item-completion event objects with native Fabric callbacks
+and current server mixin hooks. Removed five unused NeoForge compatibility event classes.
+Incoming cancellation/modifiers reuse vanilla's immunity query; health-stage modifiers run
+after armor and absorption. Accepted-hit callbacks restore custom damage cooldowns. Migrated
+summon immunity/power, casting interruption, evasion, fire ward, rings, blight, oakskin, spider
+aspect, invisibility removal, heartstop, immolate, echo, soul burn and gluttony registrations.
+The custom spell-damage addon event now exposes a Fabric event; addons require recompilation.
+
+Spell hit effects use actual health lost for lifesteal, including lethal hits, avoiding healing
+from absorption or overkill. Fire/freezing still apply on accepted fully absorbed hits. Native
+26.3 ignition clears freezing; the tests preserve that engine behavior.
+
+`damagePipelineProbeJar` builds a standalone server test mod from the production callback API,
+mixin and spell-hit helper, without an old mod binary. It passed single dispatch, unchanged
+vanilla immunity-query counts, cancellation, modifiers, absorption, heartstop's health stage,
+fire/freezing, lethal-hit lifesteal, knockback cancellation, healing, item snapshots, invalid
+numbers and repeated-hit cooldown checks on the library server. The server saved/shut down and
+the temporary probe was removed. `compilePortDamagePipeline` is also part of `check`.
+
+The concrete full-mod ring/summon/casting policies and client visuals still require runtime
+validation. Other legacy events remain pending migration. The latest main compilation reports
+1,190 errors; this milestone does not make the complete mod playable.

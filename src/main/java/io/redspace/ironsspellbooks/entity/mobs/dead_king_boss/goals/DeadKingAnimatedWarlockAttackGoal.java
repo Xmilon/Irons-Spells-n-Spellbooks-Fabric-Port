@@ -76,7 +76,7 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
                 } else {
                     if (distanceSquared <= meleeRange * meleeRange && Utils.hasLineOfSight(mob.level(), mob, target, true)) {
                         boolean flag = this.mob.doHurtTarget(target);
-                        target.setInvulnerableTime(0);
+                        target.damageCooldownTime = 0;
                         if (flag) {
                             if (currentAttack.data.isSingleHit() && ((mob.getRandom().nextFloat() < .75f) || target.isBlocking())) {
                                 //Attack again! combos!

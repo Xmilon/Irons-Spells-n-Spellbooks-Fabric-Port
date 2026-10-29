@@ -19,10 +19,10 @@ public class BurningDashEffect extends MagicMobEffect {
         List<Entity> list = livingEntity.level().getEntities(livingEntity, livingEntity.getBoundingBox().inflate(.25, .5, .25));
         if (!list.isEmpty()) {
             for (Entity entity : list) {
-                if (entity instanceof LivingEntity) {
+                if (entity instanceof LivingEntity living) {
                     DamageSources.applyDamage(entity, amplifier, SpellRegistry.BURNING_DASH_SPELL.get().getDamageSource(livingEntity));
                     //Guarantee that the entity receives i-frames, since we are damaging every tick
-                    entity.setInvulnerableTime(20);
+                    living.damageCooldownTime = 20;
                 }
             }
         } else if (livingEntity.horizontalCollision) {

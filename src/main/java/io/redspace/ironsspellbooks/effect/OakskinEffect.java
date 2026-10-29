@@ -12,13 +12,9 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.block.Blocks;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
 import javax.annotation.Nullable;
 
-@EventBusSubscriber
 public class OakskinEffect extends CustomDescriptionMobEffect {
     public static final float REDUCTION_PER_LEVEL = .05f;
     public static final float BASE_REDUCTION = .10f;
@@ -34,18 +30,15 @@ public class OakskinEffect extends CustomDescriptionMobEffect {
         return Component.translatable("tooltip.irons_spellbooks.oakskin_description", (int) (reductionAmount * 100)).withStyle(ChatFormatting.BLUE);
     }
 
-    @SubscribeEvent
-    public static void reduceDamage(LivingIncomingDamageEvent event) {
-        var entity = event.getEntity();
+    public static float reduceDamage(LivingEntity entity, float amount) {
         var effect = entity.getEffect(MobEffectRegistry.OAKSKIN);
         if (effect != null) {
-            float before = event.getAmount();
             float multiplier = 1 - getReductionAmount(effect.getAmplifier(), entity);
-            event.setAmount(event.getAmount() * multiplier);
-//            IronsSpellbooks.LOGGER.debug("OakskinEffect.reduceDamage {}%: {}->{}", (int) (getReductionAmount(effect.getAmplifier(), entity) * 100), before, event.getAmount());
             MagicManager.spawnParticles(entity.level(), new BlockParticleOption(ParticleTypes.BLOCK, Blocks.OAK_LOG.defaultBlockState()), entity.getRandomX(entity.getBbWidth() * 0.45), entity.getRandomY(), entity.getRandomZ(entity.getBbWidth() * 0.45), 5, 0, 0, 0, 0.25, false);
             MagicManager.spawnParticles(entity.level(), ParticleHelper.FIREFLY, entity.getRandomX(entity.getBbWidth() * 0.45), entity.getRandomY() + 0.25, entity.getRandomZ(entity.getBbWidth() * 0.45), 1, 0, 0, 0, 0.25, false);
+            return amount * multiplier;
         }
+        return amount;
     }
 
     public static float getReductionAmount(int amplifier, @Nullable LivingEntity livingEntity) {

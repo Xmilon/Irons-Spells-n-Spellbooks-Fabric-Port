@@ -9,18 +9,15 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.spells.ender.EchoingStrikesSpell;
 import net.minecraft.util.Mth;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 
 import javax.annotation.Nullable;
 
-@EventBusSubscriber
 public class EchoingStrikesEffect extends MagicMobEffect {
     public static final float PERCENT_PER_AMPLIFIER = .05f;
     public EchoingStrikesEffect(MobEffectCategory pCategory, int pColor) {
@@ -39,9 +36,7 @@ public class EchoingStrikesEffect extends MagicMobEffect {
         EchoingStrikesData.remove(pLivingEntity);
     }
 
-    @SubscribeEvent
-    public static void createEcho(LivingDamageEvent.Post event) {
-        var damageSource = event.getSource();
+    public static void createEcho(LivingEntity target, DamageSource damageSource, float actualDamage) {
         if (damageSource.getEntity() instanceof LivingEntity attacker && (damageSource.getDirectEntity() == attacker || damageSource.getDirectEntity() instanceof AbstractArrow) && !(damageSource instanceof SpellDamageSource)) {
             var effect = attacker.getEffect(MobEffectRegistry.ECHOING_STRIKES);
             if (effect == null) {
@@ -54,11 +49,10 @@ public class EchoingStrikesEffect extends MagicMobEffect {
             }
             var level = attacker.level();
             var percent = getDamageModifier(effect.getAmplifier(), attacker);
-            var target = event.getEntity();
             if (damageSource.isDirect()) {
-                createEchoingSword(attacker, level, target, event.getNewDamage() * percent);
+                createEchoingSword(attacker, level, target, actualDamage * percent);
             } else {
-                createEchoingArrow(attacker, level, target, event.getNewDamage() * percent);
+                createEchoingArrow(attacker, level, target, actualDamage * percent);
             }
 
             data.decrementHit();

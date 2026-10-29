@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.echoing_strikes;
 
+import net.minecraft.world.entity.LivingEntity;
 import io.redspace.ironsspellbooks.api.entity.NoKnockbackProjectile;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -101,7 +102,8 @@ public class EchoingSword extends AbstractMagicProjectile implements IAnimatedAt
             if (distanceSqr < explosionRadiusSqr && canHitEntity(entity) && Utils.hasLineOfSight(level(), this.position(), entity.getBoundingBox().getCenter(), true)) {
                 double p = Mth.clamp((1 - distanceSqr / explosionRadiusSqr) + .4f, 0, 1);
                 float damage = (float) (this.damage * p);
-                entity.setInvulnerableTime(0);
+                if (entity instanceof LivingEntity living) living.damageCooldownTime = 0;
+                else entity.setInvulnerableTime(0);
                 DamageSources.applyDamage(entity, damage, SpellRegistry.ECHOING_STRIKES_SPELL.get().getDamageSource(this, getOwner()));
             }
         }

@@ -110,7 +110,7 @@ public class BurningDashSpell extends AbstractSpell {
 
 
         entity.addEffect(new MobEffectInstance(net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MobEffectRegistry.BURNING_DASH.get()), 15, getDamage(spellLevel, entity), false, false, false));
-        entity.setInvulnerableTime(20);
+        entity.damageCooldownTime = 20;
         //startSpinAttack(entity, 10);
         playerMagicData.getSyncedData().setSpinAttackType(SpinAttackType.FIRE);
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);

@@ -2,13 +2,10 @@ package io.redspace.ironsspellbooks.effect;
 
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
-@EventBusSubscriber
 public class SpiderAspectEffect extends MagicMobEffect {
     public static final float DAMAGE_PER_LEVEL = .05f;
 
@@ -16,27 +13,21 @@ public class SpiderAspectEffect extends MagicMobEffect {
         super(pCategory, pColor);
     }
 
-    @SubscribeEvent
-    public static void increaseDamage(LivingIncomingDamageEvent event) {
-        var attacker = event.getSource().getEntity();
+    public static float increaseDamage(LivingEntity target, DamageSource source, float amount) {
+        var attacker = source.getEntity();
         if (attacker instanceof LivingEntity livingAttacker) {
-            //IronsSpellbooks.LOGGER.debug("onLivingTakeDamage: attacker: {} target:{}", livingAttacker.getName().getString(), event.getEntity());
-            /**
-             * Spider aspect handling
-             */
-            
-            if (livingAttacker.hasEffect(MobEffectRegistry.SPIDER_ASPECT)) {
-                boolean targetHasTagEffect = event.getEntity().getActiveEffects().stream()
+            var effect = livingAttacker.getEffect(MobEffectRegistry.SPIDER_ASPECT);
+            if (effect != null) {
+                boolean targetHasTagEffect = target.getActiveEffects().stream()
                         .anyMatch(instance -> instance.getEffect().is(ModTags.AFFECTED_BY_SPIDER_ASPECT));
 
                 if (targetHasTagEffect) {
-                    int lvl = livingAttacker.getEffect(MobEffectRegistry.SPIDER_ASPECT).getAmplifier() + 1;
-                    float before = event.getAmount();
+                    int lvl = effect.getAmplifier() + 1;
                     float multiplier = 1 + SpiderAspectEffect.DAMAGE_PER_LEVEL * lvl;
-                    event.setAmount(event.getAmount() * multiplier);
-                    //IronsSpellbooks.LOGGER.debug("spider mode {}->{}", before, event.getAmount());
+                    return amount * multiplier;
                 }
             }
         }
+        return amount;
     }
 }

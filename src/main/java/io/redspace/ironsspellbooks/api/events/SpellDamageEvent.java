@@ -1,52 +1,36 @@
 package io.redspace.ironsspellbooks.api.events;
 
-
 import io.redspace.ironsspellbooks.damage.SpellDamageSource;
-import net.minecraft.world.damagesource.DamageSource;
-import net.minecraft.world.entity.Entity;
+import net.fabricmc.fabric.api.event.Event;
+import net.fabricmc.fabric.api.event.EventFactory;
 import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.bus.api.ICancellableEvent;
-import net.neoforged.neoforge.event.entity.living.LivingEvent;
 
-
-/**
- * SpellDamageEvent is fired when a LivingEntity is set to be hurt by a spell, via {@link io.redspace.ironsspellbooks.damage.DamageSources#applyDamage(Entity, float, DamageSource)}.<br>
- * This happens before Entity#hurt, meaning all other forge damage events will also fire if the damage succeeds.
- * <br>
- * <br>
- * This event is {@link Cancelable}.<br>
- * If this event is canceled, the Entity will not be hurt.<br>
- * <br>
- * This event does not have a result. {@link HasResult}<br>
- * <br>
- * This event is fired on the {@link MinecraftForge#EVENT_BUS}.<br>
- **/
-public class SpellDamageEvent extends LivingEvent implements ICancellableEvent {
-    //TODO: pre and post?
-    private final SpellDamageSource spellDamageSource;
-    private final float baseAmount;
+/** Fired by the spell dispatcher before resistance and native server damage. */
+public final class SpellDamageEvent {
+    public static final Event<Callback> EVENT = EventFactory.createArrayBacked(Callback.class, listeners -> event -> {
+        for (var listener : listeners) {
+            listener.onDamage(event);
+            if (event.isCanceled()) return;
+        }
+    });
+    private final LivingEntity entity;
+    private final SpellDamageSource source;
+    private final float originalAmount;
     private float amount;
+    private boolean canceled;
 
-    public SpellDamageEvent(LivingEntity livingEntity, float amount, SpellDamageSource spellDamageSource) {
-        super(livingEntity);
-        this.spellDamageSource = spellDamageSource;
-        this.baseAmount = amount;
-        this.amount = this.baseAmount;
-    }
-
-    public float getOriginalAmount() {
-        return this.baseAmount;
-    }
-
-    public float getAmount() {
-        return amount;
-    }
-
-    public void setAmount(float amount) {
+    public SpellDamageEvent(LivingEntity entity, float amount, SpellDamageSource source) {
+        this.entity = entity;
+        this.source = source;
+        this.originalAmount = amount;
         this.amount = amount;
     }
-
-    public SpellDamageSource getSpellDamageSource() {
-        return this.spellDamageSource;
-    }
+    public LivingEntity getEntity() { return entity; }
+    public float getOriginalAmount() { return originalAmount; }
+    public float getAmount() { return amount; }
+    public void setAmount(float amount) { this.amount = amount; }
+    public SpellDamageSource getSpellDamageSource() { return source; }
+    public boolean isCanceled() { return canceled; }
+    public void setCanceled(boolean canceled) { this.canceled = canceled; }
+    @FunctionalInterface public interface Callback { void onDamage(SpellDamageEvent event); }
 }

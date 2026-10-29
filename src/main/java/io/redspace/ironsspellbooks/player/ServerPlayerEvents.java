@@ -61,6 +61,7 @@ import net.minecraft.tags.EntityTypeTags;
 import net.minecraft.tags.ItemTags;
 import net.minecraft.util.StringUtil;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.*;
@@ -439,32 +440,25 @@ public class ServerPlayerEvents {
         }
     }
 
-    @SubscribeEvent
-    public static void onLivingIncomingDamage(LivingIncomingDamageEvent event) {
-        var livingEntity = event.getEntity();
-        //irons_spellbooks.LOGGER.debug("onLivingAttack.1: {}", livingEntity);
-        if (event.getSource().getEntity() != null && livingEntity.getVehicle() instanceof IceTombEntity iceTomb && !DamageSources.isFriendlyFireBetween(event.getSource().getEntity(), livingEntity)) {
+    public static boolean onLivingIncomingDamage(ServerLevel level, LivingEntity livingEntity, DamageSource source, float originalAmount) {
+        if (source.getEntity() != null && livingEntity.getVehicle() instanceof IceTombEntity iceTomb && !DamageSources.isFriendlyFireBetween(source.getEntity(), livingEntity)) {
             // redirect entity-caused damage away from entombed players into the tomb
-            event.setCanceled(true);
-            iceTomb.hurt(event.getSource(), event.getOriginalAmount());
-            return;
+            iceTomb.hurtServer(level, source, originalAmount);
+            return false;
         }
         if ((livingEntity instanceof ServerPlayer) || (livingEntity instanceof IMagicEntity)) {
-            if (ItemRegistry.FIREWARD_RING.get().isEquippedBy(livingEntity) && event.getSource().is(DamageTypeTags.IS_FIRE)) {
-                event.getEntity().clearFire();
-                event.setCanceled(true);
-                return;
+            if (ItemRegistry.FIREWARD_RING.get().isEquippedBy(livingEntity) && source.is(DamageTypeTags.IS_FIRE)) {
+                livingEntity.clearFire();
+                return false;
             }
             var playerMagicData = MagicData.getPlayerMagicData(livingEntity);
             if (livingEntity.hasEffect(MobEffectRegistry.EVASION)) {
-                if (EvasionEffect.doEffect(livingEntity, event.getSource())) {
-                    event.setCanceled(true);
-                    return;
+                if (EvasionEffect.doEffect(livingEntity, source)) {
+                    return false;
                 }
             } else if (livingEntity.hasEffect(MobEffectRegistry.ABYSSAL_SHROUD)) {
-                if (AbyssalShroudEffect.doEffect(livingEntity, event.getSource())) {
-                    event.setCanceled(true);
-                    return;
+                if (AbyssalShroudEffect.doEffect(livingEntity, source)) {
+                    return false;
                 }
             }
 
@@ -472,36 +466,35 @@ public class ServerPlayerEvents {
                 if (playerMagicData.isCasting() &&
                         playerMagicData.getCastingSpell().getSpell().canBeInterrupted(serverPlayer) &&
                         playerMagicData.getCastDurationRemaining() > 0 &&
-                        !event.getSource().is(DamageTypeTagsCompat.LONG_CAST_IGNORE) &&
+                        !source.is(DamageTypeTagsCompat.LONG_CAST_IGNORE) &&
                         !playerMagicData.popMarkedPoison()) {
                     Utils.serverSideCancelCast(serverPlayer);
                 }
             }
         }
-        if (ServerConfigs.BETTER_CREEPER_THUNDERHIT.get() && event.getSource().is(DamageTypeTags.IS_FIRE) && event.getEntity() instanceof Creeper creeper && creeper.isPowered()) {
-            event.setCanceled(true);
-            return;
+        if (ServerConfigs.BETTER_CREEPER_THUNDERHIT.get() && source.is(DamageTypeTags.IS_FIRE) && livingEntity instanceof Creeper creeper && creeper.isPowered()) {
+            return false;
         }
+        return true;
     }
 
-    @SubscribeEvent
-    public static void onBeforeDamageTaken(LivingDamageEvent.Pre event) {
-        var livingEntity = event.getEntity();
+    public static float onBeforeDamageTaken(ServerLevel level, LivingEntity livingEntity, DamageSource source, float amount) {
         if (livingEntity instanceof IMagicEntity || livingEntity instanceof ServerPlayer) {
             var playerMagicData = MagicData.getPlayerMagicData(livingEntity);
             if (livingEntity.hasEffect(MobEffectRegistry.HEARTSTOP)) {
-                playerMagicData.getSyncedData().addHeartstopDamage(event.getOriginalDamage() * .5f);
-                event.setNewDamage(0);
+                playerMagicData.getSyncedData().addHeartstopDamage(amount * .5f);
+                amount = 0;
             }
         }
-        if (event.getSource().is(ISSDamageTypes.FIRE_MAGIC) && event.getSource().getEntity() instanceof LivingEntity livingAttacker) {
-            if (livingAttacker.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.INFERNAL_SORCERER_CHESTPLATE) && (!(livingAttacker instanceof Player player) || !player.getCooldowns().isOnCooldown(ItemRegistry.INFERNAL_SORCERER_CHESTPLATE.get()))) {
+        if (source.is(ISSDamageTypes.FIRE_MAGIC) && source.getEntity() instanceof LivingEntity livingAttacker) {
+            if (livingAttacker.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.INFERNAL_SORCERER_CHESTPLATE) && (!(livingAttacker instanceof Player player) || !player.getCooldowns().isOnCooldown(livingAttacker.getItemBySlot(EquipmentSlot.CHEST)))) {
                 ImmolateEffect.addImmolateStack(livingEntity, livingAttacker);
 //                if (livingAttacker instanceof Player player) {
 //                    player.getCooldowns().addCooldown(ItemRegistry.INFERNAL_SORCERER_CHESTPLATE.get(), Utils.applyCooldownReduction(InfernalSorcererArmorItem.COOLDOWN_TICKS, player));
 //                }
             }
         }
+        return amount;
     }
 
     @SubscribeEvent

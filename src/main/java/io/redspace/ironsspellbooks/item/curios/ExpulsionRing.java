@@ -9,11 +9,7 @@ import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.level.Level;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
-@EventBusSubscriber
 public class ExpulsionRing extends PassiveAbilityCurio {
     public static final int COOLDOWN_IN_TICKS = 2 * 20;
     public static final int RADIUS = 4;
@@ -28,11 +24,10 @@ public class ExpulsionRing extends PassiveAbilityCurio {
         return COOLDOWN_IN_TICKS;
     }
 
-    @SubscribeEvent
-    public static void handleAbility(LivingIncomingDamageEvent event) {
+    public static void handleAbility(net.minecraft.world.entity.LivingEntity target, net.minecraft.world.damagesource.DamageSource source, float amount) {
         var RING = ((ExpulsionRing) ItemRegistry.EXPULSION_RING.get());
-        if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-            if (event.getSource().getEntity() != null && RING.isEquippedBy(serverPlayer) && RING.tryProcCooldown(serverPlayer)) {
+        if (target instanceof ServerPlayer serverPlayer) {
+            if (source.getEntity() != null && RING.isEquippedBy(serverPlayer) && RING.tryProcCooldown(serverPlayer)) {
                 var vec = serverPlayer.getBoundingBox().getCenter();
                 //Visual Explosion
                 serverPlayer.level().explode(
@@ -47,6 +42,7 @@ public class ExpulsionRing extends PassiveAbilityCurio {
                         Level.ExplosionInteraction.NONE,
                         ParticleTypes.GUST_EMITTER_SMALL,
                         ParticleTypes.GUST_EMITTER_LARGE,
+                        net.minecraft.util.random.WeightedList.of(),
                         SoundEvents.WIND_CHARGE_BURST
                 );
                 //Knockback effect

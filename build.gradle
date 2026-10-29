@@ -246,6 +246,27 @@ tasks.register('compilePortTargeting', JavaCompile) {
 tasks.named('check') {
 	dependsOn 'compilePortTargeting'
 	dependsOn 'verifyWizardAngerData'
+	dependsOn 'compilePortDamagePipeline'
+}
+
+// Compile the production damage hooks without the unfinished main mod or old binaries.
+tasks.register('compilePortDamagePipeline', JavaCompile) {
+	source 'src/main/java/io/redspace/ironsspellbooks/api/events/LivingDamageEvents.java',
+		'src/main/java/io/redspace/ironsspellbooks/damage/SpellHitEffects.java',
+		'src/main/java/io/redspace/ironsspellbooks/mixin/LivingEntityEventsMixin.java',
+		'src/portTest/java/io/redspace/ironsspellbooks/damage/DamagePipelinePortProbe.java'
+	classpath = sourceSets.main.compileClasspath
+	destinationDirectory = layout.buildDirectory.dir('port-damage-pipeline/classes')
+	options.sourcepath = files()
+	javaCompiler = javaToolchains.compilerFor { languageVersion = JavaLanguageVersion.of(25) }
+}
+
+tasks.register('damagePipelineProbeJar', Jar) {
+	dependsOn 'compilePortDamagePipeline'
+	archiveFileName = 'damage-pipeline-port-probe.jar'
+	destinationDirectory = layout.buildDirectory.dir('port-damage-pipeline')
+	from(tasks.named('compilePortDamagePipeline').flatMap { it.destinationDirectory })
+	from('src/portTest/resources/damage-pipeline')
 }
 
 tasks.register('compileWizardAngerData', JavaCompile) {

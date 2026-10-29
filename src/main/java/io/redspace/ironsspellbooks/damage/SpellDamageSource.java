@@ -21,7 +21,7 @@ public class SpellDamageSource extends DamageSource {
     int iFrames = -1;
 
     protected SpellDamageSource(@NotNull Entity directEntity, @NotNull Entity causingEntity, @Nullable Vec3 damageSourcePosition, AbstractSpell spell) {
-        super(getHolderFromResource(directEntity, spell.getSchoolType().getDamageType()), directEntity, causingEntity);
+        super(DamageSources.getHolderFromResource(directEntity, spell.getSchoolType().getDamageType()), directEntity, causingEntity);
         this.spell = spell;
     }
 
@@ -34,16 +34,6 @@ public class SpellDamageSource extends DamageSource {
                 ? (directEntity != null ? directEntity.getDisplayName() : pLivingEntity.getDisplayName())
                 : causingEntity.getDisplayName();
         return Component.translatable(s, pLivingEntity.getDisplayName(), component);
-    }
-
-    //TODO: need a better way to get the registry access without going through the level each time
-    private static Holder<DamageType> getHolderFromResource(Entity entity, ResourceKey<DamageType> damageTypeResourceKey) {
-        var option = entity.level().registryAccess().registryOrThrow(Registries.DAMAGE_TYPE).getHolder(damageTypeResourceKey);
-        if (option.isPresent()) {
-            return option.get();
-        } else {
-            return entity.level().damageSources().genericKill().typeHolder();
-        }
     }
 
     public static SpellDamageSource source(@NotNull Entity entity, @NotNull AbstractSpell spell) {

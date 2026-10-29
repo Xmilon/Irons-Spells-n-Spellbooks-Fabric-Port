@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"irons_spellbooks_damage_pipeline_probe","version":"1.0.0","environment":"*","entrypoints":{"main":["io.redspace.ironsspellbooks.damage.DamagePipelinePortProbe"]},"mixins":["damage-pipeline-probe.mixins.json"],"depends":{"fabricloader":">=0.19.5","minecraft":"26.3","java":">=25","fabric-api":"*"}}

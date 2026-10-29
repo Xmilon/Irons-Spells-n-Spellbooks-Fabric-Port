@@ -5,11 +5,7 @@ import io.redspace.ironsspellbooks.compat.TrinketsSlots;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.render.CinderousRarity;
 import net.minecraft.server.level.ServerPlayer;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.fml.common.EventBusSubscriber;
-import net.neoforged.neoforge.event.entity.living.LivingIncomingDamageEvent;
 
-@EventBusSubscriber
 public class BetrayerSignetRingItem extends PassiveAbilityCurio {
     public static final int COOLDOWN_IN_TICKS = 5 * 20;
 
@@ -23,12 +19,11 @@ public class BetrayerSignetRingItem extends PassiveAbilityCurio {
         return COOLDOWN_IN_TICKS;
     }
 
-    @SubscribeEvent
-    public static void handleAbility(LivingIncomingDamageEvent event) {
+    public static float handleAbility(net.minecraft.world.entity.LivingEntity target, net.minecraft.world.damagesource.DamageSource source, float amount) {
         var RING = ((BetrayerSignetRingItem) ItemRegistry.SIGNET_OF_THE_BETRAYER.get());
-        if (event.getSource().getEntity() instanceof ServerPlayer attackingPlayer) {
+        if (source.getEntity() instanceof ServerPlayer attackingPlayer) {
             if (RING.isEquippedBy(attackingPlayer)) {
-                var victim = event.getEntity();
+                var victim = target;
         var victimMaxMana = AttributeRegistry.getValueOrDefault(victim, AttributeRegistry.MAX_MANA, 100.0D);
                 var victimBaseMana = victim.getAttributeBaseValue(AttributeRegistry.MAX_MANA);
                 if (victimMaxMana > victimBaseMana && RING.tryProcCooldown(attackingPlayer)) {
@@ -47,10 +42,11 @@ public class BetrayerSignetRingItem extends PassiveAbilityCurio {
                         manaAboveBase -= 100;
                         conversionRatioPer100 -= 0.01;
                     }
-                    event.setAmount((float) (event.getAmount() * Math.max(1, 1 + totalExtraDamagePercent)));
+                    return (float) (amount * Math.max(1, 1 + totalExtraDamagePercent));
                 }
             }
         }
+        return amount;
     }
 }
 

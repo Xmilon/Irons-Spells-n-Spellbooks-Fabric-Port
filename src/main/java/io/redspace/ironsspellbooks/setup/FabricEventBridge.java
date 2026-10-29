@@ -3,18 +3,9 @@ package io.redspace.ironsspellbooks.setup;
 import io.redspace.ironsspellbooks.api.util.CameraShakeManager;
 import io.redspace.ironsspellbooks.capabilities.magic.SummonManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
-import io.redspace.ironsspellbooks.effect.BlightEffect;
-import io.redspace.ironsspellbooks.effect.EchoingStrikesEffect;
 import io.redspace.ironsspellbooks.effect.FrostbiteEffect;
-import io.redspace.ironsspellbooks.effect.GluttonyEffect;
-import io.redspace.ironsspellbooks.effect.OakskinEffect;
-import io.redspace.ironsspellbooks.effect.SpiderAspectEffect;
-import io.redspace.ironsspellbooks.effect.TrueInvisibilityEffect;
 import io.redspace.ironsspellbooks.effect.guiding_bolt.GuidingBoltManager;
 import io.redspace.ironsspellbooks.entity.mobs.wizards.WizardAIEvents;
-import io.redspace.ironsspellbooks.item.curios.BetrayerSignetRingItem;
-import io.redspace.ironsspellbooks.item.curios.ExpulsionRing;
-import io.redspace.ironsspellbooks.item.curios.LurkerRing;
 import io.redspace.ironsspellbooks.player.ServerPlayerEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerLivingEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
@@ -27,7 +18,6 @@ import net.minecraft.world.InteractionResult;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.entity.EntityJoinLevelEvent;
 import net.neoforged.neoforge.event.entity.EntityLeaveLevelEvent;
-import net.neoforged.neoforge.event.entity.living.LivingDamageEvent;
 import net.neoforged.neoforge.event.entity.living.LivingDeathEvent;
 import net.neoforged.neoforge.event.entity.player.PlayerEvent;
 import net.neoforged.neoforge.event.entity.living.LivingEquipmentChangeEvent;
@@ -39,8 +29,8 @@ import net.neoforged.neoforge.event.tick.ServerTickEvent;
 
 /**
  * Re-posts the Fabric callbacks onto {@link NeoForge#EVENT_BUS} so the @SubscribeEvent handlers
- * carried over from the NeoForge version run. Events that need a mixin are posted from
- * {@code LivingEntityEventsMixin} and {@code EntityEventsMixin}.
+ * carried over from the NeoForge version run. Unported events that need a mixin are posted from
+ * {@code EntityEventsMixin}; damage/healing/item completion use native callbacks.
  * Client-side events are wired by hand in IronsSpellbooksClient.
  */
 public final class FabricEventBridge {
@@ -48,13 +38,11 @@ public final class FabricEventBridge {
     }
 
     public static void init() {
+        DamageSources.registerNativeEvents();
         // Server/common handler classes. Client-only classes are driven from IronsSpellbooksClient.
         for (Class<?> handlers : new Class<?>[]{
-                CameraShakeManager.class, SummonManager.class, DamageSources.class, BlightEffect.class,
-                EchoingStrikesEffect.class, FrostbiteEffect.class, GluttonyEffect.class, OakskinEffect.class,
-                SpiderAspectEffect.class, TrueInvisibilityEffect.class, GuidingBoltManager.class,
-                WizardAIEvents.class, BetrayerSignetRingItem.class, ExpulsionRing.class, LurkerRing.class,
-                ServerPlayerEvents.class, io.redspace.ironsspellbooks.entity.mobs.ice_spider.IceSpiderEntity.class}) {
+                CameraShakeManager.class, SummonManager.class, FrostbiteEffect.class, GuidingBoltManager.class,
+                WizardAIEvents.class, ServerPlayerEvents.class, io.redspace.ironsspellbooks.entity.mobs.ice_spider.IceSpiderEntity.class}) {
             NeoForge.EVENT_BUS.register(handlers);
         }
 
@@ -71,7 +59,6 @@ public final class FabricEventBridge {
 
         ServerLivingEntityEvents.ALLOW_DEATH.register((entity, source, amount) -> !NeoForge.EVENT_BUS.post(new LivingDeathEvent(entity, source)).isCanceled());
         ServerLivingEntityEvents.AFTER_DEATH.register((entity, source) -> NeoForge.EVENT_BUS.post(new net.neoforged.neoforge.event.entity.living.LivingDropsEvent(entity, source)));
-        ServerLivingEntityEvents.AFTER_DAMAGE.register((entity, source, baseDamage, damageTaken, blocked) -> NeoForge.EVENT_BUS.post(new LivingDamageEvent.Post(entity, source, damageTaken)));
 
         UseBlockCallback.EVENT.register((player, level, hand, hit) -> {
             var event = new PlayerInteractEvent.RightClickBlock(player, level, hit.getBlockPos(), player.getItemInHand(hand));

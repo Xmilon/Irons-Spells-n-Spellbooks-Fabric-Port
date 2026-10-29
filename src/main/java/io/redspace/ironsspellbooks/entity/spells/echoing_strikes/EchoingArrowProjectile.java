@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.echoing_strikes;
 
+import net.minecraft.world.entity.LivingEntity;
 import io.redspace.ironsspellbooks.api.entity.NoKnockbackProjectile;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
@@ -59,7 +60,8 @@ public class EchoingArrowProjectile extends MagicArrowProjectile implements NoKn
 
     @Override
     protected void onHitEntity(@NotNull EntityHitResult entityHitResult) {
-        entityHitResult.getEntity().setInvulnerableTime(0);
+        if (entityHitResult.getEntity() instanceof LivingEntity living) living.damageCooldownTime = 0;
+        else entityHitResult.getEntity().setInvulnerableTime(0);
         Entity entity = entityHitResult.getEntity();
         if (!victims.contains(entity)) {
             DamageSources.applyDamage(entity, damage, SpellRegistry.ECHOING_STRIKES_SPELL.get().getDamageSource(this, getOwner()));

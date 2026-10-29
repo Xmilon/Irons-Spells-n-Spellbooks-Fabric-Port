@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.fiery_dagger;
 
+import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.storage.ValueOutput;
 
 import net.minecraft.world.level.storage.ValueInput;
@@ -102,7 +103,8 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
         entityHitResult.getEntity().hurt(new DamageSource(level().damageSources().damageTypes.getHolderOrThrow(ISSDamageTypes.FIRE_MAGIC), this, getOwner()), getDamage());
-        entityHitResult.getEntity().setInvulnerableTime(0);
+        if (entityHitResult.getEntity() instanceof LivingEntity living) living.damageCooldownTime = 0;
+        else entityHitResult.getEntity().setInvulnerableTime(0);
     }
 
     @Override
