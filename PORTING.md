@@ -251,3 +251,27 @@ coordinates, field order, payload IDs, round trips, and truncated vector rejecti
 unknown and malformed shockwave IDs were checked. The slice uses old unrelated client helper
 signatures; live packet delivery, client particle effects and the existing receiver adapter
 still need complete networking/client validation.
+
+## Native structure processors (2026-10-29)
+
+All six custom processors implement vanilla's current interface and return their own map
+codec. Registration uses the native structure-processor codec registry; the deferred type
+adapter and old generic types are removed. Existing IDs and serialized configuration fields
+are preserved. Copper weathering now overrides the actual vanilla callback and uses the
+position-seeded structure RNG. Vault cleanup copies NBT before clearing its two runtime keys,
+preserving unrelated data without changing the shared template. Foundation placement uses
+native chunk positions, inclusive maximum Y and chunk update flags; existing lower-limit and
+neighbor-chunk guards remain. Stair-to-slab lookup uses a native optional registry value.
+
+Ten processor-list files now use native block-state `id`/`properties` fields. The actual
+block-state codec decoded 62 outputs. One `wisewood_bookshelf` output requires the main mod's
+block registry and remains explicitly untested; complete processor lists and structures still
+need a full datapack load. Structure NBT/save migration is not claimed by this JSON change.
+
+`verifyStructureProcessors` joins `check` once main compilation succeeds. Focused checks pass
+six codec round trips, malformed copper fields, copied vault data, deterministic copper aging,
+per-block light overrides and foundation bounds. An isolated Fabric server loaded all six
+real registrations, round-tripped their native dispatch codecs, checked stair/slab behavior
+against loaded vanilla tags and stopped cleanly. It used the existing library test world;
+this is not a fresh-world/main-mod worldgen test. Its temporary probe JAR was removed. Actual
+foundation writes, portal-frame cleanup and complete structure placement remain untested.

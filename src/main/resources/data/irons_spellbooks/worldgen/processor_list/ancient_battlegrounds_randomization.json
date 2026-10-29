@@ -13,7 +13,7 @@
             "probability": 0.35
           },
           "output_state": {
-            "Name": "minecraft:cracked_deepslate_bricks"
+            "id": "minecraft:cracked_deepslate_bricks"
           }
         },
         {
@@ -26,8 +26,8 @@
             "probability": 0.1
           },
           "output_state": {
-            "Name": "minecraft:deepslate",
-            "Properties": {
+            "id": "minecraft:deepslate",
+            "properties": {
               "axis": "y"
             }
           }
@@ -42,7 +42,7 @@
             "probability": 0.25
           },
           "output_state": {
-            "Name": "minecraft:soul_sand"
+            "id": "minecraft:soul_sand"
           }
         },
         {
@@ -55,7 +55,7 @@
             "probability": 0.7
           },
           "output_state": {
-            "Name": "minecraft:crying_obsidian"
+            "id": "minecraft:crying_obsidian"
           }
         },
         {
@@ -68,7 +68,7 @@
             "probability": 0.25
           },
           "output_state": {
-            "Name": "minecraft:air"
+            "id": "minecraft:air"
           }
         },
         {
@@ -81,7 +81,7 @@
             "probability": 0.3
           },
           "output_state": {
-            "Name": "minecraft:air"
+            "id": "minecraft:air"
           }
         },
         {
@@ -94,7 +94,7 @@
             "probability": 0.7
           },
           "output_state": {
-            "Name": "minecraft:air"
+            "id": "minecraft:air"
           }
         }
       ]

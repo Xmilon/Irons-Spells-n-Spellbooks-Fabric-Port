@@ -18,7 +18,7 @@
           },
           // If an output_state block has properties, you must define ALL properties of the block!
           "output_state": {
-            "Name": "minecraft:brown_mushroom_block"
+            "id": "minecraft:brown_mushroom_block"
           }
         },
         {
@@ -32,7 +32,7 @@
           },
           // If an output_state block has properties, you must define ALL properties of the block!
           "output_state": {
-            "Name": "minecraft:packed_mud"
+            "id": "minecraft:packed_mud"
           }
         }
       ]

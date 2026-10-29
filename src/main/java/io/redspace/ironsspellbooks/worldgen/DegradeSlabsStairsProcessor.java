@@ -3,7 +3,6 @@ package io.redspace.ironsspellbooks.worldgen;
 import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
-import io.redspace.ironsspellbooks.registries.StructureProcessorRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
@@ -19,13 +18,11 @@ import net.minecraft.world.level.block.state.properties.Half;
 import net.minecraft.world.level.block.state.properties.SlabType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessor;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructureTemplate;
-
 import javax.annotation.Nullable;
 import java.util.Optional;
 
-public class DegradeSlabsStairsProcessor extends StructureProcessor {
+public class DegradeSlabsStairsProcessor implements StructureProcessor {
     public static final MapCodec<DegradeSlabsStairsProcessor> CODEC =
             RecordCodecBuilder.mapCodec(builder -> builder.group(
                     Codec.DOUBLE.fieldOf("chance_stairs").forGetter(obj -> (double) obj.chanceStairs),
@@ -46,7 +43,7 @@ public class DegradeSlabsStairsProcessor extends StructureProcessor {
             LevelReader pLevel,
             BlockPos pOffset,
             BlockPos pPos,
-            StructureTemplate.StructureBlockInfo pBlockInfo,
+            BlockPos localPos,
             StructureTemplate.StructureBlockInfo pRelativeBlockInfo,
             StructurePlaceSettings pSettings
     ) {
@@ -81,12 +78,7 @@ public class DegradeSlabsStairsProcessor extends StructureProcessor {
     private Optional<Block> tryGetSlab(Block original) {
         try {
             var stringKey = BuiltInRegistries.BLOCK.getKey(original).toString().replace("_stairs", "_slab");
-            var block = BuiltInRegistries.BLOCK.get(Identifier.parse(stringKey));
-            if (block.equals(Blocks.AIR)) {
-                return Optional.empty();
-            } else {
-                return Optional.of(block);
-            }
+            return BuiltInRegistries.BLOCK.getOptional(Identifier.parse(stringKey)).filter(block -> block != Blocks.AIR);
         } catch (Exception ignored) {
             return Optional.empty();
         }
@@ -98,9 +90,7 @@ public class DegradeSlabsStairsProcessor extends StructureProcessor {
     }
 
     @Override
-    protected StructureProcessorType<?> getType() {
-        return StructureProcessorRegistry.DEGRADE_SLABS_STAIRS.get();
+    public MapCodec<DegradeSlabsStairsProcessor> codec() {
+        return CODEC;
     }
 }
-
-

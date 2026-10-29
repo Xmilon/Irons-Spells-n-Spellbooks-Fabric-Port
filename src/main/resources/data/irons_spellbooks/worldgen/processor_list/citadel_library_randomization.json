@@ -3,7 +3,7 @@
     {
       "processor_type": "irons_spellbooks:foundation",
       "block": {
-        "Name": "minecraft:blackstone"
+        "id": "minecraft:blackstone"
       }
     },
     {
@@ -23,7 +23,7 @@
             "probability": 0.85
           },
           "output_state": {
-            "Name": "irons_spellbooks:wisewood_bookshelf"
+            "id": "irons_spellbooks:wisewood_bookshelf"
           }
         },
         {
@@ -36,7 +36,7 @@
             "probability": 0.35
           },
           "output_state": {
-            "Name": "minecraft:cracked_deepslate_bricks"
+            "id": "minecraft:cracked_deepslate_bricks"
           }
         },
         {
@@ -49,7 +49,7 @@
             "probability": 0.08
           },
           "output_state": {
-            "Name": "minecraft:cracked_deepslate_tiles"
+            "id": "minecraft:cracked_deepslate_tiles"
           }
         },
         {
@@ -62,7 +62,7 @@
             "probability": 0.75
           },
           "output_state": {
-            "Name": "minecraft:air"
+            "id": "minecraft:air"
           }
         },
         {
@@ -75,7 +75,7 @@
             "probability": 0.40
           },
           "output_state": {
-            "Name": "minecraft:air"
+            "id": "minecraft:air"
           }
         },
         {
@@ -88,7 +88,7 @@
             "probability": 0.3
           },
           "output_state": {
-            "Name": "minecraft:cracked_nether_bricks"
+            "id": "minecraft:cracked_nether_bricks"
           }
         },
         {
@@ -101,7 +101,7 @@
             "probability": 0.5
           },
           "output_state": {
-            "Name": "minecraft:cracked_polished_blackstone_bricks"
+            "id": "minecraft:cracked_polished_blackstone_bricks"
           }
         },
         {
@@ -114,7 +114,7 @@
             "probability": 0.15
           },
           "output_state": {
-            "Name": "minecraft:blackstone"
+            "id": "minecraft:blackstone"
           }
         }
       ]

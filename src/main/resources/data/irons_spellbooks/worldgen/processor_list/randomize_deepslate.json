@@ -18,8 +18,8 @@
           },
           // If an output_state block has properties, you must define ALL properties of the block!
           "output_state": {
-            "Name": "minecraft:deepslate_redstone_ore",
-            "Properties": {
+            "id": "minecraft:deepslate_redstone_ore",
+            "properties": {
               "lit": false
             }
           }

@@ -1,30 +1,18 @@
 package io.redspace.ironsspellbooks.registries;
 
-import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.worldgen.ClearVaultDataProcessor;
+import com.mojang.serialization.MapCodec;
 import io.redspace.ironsspellbooks.worldgen.*;
-import net.minecraft.core.registries.Registries;
-import net.minecraft.world.level.levelgen.structure.templatesystem.StructureProcessorType;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.registries.DeferredRegister;
+import net.minecraft.core.Registry;
+import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.Identifier;
 
-import java.util.function.Supplier;
-
-
-public class StructureProcessorRegistry {
-
-    public static final DeferredRegister<StructureProcessorType<?>> PROCESSORS = DeferredRegister.create(Registries.STRUCTURE_PROCESSOR, IronsSpellbooks.MODID);
-
-    public static void register(IEventBus eventBus) {
-        PROCESSORS.register(eventBus);
+public final class StructureProcessorRegistry {
+    public static void register() {
+        Registry.register(BuiltInRegistries.STRUCTURE_PROCESSOR, Identifier.fromNamespaceAndPath("irons_spellbooks", "clear_vault_data"), ClearVaultDataProcessor.CODEC);
+        Registry.register(BuiltInRegistries.STRUCTURE_PROCESSOR, Identifier.fromNamespaceAndPath("irons_spellbooks", "weather_copper"), WeatherCopperProcessor.CODEC);
+        Registry.register(BuiltInRegistries.STRUCTURE_PROCESSOR, Identifier.fromNamespaceAndPath("irons_spellbooks", "degrade_slabs_stairs"), DegradeSlabsStairsProcessor.CODEC);
+        Registry.register(BuiltInRegistries.STRUCTURE_PROCESSOR, Identifier.fromNamespaceAndPath("irons_spellbooks", "foundation"), StructureFoundationProcessor.CODEC);
+        Registry.register(BuiltInRegistries.STRUCTURE_PROCESSOR, Identifier.fromNamespaceAndPath("irons_spellbooks", "handle_lit_blocks"), HandleLitBlocksProcessor.CODEC);
+        Registry.register(BuiltInRegistries.STRUCTURE_PROCESSOR, Identifier.fromNamespaceAndPath("irons_spellbooks", "clear_portal_frame_data"), ClearPortalFrameDataProcessor.CODEC);
     }
-
-    public static final Supplier<StructureProcessorType<ClearVaultDataProcessor>> CLEAR_VAULT_DATA = PROCESSORS.register("clear_vault_data", () -> () -> ClearVaultDataProcessor.CODEC);
-    public static final Supplier<StructureProcessorType<WeatherCopperProcessor>> WEATHER_COPPER = PROCESSORS.register("weather_copper", () -> () -> WeatherCopperProcessor.CODEC);
-    public static final Supplier<StructureProcessorType<DegradeSlabsStairsProcessor>> DEGRADE_SLABS_STAIRS = PROCESSORS.register("degrade_slabs_stairs", () -> () -> DegradeSlabsStairsProcessor.CODEC);
-    public static final Supplier<StructureProcessorType<StructureFoundationProcessor>> STRUCTURE_FOUNDATION_PROCESSOR = PROCESSORS.register("foundation", () -> () -> StructureFoundationProcessor.CODEC);
-    public static final Supplier<StructureProcessorType<HandleLitBlocksProcessor>> HANDLE_LIT_BLOCKS_PROCESSOR = PROCESSORS.register("handle_lit_blocks", () -> () -> HandleLitBlocksProcessor.CODEC);
-    public static final Supplier<StructureProcessorType<ClearPortalFrameDataProcessor>> CLEAR_PORTAL_FRAME_DATA = PROCESSORS.register("clear_portal_frame_data", () -> () -> ClearPortalFrameDataProcessor.CODEC);
 }
-
-

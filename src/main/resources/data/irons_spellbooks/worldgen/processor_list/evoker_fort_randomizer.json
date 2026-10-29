@@ -13,7 +13,7 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:stone"
+            "id": "minecraft:stone"
           }
         },
         {
@@ -26,7 +26,7 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:cracked_stone_bricks"
+            "id": "minecraft:cracked_stone_bricks"
           }
         },
         {
@@ -39,7 +39,7 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:mossy_cobblestone"
+            "id": "minecraft:mossy_cobblestone"
           }
         },
         {
@@ -52,7 +52,7 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:podzol"
+            "id": "minecraft:podzol"
           }
         },
         {
@@ -65,7 +65,7 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:packed_mud"
+            "id": "minecraft:packed_mud"
           }
         },
         {
@@ -78,7 +78,7 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:rooted_dirt"
+            "id": "minecraft:rooted_dirt"
           }
         }
       ]

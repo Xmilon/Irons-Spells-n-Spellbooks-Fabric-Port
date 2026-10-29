@@ -13,7 +13,7 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:air"
+            "id": "minecraft:air"
           }
         },
         {
@@ -26,7 +26,7 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:air"
+            "id": "minecraft:air"
           }
         },
         {
@@ -39,7 +39,7 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:flower_pot"
+            "id": "minecraft:flower_pot"
           }
         },
         {
@@ -52,7 +52,7 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:stone_bricks"
+            "id": "minecraft:stone_bricks"
           }
         },
         {
@@ -65,7 +65,7 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:mossy_stone_bricks"
+            "id": "minecraft:mossy_stone_bricks"
           }
         },
         {
@@ -78,7 +78,7 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:mossy_cobblestone"
+            "id": "minecraft:mossy_cobblestone"
           }
         },
         {
@@ -91,7 +91,7 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:cracked_stone_bricks"
+            "id": "minecraft:cracked_stone_bricks"
           }
         },
         {
@@ -104,7 +104,7 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:stone"
+            "id": "minecraft:stone"
           }
         },
         {
@@ -117,7 +117,7 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:tuff"
+            "id": "minecraft:tuff"
           }
         },
         {
@@ -130,8 +130,8 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:stripped_spruce_wood",
-            "Properties": {
+            "id": "minecraft:stripped_spruce_wood",
+            "properties": {
               "axis": "z"
             }
           }
@@ -146,7 +146,7 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:andesite"
+            "id": "minecraft:andesite"
           }
         },
         {
@@ -159,7 +159,7 @@
             "predicate_type": "minecraft:always_true"
           },
           "output_state": {
-            "Name": "minecraft:moss_block"
+            "id": "minecraft:moss_block"
           }
         }
       ]

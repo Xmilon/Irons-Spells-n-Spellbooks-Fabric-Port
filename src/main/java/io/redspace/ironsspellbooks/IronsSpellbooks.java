@@ -57,7 +57,7 @@ public class IronsSpellbooks implements ModInitializer {
         FeatureRegistry.register(eventBus);
         PotionRegistry.register(eventBus);
         CommandArgumentRegistry.register(eventBus);
-        StructureProcessorRegistry.register(eventBus);
+        StructureProcessorRegistry.register();
         StructureElementRegistry.register(eventBus);
         CreativeTabRegistry.register(eventBus);
         DataAttachmentRegistry.register(eventBus);
