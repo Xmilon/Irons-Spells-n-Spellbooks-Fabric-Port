@@ -22,12 +22,12 @@ public class FieryExplosionParticlesPacket implements CustomPacketPayload {
     }
 
     public FieryExplosionParticlesPacket(FriendlyByteBuf buf) {
-        pos1 = buf.readVec3();
+        pos1 = Vec3.STREAM_CODEC.decode(buf);
         radius = buf.readFloat();
     }
 
     public void write(FriendlyByteBuf buf) {
-        buf.writeVec3(pos1);
+        Vec3.STREAM_CODEC.encode(buf, pos1);
         buf.writeFloat(radius);
     }
 

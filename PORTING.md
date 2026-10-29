@@ -236,3 +236,18 @@ and real collector/model snapshot checks passed for animation, texture layers, l
 balanced transforms, independent submitted poses and unchanged shared geometry. Entity
 implementations still need porting; focused compilation uses the old mod binary only for
 those unrelated signatures. In-game extraction and appearance remain untested.
+
+## Particle payload codecs (2026-10-29)
+
+All 11 particle payload classes now use vanilla `Vec3.STREAM_CODEC`; its three-double wire
+layout matches the removed buffer convenience methods exactly. Shockwave lookup now parses
+the already namespaced particle ID, using the native registry value API. Previously it tried
+to prepend `irons_spellbooks` to values such as `minecraft:flame` and swallowed the failure.
+Unknown/malformed particle identifiers are ignored without hiding unrelated exceptions.
+
+`verifyParticlePacketCodecs` is part of `check` after full main compilation. Focused checks
+passed for all 11 actual payload codecs: byte-for-byte legacy layout, fractional/large/negative
+coordinates, field order, payload IDs, round trips, and truncated vector rejection. Vanilla,
+unknown and malformed shockwave IDs were checked. The slice uses old unrelated client helper
+signatures; live packet delivery, client particle effects and the existing receiver adapter
+still need complete networking/client validation.

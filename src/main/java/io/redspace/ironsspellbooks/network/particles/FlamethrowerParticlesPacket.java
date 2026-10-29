@@ -22,13 +22,13 @@ public class FlamethrowerParticlesPacket implements CustomPacketPayload {
     }
 
     public FlamethrowerParticlesPacket(FriendlyByteBuf buf) {
-        position = buf.readVec3();
-        forward = buf.readVec3();
+        position = Vec3.STREAM_CODEC.decode(buf);
+        forward = Vec3.STREAM_CODEC.decode(buf);
     }
 
     public void write(FriendlyByteBuf buf) {
-        buf.writeVec3(position);
-        buf.writeVec3(forward);
+        Vec3.STREAM_CODEC.encode(buf, position);
+        Vec3.STREAM_CODEC.encode(buf, forward);
     }
 
     public static void handle(FlamethrowerParticlesPacket packet, IPayloadContext context) {

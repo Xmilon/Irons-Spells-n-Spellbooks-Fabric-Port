@@ -28,25 +28,27 @@ public class ShockwaveParticlesPacket implements CustomPacketPayload {
     }
 
     public ShockwaveParticlesPacket(FriendlyByteBuf buf) {
-        this.pos = buf.readVec3();
+        this.pos = Vec3.STREAM_CODEC.decode(buf);
         this.radius = buf.readFloat();
         this.particleName = buf.readUtf();
     }
 
     public void write(FriendlyByteBuf buf) {
-        buf.writeVec3(pos);
+        Vec3.STREAM_CODEC.encode(buf, pos);
         buf.writeFloat(radius);
         buf.writeUtf(particleName);
     }
 
     public static void handle(ShockwaveParticlesPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> {
-            try {
-                var type = BuiltInRegistries.PARTICLE_TYPE.get(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, packet.particleName));
-                ClientSpellCastHelper.handleClientboundShockwaveParticle(packet.pos, packet.radius, type);
-            } catch (Exception ignored) {
-            }
+            var type = resolveParticle(packet.particleName);
+            if (type != null) ClientSpellCastHelper.handleClientboundShockwaveParticle(packet.pos, packet.radius, type);
         });
+    }
+
+    static ParticleType<?> resolveParticle(String name) {
+        var id = Identifier.tryParse(name);
+        return id == null ? null : BuiltInRegistries.PARTICLE_TYPE.getValue(id);
     }
 
     @Override

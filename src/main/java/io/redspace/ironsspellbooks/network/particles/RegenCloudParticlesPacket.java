@@ -20,11 +20,11 @@ public class RegenCloudParticlesPacket implements CustomPacketPayload {
     }
 
     public RegenCloudParticlesPacket(FriendlyByteBuf buf) {
-        pos = buf.readVec3();
+        pos = Vec3.STREAM_CODEC.decode(buf);
     }
 
     public void write(FriendlyByteBuf buf) {
-        buf.writeVec3(pos);
+        Vec3.STREAM_CODEC.encode(buf, pos);
     }
 
     public static void handle(RegenCloudParticlesPacket packet, IPayloadContext context) {

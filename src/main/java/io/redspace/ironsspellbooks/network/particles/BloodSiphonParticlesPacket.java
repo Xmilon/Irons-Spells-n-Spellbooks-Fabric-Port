@@ -22,13 +22,13 @@ public class BloodSiphonParticlesPacket implements CustomPacketPayload {
     }
 
     public BloodSiphonParticlesPacket(FriendlyByteBuf buf) {
-        pos1 = buf.readVec3();
-        pos2 = buf.readVec3();
+        pos1 = Vec3.STREAM_CODEC.decode(buf);
+        pos2 = Vec3.STREAM_CODEC.decode(buf);
     }
 
     public void write(FriendlyByteBuf buf) {
-        buf.writeVec3(pos1);
-        buf.writeVec3(pos2);
+        Vec3.STREAM_CODEC.encode(buf, pos1);
+        Vec3.STREAM_CODEC.encode(buf, pos2);
     }
 
     public static void handle(BloodSiphonParticlesPacket packet, IPayloadContext context) {
