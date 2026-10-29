@@ -222,3 +222,17 @@ all four forge facings, paper UV/light capture, and balanced transforms. The fix
 baked item layers through a test resolver; actual world extraction/resource reload and
 in-game block appearance remain untested. Cached old mod types supply only unrelated tile
 signatures during focused compilation, not renderer implementations.
+
+## Acid orb, magma ball and snowball snapshots (2026-10-29)
+
+These three renderers now extend vanilla `EntityRenderer` directly. Extraction captures
+motion-derived orientation, bounding-box offset and texture selection; submission uses
+those values and native animation age. No entity or world is retained in their custom state.
+Existing geometry, animation rates, scales and light behavior are preserved, including the
+magma core's full brightness and separately lit swirl. Shared model parts are not mutated.
+
+`verifyOrbSnapshots` joins `check` when full compilation is available. Focused compilation
+and real collector/model snapshot checks passed for animation, texture layers, light,
+balanced transforms, independent submitted poses and unchanged shared geometry. Entity
+implementations still need porting; focused compilation uses the old mod binary only for
+those unrelated signatures. In-game extraction and appearance remain untested.
