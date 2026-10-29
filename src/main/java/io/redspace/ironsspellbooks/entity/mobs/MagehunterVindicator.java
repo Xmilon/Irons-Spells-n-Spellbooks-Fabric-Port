@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
+import net.minecraft.world.entity.EntityTypes;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.util.RandomSource;
@@ -14,7 +15,7 @@ import net.minecraft.world.level.Level;
 public class MagehunterVindicator extends Vindicator {
     //This is a wrapper class that in reality creates a vanilla Vindicator, but with the Magehunter sword
     public MagehunterVindicator(EntityType<? extends Vindicator> pEntityType, Level pLevel) {
-        super(EntityType.VINDICATOR, pLevel);
+        super(EntityTypes.VINDICATOR, pLevel);
     }
 
     @Override

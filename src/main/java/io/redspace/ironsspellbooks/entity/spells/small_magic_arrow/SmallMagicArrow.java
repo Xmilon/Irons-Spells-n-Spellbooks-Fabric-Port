@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.small_magic_arrow;
 
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.level.storage.ValueOutput;
 
 import net.minecraft.world.level.storage.ValueInput;
@@ -95,7 +96,7 @@ public class SmallMagicArrow extends AbstractMagicProjectile {
         Entity entity = entityHitResult.getEntity();
         boolean hit = DamageSources.applyDamage(entity, getDamage(), SpellRegistry.ARROW_VOLLEY_SPELL.get().getDamageSource(this, getOwner()));
         //TODO: add evasion and stuff. Also do this for all other projectiles?
-        boolean ignore = entity.getType() == EntityType.ENDERMAN;
+        boolean ignore = entity.getType() == EntityTypes.ENDERMAN;
         if (hit) {
             this.pierceOrDiscard();
         } else {

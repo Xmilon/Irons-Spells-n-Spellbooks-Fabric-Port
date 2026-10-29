@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.lightning;
 
+import net.minecraft.world.entity.EntityTypes;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
@@ -79,7 +80,7 @@ public class LightningBoltSpell extends AbstractSpell {
         } else {
             pos = Utils.moveToRelativeGroundLevel(level, pos, 10);
         }
-        LightningBolt lightningBolt = EntityType.LIGHTNING_BOLT.create(level);
+        LightningBolt lightningBolt = EntityTypes.LIGHTNING_BOLT.create(level, net.minecraft.world.entity.EntitySpawnReason.TRIGGERED);
         lightningBolt.setVisualOnly(true);
         lightningBolt.setPos(pos);
         level.addFreshEntity(lightningBolt);

@@ -324,3 +324,25 @@ the existing library world saved cleanly, and the temporary probe JAR was remove
 wizard/spider/summon implementations are not playable yet; their broader AI behavior remains
 untested. The latest full compile reports 1,368 errors, with no diagnostics in those four goals,
 server AI hook signatures or nearest-attack selector calls.
+
+## Entity synchronization, timers and built-in types (2026-10-29)
+
+Moved 21 built-in entity references to native `EntityTypes` fields. Lightning factories pass
+an explicit triggered-spawn reason. Existing mod registry IDs and cast-data formats remain
+unchanged. Old entity `hurtMarked` writes now use `syncVelocity`; impulse writes use `needsSync`,
+matching the current engine's `markHurt` and `push` implementations. The serializable
+`ImpulseCastData.hasImpulse` field is preserved.
+
+Invulnerability accesses use native getters/setters with the same durations. Ender Chain's
+manual decrement is removed: 26.3 already decrements this timer in `Entity.commonTick`, so
+retaining both would halve its immunity window. The actual server probe confirmed that a
+native ten-tick timer becomes nine after one common tick and that `push` requests native
+synchronization. Targeting regressions still passed and the temporary probe was removed.
+Ender Chain's complete damage/multipart logic and affected spells remain untested in-game;
+this native timer proof does not establish full spell/entity compatibility.
+
+The full compile is down from 1,399 to 1,313 errors across this pass. No removed motion-field
+or private invulnerability-field access remains in the changed sources. Next combat work:
+native neutral-mob anger references/end times and coordinated `hurtServer` overrides, preserving
+conditional effects and server-side damage results. Rendering, loot/recipes, teleport/save
+APIs and startup validation remain substantial outstanding groups.

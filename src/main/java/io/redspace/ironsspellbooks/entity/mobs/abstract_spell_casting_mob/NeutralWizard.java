@@ -168,12 +168,12 @@ public class NeutralWizard extends AbstractSpellCastingMob implements NeutralMob
     }
 
     public boolean isHostileTowards(LivingEntity entity) {
-        return isAngryAt(entity) && (entity.getType() != EntityType.PLAYER || angerLevels.getOrDefault(entity.getUUID(), 0) >= getAngerThreshold());
+        return isAngryAt(entity) && (entity.getType() != EntityTypes.PLAYER || angerLevels.getOrDefault(entity.getUUID(), 0) >= getAngerThreshold());
     }
 
     @Override
     public boolean isAngryAt(LivingEntity pTarget) {
-        return (pTarget.getType() == EntityType.PLAYER && angerLevels.containsKey(pTarget.getUUID()))
+        return (pTarget.getType() == EntityTypes.PLAYER && angerLevels.containsKey(pTarget.getUUID()))
                 || NeutralMob.super.isAngryAt(pTarget);
     }
 

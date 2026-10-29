@@ -515,7 +515,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
                 Pair.of(0, new LookAtTargetSink(45, 90)),
                 Pair.of(1, new MoveToTargetSink())
 
-//                Pair.of(0, new RunSometimes<>(new SetEntityLookTarget(EntityType.PLAYER, 6.0F), UniformInt.of(30, 60))),
+//                Pair.of(0, new RunSometimes<>(new SetEntityLookTarget(EntityTypes.PLAYER, 6.0F), UniformInt.of(30, 60))),
 //
 //                //Pair.of(0, new SetRaidStatus()),
 //                Pair.of(3, new RunOne<>(ImmutableList.of(
@@ -531,7 +531,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
 //                }, MemoryModuleType.MEETING_POINT, true, Optional.of((byte) 14)))
         );
         ImmutableList<Pair<Integer, ? extends Behavior<? super PriestEntity>>> idle = ImmutableList.of(
-                Pair.of(0, new RunSometimes<>(new SetEntityLookTarget(EntityType.PLAYER, 6.0F), UniformInt.of(30, 60))),
+                Pair.of(0, new RunSometimes<>(new SetEntityLookTarget(EntityTypes.PLAYER, 6.0F), UniformInt.of(30, 60))),
 
                 Pair.of(3, new RunOne<>(ImmutableList.of(
                         Pair.of(new RandomStroll(1.0F), 2),
@@ -566,8 +566,8 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
 //
 //        pBrain.addActivityWithConditions(Activity.IDLE,
 //                ImmutableList.of(
-//                        Pair.of(0, new RunSometimes<>(new SetEntityLookTarget(EntityType.PLAYER, 6.0F), UniformInt.of(30, 60))),
-//                        Pair.of(0, new AnimalMakeLove(EntityType.GOAT, 1.0F)),
+//                        Pair.of(0, new RunSometimes<>(new SetEntityLookTarget(EntityTypes.PLAYER, 6.0F), UniformInt.of(30, 60))),
+//                        Pair.of(0, new AnimalMakeLove(EntityTypes.GOAT, 1.0F)),
 //                        Pair.of(1, new FollowTemptation((p_149446_) -> {
 //                            return 1.25F;
 //                        })),

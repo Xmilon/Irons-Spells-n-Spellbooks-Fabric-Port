@@ -56,7 +56,7 @@ public class ExpulsionRing extends PassiveAbilityCurio {
                         var f = 1 - d / (RADIUS_SQR) + .6f * (entity instanceof LivingEntity living ? 1 - living.getAttributeValue(Attributes.KNOCKBACK_RESISTANCE) : 1);
                         var impulse = entity.getBoundingBox().getCenter().subtract(serverPlayer.getBoundingBox().getCenter()).normalize().add(0, 0.1, 0).scale(f);
                         entity.setDeltaMovement(entity.getDeltaMovement().add(impulse));
-                        entity.hurtMarked = true;
+                        entity.syncVelocity = true;
                     }
                 });
             }

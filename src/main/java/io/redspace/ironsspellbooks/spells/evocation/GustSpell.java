@@ -93,7 +93,7 @@ public class GustSpell extends AbstractSpell {
         if (kickback > 0) {
             entity.setDeltaMovement(entity.getDeltaMovement().subtract(entity.getLookAngle().scale(kickback * spellLevel * .25f)));
             entity.resetFallDistance();
-            entity.hurtMarked = true;
+            entity.syncVelocity = true;
         }
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }

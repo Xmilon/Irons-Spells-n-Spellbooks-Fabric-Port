@@ -148,9 +148,6 @@ public class EnderChain extends Entity implements AntiMagicSusceptible, IEntityW
     @Override
     public void tick() {
         super.tick();
-        if (invulnerableTime > 0) {
-            invulnerableTime--;
-        }
         if (warmup < VISUAL_WARMUP_TIME) {
             warmup++;
         }
@@ -186,7 +183,7 @@ public class EnderChain extends Entity implements AntiMagicSusceptible, IEntityW
         Vec3 deltaV = displacement.scale(-restraintStrength);
         deltaV.multiply(deltaV);
         victim.setDeltaMovement(victim.getDeltaMovement().add(deltaV));
-        victim.hurtMarked = true;
+        victim.syncVelocity = true;
         if (victim.getDeltaMovement().y >= 0) {
             victim.resetFallDistance();
         }
@@ -213,7 +210,7 @@ public class EnderChain extends Entity implements AntiMagicSusceptible, IEntityW
 
     @Override
     public boolean hurt(@NotNull DamageSource source, float amount) {
-        if (invulnerableTime > 0) {
+        if (getInvulnerableTime() > 0) {
             return false;
         }
         if (level().isClientSide() || isInvulnerableTo(source)) {
@@ -228,7 +225,7 @@ public class EnderChain extends Entity implements AntiMagicSusceptible, IEntityW
         } else {
             this.playSound(SoundEvents.CHAIN_STEP);
         }
-        invulnerableTime = 10;
+        setInvulnerableTime(10);
         return true;
     }
 

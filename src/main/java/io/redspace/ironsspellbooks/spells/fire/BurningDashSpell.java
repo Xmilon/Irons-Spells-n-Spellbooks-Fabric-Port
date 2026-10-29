@@ -67,7 +67,7 @@ public class BurningDashSpell extends AbstractSpell {
     @Override
     public void onClientCast(Level level, int spellLevel, LivingEntity entity, ICastData castData) {
         if (castData instanceof ImpulseCastData bdcd) {
-            entity.hasImpulse = bdcd.hasImpulse;
+            entity.needsSync = bdcd.hasImpulse;
             entity.setDeltaMovement(entity.getDeltaMovement().add(bdcd.x, bdcd.y, bdcd.z));
         }
 
@@ -81,7 +81,7 @@ public class BurningDashSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        entity.hasImpulse = true;
+        entity.needsSync = true;
         float multiplier = (15 + getSpellPower(spellLevel, entity)) / 12f;
 
         //Direction for Mobs to cast in
@@ -110,7 +110,7 @@ public class BurningDashSpell extends AbstractSpell {
 
 
         entity.addEffect(new MobEffectInstance(net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MobEffectRegistry.BURNING_DASH.get()), 15, getDamage(spellLevel, entity), false, false, false));
-        entity.invulnerableTime = 20;
+        entity.setInvulnerableTime(20);
         //startSpinAttack(entity, 10);
         playerMagicData.getSyncedData().setSpinAttackType(SpinAttackType.FIRE);
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);

@@ -67,7 +67,7 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
                             entity.hurt(mob.level().damageSources().mobAttack(mob), damage);
                             var impulse = (slamPos.subtract(entity.position()).add(0, 0.75, 0)).normalize().scale(Mth.lerp(entity.distanceToSqr(mob.position()) / (meleeRange * meleeRange), 2, .5));
                             entity.setDeltaMovement(entity.getDeltaMovement().add(impulse));
-                            entity.hurtMarked = true;
+                            entity.syncVelocity = true;
                             if (entity instanceof Player player && player.isBlocking()) {
                                 player.disableShield();
                             }
@@ -76,7 +76,7 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
                 } else {
                     if (distanceSquared <= meleeRange * meleeRange && Utils.hasLineOfSight(mob.level(), mob, target, true)) {
                         boolean flag = this.mob.doHurtTarget(target);
-                        target.invulnerableTime = 0;
+                        target.setInvulnerableTime(0);
                         if (flag) {
                             if (currentAttack.data.isSingleHit() && ((mob.getRandom().nextFloat() < .75f) || target.isBlocking())) {
                                 //Attack again! combos!

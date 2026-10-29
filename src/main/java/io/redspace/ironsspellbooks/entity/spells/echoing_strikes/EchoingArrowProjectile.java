@@ -59,7 +59,7 @@ public class EchoingArrowProjectile extends MagicArrowProjectile implements NoKn
 
     @Override
     protected void onHitEntity(@NotNull EntityHitResult entityHitResult) {
-        entityHitResult.getEntity().invulnerableTime = 0;
+        entityHitResult.getEntity().setInvulnerableTime(0);
         Entity entity = entityHitResult.getEntity();
         if (!victims.contains(entity)) {
             DamageSources.applyDamage(entity, damage, SpellRegistry.ECHOING_STRIKES_SPELL.get().getDamageSource(this, getOwner()));

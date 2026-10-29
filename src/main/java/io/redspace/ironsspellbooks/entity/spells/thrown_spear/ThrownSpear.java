@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.thrown_spear;
 
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.level.storage.ValueOutput;
 
 import net.minecraft.world.level.storage.ValueInput;
@@ -180,7 +181,7 @@ public class ThrownSpear extends AbstractArrow {
 
         this.dealtDamage = true;
         if (victim.hurt(damagesource, f)) {
-            if (victim.getType() == EntityType.ENDERMAN) {
+            if (victim.getType() == EntityTypes.ENDERMAN) {
                 return;
             }
 

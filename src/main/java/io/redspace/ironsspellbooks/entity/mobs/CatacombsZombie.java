@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -15,7 +16,7 @@ import net.minecraft.world.level.Level;
 public class CatacombsZombie extends Zombie {
     //This is a wrapper class that in reality creates a vanilla zombie, but with some cool stuff thrown on top
     public CatacombsZombie(EntityType<? extends Zombie> pEntityType, Level pLevel) {
-        super(EntityType.ZOMBIE, pLevel);
+        super(EntityTypes.ZOMBIE, pLevel);
         if (this.random.nextFloat() < .2f) {
             switch (this.random.nextIntBetweenInclusive(1, 4)) {
 

@@ -119,7 +119,7 @@ public class IceSpikeEntity extends AoeEntity {
             for (Entity entity : level().getEntities(this, damager).stream().filter(target -> canHitEntity(target) && !victims.contains(target)).collect(Collectors.toSet())) {
                 if (DamageSources.applyDamage(entity, damage, SpellRegistry.ICE_SPIKES_SPELL.get().getDamageSource(this, getOwner()))) {
                     entity.setDeltaMovement(entity.getDeltaMovement().add(0, this.getSpikeSize() * 0.3, 0));
-                    entity.hurtMarked = true;
+                    entity.syncVelocity = true;
                     entity.setTicksFrozen(entity.getTicksFrozen() + (int) (40 * getSpikeSize()));
                 }
                 victims.add(entity);

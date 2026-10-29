@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.spells.lightning;
 
+import net.minecraft.world.entity.EntityTypes;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.config.DefaultConfig;
 import io.redspace.ironsspellbooks.api.magic.MagicData;
@@ -71,7 +72,7 @@ public class AscensionSpell extends AbstractSpell {
     @Override
     public void onClientCast(Level level, int spellLevel, LivingEntity entity, ICastData castData) {
         if (castData instanceof ImpulseCastData data) {
-            entity.hasImpulse = data.hasImpulse;
+            entity.needsSync = data.hasImpulse;
             double y = Math.max(entity.getDeltaMovement().y, data.y);
             entity.setDeltaMovement(data.x, y, data.z);
         }
@@ -91,7 +92,7 @@ public class AscensionSpell extends AbstractSpell {
         }
         Vec3 strikePos = vec;
 
-        LightningBolt lightningBolt = EntityType.LIGHTNING_BOLT.create(level);
+        LightningBolt lightningBolt = EntityTypes.LIGHTNING_BOLT.create(level, net.minecraft.world.entity.EntitySpawnReason.TRIGGERED);
         lightningBolt.setVisualOnly(true);
         lightningBolt.setPos(strikePos);
         level.addFreshEntity(lightningBolt);
@@ -115,7 +116,7 @@ public class AscensionSpell extends AbstractSpell {
         Vec3 motion = entity.getLookAngle().multiply(1, 0, 1).normalize().add(0, 5, 0).scale(.125);
         playerMagicData.setAdditionalCastData(new ImpulseCastData((float) motion.x, (float) motion.y, (float) motion.z, true));
         entity.setDeltaMovement(entity.getDeltaMovement().add(motion));
-        entity.hasImpulse = true;
+        entity.needsSync = true;
 
 
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);

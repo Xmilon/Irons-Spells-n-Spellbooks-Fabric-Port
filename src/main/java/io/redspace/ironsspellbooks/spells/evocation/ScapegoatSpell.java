@@ -81,7 +81,7 @@ public class ScapegoatSpell extends AbstractSpell {
         goat.poofParticles(20, 1f);
         // todo: expose to tootip/power scaling?
         goat.setDurationRemaining(20 * 15);
-        goat.invulnerableTime = 60;
+        goat.setInvulnerableTime(60);
         world.addFreshEntity(goat);
         Utils.performTaunt(goat, 12f, Utils.tauntPredicate(entity));
     }

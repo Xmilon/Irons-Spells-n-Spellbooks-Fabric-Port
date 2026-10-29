@@ -180,7 +180,7 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
                         BlockState state = level().getBlockState(blockpos);
                         level().setBlockAndUpdate(blockpos, Blocks.AIR.defaultBlockState());
                         Vec3 spawn = blockpos.getCenter().subtract(dir.scale(1.5));
-                        FallingBlockEntity fallingBlockEntity = new FallingBlockEntity(EntityType.FALLING_BLOCK, level());
+                        FallingBlockEntity fallingBlockEntity = new FallingBlockEntity(EntityTypes.FALLING_BLOCK, level());
                         fallingBlockEntity.setPos(spawn);
                         fallingBlockEntity.setDeltaMovement(dir.scale(-.1));
                         level().addFreshEntity(fallingBlockEntity);
@@ -197,7 +197,7 @@ public class BlackHole extends Projectile implements AntiMagicSusceptible {
                 for (Entity entity : trackingEntities) {
                     if (entity.distanceToSqr(center) < 9) {
                         entity.setDeltaMovement(entity.getDeltaMovement().add(entity.position().subtract(center).normalize().scale(0.5f)));
-                        entity.hurtMarked = true;
+                        entity.syncVelocity = true;
                     }
                 }
             } else if ((tickCount - 1) % loopSoundDurationInTicks == 0 && (duration < loopSoundDurationInTicks || tickCount + loopSoundDurationInTicks < duration)) {

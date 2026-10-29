@@ -37,7 +37,7 @@ public class VoltStrikeEffect extends MagicMobEffect implements ISyncedMobEffect
             for (Entity entity : list) {
                 if (DamageSources.applyDamage(entity, amplifier, SpellRegistry.VOLT_STRIKE_SPELL.get().getDamageSource(livingEntity))) {
                     //Guarantee that the entity receives i-frames, since we are damaging every tick
-                    entity.invulnerableTime = 20;
+                    entity.setInvulnerableTime(20);
                     hit = true;
                     ignore = entity.getUUID();
                 }
@@ -64,7 +64,7 @@ public class VoltStrikeEffect extends MagicMobEffect implements ISyncedMobEffect
                 }
             }
             livingEntity.setDeltaMovement(livingEntity.getDeltaMovement().normalize().scale(-0.5).add(0, 0.5, 0));
-            livingEntity.hurtMarked = true;
+            livingEntity.syncVelocity = true;
 
             var x = livingEntity.getX();
             var y = livingEntity.getY() + 1;

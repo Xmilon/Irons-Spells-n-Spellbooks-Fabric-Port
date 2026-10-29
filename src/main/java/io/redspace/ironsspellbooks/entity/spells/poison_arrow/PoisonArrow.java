@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.spells.poison_arrow;
 
+import net.minecraft.world.entity.EntityTypes;
 import net.minecraft.world.level.storage.ValueOutput;
 
 import net.minecraft.world.level.storage.ValueInput;
@@ -115,7 +116,7 @@ public class PoisonArrow extends AbstractMagicProjectile {
         Entity entity = entityHitResult.getEntity();
         boolean hit = DamageSources.applyDamage(entity, getDamage(), SpellRegistry.POISON_ARROW_SPELL.get().getDamageSource(this, getOwner()));
         //TODO: add evasion and stuff. Also do this for all other projectiles?
-        boolean ignore = entity.getType() == EntityType.ENDERMAN;
+        boolean ignore = entity.getType() == EntityTypes.ENDERMAN;
         if (hit) {
             if (!ignore) {
                 if (!level().isClientSide() && !hasEmittedPoison)

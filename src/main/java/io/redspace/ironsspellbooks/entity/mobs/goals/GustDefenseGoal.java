@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs.goals;
 
+import net.minecraft.world.entity.EntityTypes;
 import io.redspace.ironsspellbooks.api.entity.IMagicEntity;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import net.minecraft.world.entity.EntityType;
@@ -42,7 +43,7 @@ public class GustDefenseGoal extends Goal {
             return false;
         //IronsSpellbooks.LOGGER.debug("shouldAreaAttack: in range");
 
-        if (livingEntity.getType() == EntityType.VINDICATOR) {
+        if (livingEntity.getType() == EntityTypes.VINDICATOR) {
             //IronsSpellbooks.LOGGER.debug("VINDICATOR!");
             start();
             return false;

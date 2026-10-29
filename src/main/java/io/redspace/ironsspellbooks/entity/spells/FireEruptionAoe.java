@@ -43,7 +43,7 @@ public class FireEruptionAoe extends AoeEntity {
         if (target.hurt(damageSource, getDamage())) {
             target.igniteForSeconds(5);
             target.setDeltaMovement(target.getDeltaMovement().add(0, .65, 0));
-            target.hurtMarked = true;
+            target.syncVelocity = true;
         }
     }
 

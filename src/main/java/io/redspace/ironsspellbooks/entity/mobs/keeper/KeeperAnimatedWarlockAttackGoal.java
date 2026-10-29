@@ -58,7 +58,7 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
                     mob.push(lunge.x, lunge.y, lunge.z);
                     if (distance <= meleeRange && Utils.hasLineOfSight(mob.level(), mob, target, true)) {
                         boolean flag = this.mob.doHurtTarget(target);
-                        target.invulnerableTime = 0;
+                        target.setInvulnerableTime(0);
                         if (flag) {
                             playImpactSound();
                             if (currentAttack.data.isSingleHit() && ((mob.getRandom().nextFloat() < .75f) || target.isBlocking())) {

@@ -123,7 +123,7 @@ public class ShadowSlashSpell extends AbstractSpell {
                                 Utils.clampedKnockbackResistanceFactor(targetEntity, .2f, 1f) * .1f);
                         targetEntity.setDeltaMovement(targetEntity.getDeltaMovement().add(knockback));
 
-                        targetEntity.hurtMarked = true;
+                        targetEntity.syncVelocity = true;
                     }
                 }
             }
@@ -135,7 +135,7 @@ public class ShadowSlashSpell extends AbstractSpell {
         Vec3 rayVector = end.subtract(Utils.getSpellCastStart(entity));
         Vec3 impulse = rayVector.scale(1 / 6f).add(0, 0.1, 0);
         entity.setDeltaMovement(entity.getDeltaMovement().scale(0.2).add(impulse));
-        entity.hurtMarked = true;
+        entity.syncVelocity = true;
         entity.addEffect(new MobEffectInstance(net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MobEffectRegistry.FALL_DAMAGE_IMMUNITY.get()), 20, 0, false, false, true));
 
         forward = impulse.normalize(); // recalculate forward as the direction we are actually moving

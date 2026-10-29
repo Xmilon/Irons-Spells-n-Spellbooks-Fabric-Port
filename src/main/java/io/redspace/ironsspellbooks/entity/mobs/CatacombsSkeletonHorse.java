@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.entity.mobs;
 
+import net.minecraft.world.entity.EntityTypes;
 import io.redspace.ironsspellbooks.entity.mobs.necromancer.NecromancerEntity;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
@@ -17,7 +18,7 @@ import net.minecraft.world.level.Level;
  */
 public class CatacombsSkeletonHorse extends SkeletonHorse {
     public CatacombsSkeletonHorse(EntityType<? extends SkeletonHorse> pEntityType, Level level) {
-        super(EntityType.SKELETON_HORSE, level);
+        super(EntityTypes.SKELETON_HORSE, level);
         this.setTamed(true);
         NecromancerEntity necromancer = EntityRegistry.NECROMANCER.get().create(level);
         if (necromancer != null) {

@@ -102,7 +102,7 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
         entityHitResult.getEntity().hurt(new DamageSource(level().damageSources().damageTypes.getHolderOrThrow(ISSDamageTypes.FIRE_MAGIC), this, getOwner()), getDamage());
-        entityHitResult.getEntity().invulnerableTime = 0;
+        entityHitResult.getEntity().setInvulnerableTime(0);
     }
 
     @Override

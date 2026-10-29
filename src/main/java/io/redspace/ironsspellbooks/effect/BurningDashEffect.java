@@ -22,7 +22,7 @@ public class BurningDashEffect extends MagicMobEffect {
                 if (entity instanceof LivingEntity) {
                     DamageSources.applyDamage(entity, amplifier, SpellRegistry.BURNING_DASH_SPELL.get().getDamageSource(livingEntity));
                     //Guarantee that the entity receives i-frames, since we are damaging every tick
-                    entity.invulnerableTime = 20;
+                    entity.setInvulnerableTime(20);
                 }
             }
         } else if (livingEntity.horizontalCollision) {

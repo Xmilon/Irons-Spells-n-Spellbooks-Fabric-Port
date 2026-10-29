@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks;
 
+import net.minecraft.world.entity.EntityTypes;
 import io.redspace.ironsspellbooks.entity.VisualFallingBlockRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingRenderer;
 import io.redspace.ironsspellbooks.entity.mobs.dead_king_boss.DeadKingSoulRenderer;
@@ -270,8 +271,8 @@ public class IronsSpellbooksClient implements ClientModInitializer {
         registerEntityRenderer(EntityRegistry.ICE_TOMB.get(), io.redspace.ironsspellbooks.entity.spells.ice_tomb.IceTombRenderer::new);
         registerEntityRenderer(EntityRegistry.SNOWBALL.get(), io.redspace.ironsspellbooks.entity.spells.snowball.SnowballRenderer::new);
         registerEntityRenderer(EntityRegistry.THROWN_SPEAR.get(), io.redspace.ironsspellbooks.entity.spells.thrown_spear.ThrownSpearRenderer::new);
-        registerEntityRenderer(EntityType.SMALL_FIREBALL, (context) -> new ReplacedFireballRenderer(context, 0.75f, .75f));
-        registerEntityRenderer(EntityType.FIREBALL, (context) -> new ReplacedFireballRenderer(context, 1.25f, 3f));
+        registerEntityRenderer(EntityTypes.SMALL_FIREBALL, (context) -> new ReplacedFireballRenderer(context, 0.75f, .75f));
+        registerEntityRenderer(EntityTypes.FIREBALL, (context) -> new ReplacedFireballRenderer(context, 1.25f, 3f));
         registerEntityRenderer(EntityRegistry.CONE_OF_COLD_PROJECTILE.get(), NoopRenderer::new);
         registerEntityRenderer(EntityRegistry.FIRE_BREATH_PROJECTILE.get(), NoopRenderer::new);
         registerEntityRenderer(EntityRegistry.POISON_BREATH_PROJECTILE.get(), NoopRenderer::new);

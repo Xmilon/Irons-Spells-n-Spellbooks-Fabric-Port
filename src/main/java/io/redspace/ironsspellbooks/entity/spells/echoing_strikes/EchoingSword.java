@@ -101,7 +101,7 @@ public class EchoingSword extends AbstractMagicProjectile implements IAnimatedAt
             if (distanceSqr < explosionRadiusSqr && canHitEntity(entity) && Utils.hasLineOfSight(level(), this.position(), entity.getBoundingBox().getCenter(), true)) {
                 double p = Mth.clamp((1 - distanceSqr / explosionRadiusSqr) + .4f, 0, 1);
                 float damage = (float) (this.damage * p);
-                entity.invulnerableTime = 0;
+                entity.setInvulnerableTime(0);
                 DamageSources.applyDamage(entity, damage, SpellRegistry.ECHOING_STRIKES_SPELL.get().getDamageSource(this, getOwner()));
             }
         }

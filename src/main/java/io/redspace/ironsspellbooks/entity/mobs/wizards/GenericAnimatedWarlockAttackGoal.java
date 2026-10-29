@@ -125,7 +125,7 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
 
     protected boolean handleDamaging(LivingEntity target, AttackKeyframe attackData) {
         boolean flag = this.mob.doHurtTarget(target);
-        target.invulnerableTime = 0;
+        target.setInvulnerableTime(0);
         float f = -Utils.getAngle(mob.getX(), mob.getZ(), target.getX(), target.getZ()) - Mth.HALF_PI;
         if (flag) {
             playImpactSound();

@@ -1,5 +1,6 @@
 package io.redspace.ironsspellbooks.item;
 
+import net.minecraft.world.entity.EntityTypes;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.particle.BlastwaveParticleOptions;
@@ -67,7 +68,7 @@ public class EnergizedCoreItem extends Item {
     }
 
     private void doLightningBolt(Level level, Vec3 pos) {
-        LightningBolt lightningBolt = EntityType.LIGHTNING_BOLT.create(level);
+        LightningBolt lightningBolt = EntityTypes.LIGHTNING_BOLT.create(level, net.minecraft.world.entity.EntitySpawnReason.TRIGGERED);
         lightningBolt.setVisualOnly(true);
         lightningBolt.setPos(pos);
         level.addFreshEntity(lightningBolt);

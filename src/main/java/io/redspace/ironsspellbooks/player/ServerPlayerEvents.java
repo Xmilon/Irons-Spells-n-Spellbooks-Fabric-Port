@@ -591,7 +591,7 @@ public class ServerPlayerEvents {
             setIfNonNull(mob, AttributeRegistry.FIRE_MAGIC_RESIST, 1.5);
         }
         //TODO: replace this with "fire_elemental" entity tag for all fiery mobs (blaze, magma cubes, modded mobs)
-        if (mob.getType() == EntityType.BLAZE) {
+        if (mob.getType() == EntityTypes.BLAZE) {
             setIfNonNull(mob, AttributeRegistry.ICE_MAGIC_RESIST, 0.5);
         }
     }

@@ -67,6 +67,13 @@ public final class TargetingPortProbe implements ModInitializer {
                 var allowedRevenge = new GenericHurtByTargetGoal(healer, target -> false);
                 require(allowedRevenge.canUse(), "Valid revenge attacker rejected");
                 System.out.println("Native targeting server checks passed: nearest support, selector context, recovery, stop/combat isolation, stale village target and revenge filters");
+                healer.needsSync = false;
+                healer.push(.1, 0, 0);
+                require(healer.needsSync, "Native impulse did not request synchronization");
+                healer.setInvulnerableTime(10);
+                healer.commonTick();
+                require(healer.getInvulnerableTime() == 9, "Native common tick did not decrement invulnerability exactly once");
+                System.out.println("Native entity API server checks passed: impulse synchronization and one-tick invulnerability countdown");
             } catch (ReflectiveOperationException exception) {
                 throw new AssertionError(exception);
             } finally {

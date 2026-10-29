@@ -141,7 +141,7 @@ public class TelekinesisSpell extends AbstractSpell {
                         Utils.signedMin(delta.z, force.z * 4)
                 );
                 targetEntity.setDeltaMovement(deltaMovement.add(clampedMotion));
-                targetEntity.hurtMarked = true;
+                targetEntity.syncVelocity = true;
             }
         }
     }

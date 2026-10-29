@@ -64,7 +64,7 @@ public class VoltStrikeSpell extends AbstractSpell {
 
     @Override
     public void onCast(Level world, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        entity.hasImpulse = true;
+        entity.needsSync = true;
         float multiplier = (15 + getSpellPower(spellLevel, entity)) / 20f;
 
         Vec3 forward = entity.getLookAngle();
@@ -89,10 +89,10 @@ public class VoltStrikeSpell extends AbstractSpell {
                 Mth.lerp(.75f, entity.getDeltaMovement().y, impulse.y),
                 Mth.lerp(.75f, entity.getDeltaMovement().z, impulse.z)
         ));
-        entity.hurtMarked = true;
+        entity.syncVelocity = true;
 
         entity.addEffect(new MobEffectInstance(net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MobEffectRegistry.VOLT_STRIKE.get()), 10, getDamage(spellLevel, entity), false, false, false));
-        entity.invulnerableTime = 20;
+        entity.setInvulnerableTime(20);
         playerMagicData.getSyncedData().setSpinAttackType(SpinAttackType.LIGHTNING);
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);
     }

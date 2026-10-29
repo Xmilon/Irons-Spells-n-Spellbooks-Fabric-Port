@@ -52,7 +52,7 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
         if (target.hurt(damageSource, getDamage())) {
             target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 120, slownessAmplifier));
             target.setDeltaMovement(target.getDeltaMovement().add(0, .5, 0));
-            target.hurtMarked = true;
+            target.syncVelocity = true;
         }
     }
 
