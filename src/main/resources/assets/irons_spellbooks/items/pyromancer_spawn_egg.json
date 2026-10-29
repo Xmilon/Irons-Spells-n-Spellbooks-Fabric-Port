@@ -1,0 +1,16 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "irons_spellbooks:item/pyromancer_spawn_egg",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -8777712
+      },
+      {
+        "type": "minecraft:constant",
+        "value": -14277339
+      }
+    ]
+  }
+}

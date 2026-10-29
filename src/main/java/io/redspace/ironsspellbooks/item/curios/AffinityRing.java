@@ -3,14 +3,14 @@ package io.redspace.ironsspellbooks.item.curios;
 import net.minecraft.world.item.Item;
 
 import io.redspace.ironsspellbooks.api.item.curios.AffinityData;
-import io.redspace.ironsspellbooks.render.AffinityRingRenderer;
+
 import net.minecraft.ChatFormatting;
-import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.BlockEntityWithoutLevelRenderer;
+
+
 import net.minecraft.network.chat.Component;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.neoforged.neoforge.client.extensions.common.IClientItemExtensions;
+
 
 import java.util.List;
 
@@ -40,14 +40,7 @@ public class AffinityRing extends CurioBaseItem {
 
     @Override
     public Component getName(ItemStack pStack) {
-        return Component.translatable(this.getDescriptionId(pStack), AffinityData.getAffinityData(pStack).getNameForItem());
+        return Component.translatable(this.getDescriptionId(), AffinityData.getAffinityData(pStack).getNameForItem());
     }
 
-    public static class ClientExtension implements IClientItemExtensions {
-
-        public BlockEntityWithoutLevelRenderer getCustomRenderer() {
-            return new AffinityRingRenderer(Minecraft.getInstance().getItemRenderer(),
-                    Minecraft.getInstance().getEntityModels());
-        }
-    }
 }

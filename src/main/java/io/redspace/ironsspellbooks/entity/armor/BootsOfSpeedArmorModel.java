@@ -15,7 +15,7 @@ public class BootsOfSpeedArmorModel extends DefaultedItemGeoModel<BootsOfSpeedAr
 
     @Override
     public Identifier getModelResource(GeoRenderState state) {
-        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/boots_of_speed.geo.json");
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "boots_of_speed");
     }
 
     @Override
@@ -25,6 +25,6 @@ public class BootsOfSpeedArmorModel extends DefaultedItemGeoModel<BootsOfSpeedAr
 
     @Override
     public Identifier getAnimationResource(BootsOfSpeedArmorItem animatable) {
-        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "wizard_armor_animation");
     }
 }

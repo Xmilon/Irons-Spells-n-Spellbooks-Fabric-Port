@@ -1,27 +1,23 @@
 package io.redspace.ironsspellbooks.item.weapons.pyrium_staff;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import net.minecraft.client.model.Model;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
 import net.minecraft.resources.Identifier;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 
-@OnlyIn(Dist.CLIENT)
-public class PyriumStaffHeadModel extends Model {
-    public static final Identifier TEXTURE = IronsSpellbooks.id("textures/item/pyrium_staff_head.png");
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(IronsSpellbooks.id("pyrium_staff_head"), "main");
-    private final ModelPart root;
+@Environment(EnvType.CLIENT)
+public class PyriumStaffHeadModel extends Model<Void> {
+    public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/item/pyrium_staff_head.png");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "pyrium_staff_head"), "main");
 
     public PyriumStaffHeadModel(ModelPart pRoot) {
-        super(RenderType::entityCutout);
-        this.root = pRoot;
+        super(pRoot, RenderTypes::entityCutoutCull);
     }
 
     public static LayerDefinition createBodyLayer() {
@@ -39,12 +35,4 @@ public class PyriumStaffHeadModel extends Model {
         return LayerDefinition.create(meshdefinition, 32, 32);
     }
 
-    public RenderType renderType() {
-        return renderType(TEXTURE);
-    }
-
-    @Override
-    public void renderToBuffer(PoseStack pPoseStack, VertexConsumer pBuffer, int pPackedLight, int pPackedOverlay, int pColor) {
-        this.root.render(pPoseStack, pBuffer, pPackedLight, pPackedOverlay, pColor);
-    }
 }

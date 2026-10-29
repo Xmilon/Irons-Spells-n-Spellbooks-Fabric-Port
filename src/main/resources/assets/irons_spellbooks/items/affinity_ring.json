@@ -1,0 +1,10 @@
+{
+  "model": {
+    "type": "irons_spellbooks:school",
+    "kind": "affinity_ring",
+    "fallback": {
+      "type": "minecraft:model",
+      "model": "irons_spellbooks:item/affinity_ring_evocation"
+    }
+  }
+}

@@ -16,7 +16,7 @@ public class PyromancerArmorModel extends GeoModel<PyromancerArmorItem> {
 
     @Override
     public Identifier getModelResource(GeoRenderState state) {
-        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/pyromancer_armor.geo.json");
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "pyromancer_armor");
     }
 
     @Override
@@ -26,7 +26,7 @@ public class PyromancerArmorModel extends GeoModel<PyromancerArmorItem> {
 
     @Override
     public Identifier getAnimationResource(PyromancerArmorItem animatable) {
-        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "wizard_armor_animation");
     }
 //    public static String listOfBonesToString(List<IBone> list){
 //        String s = "";

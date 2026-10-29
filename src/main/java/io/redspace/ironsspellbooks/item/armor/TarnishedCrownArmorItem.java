@@ -13,8 +13,8 @@ import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import com.geckolib.renderer.GeoArmorRenderer;
 
 public class TarnishedCrownArmorItem extends ExtendedArmorItem implements IPresetSpellContainer {
@@ -27,7 +27,7 @@ public class TarnishedCrownArmorItem extends ExtendedArmorItem implements IPrese
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public GeoArmorRenderer<?, ?> supplyRenderer() {
         return ArmorClientRenderers.create(this);
     }

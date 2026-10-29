@@ -6,8 +6,8 @@ import net.minecraft.world.item.equipment.ArmorType;
 
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.registries.ArmorMaterialRegistry;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import com.geckolib.renderer.GeoArmorRenderer;
 
 public class PlaguedArmorItem extends ImbuableChestplateArmorItem {
@@ -16,7 +16,7 @@ public class PlaguedArmorItem extends ImbuableChestplateArmorItem {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public GeoArmorRenderer<?, ?> supplyRenderer() {
         return ArmorClientRenderers.create(this);
     }

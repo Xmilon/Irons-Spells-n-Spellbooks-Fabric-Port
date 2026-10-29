@@ -16,7 +16,7 @@ public class ShadowwalkerArmorModel extends GeoModel<ShadowwalkerArmorItem> {
 
     @Override
     public Identifier getModelResource(GeoRenderState state) {
-        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/shadowwalker_armor.geo.json");
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "shadowwalker_armor");
     }
 
     @Override
@@ -26,6 +26,6 @@ public class ShadowwalkerArmorModel extends GeoModel<ShadowwalkerArmorItem> {
 
     @Override
     public Identifier getAnimationResource(ShadowwalkerArmorItem animatable) {
-        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "wizard_armor_animation");
     }
 }

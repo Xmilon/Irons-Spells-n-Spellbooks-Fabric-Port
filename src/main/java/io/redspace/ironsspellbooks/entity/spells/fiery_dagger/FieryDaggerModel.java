@@ -12,7 +12,7 @@ import com.geckolib.model.GeoModel;
 
 public class FieryDaggerModel extends GeoModel<FieryDaggerEntity> {
     public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/fiery_dagger.png");
-    public static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/fiery_dagger.geo.json");
+    public static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "fiery_dagger");
     @Override
     public Identifier getModelResource(GeoRenderState state) {
         return MODEL;

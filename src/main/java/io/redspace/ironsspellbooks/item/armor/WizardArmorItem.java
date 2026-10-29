@@ -7,10 +7,10 @@ import net.minecraft.world.item.equipment.ArmorType;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.registries.ArmorMaterialRegistry;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
-import net.minecraft.world.item.ArmorItem;
+
 import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import org.jetbrains.annotations.NotNull;
 import com.geckolib.renderer.GeoArmorRenderer;
 
@@ -25,16 +25,16 @@ public class WizardArmorItem extends ImbuableChestplateArmorItem implements IDis
     }
 
     @Override
-    public @NotNull String getDescriptionId(ItemStack stack) {
-        if (stack == null || !(stack.getItem() instanceof ArmorItem armorItem) || armorItem.getType() != Type.HELMET) {
-            return super.getDescriptionId(stack);
+    public @NotNull net.minecraft.network.chat.Component getName(ItemStack stack) {
+        if (stack == null || !(stack.getItem() instanceof ExtendedArmorItem armorItem) || armorItem.getArmorType() != ArmorType.HELMET) {
+            return super.getName(stack);
         } else {
-            return stack.getOrDefault(ComponentRegistry.CLOTHING_VARIANT, "").equals("hat") ? descIdHat : descIdHood;
+            return net.minecraft.network.chat.Component.translatable(stack.getOrDefault(ComponentRegistry.CLOTHING_VARIANT, "").equals("hat") ? descIdHat : descIdHood);
         }
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public GeoArmorRenderer<?, ?> supplyRenderer() {
         return ArmorClientRenderers.create(this);
     }

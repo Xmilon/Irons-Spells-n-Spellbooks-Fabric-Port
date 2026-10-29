@@ -7,7 +7,7 @@ import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import net.minecraft.core.Holder;
-import net.minecraft.world.item.ArmorItem;
+
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.ItemStack;
 
@@ -23,7 +23,7 @@ public abstract class ImbuableChestplateArmorItem extends ExtendedArmorItem impl
             return;
         }
 
-        if (itemStack.getItem() instanceof ArmorItem armorItem && armorItem.getType() == Type.CHESTPLATE) {
+        if (itemStack.getItem() instanceof ExtendedArmorItem armorItem && armorItem.getArmorType() == ArmorType.CHESTPLATE) {
             if (!ISpellContainer.isSpellContainer(itemStack)) {
                 var spellContainer = ISpellContainer.create(1, true, true);
                 ISpellContainer.set(itemStack, spellContainer);

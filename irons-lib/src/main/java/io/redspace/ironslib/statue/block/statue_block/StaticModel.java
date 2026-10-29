@@ -18,7 +18,7 @@ public class StaticModel
    extends GeoModel<StaticModel>
    implements GeoAnimatable,
    GeoRenderer<StaticModel, Void, PlayerStatueBlockRenderer.PlayerStatueBlockRenderState> {
-   private static final Identifier ANIMATION = Identifier.fromNamespaceAndPath("irons_lib", "animations/statue_poses.animation.json");
+   private static final Identifier ANIMATION = Identifier.fromNamespaceAndPath("irons_lib", "statue_poses");
    private final Identifier model;
    private final Identifier texture;
    AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);

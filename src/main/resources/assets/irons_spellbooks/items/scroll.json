@@ -1,0 +1,80 @@
+{
+  "model": {
+    "type": "irons_spellbooks:school",
+    "kind": "scroll",
+    "fallback": {
+      "entries": [
+        {
+          "threshold": 1.0,
+          "model": {
+            "model": "irons_spellbooks:item/scroll_blood",
+            "type": "minecraft:model"
+          }
+        },
+        {
+          "threshold": 2.0,
+          "model": {
+            "model": "irons_spellbooks:item/scroll_eldritch",
+            "type": "minecraft:model"
+          }
+        },
+        {
+          "threshold": 3.0,
+          "model": {
+            "model": "irons_spellbooks:item/scroll_ender",
+            "type": "minecraft:model"
+          }
+        },
+        {
+          "threshold": 4.0,
+          "model": {
+            "model": "irons_spellbooks:item/scroll_evocation",
+            "type": "minecraft:model"
+          }
+        },
+        {
+          "threshold": 5.0,
+          "model": {
+            "model": "irons_spellbooks:item/scroll_fire",
+            "type": "minecraft:model"
+          }
+        },
+        {
+          "threshold": 6.0,
+          "model": {
+            "model": "irons_spellbooks:item/scroll_holy",
+            "type": "minecraft:model"
+          }
+        },
+        {
+          "threshold": 7.0,
+          "model": {
+            "model": "irons_spellbooks:item/scroll_ice",
+            "type": "minecraft:model"
+          }
+        },
+        {
+          "threshold": 8.0,
+          "model": {
+            "model": "irons_spellbooks:item/scroll_lightning",
+            "type": "minecraft:model"
+          }
+        },
+        {
+          "threshold": 9.0,
+          "model": {
+            "model": "irons_spellbooks:item/scroll_nature",
+            "type": "minecraft:model"
+          }
+        }
+      ],
+      "fallback": {
+        "type": "minecraft:model",
+        "model": "irons_spellbooks:item/scroll"
+      },
+      "type": "minecraft:range_dispatch",
+      "property": "minecraft:custom_model_data",
+      "index": 0
+    }
+  }
+}

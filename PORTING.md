@@ -147,7 +147,7 @@ Keeper and Tyros renderers, and the armor renderers are ported. Marked `unverifi
 listeners (Tyros particles), per-bone layer poses (eyes, charge, flame), and armor async-bone conventions.
 Known gaps: re-draw layers (swirl, ghost, soul) cannot tint per pass; the hard-coded mob cape layer and the
 Summoned Skeleton/Zombie vanilla-fallback renderers are not ported; player render layers (`*Layer.Vanilla`)
-and the GeckoLib armor item registration (`ExtendedArmorItem`) wait for the item/API phase.
+remain open. GeckoLib armor item providers and the wizard clothing variant now use native item/state APIs.
 
 Item/registry/save status: armor items use `ArmorMaterial`/`ArmorType` with `Properties.humanoidArmor`; weapon tiers build
 a `ToolMaterial`. Items and blocks get their registry key through `ItemIdContext` (set by the `DeferredRegister` shim)
@@ -157,3 +157,54 @@ and `ItemMixin`/`BlockBehaviourMixin` (`Properties.setId`); mixin application is
 Still needed: tag data for `irons_spellbooks:armor_repair/*` and `irons_spellbooks:weapon_repair`, equipment asset JSONs under
 `assets/irons_spellbooks/equipment/`, `SummonManager` entity save/load, remaining `Item` signatures (`useOn`,
 `releaseUsing`, `addCooldown`, `inventoryTick`), and particle runtime validation.
+
+## Native equipment, item models and GeckoLib resources (2026-10-28)
+
+Equipment now uses the current armor/tool components and per-material repair tags. Native
+armor attributes are extended once; legacy player/default-attribute mixins and reflective
+fallback registration were removed. Fabric's default-attribute callback remains the single
+registration path and preserves values supplied by custom entities. Pumpkin armor uses the
+vanilla gaze-disguise tag; the developer crown remains indestructible.
+
+An isolated Fabric server probe (`EquipmentPortProbe`) passed all 15 weapon tiers' damage,
+speed, durability and repair checks; armor durability and modifier checks; pumpkin disguise;
+compass codec/target conversion; scroll school data; and preservation of a custom entity's
+mana default. It uses current production equipment/attribute sources with fixture item IDs.
+This does not validate the full main-mod registry or accessory equipment behavior. The probe
+stopped cleanly and its temporary JAR was removed from the library run directory.
+
+231 native item definitions replace old baked-model swaps, item properties and client
+extensions. They cover GUI/head variants, wizard clothing, scroll/ring schools, crossbow
+charge/pull stages, throwing state, compass frames and the Pyrium staff. The compass keeps
+its saved catacomb coordinate and mirrors it into the native lodestone component, targeting
+the Overworld without requiring a lodestone block. The staff captures animation time before
+submission and uses native special-model rendering for its head and full-bright orb.
+The removed vanilla spawn-egg template is preserved with a mod-owned layered template and
+unchanged mask PNGs copied from the cached Minecraft 1.21.1 client; original egg colors remain.
+
+`verifyPortItemModels` checks native codecs/dependencies, school fallbacks, and captured staff
+submission. A focused run decoded 230 definitions; the wizard component selector still needs
+the full component bootstrap. A separate dependency scan followed 370 models without a missing
+parent/reference. `verifyPortArmorVariants` passed immutable variant mapping, addon namespaces,
+unknown/default selection and clearing reused state; actual equipped-stack extraction and
+rendered armor remain untested. Focused runs compile the current changed sources against 26.3,
+using the cached old mod binary only for unrelated unchanged signatures. These two normal
+Gradle checks depend on full main compilation, which is still blocked.
+
+GeckoLib 5 discovers `geckolib/models` and `geckolib/animations`, with bare cache identifiers.
+Moved all 41 main-mod models and 11 unique animation files into those folders and updated
+callers. Geometry/animation bytes are unchanged. The redundant `spectral_hammer.json` matched
+`spectral_hammer.animation.json` byte-for-byte and was removed to avoid a duplicate cache key.
+PAL's `player_animations` folder is unchanged. Fixed two remaining old library animation IDs.
+Wizard armor captures its clothing variant during extraction; drawing reads only that snapshot.
+
+`verifyPortGeckoResources` runs independently of main compilation and uses GeckoLib's actual
+geometry baker and animation/Molang parser. All 61 models and 13 animation files across both
+projects passed, including unique cache keys and critical identifiers. Library build/checks,
+GUI snapshots and bundled dependency verification also passed. These checks do not load client
+textures, reload resources in-game, or validate Vulkan/OpenGL output.
+
+The latest full compiler report is 1,503 errors (down from 1,750 after particles). The main
+mod is not playable yet. Next: remaining block/entity renderers, native gameplay API changes,
+startup mixins and complete registry validation. FireBoss's dedicated dagger model shortcut,
+remaining live-entity render states, actual equipment/casting visuals and backend testing remain open.

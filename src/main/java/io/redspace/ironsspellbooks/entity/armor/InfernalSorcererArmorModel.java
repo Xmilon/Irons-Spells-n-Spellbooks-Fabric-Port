@@ -15,7 +15,7 @@ public class InfernalSorcererArmorModel extends DefaultedItemGeoModel<InfernalSo
 
     @Override
     public Identifier getModelResource(GeoRenderState state) {
-        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/infernal_sorcerer.geo.json");
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "infernal_sorcerer");
     }
 
     @Override
@@ -25,6 +25,6 @@ public class InfernalSorcererArmorModel extends DefaultedItemGeoModel<InfernalSo
 
     @Override
     public Identifier getAnimationResource(InfernalSorcererArmorItem animatable) {
-        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "wizard_armor_animation");
     }
 }

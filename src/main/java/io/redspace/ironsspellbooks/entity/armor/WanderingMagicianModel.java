@@ -16,7 +16,7 @@ public class WanderingMagicianModel extends GeoModel<WanderingMagicianArmorItem>
 
     @Override
     public Identifier getModelResource(GeoRenderState state) {
-        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/wandering_magician_armor.geo.json");
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "wandering_magician_armor");
     }
 
     @Override
@@ -26,7 +26,7 @@ public class WanderingMagicianModel extends GeoModel<WanderingMagicianArmorItem>
 
     @Override
     public Identifier getAnimationResource(WanderingMagicianArmorItem animatable) {
-        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "wizard_armor_animation");
     }
 //    public static String listOfBonesToString(List<IBone> list){
 //        String s = "";

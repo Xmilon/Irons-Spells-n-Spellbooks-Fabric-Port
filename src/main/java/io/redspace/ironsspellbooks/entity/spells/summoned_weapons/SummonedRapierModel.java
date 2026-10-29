@@ -8,8 +8,8 @@ import com.geckolib.model.GeoModel;
 
 public class SummonedRapierModel extends GeoModel<SummonedWeaponEntity> {
     public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/summoned_weapons/summoned_rapier.png");
-    public static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/summoned_rapier.geo.json");
-    public static final Identifier ANIMATIONS = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/summoned_weapon_animations.json");
+    public static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "summoned_rapier");
+    public static final Identifier ANIMATIONS = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "summoned_weapon_animations");
 
     @Override
     public Identifier getModelResource(GeoRenderState state) {

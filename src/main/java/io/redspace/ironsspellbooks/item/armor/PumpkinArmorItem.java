@@ -5,12 +5,8 @@ import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.equipment.ArmorType;
 
 import io.redspace.ironsspellbooks.registries.ArmorMaterialRegistry;
-import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.monster.EnderMan;
-import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ItemStack;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import com.geckolib.renderer.GeoArmorRenderer;
 
 public class PumpkinArmorItem extends ExtendedArmorItem {
@@ -18,12 +14,8 @@ public class PumpkinArmorItem extends ExtendedArmorItem {
         super(ArmorMaterialRegistry.PUMPKIN, slot, settings, withManaAttribute(75));
     }
 
-    public boolean isEnderMask(ItemStack stack, Player player, EnderMan endermanEntity) {
-        return player.getItemBySlot(EquipmentSlot.HEAD).is(this);
-    }
-
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public GeoArmorRenderer<?, ?> supplyRenderer() {
         return ArmorClientRenderers.create(this);
     }

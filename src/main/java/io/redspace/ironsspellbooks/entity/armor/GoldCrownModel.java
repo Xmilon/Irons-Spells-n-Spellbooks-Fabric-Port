@@ -16,7 +16,7 @@ public class GoldCrownModel extends GeoModel<GoldCrownArmorItem> {
 
     @Override
     public Identifier getModelResource(GeoRenderState state) {
-        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/tarnished_armor.geo.json");
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "tarnished_armor");
     }
 
     @Override
@@ -26,6 +26,6 @@ public class GoldCrownModel extends GeoModel<GoldCrownArmorItem> {
 
     @Override
     public Identifier getAnimationResource(GoldCrownArmorItem animatable) {
-        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "wizard_armor_animation");
     }
 }

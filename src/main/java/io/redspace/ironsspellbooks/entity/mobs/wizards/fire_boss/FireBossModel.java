@@ -27,7 +27,7 @@ import com.geckolib.cache.model.GeoBone;
 public class FireBossModel extends AbstractSpellCastingMobModel {
     public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/fire_boss/tyros.png");
     public static final Identifier TEXTURE_SOUL_MODE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/fire_boss/tyros_soul_mode.png");
-    public static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/tyros.geo.json");
+    public static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "tyros");
     private static final float tilt = 15 * Mth.DEG_TO_RAD;
     private static final Vector3f forward = new Vector3f(0, 0, Mth.sin(tilt) * -12);
 

@@ -9,6 +9,7 @@ import net.minecraft.world.item.component.CustomData;
 import net.minecraft.resources.Identifier;
 
 import java.util.Optional;
+import java.util.List;
 
 public final class ScrollSchoolTag {
     public static final String SCHOOL_TAG = "school";
@@ -46,7 +47,7 @@ public final class ScrollSchoolTag {
             return Optional.empty();
         }
         var tag = customData.copyTag();
-        var school = tag.getString(SCHOOL_TAG);
+        var school = tag.getStringOr(SCHOOL_TAG, "");
         if (school == null || school.isBlank()) {
             return Optional.empty();
         }
@@ -64,7 +65,7 @@ public final class ScrollSchoolTag {
             stack.remove(DataComponents.CUSTOM_MODEL_DATA);
             return;
         }
-        stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(modelValue));
+        stack.set(DataComponents.CUSTOM_MODEL_DATA, new CustomModelData(List.of((float) modelValue), List.of(), List.of(), List.of()));
     }
 
     private static int modelValueForSchool(String schoolIdOrPath) {

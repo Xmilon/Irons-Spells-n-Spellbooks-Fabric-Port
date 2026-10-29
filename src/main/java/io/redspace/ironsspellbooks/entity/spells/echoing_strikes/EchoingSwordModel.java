@@ -10,8 +10,8 @@ import com.geckolib.model.GeoModel;
 
 public class EchoingSwordModel<T extends Entity & GeoEntity> extends GeoModel<T> {
     public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/summoned_weapons/summoned_claymore.png");
-    public static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/summoned_claymore.geo.json");
-    public static final Identifier ANIMATIONS = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/summoned_weapon_animations.json");
+    public static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "summoned_claymore");
+    public static final Identifier ANIMATIONS = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "summoned_weapon_animations");
 
     @Override
     public Identifier getModelResource(GeoRenderState state) {
@@ -28,4 +28,3 @@ public class EchoingSwordModel<T extends Entity & GeoEntity> extends GeoModel<T>
         return ANIMATIONS;
     }
 }
-

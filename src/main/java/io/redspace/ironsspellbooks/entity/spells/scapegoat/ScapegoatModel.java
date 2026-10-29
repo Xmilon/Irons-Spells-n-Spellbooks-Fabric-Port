@@ -17,8 +17,8 @@ import com.geckolib.model.DefaultedEntityGeoModel;
 
 public class ScapegoatModel extends DefaultedEntityGeoModel<ScapegoatEntity> {
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/scapegoat.png");
-    private static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/scapegoat.geo.json");
-    public static final Identifier ANIMS = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/scapegoat_animations.animation.json");
+    private static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "scapegoat");
+    public static final Identifier ANIMS = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "scapegoat_animations");
 
     public ScapegoatModel() {
         super(IronsSpellbooks.id("spellcastingmob"));

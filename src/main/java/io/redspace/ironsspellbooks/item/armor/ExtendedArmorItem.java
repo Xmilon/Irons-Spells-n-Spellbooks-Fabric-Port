@@ -7,37 +7,32 @@ import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.animation.RawAnimation;
 import com.geckolib.animation.AnimationController;
 
-import com.google.common.base.Suppliers;
 import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.fabricmc.loader.api.FabricLoader;
 import io.redspace.ironsspellbooks.item.weapons.AttributeContainer;
 import net.minecraft.core.Holder;
-import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlotGroup;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.equipment.ArmorType;
 import net.minecraft.world.item.equipment.ArmorMaterial;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 import com.geckolib.animatable.GeoItem;
 import com.geckolib.animatable.client.GeoRenderProvider;
 import com.geckolib.animatable.instance.AnimatableInstanceCache;
-import com.geckolib.animation.*;
 import com.geckolib.renderer.GeoArmorRenderer;
 import com.geckolib.util.GeckoLibUtil;
 
 import java.util.function.Consumer;
-import java.util.function.Supplier;
 
 public abstract class ExtendedArmorItem extends Item implements GeoItem {
     private final ArmorType armorType;
 
     public ExtendedArmorItem(ArmorMaterial pMaterial, ArmorType pType, Properties pProperties, AttributeContainer... attributes) {
-        super(pProperties.humanoidArmor(pMaterial, pType).attributes(createArmorAttributes(pMaterial, pType, attributes)));
+        super(armorProperties(pMaterial, pType, pProperties, attributes));
         this.armorType = pType;
     }
 
@@ -45,30 +40,22 @@ public abstract class ExtendedArmorItem extends Item implements GeoItem {
         return armorType;
     }
 
+    private static Properties armorProperties(ArmorMaterial material, ArmorType type, Properties properties, AttributeContainer... attributes) {
+        properties.humanoidArmor(material, type).attributes(createArmorAttributes(material, type, attributes));
+        if (material.durability() == 0) {
+            properties.component(net.minecraft.core.component.DataComponents.MAX_DAMAGE, null)
+                    .component(net.minecraft.core.component.DataComponents.DAMAGE, null);
+        }
+        return properties;
+    }
+
     private static ItemAttributeModifiers createArmorAttributes(ArmorMaterial material, ArmorType type, AttributeContainer... attributes) {
-        int armor = material.defense().getOrDefault(type, 0);
-        float toughness = material.toughness();
-        ItemAttributeModifiers.Builder builder = ItemAttributeModifiers.builder();
+        ItemAttributeModifiers modifiers = material.createAttributes(type);
         EquipmentSlotGroup slotGroup = EquipmentSlotGroup.bySlot(type.getSlot());
-        Identifier id = Identifier.withDefaultNamespace("armor." + type.getName());
-        builder.add(
-                Attributes.ARMOR, new AttributeModifier(id, armor, AttributeModifier.Operation.ADD_VALUE), slotGroup
-        );
-        builder.add(
-                Attributes.ARMOR_TOUGHNESS, new AttributeModifier(id, toughness, AttributeModifier.Operation.ADD_VALUE), slotGroup
-        );
-        float knockbackResistance = material.knockbackResistance();
-        if (knockbackResistance > 0.0F) {
-            builder.add(
-                    Attributes.KNOCKBACK_RESISTANCE,
-                    new AttributeModifier(id, knockbackResistance, AttributeModifier.Operation.ADD_VALUE),
-                    slotGroup
-            );
-        }
         for (AttributeContainer holder : attributes) {
-            builder.add(holder.attribute(), holder.createModifier(type.getSlot().getName()), slotGroup);
+            modifiers = modifiers.withModifierAdded(holder.attribute(), holder.createModifier(type.getSlot().getName()), slotGroup);
         }
-        return builder.build();
+        return modifiers;
     }
 
     public static AttributeContainer[] schoolAttributes(Holder<Attribute> school) {
@@ -108,12 +95,12 @@ public abstract class ExtendedArmorItem extends Item implements GeoItem {
 
     @Override
     public void createGeoRenderer(Consumer<GeoRenderProvider> consumer) {
-        if (FabricLoader.getInstance().getEnvironmentType() != net.fabricmc.api.EnvType.CLIENT) {
+        if (FabricLoader.getInstance().getEnvironmentType() != EnvType.CLIENT) {
             return;
         }
         ExtendedArmorItemClientHooks.createGeoRenderer(this, consumer);
     }
 
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public abstract GeoArmorRenderer<?, ?> supplyRenderer();
 }

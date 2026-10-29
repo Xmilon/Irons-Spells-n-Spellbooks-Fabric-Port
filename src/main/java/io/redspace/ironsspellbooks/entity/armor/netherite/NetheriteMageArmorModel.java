@@ -15,7 +15,7 @@ public class NetheriteMageArmorModel extends DefaultedItemGeoModel<NetheriteMage
 
     @Override
     public Identifier getModelResource(GeoRenderState state) {
-        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/netherite_armor.geo.json");
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "netherite_armor");
     }
 
     @Override
@@ -25,6 +25,6 @@ public class NetheriteMageArmorModel extends DefaultedItemGeoModel<NetheriteMage
 
     @Override
     public Identifier getAnimationResource(NetheriteMageArmorItem animatable) {
-        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "wizard_armor_animation");
     }
 }

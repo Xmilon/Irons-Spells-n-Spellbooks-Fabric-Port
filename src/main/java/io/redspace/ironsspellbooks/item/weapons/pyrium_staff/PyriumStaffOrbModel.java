@@ -1,7 +1,5 @@
 package io.redspace.ironsspellbooks.item.weapons.pyrium_staff;
 
-import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.render.RenderHelper;
 import net.minecraft.client.model.Model;
@@ -9,20 +7,18 @@ import net.minecraft.client.model.geom.ModelLayerLocation;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.*;
-import net.minecraft.client.renderer.rendertype.RenderType;
-import net.minecraft.resources.Identifier;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
 
-@OnlyIn(Dist.CLIENT)
-public class PyriumStaffOrbModel extends Model {
-    public static final Identifier TEXTURE = IronsSpellbooks.id("textures/item/pyrium_staff_orb.png");
-    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(IronsSpellbooks.id("pyrium_staff_orb"), "main");
-    private final ModelPart root;
+import net.minecraft.resources.Identifier;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
+
+@Environment(EnvType.CLIENT)
+public class PyriumStaffOrbModel extends Model<Void> {
+    public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/item/pyrium_staff_orb.png");
+    public static final ModelLayerLocation LAYER_LOCATION = new ModelLayerLocation(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "pyrium_staff_orb"), "main");
 
     public PyriumStaffOrbModel(ModelPart pRoot) {
-        super(RenderHelper.CustomerRenderType.PYRIUM_STAFF_ORB);
-        this.root = pRoot;
+        super(pRoot, RenderHelper.CustomerRenderType.PYRIUM_STAFF_ORB);
     }
 
     public static LayerDefinition createBodyLayer() {
@@ -37,12 +33,4 @@ public class PyriumStaffOrbModel extends Model {
         return LayerDefinition.create(meshdefinition, 16, 16);
     }
 
-    public RenderType renderType() {
-        return renderType(TEXTURE);
-    }
-
-    @Override
-    public void renderToBuffer(PoseStack pPoseStack, VertexConsumer pBuffer, int pPackedLight, int pPackedOverlay, int pColor) {
-        this.root.render(pPoseStack, pBuffer, pPackedLight, pPackedOverlay, pColor);
-    }
 }

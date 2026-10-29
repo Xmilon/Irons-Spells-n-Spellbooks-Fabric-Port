@@ -19,7 +19,7 @@ import static io.redspace.ironsspellbooks.entity.mobs.wizards.cursed_armor_stand
 
 public class CursedArmorStandModel extends AbstractSpellCastingMobModel {
     public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/cultist.png");
-    public static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/armor_stand.geo.json");
+    public static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "armor_stand");
 
     @Override
     public Identifier getTextureResource(GeoRenderState state) {

@@ -13,34 +13,30 @@ import net.minecraft.world.item.equipment.EquipmentAssets;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.equipment.ArmorMaterial;
-import net.neoforged.bus.api.IEventBus;
-import net.neoforged.neoforge.common.Tags;
+
+import net.fabricmc.fabric.api.tag.convention.v2.ConventionalItemTags;
 
 import java.util.EnumMap;
 
 public class ArmorMaterialRegistry {
 
-    /** Materials are plain values in 26.3; kept so the mod entrypoint keeps one call per registry. */
-    public static void register(IEventBus eventBus) {
-    }
-
-    public static ArmorMaterial TARNISHED = register("tarnished",
+    public static ArmorMaterial TARNISHED = create("tarnished", 26,
             makeArmorMap(0, 0, 0, 0),
             15,
             SoundEvents.ARMOR_EQUIP_DIAMOND,
-            Tags.Items.INGOTS_IRON,
+            ConventionalItemTags.IRON_INGOTS,
             0,
             0);
 
-    public static ArmorMaterial WANDERING_MAGICIAN = register("wandering_magician",
+    public static ArmorMaterial WANDERING_MAGICIAN = create("wandering_magician", 22,
             makeArmorMap(2, 6, 5, 2),
             15,
             SoundEvents.ARMOR_EQUIP_LEATHER,
-            Tags.Items.LEATHERS,
+            ConventionalItemTags.LEATHERS,
             0,
             0);
 
-    public static ArmorMaterial PUMPKIN = register("pumpkin",
+    public static ArmorMaterial PUMPKIN = create("pumpkin", 26,
             schoolArmorMap(),
             15,
             SoundEvents.ARMOR_EQUIP_TURTLE,
@@ -48,7 +44,7 @@ public class ArmorMaterialRegistry {
             0,
             0);
 
-    public static ArmorMaterial SCHOOL = register("school_armor",
+    public static ArmorMaterial SCHOOL = create("school_armor", 37,
             schoolArmorMap(),
             20,
             SoundEvents.ARMOR_EQUIP_LEATHER,
@@ -56,15 +52,15 @@ public class ArmorMaterialRegistry {
             0,
             0);
 
-    public static ArmorMaterial NETHERITE_BATTLEMAGE = register("netherite_battlemage",
+    public static ArmorMaterial NETHERITE_BATTLEMAGE = create("netherite_battlemage", 37,
             schoolArmorMap(),
             20,
             SoundEvents.ARMOR_EQUIP_NETHERITE,
-            Tags.Items.INGOTS_NETHERITE,
+            ConventionalItemTags.NETHERITE_INGOTS,
             3,
             0);
 
-    public static ArmorMaterial PALADIN = register("paladin",
+    public static ArmorMaterial PALADIN = create("paladin", 37,
             schoolArmorMap(),
             40,
             SoundEvents.ARMOR_EQUIP_NETHERITE,
@@ -72,7 +68,7 @@ public class ArmorMaterialRegistry {
             4,
             0.4f);
 
-    public static ArmorMaterial INFERNAL_SORCERER = register("infernal_sorcerer",
+    public static ArmorMaterial INFERNAL_SORCERER = create("infernal_sorcerer", 37,
             schoolArmorMap(),
             40,
             SoundEvents.ARMOR_EQUIP_NETHERITE,
@@ -80,7 +76,7 @@ public class ArmorMaterialRegistry {
             0,
             0f);
 
-    public static ArmorMaterial BOOTS_OF_SPEED = register("speed_boots",
+    public static ArmorMaterial BOOTS_OF_SPEED = create("speed_boots", 37,
             schoolArmorMap(),
             40,
             SoundEvents.ARMOR_EQUIP_LEATHER,
@@ -88,16 +84,16 @@ public class ArmorMaterialRegistry {
             0,
             0f);
 
-    public static ArmorMaterial DEV = register("dev",
+    public static ArmorMaterial DEV = create("dev", 0,
             makeArmorMap(20, 20, 20, 20),
             20,
             SoundEvents.ARMOR_EQUIP_GOLD,
-            Tags.Items.INGOTS_GOLD,
+            ConventionalItemTags.GOLD_INGOTS,
             20,
             20);
 
-    private static ArmorMaterial register(
-            String name,
+    private static ArmorMaterial create(
+            String name, int durability,
             EnumMap<ArmorType, Integer> defense,
             int enchantmentValue,
             Holder<SoundEvent> equipSound,
@@ -105,13 +101,13 @@ public class ArmorMaterialRegistry {
             float toughness,
             float knockbackResistance
     ) {
-        // shortcut: one base durability for every set (the old items passed per-set multipliers of 22-37 on each piece)
-        return new ArmorMaterial(37, defense, enchantmentValue, equipSound, toughness, knockbackResistance, repairItems,
-                ResourceKey.create(EquipmentAssets.ROOT_ID, IronsSpellbooks.id(name)));
+
+        return new ArmorMaterial(durability, defense, enchantmentValue, equipSound, toughness, knockbackResistance, repairItems,
+                ResourceKey.create(EquipmentAssets.ROOT_ID, net.minecraft.resources.Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, name)));
     }
 
     private static TagKey<Item> repairTag(String name) {
-        return TagKey.create(Registries.ITEM, IronsSpellbooks.id("armor_repair/" + name));
+        return TagKey.create(Registries.ITEM, net.minecraft.resources.Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "armor_repair/" + name));
     }
 
     static public EnumMap<ArmorType, Integer> makeArmorMap(int helmet, int chestplate, int leggings, int boots) {

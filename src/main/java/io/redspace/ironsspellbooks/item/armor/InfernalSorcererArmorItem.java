@@ -17,8 +17,8 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.TooltipFlag;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import com.geckolib.renderer.GeoArmorRenderer;
 
 import java.util.List;
@@ -54,7 +54,7 @@ public class InfernalSorcererArmorItem extends ImbuableChestplateArmorItem {
     }
 
     @Override
-    @OnlyIn(Dist.CLIENT)
+    @Environment(EnvType.CLIENT)
     public GeoArmorRenderer<?, ?> supplyRenderer() {
         return ArmorClientRenderers.create(this);
     }

@@ -1,7 +1,6 @@
 package io.redspace.ironsspellbooks.setup;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.api.registry.AttributeRegistry;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.config.ClientConfigs;
@@ -40,11 +39,9 @@ import net.fabricmc.fabric.api.object.builder.v1.entity.FabricDefaultAttributeRe
 import net.minecraft.world.entity.MobCategory;
 import net.minecraft.world.entity.SpawnPlacements;
 import net.minecraft.world.entity.SpawnPlacementTypes;
-import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.animal.polarbear.PolarBear;
 import net.minecraft.world.entity.monster.illager.Vindicator;
 import net.minecraft.world.entity.monster.zombie.Zombie;
-import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.level.levelgen.Heightmap;
 import net.minecraft.world.level.levelgen.GenerationStep;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -56,15 +53,10 @@ import net.neoforged.neoforge.capabilities.RegisterCapabilitiesEvent;
 import net.neoforged.neoforge.event.entity.EntityAttributeCreationEvent;
 import net.neoforged.neoforge.event.entity.RegisterSpawnPlacementsEvent;
 
-import java.lang.reflect.Field;
-import java.lang.reflect.Modifier;
-import java.util.Map;
 
 @EventBusSubscriber(modid = IronsSpellbooks.MODID, bus = EventBusSubscriber.Bus.MOD)
 public class CommonSetup {
     public static void bootstrapFabric() {
-        registerPlayerAttributesFabricFallback();
-
         FabricDefaultAttributeRegistry.register(EntityRegistry.DEBUG_WIZARD.get(), DebugWizard.prepareAttributes());
         FabricDefaultAttributeRegistry.register(EntityRegistry.PYROMANCER.get(), PyromancerEntity.prepareAttributes());
         FabricDefaultAttributeRegistry.register(EntityRegistry.NECROMANCER.get(), NecromancerEntity.prepareAttributes());
@@ -119,71 +111,6 @@ public class CommonSetup {
                 GenerationStep.Decoration.UNDERGROUND_ORES,
                 FeatureRegistry.MITHRIL_ORE_PLACEMENT
         );
-    }
-
-    private static void registerPlayerAttributesFabricFallback() {
-        // PlayerMixin should already inject these into Player#createAttributes. This fallback keeps Fabric builds
-        // resilient in case that mixin fails to apply for any reason.
-        AttributeSupplier.Builder playerAttributes = Player.createAttributes()
-                .add(AttributeRegistry.registered(AttributeRegistry.MAX_MANA))
-                .add(AttributeRegistry.registered(AttributeRegistry.MANA_REGEN))
-                .add(AttributeRegistry.registered(AttributeRegistry.COOLDOWN_REDUCTION))
-                .add(AttributeRegistry.registered(AttributeRegistry.SPELL_POWER))
-                .add(AttributeRegistry.registered(AttributeRegistry.SPELL_RESIST))
-                .add(AttributeRegistry.registered(AttributeRegistry.CAST_TIME_REDUCTION))
-                .add(AttributeRegistry.registered(AttributeRegistry.SUMMON_DAMAGE))
-                .add(AttributeRegistry.registered(AttributeRegistry.CASTING_MOVESPEED))
-                .add(AttributeRegistry.registered(AttributeRegistry.FIRE_MAGIC_RESIST))
-                .add(AttributeRegistry.registered(AttributeRegistry.ICE_MAGIC_RESIST))
-                .add(AttributeRegistry.registered(AttributeRegistry.LIGHTNING_MAGIC_RESIST))
-                .add(AttributeRegistry.registered(AttributeRegistry.HOLY_MAGIC_RESIST))
-                .add(AttributeRegistry.registered(AttributeRegistry.ENDER_MAGIC_RESIST))
-                .add(AttributeRegistry.registered(AttributeRegistry.BLOOD_MAGIC_RESIST))
-                .add(AttributeRegistry.registered(AttributeRegistry.EVOCATION_MAGIC_RESIST))
-                .add(AttributeRegistry.registered(AttributeRegistry.NATURE_MAGIC_RESIST))
-                .add(AttributeRegistry.registered(AttributeRegistry.ELDRITCH_MAGIC_RESIST))
-                .add(AttributeRegistry.registered(AttributeRegistry.FIRE_SPELL_POWER))
-                .add(AttributeRegistry.registered(AttributeRegistry.ICE_SPELL_POWER))
-                .add(AttributeRegistry.registered(AttributeRegistry.LIGHTNING_SPELL_POWER))
-                .add(AttributeRegistry.registered(AttributeRegistry.HOLY_SPELL_POWER))
-                .add(AttributeRegistry.registered(AttributeRegistry.ENDER_SPELL_POWER))
-                .add(AttributeRegistry.registered(AttributeRegistry.BLOOD_SPELL_POWER))
-                .add(AttributeRegistry.registered(AttributeRegistry.EVOCATION_SPELL_POWER))
-                .add(AttributeRegistry.registered(AttributeRegistry.NATURE_SPELL_POWER))
-                .add(AttributeRegistry.registered(AttributeRegistry.ELDRITCH_SPELL_POWER));
-        AttributeSupplier supplier = playerAttributes.build();
-        try {
-            FabricDefaultAttributeRegistry.register(net.minecraft.world.entity.EntityType.PLAYER, supplier);
-        } catch (IllegalStateException ignored) {
-            // PLAYER attributes are already registered; force-patch the existing entry for Fabric runtime parity.
-            forcePatchPlayerDefaultAttributes(supplier);
-        }
-    }
-
-    @SuppressWarnings({"rawtypes", "unchecked"})
-    private static void forcePatchPlayerDefaultAttributes(AttributeSupplier supplier) {
-        try {
-            Class<?> defaultAttributes = Class.forName("net.minecraft.world.entity.ai.attributes.DefaultAttributes");
-            for (Field field : defaultAttributes.getDeclaredFields()) {
-                if (!Modifier.isStatic(field.getModifiers()) || !Map.class.isAssignableFrom(field.getType())) {
-                    continue;
-                }
-                field.setAccessible(true);
-                Object obj = field.get(null);
-                if (!(obj instanceof Map map)) {
-                    continue;
-                }
-                if (!map.containsKey(net.minecraft.world.entity.EntityType.PLAYER)) {
-                    continue;
-                }
-                map.put(net.minecraft.world.entity.EntityType.PLAYER, supplier);
-                IronsSpellbooks.LOGGER.info("Patched PLAYER default attributes with irons_spellbooks magic attributes.");
-                return;
-            }
-            IronsSpellbooks.LOGGER.warn("Could not locate mutable DefaultAttributes map to patch PLAYER attributes.");
-        } catch (Throwable t) {
-            IronsSpellbooks.LOGGER.error("Failed to patch PLAYER default attributes.", t);
-        }
     }
 
     @SubscribeEvent
@@ -254,5 +181,3 @@ public class CommonSetup {
 
 
 }
-
-

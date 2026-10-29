@@ -46,7 +46,7 @@ public class IronsSpellbooks implements ModInitializer {
         SchoolRegistry.register(eventBus);
         SpellRegistry.register(eventBus);
         ItemRegistry.register(eventBus);
-        AttributeRegistry.register(eventBus);
+        AttributeRegistry.register();
         BlockRegistry.register(eventBus);
         MenuRegistry.register(eventBus);
         EntityRegistry.register(eventBus);
@@ -61,8 +61,8 @@ public class IronsSpellbooks implements ModInitializer {
         StructureElementRegistry.register(eventBus);
         CreativeTabRegistry.register(eventBus);
         DataAttachmentRegistry.register(eventBus);
-        ArmorMaterialRegistry.register(eventBus);
-        ComponentRegistry.register(eventBus);
+
+        ComponentRegistry.register();
         PoiTypeRegistry.register(eventBus);
         FluidRegistry.register(eventBus);
         RecipeRegistry.register(eventBus);

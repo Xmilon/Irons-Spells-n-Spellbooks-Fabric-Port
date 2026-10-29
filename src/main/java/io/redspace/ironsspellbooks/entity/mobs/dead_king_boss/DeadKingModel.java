@@ -20,7 +20,7 @@ public class DeadKingModel extends AbstractSpellCastingMobModel {
     public static final Identifier TEXTURE_NORMAL_OMINOUS = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/dead_king/ominous/dead_king_ominous.png");
     public static final Identifier TEXTURE_ENRAGED_OMINOUS = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/dead_king/ominous/dead_king_enraged_ominous.png");
 
-    public static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/dead_king.geo.json");
+    public static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "dead_king");
 
     @Override
     public Identifier getTextureResource(GeoRenderState state) {

@@ -15,7 +15,7 @@ public class CryomancerArmorModel extends DefaultedItemGeoModel<CryomancerArmorI
 
     @Override
     public Identifier getModelResource(GeoRenderState state) {
-        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/cryomancer_armor.geo.json");
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "cryomancer_armor");
     }
 
     @Override
@@ -25,6 +25,6 @@ public class CryomancerArmorModel extends DefaultedItemGeoModel<CryomancerArmorI
 
     @Override
     public Identifier getAnimationResource(CryomancerArmorItem animatable) {
-        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "wizard_armor_animation");
     }
 }

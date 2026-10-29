@@ -12,7 +12,7 @@ import net.minecraft.world.item.component.ItemAttributeModifiers;
 
 public class ExtendedSwordItem extends Item {
     public ExtendedSwordItem(ExtendedWeaponTier pTier, Properties pProperties) {
-        super(pProperties.sword(pTier.toolMaterial(), pTier.getAttackDamageBonus(), pTier.getSpeed()).attributes(createAttributes(pTier)));
+        super(pProperties.sword(pTier.toolMaterial(), 0, pTier.getSpeed()).attributes(createAttributes(pTier)));
     }
 
     public static ItemAttributeModifiers createAttributes(IronsWeaponTier pTier) {

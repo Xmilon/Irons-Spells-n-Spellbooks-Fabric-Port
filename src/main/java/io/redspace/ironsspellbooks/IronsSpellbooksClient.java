@@ -66,7 +66,7 @@ import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
-import net.fabricmc.fabric.api.client.model.loading.v1.ModelLoadingPlugin;
+
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
@@ -80,8 +80,8 @@ import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import io.redspace.ironsspellbooks.item.WaywardCompass;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
-import net.minecraft.client.renderer.item.CompassItemPropertyFunction;
-import net.minecraft.client.renderer.item.ItemProperties;
+
+
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
@@ -108,13 +108,13 @@ public class IronsSpellbooksClient implements ClientModInitializer {
     @Override
     public void onInitializeClient() {
         MinecraftInstanceHelper.instance = () -> Minecraft.getInstance().player;
-        registerModelLoadingPlugins();
+        io.redspace.ironsspellbooks.render.ItemModelRegistration.register();
         AnimationHelper.initializePlayerAnimationFactory();
         ClientMessages.registerClientReceivers();
         registerKeyMappingsAndInputTick();
         registerClientLifecycleCallbacks();
         registerTooltipCallbacks();
-        registerItemProperties();
+
         registerHudOverlays();
         io.redspace.ironsspellbooks.setup.ClientEventBridge.init();
         registerModelLayers();
@@ -127,73 +127,6 @@ public class IronsSpellbooksClient implements ClientModInitializer {
         MenuScreens.register(MenuRegistry.INSCRIPTION_TABLE_MENU.get(), InscriptionTableScreen::new);
         MenuScreens.register(MenuRegistry.SCROLL_FORGE_MENU.get(), ScrollForgeScreen::new);
         MenuScreens.register(MenuRegistry.ARCANE_ANVIL_MENU.get(), ArcaneAnvilScreen::new);
-    }
-
-    private static void registerItemProperties() {
-        ItemProperties.register(ItemRegistry.WAYWARD_COMPASS.get(), Identifier.withDefaultNamespace("angle"),
-                new CompassItemPropertyFunction((level, itemStack, entity) -> WaywardCompass.getCatacombsLocation(entity, itemStack)));
-        ItemProperties.register(ItemRegistry.WIZARD_HELMET.get(), IronsSpellbooks.id("hat"), (itemStack, clientLevel, livingEntity, i) -> itemStack.getOrDefault(ComponentRegistry.CLOTHING_VARIANT, "").equals("hat") ? 1.0f : 0f);
-        ItemProperties.register(ItemRegistry.TWILIGHT_GALE.get(), Identifier.withDefaultNamespace("throwing"), (stack, level, entity, seed) -> entity != null && entity.isUsingItem() && entity.getUseItem() == stack ? 1.0F : 0.0F);
-        var autoloader = ItemRegistry.AUTOLOADER_CROSSBOW.get();
-
-        ItemProperties.register(autoloader, Identifier.withDefaultNamespace("pull"), (stack, level, entity, seed) -> {
-            if (entity == null) {
-                return 0.0F;
-            }
-            return CrossbowItem.isCharged(stack)
-                    ? 0.0F
-                    : (float) (stack.getUseDuration(entity) - entity.getUseItemRemainingTicks()) / CrossbowItem.getChargeDuration(stack, entity);
-        });
-
-        ItemProperties.register(autoloader, Identifier.withDefaultNamespace("pulling"), (stack, level, entity, seed) ->
-                entity != null
-                        && entity.isUsingItem()
-                        && entity.getUseItem() == stack
-                        && !CrossbowItem.isCharged(stack)
-                        ? 1.0F
-                        : 0.0F
-        );
-
-        ItemProperties.register(autoloader, Identifier.withDefaultNamespace("charged"), (stack, level, entity, seed) ->
-                CrossbowItem.isCharged(stack) ? 1.0F : 0.0F
-        );
-
-        ItemProperties.register(autoloader, Identifier.withDefaultNamespace("firework"), (stack, level, entity, seed) -> {
-            ChargedProjectiles projectiles = stack.get(DataComponents.CHARGED_PROJECTILES);
-            return projectiles != null && projectiles.contains(Items.FIREWORK_ROCKET) ? 1.0F : 0.0F;
-        });
-    }
-
-    private static void registerModelLoadingPlugins() {
-        ModelLoadingPlugin.register(context -> {
-            for (String name : io.redspace.ironsspellbooks.render.ItemVariantModels.GUI) {
-                context.addModels(io.redspace.ironsspellbooks.render.ItemVariantModels.guiId(name));
-            }
-            for (String name : io.redspace.ironsspellbooks.render.ItemVariantModels.HEAD) {
-                context.addModels(io.redspace.ironsspellbooks.render.ItemVariantModels.headId(name));
-            }
-            for (var school : io.redspace.ironsspellbooks.api.registry.SchoolRegistry.REGISTRY) {
-                context.addModels(io.redspace.ironsspellbooks.render.AffinityRingRenderer.getAffinityRingModelLocation(school));
-                context.addModels(io.redspace.ironsspellbooks.render.ScrollModel.getScrollModelLocation(school));
-            }
-            context.addModels(IronsSpellbooks.id("item/pyrium_staff_haft"));
-            context.addModels(IronsSpellbooks.id("item/fiery_dagger"));
-            context.addModels(IronsSpellbooks.id("item/firebrand_gui"));
-            context.addModels(IronsSpellbooks.id("item/firebrand_normal"));
-            context.modifyModelAfterBake().register((model, ctx) -> {
-                if (model != null && IronsSpellbooks.id("item/fiery_dagger").equals(ctx.resourceId())) {
-                    return new io.redspace.ironsspellbooks.render.SpectralItemModel(model);
-                }
-                var topLevel = ctx.topLevelId();
-                if (model == null || topLevel == null) {
-                    return model;
-                }
-                if (topLevel.equals(net.minecraft.client.resources.model.ModelIdentifier.inventory(IronsSpellbooks.id("scroll")))) {
-                    return new io.redspace.ironsspellbooks.render.ScrollModel(model);
-                }
-                return model;
-            });
-        });
     }
 
     private static void registerKeyMappingsAndInputTick() {

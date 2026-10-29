@@ -7,6 +7,11 @@ import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.network.codec.StreamCodec;
 
 public record WaywardCompassData(BlockPos blockPos) {
+    public net.minecraft.world.item.component.LodestoneTracker lodestoneTracker() {
+        return new net.minecraft.world.item.component.LodestoneTracker(
+                java.util.Optional.of(net.minecraft.core.GlobalPos.of(net.minecraft.world.level.Level.OVERWORLD, blockPos)), false);
+    }
+
     public static final Codec<WaywardCompassData> CODEC = RecordCodecBuilder.create(builder -> builder.group(BlockPos.CODEC.fieldOf("catacombs_pos").forGetter(WaywardCompassData::blockPos)).apply(builder, WaywardCompassData::new));
     public static final StreamCodec<FriendlyByteBuf, WaywardCompassData> STREAM_CODEC = StreamCodec.of((buf, data) -> buf.writeBlockPos(data.blockPos), (buf) -> new WaywardCompassData(buf.readBlockPos()));
 

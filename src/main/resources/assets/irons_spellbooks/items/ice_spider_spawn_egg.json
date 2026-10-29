@@ -1,0 +1,16 @@
+{
+  "model": {
+    "type": "minecraft:model",
+    "model": "irons_spellbooks:item/ice_spider_spawn_egg",
+    "tints": [
+      {
+        "type": "minecraft:constant",
+        "value": -8224366
+      },
+      {
+        "type": "minecraft:constant",
+        "value": -657941
+      }
+    ]
+  }
+}

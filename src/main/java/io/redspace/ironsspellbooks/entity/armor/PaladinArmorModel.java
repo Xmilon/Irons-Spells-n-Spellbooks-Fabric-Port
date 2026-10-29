@@ -15,7 +15,7 @@ public class PaladinArmorModel extends DefaultedItemGeoModel<PaladinArmorItem> {
 
     @Override
     public Identifier getModelResource(GeoRenderState state) {
-        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/paladin_chestplate.geo.json");
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "paladin_chestplate");
     }
 
     @Override
@@ -25,6 +25,6 @@ public class PaladinArmorModel extends DefaultedItemGeoModel<PaladinArmorItem> {
 
     @Override
     public Identifier getAnimationResource(PaladinArmorItem animatable) {
-        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "wizard_armor_animation");
     }
 }

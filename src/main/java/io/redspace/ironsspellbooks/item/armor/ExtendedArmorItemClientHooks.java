@@ -1,15 +1,15 @@
 package io.redspace.ironsspellbooks.item.armor;
 
-import net.minecraft.client.model.HumanoidModel;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.api.Environment;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.item.ItemStack;
 import com.geckolib.animatable.client.GeoRenderProvider;
 import com.geckolib.renderer.GeoArmorRenderer;
 
-import javax.annotation.Nullable;
 import java.util.function.Consumer;
 
+@Environment(EnvType.CLIENT)
 public final class ExtendedArmorItemClientHooks {
     private ExtendedArmorItemClientHooks() {
     }

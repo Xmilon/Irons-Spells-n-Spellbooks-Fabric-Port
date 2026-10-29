@@ -50,9 +50,9 @@ import java.util.HashMap;
 
 public abstract class AbstractSpellCastingMob extends PathfinderMob implements GeoEntity, IMagicEntity {
     protected final Level level;
-    public static final Identifier modelResource = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/abstract_casting_mob.geo.json");
+    public static final Identifier modelResource = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "abstract_casting_mob");
     public static final Identifier textureResource = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/abstract_casting_mob/abstract_casting_mob.png");
-    public static final Identifier animationInstantCast = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/casting_animations.json");
+    public static final Identifier animationInstantCast = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "casting_animations");
     //private static final EntityDataAccessor<SyncedSpellData> DATA_SPELL = SynchedEntityData.defineId(AbstractSpellCastingMob.class, SyncedSpellData.SYNCED_SPELL_DATA);
     private static final EntityDataAccessor<Boolean> DATA_CANCEL_CAST = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<Boolean> DATA_DRINKING_POTION = SynchedEntityData.defineId(AbstractSpellCastingMob.class, EntityDataSerializers.BOOLEAN);
@@ -567,6 +567,3 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         return false;
     }
 }
-
-
-

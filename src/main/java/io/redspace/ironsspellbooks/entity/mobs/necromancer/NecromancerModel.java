@@ -10,7 +10,7 @@ import net.minecraft.resources.Identifier;
 
 public class NecromancerModel extends AbstractSpellCastingMobModel {
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/necromancer.png");
-    private static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/skeleton_mob.geo.json");
+    private static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "skeleton_mob");
 
     @Override
     public Identifier getTextureResource(GeoRenderState state) {

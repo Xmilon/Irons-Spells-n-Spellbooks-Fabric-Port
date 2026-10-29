@@ -78,7 +78,7 @@ public class AttributeRegistry {
     }
 
     private static Holder.Reference<Attribute> register(String name, Attribute attribute) {
-        return Registry.registerForHolder(BuiltInRegistries.ATTRIBUTE, IronsSpellbooks.id(name), attribute);
+        return Registry.registerForHolder(BuiltInRegistries.ATTRIBUTE, net.minecraft.resources.Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, name), attribute);
     }
 
     private static Holder.Reference<Attribute> newResistanceAttribute(String id) {
@@ -164,7 +164,7 @@ public class AttributeRegistry {
         }
 
         var TrinketSlotContext = new TrinketSlotContext(TrinketsSlots.SPELLBOOK_SLOT, player, 0, false, true);
-        var modifiers = curioItem.getAttributeModifiers(TrinketSlotContext, IronsSpellbooks.id("max_mana_fallback"), spellbookStack);
+        var modifiers = curioItem.getAttributeModifiers(TrinketSlotContext, net.minecraft.resources.Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "max_mana_fallback"), spellbookStack);
         double base = 100.0D;
         double additive = 0.0D;
         double multipliedBase = 0.0D;
@@ -198,7 +198,7 @@ public class AttributeRegistry {
         if (stack.isEmpty() || !(stack.getItem() instanceof ITrinketItem trinketItem)) {
             return fallback;
         }
-        var modifiers = trinketItem.getAttributeModifiers(result.slotContext(), IronsSpellbooks.id("client_spell_power_fallback"), stack);
+        var modifiers = trinketItem.getAttributeModifiers(result.slotContext(), net.minecraft.resources.Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "client_spell_power_fallback"), stack);
         var attrModifiers = modifiers.get(attribute);
         if (attrModifiers == null || attrModifiers.isEmpty()) {
             return fallback;
@@ -221,4 +221,3 @@ public class AttributeRegistry {
         return (base + additive) * (1.0D + multipliedBase) * (1.0D + multipliedTotal);
     }
 }
-

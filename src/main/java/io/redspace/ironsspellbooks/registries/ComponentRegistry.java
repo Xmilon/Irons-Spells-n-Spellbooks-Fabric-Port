@@ -27,7 +27,7 @@ public class ComponentRegistry {
     }
 
     private static <T> DataComponentType<T> register(String pName, UnaryOperator<DataComponentType.Builder<T>> pBuilder) {
-        return Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, IronsSpellbooks.id(pName), pBuilder.apply(DataComponentType.builder()).build());
+        return Registry.register(BuiltInRegistries.DATA_COMPONENT_TYPE, net.minecraft.resources.Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, pName), pBuilder.apply(DataComponentType.builder()).build());
     }
 
     public static final DataComponentType<AffinityData> AFFINITY_COMPONENT = register("affinity_data", (builder) -> builder.persistent(AffinityData.CODEC).networkSynchronized(AffinityData.STREAM_CODEC).cacheEncoding());
@@ -42,4 +42,3 @@ public class ComponentRegistry {
     public static final DataComponentType<ResourceKey<UpgradeOrbType>> UPGRADE_ORB_TYPE = register("upgrade_orb_type", (builder) -> builder.persistent(ResourceKey.codec(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY)).networkSynchronized(ByteBufCodecs.fromCodec(ResourceKey.codec(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY))).cacheEncoding());
     public static final DataComponentType<PotionFluid.BottleType> POTION_BOTTLE_TYPE = register("potion_bottle_type", (builder) -> builder.persistent(PotionFluid.BottleType.CODEC).networkSynchronized(PotionFluid.BottleType.STREAM_CODEC).cacheEncoding());
 }
-

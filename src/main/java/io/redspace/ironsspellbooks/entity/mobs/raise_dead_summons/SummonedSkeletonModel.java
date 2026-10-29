@@ -12,8 +12,8 @@ public class SummonedSkeletonModel extends GeoModel<SummonedSkeleton> {
     //public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath("textures/entity/skeleton/skeleton.png");
     public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/summoned_skeleton.png");
 
-    public static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/skeleton_mob.geo.json");
-    public static final Identifier ANIMATIONS = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/casting_animations.json");
+    public static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "skeleton_mob");
+    public static final Identifier ANIMATIONS = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "casting_animations");
 
 
     @Override
@@ -23,7 +23,7 @@ public class SummonedSkeletonModel extends GeoModel<SummonedSkeleton> {
 
     @Override
     public Identifier getModelResource(GeoRenderState state) {
-        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/skeleton_mob.geo.json");
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "skeleton_mob");
     }
 
     @Override

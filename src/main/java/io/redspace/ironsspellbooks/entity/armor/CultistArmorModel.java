@@ -15,7 +15,7 @@ public class CultistArmorModel extends DefaultedItemGeoModel<CultistArmorItem> {
 
     @Override
     public Identifier getModelResource(GeoRenderState state) {
-        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/cultist_armor.geo.json");
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "cultist_armor");
     }
 
     @Override
@@ -25,6 +25,6 @@ public class CultistArmorModel extends DefaultedItemGeoModel<CultistArmorItem> {
 
     @Override
     public Identifier getAnimationResource(CultistArmorItem animatable) {
-        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "wizard_armor_animation");
     }
 }

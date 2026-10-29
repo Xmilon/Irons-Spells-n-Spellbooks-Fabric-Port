@@ -162,7 +162,7 @@ tasks.register('verifyPortRendering', JavaExec) {
 }
 
 tasks.named('check') {
-	dependsOn 'verifyBundledDependencies', 'verifyPortRendering', 'verifySpellRenderSnapshots', 'verifyPortParticles'
+	dependsOn 'verifyBundledDependencies', 'verifyPortRendering', 'verifySpellRenderSnapshots', 'verifyPortParticles', 'verifyPortItemModels', 'verifyPortArmorVariants', 'verifyPortGeckoResources'
 }
 
 tasks.register('verifySpellRenderSnapshots', JavaExec) {
@@ -177,6 +177,38 @@ tasks.register('verifyPortParticles', JavaExec) {
 	dependsOn 'portTestClasses'
 	classpath = sourceSets.portTest.runtimeClasspath
 	mainClass = 'io.redspace.ironsspellbooks.particle.ParticlePortCheck'
+	enableAssertions = true
+	javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(25) }
+}
+
+tasks.register('verifyPortItemModels', JavaExec) {
+	dependsOn 'portTestClasses'
+	classpath = sourceSets.portTest.runtimeClasspath
+	mainClass = 'io.redspace.ironsspellbooks.render.ItemModelPortCheck'
+	enableAssertions = true
+	javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(25) }
+}
+
+tasks.register('verifyPortArmorVariants', JavaExec) {
+	dependsOn 'portTestClasses'
+	classpath = sourceSets.portTest.runtimeClasspath
+	mainClass = 'io.redspace.ironsspellbooks.render.ArmorVariantCheck'
+	enableAssertions = true
+	javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(25) }
+}
+
+// Resource baking is independent of the incomplete main-mod compilation.
+tasks.register('compilePortGeckoResources', JavaCompile) {
+	source 'src/portTest/java/io/redspace/ironsspellbooks/render/GeckoResourcePortCheck.java'
+	classpath = portCompileClasspath
+	destinationDirectory = layout.buildDirectory.dir('port-gecko-resources/classes')
+	javaCompiler = javaToolchains.compilerFor { languageVersion = JavaLanguageVersion.of(25) }
+}
+
+tasks.register('verifyPortGeckoResources', JavaExec) {
+	dependsOn 'compilePortGeckoResources'
+	classpath = files(tasks.named('compilePortGeckoResources').flatMap { it.destinationDirectory }) + portCompileClasspath
+	mainClass = 'io.redspace.ironsspellbooks.render.GeckoResourcePortCheck'
 	enableAssertions = true
 	javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(25) }
 }

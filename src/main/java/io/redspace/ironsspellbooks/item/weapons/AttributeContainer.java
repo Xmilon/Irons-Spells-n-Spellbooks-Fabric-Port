@@ -18,6 +18,6 @@ public record AttributeContainer(Holder<Attribute> attribute, double value, Attr
                 attributeName = "attribute";
             }
         }
-        return new AttributeModifier(IronsSpellbooks.id(String.format("%s_%s_modifier", slot, attributeName)), value, operation);
+        return new AttributeModifier(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, String.format("%s_%s_modifier", slot, attributeName)), value, operation);
     }
 }

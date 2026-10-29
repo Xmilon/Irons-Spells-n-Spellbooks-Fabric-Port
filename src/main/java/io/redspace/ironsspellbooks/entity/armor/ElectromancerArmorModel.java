@@ -15,7 +15,7 @@ public class ElectromancerArmorModel extends DefaultedItemGeoModel<Electromancer
 
     @Override
     public Identifier getModelResource(GeoRenderState state) {
-        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/electromancer_armor.geo.json");
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "electromancer_armor");
     }
 
     @Override
@@ -25,6 +25,6 @@ public class ElectromancerArmorModel extends DefaultedItemGeoModel<Electromancer
 
     @Override
     public Identifier getAnimationResource(ElectromancerArmorItem animatable) {
-        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "wizard_armor_animation");
     }
 }

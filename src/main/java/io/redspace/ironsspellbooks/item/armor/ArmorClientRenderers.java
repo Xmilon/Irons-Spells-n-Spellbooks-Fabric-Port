@@ -8,6 +8,7 @@ import io.redspace.ironsspellbooks.entity.armor.priest.PriestArmorRenderer;
 import io.redspace.ironsspellbooks.entity.armor.pumpkin.PumpkinArmorModel;
 import io.redspace.ironsspellbooks.entity.armor.pumpkin.PumpkinArmorRenderer;
 import com.geckolib.renderer.GeoArmorRenderer;
+import net.minecraft.resources.Identifier;
 
 import java.util.Map;
 
@@ -34,7 +35,7 @@ public final class ArmorClientRenderers {
             case "TarnishedCrownArmorItem" -> new GenericCustomArmorRenderer<>(new TarnishedCrownModel());
             case "WanderingMagicianArmorItem" -> new GenericCustomArmorRenderer<>(new WanderingMagicianModel());
             case "WizardArmorItem" -> new DyeableArmorRenderer<>(new GenericArmorModel<WizardArmorItem>("wizard")
-                    .variants(Map.of("hat", IronsSpellbooks.id("geo/wizard_armor_hat.geo.json"))));
+                    .variants(Map.of("hat", Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "wizard_armor_hat"))));
             default -> throw new IllegalStateException("No client armor renderer registered for " + item.getClass().getName());
         };
     }

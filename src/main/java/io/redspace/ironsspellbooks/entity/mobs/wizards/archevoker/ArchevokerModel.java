@@ -9,7 +9,7 @@ import net.minecraft.resources.Identifier;
 
 public class ArchevokerModel extends AbstractSpellCastingMobModel {
     public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/archevoker.png");
-    public static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/archevoker.geo.json");
+    public static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "archevoker");
 
     @Override
     public Identifier getModelResource(GeoRenderState state) {

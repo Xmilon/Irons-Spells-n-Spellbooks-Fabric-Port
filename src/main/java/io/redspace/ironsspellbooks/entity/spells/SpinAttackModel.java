@@ -15,7 +15,7 @@ public class SpinAttackModel extends GeoModel<AbstractSpellCastingMob> {
     public static final Identifier LIGHTNING_TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/lightning_riptide.png");
     public static final Identifier DEFAULT_TEXTURE = Identifier.withDefaultNamespace("textures/entity/trident_riptide.png");
 
-    private static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/spin_attack_model.geo.json");
+    private static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "spin_attack_model");
 
     public SpinAttackModel() {
     }

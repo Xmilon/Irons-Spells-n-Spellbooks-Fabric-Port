@@ -8,9 +8,9 @@ import net.minecraft.resources.Identifier;
 import com.geckolib.model.GeoModel;
 
 public class SpectralHammerModel extends GeoModel<SpectralHammer> {
-    public static final Identifier modelResource = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/spectral_hammer.geo.json");
+    public static final Identifier modelResource = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "spectral_hammer");
     public static final Identifier textureResource = ShieldRenderer.SPECTRAL_OVERLAY_TEXTURE;
-    public static final Identifier animationResource = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/spectral_hammer.animation.json");
+    public static final Identifier animationResource = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "spectral_hammer");
 
     @Override
     public Identifier getModelResource(GeoRenderState state) {

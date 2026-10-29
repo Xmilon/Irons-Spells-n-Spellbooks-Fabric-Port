@@ -12,9 +12,9 @@ import com.geckolib.model.GeoModel;
 import java.util.List;
 
 public class VoidTentacleModel extends GeoModel<VoidTentacle> {
-    public static final Identifier modelResource = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/void_tentacle.geo.json");
+    public static final Identifier modelResource = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "void_tentacle");
     public static final Identifier textureResource = IronsSpellbooks.id("textures/entity/void_tentacle/void_tentacle.png");
-    public static final Identifier animationResource = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/void_tentacle_animations.json");
+    public static final Identifier animationResource = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "void_tentacle_animations");
 
     @Override
     public Identifier getModelResource(GeoRenderState state) {

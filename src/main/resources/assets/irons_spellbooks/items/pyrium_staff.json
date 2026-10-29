@@ -1,0 +1,18 @@
+{
+  "model": {
+    "type": "minecraft:composite",
+    "models": [
+      {
+        "type": "minecraft:model",
+        "model": "irons_spellbooks:item/pyrium_staff_haft"
+      },
+      {
+        "model": {
+          "type": "irons_spellbooks:pyrium_staff"
+        },
+        "type": "minecraft:special",
+        "base": "irons_spellbooks:item/pyrium_staff_haft"
+      }
+    ]
+  }
+}

@@ -15,7 +15,7 @@ public class PriestArmorModel extends DefaultedItemGeoModel<PriestArmorItem> {
 
     @Override
     public Identifier getModelResource(GeoRenderState state) {
-        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/priest_armor.geo.json");
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "priest_armor");
     }
 
     @Override
@@ -25,6 +25,6 @@ public class PriestArmorModel extends DefaultedItemGeoModel<PriestArmorItem> {
 
     @Override
     public Identifier getAnimationResource(PriestArmorItem animatable) {
-        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "animations/wizard_armor_animation.json");
+        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "wizard_armor_animation");
     }
 }

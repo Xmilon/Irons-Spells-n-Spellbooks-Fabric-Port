@@ -10,7 +10,7 @@ import net.minecraft.resources.Identifier;
 public class KeeperModel extends AbstractSpellCastingMobModel {
     public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/keeper/keeper.png");
     public static final Identifier TEXTURE_RESTORED = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/keeper/keeper_restored.png");
-    public static final Identifier modelResource = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/citadel_keeper.geo.json");
+    public static final Identifier modelResource = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "citadel_keeper");
 
     @Override
     public Identifier getTextureResource(GeoRenderState state) {

@@ -19,7 +19,7 @@ import java.util.stream.Stream;
 
 public class ApothecaristModel extends AbstractSpellCastingMobModel {
     public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/apothecarist.png");
-    public static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/piglin_casting_mob.geo.json");
+    public static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "piglin_casting_mob");
     private static final float tilt = 10 * Mth.DEG_TO_RAD;
     private static final Vector3f forward = new Vector3f(0, 0, Mth.sin(tilt) * -12);
 

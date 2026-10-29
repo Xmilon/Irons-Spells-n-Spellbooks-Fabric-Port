@@ -44,7 +44,9 @@ public class VanillaAnvilRecipeMaker {
                     IJeiAnvilRecipe repairWithSame = vanillaRecipeFactory.createAnvilRecipe(List.of(damagedThreeQuarters), List.of(damagedThreeQuarters), List.of(damagedHalf));
                     consumer.accept(repairWithSame);
 
-                    List<ItemStack> repairMaterials = Arrays.stream(item.getTier().getRepairIngredient().getItems()).toList();
+                    var repairable = damagedThreeQuarters.get(net.minecraft.core.component.DataComponents.REPAIRABLE);
+                    List<ItemStack> repairMaterials = repairable == null ? List.of()
+                            : repairable.items().stream().map(holder -> new ItemStack(holder.value())).toList();
                     ItemStack damagedFully = new ItemStack(item);
                     damagedFully.setDamageValue(damagedFully.getMaxDamage());
                     IJeiAnvilRecipe repairWithMaterial = vanillaRecipeFactory.createAnvilRecipe(List.of(damagedFully), repairMaterials, List.of(damagedThreeQuarters));
@@ -63,7 +65,9 @@ public class VanillaAnvilRecipeMaker {
                     IJeiAnvilRecipe repairWithSame = vanillaRecipeFactory.createAnvilRecipe(List.of(damagedThreeQuarters), List.of(damagedThreeQuarters), List.of(damagedHalf));
                     consumer.accept(repairWithSame);
 
-                    List<ItemStack> repairMaterials = Arrays.stream(item.getMaterial().value().repairIngredient().get().getItems()).toList();
+                    var repairable = damagedThreeQuarters.get(net.minecraft.core.component.DataComponents.REPAIRABLE);
+                    List<ItemStack> repairMaterials = repairable == null ? List.of()
+                            : repairable.items().stream().map(holder -> new ItemStack(holder.value())).toList();
                     ItemStack damagedFully = new ItemStack(item);
                     damagedFully.setDamageValue(damagedFully.getMaxDamage());
                     IJeiAnvilRecipe repairWithMaterial = vanillaRecipeFactory.createAnvilRecipe(List.of(damagedFully), repairMaterials, List.of(damagedThreeQuarters));

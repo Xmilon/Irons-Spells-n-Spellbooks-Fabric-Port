@@ -19,7 +19,7 @@ import com.geckolib.cache.model.GeoBone;
 public class PriestModel extends AbstractSpellCastingMobModel {
     public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/priest/priest.png");
     public static final Identifier TEXTURE_ARMOR = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/priest/priest_armored.png");
-    public static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "geo/archevoker.geo.json");
+    public static final Identifier MODEL = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "archevoker");
 
     @Override
     public Identifier getModelResource(GeoRenderState state) {
