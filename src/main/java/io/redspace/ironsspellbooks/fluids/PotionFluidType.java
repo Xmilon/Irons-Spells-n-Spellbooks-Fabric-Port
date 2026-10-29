@@ -40,7 +40,7 @@ public class PotionFluidType extends FluidType {
                 if (primary.getAmplifier() > 0) {
                     component = component.append(" " + simpleRomanNumeral(primary.getAmplifier() + 1));
                 }
-                if (!primary.getEffect().value().isInstantenous() && primary.getDuration() > 0) {
+                if (!primary.getEffect().value().isInstantaneous() && primary.getDuration() > 0) {
                     component = component.append(String.format(" (%s)", MobEffectUtil.formatDuration(primary, 1f, 20f).getString()));
                 }
                 return component;

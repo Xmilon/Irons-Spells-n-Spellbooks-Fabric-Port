@@ -428,3 +428,38 @@ the temporary probe was removed. `compilePortDamagePipeline` is also part of `ch
 The concrete full-mod ring/summon/casting policies and client visuals still require runtime
 validation. Other legacy events remain pending migration. The latest main compilation reports
 1,190 errors; this milestone does not make the complete mod playable.
+
+## Native effect ticks and lifecycle (2026-10-29)
+
+Migrated all remaining effect tick overrides to native `applyEffectTick(ServerLevel, ... )`:
+airborne, ascension, burning dash, chilled, fall immunity, immolate, instant mana, thunderstorm
+and volt strike. Removed redundant base-effect overrides so vanilla owns its default lifecycle.
+Instant Mana implements the correctly named `isInstantaneous`/`applyInstantaneousEffect`, and
+its potion/fluid callers use the same native names. Mana sync and immolate burst packets use
+Fabric networking directly. Airborne, immolate and Heartstop damage use explicit server damage.
+Chilled supplies native riding arguments and discards its tomb if mounting fails.
+
+Heartstop heartbeat and Planar Sight particles use the existing client effect tick interface,
+called directly from the Fabric client callback. Heartbeat cadence reads each effect instance's
+duration rather than mutable singleton state. Immolate also reads its active instance duration;
+its complete chain-reaction behavior remains untested.
+
+Extracted the production effect lifecycle hooks from the large living-entity mixin. The native
+`onEffectsRemoved(Collection)` callback cleans up every removed effect and sends removal packets
+to tracking players. Add/update sync uses the native tracking-player packet API. Poison's mixin
+receives `ServerLevel`; invisibility follows the renamed native visibility-update method.
+This does not establish that all other injections in the old living-entity mixin are valid.
+
+`effectTickProbeJar` builds an isolated test mod using the actual production effect base,
+Airborne, fall immunity and lifecycle mixin, with no old main-mod binary. The 26.3 server passed
+native tick dispatch, fall-distance reset/expiry, airborne no-collision/slow-collision cases,
+impact damage and effect termination, expiry cleanup, updated amplifier preservation, explicit
+removal, duplicate-removal rejection and cleanup of multiple effects in one batch. The fixture
+was discarded and the server saved/shut down. Temporary probe JARs are removed after validation.
+`compilePortEffectTicks` participates in `check` and can run independently of main compilation.
+
+The main compile reports 1,176 errors (previously 1,190), with no diagnostics in these migrated
+tick implementations or the new lifecycle mixin. Evasion teleport APIs and Guiding Bolt save
+data remain separate effect-related blockers. Full Heartstop/Immolate/Instant Mana gameplay,
+tracking-player packet delivery, client sounds/particles, Vulkan/OpenGL and multiplayer are
+not runtime-validated by this isolated probe. Main-mod startup is still blocked.

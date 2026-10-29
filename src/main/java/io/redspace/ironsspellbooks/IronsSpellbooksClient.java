@@ -145,10 +145,10 @@ public class IronsSpellbooksClient implements ClientModInitializer {
                 ClientPlayerEvents.onPlayerTick(new net.neoforged.neoforge.event.tick.PlayerTickEvent.Pre(client.player));
                 if (client.level != null) {
                     for (Entity entity : client.level.getEntities((Entity) null, client.player.getBoundingBox().inflate(128), candidate -> candidate instanceof LivingEntity)) {
-                        ClientPlayerEvents.onClientEntityTick(new net.neoforged.neoforge.event.tick.EntityTickEvent.Pre(entity));
+                        ClientPlayerEvents.tickSyncedEffects(entity);
                     }
                 } else {
-                    ClientPlayerEvents.onClientEntityTick(new net.neoforged.neoforge.event.tick.EntityTickEvent.Pre(client.player));
+                    ClientPlayerEvents.tickSyncedEffects(client.player);
                 }
             }
         });

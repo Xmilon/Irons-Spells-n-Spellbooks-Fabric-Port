@@ -1,8 +1,6 @@
 package io.redspace.ironsspellbooks.effect;
 
-import io.redspace.ironsspellbooks.api.magic.MagicData;
 import io.redspace.ironsspellbooks.api.util.Utils;
-import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.client.Minecraft;
 import net.minecraft.core.Holder;
@@ -26,7 +24,7 @@ public class PlanarSightEffect extends MagicMobEffect implements ISyncedMobEffec
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity livingEntity, int pAmplifier) {
+    public void clientTick(LivingEntity livingEntity, MobEffectInstance instance) {
         if (livingEntity.level().isClientSide() && livingEntity == Minecraft.getInstance().player) {
             for (int i = 0; i < 3; i++) {
                 Vec3 pos = new Vec3(Utils.getRandomScaled(16), Utils.getRandomScaled(5f) + 5, Utils.getRandomScaled(16)).add(livingEntity.position());
@@ -34,7 +32,6 @@ public class PlanarSightEffect extends MagicMobEffect implements ISyncedMobEffec
                 livingEntity.level().addParticle(ParticleTypes.WHITE_ASH, pos.x, pos.y, pos.z, random.x, random.y, random.z);
             }
         }
-        return true;
     }
 
     @OnlyIn(Dist.CLIENT)

@@ -6,11 +6,12 @@ import io.redspace.ironsspellbooks.network.SyncManaPacket;
 import net.minecraft.ChatFormatting;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.fabricmc.fabric.api.networking.v1.ServerPlayNetworking;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
-import net.neoforged.neoforge.network.PacketDistributor;
+import net.minecraft.server.level.ServerLevel;
 import org.jetbrains.annotations.Nullable;
 
 public class InstantManaEffect extends CustomDescriptionMobEffect {
@@ -30,12 +31,12 @@ public class InstantManaEffect extends CustomDescriptionMobEffect {
     }
 
     @Override
-    public boolean isInstantenous() {
+    public boolean isInstantaneous() {
         return true;
     }
 
     @Override
-    public void applyInstantenousEffect(@Nullable Entity pSource, @Nullable Entity pIndirectSource, LivingEntity livingEntity, int pAmplifier, double pHealth) {
+    public void applyInstantaneousEffect(ServerLevel level, @Nullable Entity pSource, @Nullable Entity pIndirectSource, LivingEntity livingEntity, int pAmplifier, double pHealth) {
         //IronsSpellbooks.LOGGER.debug("Instant mana applying effect");
         int i = pAmplifier + 1;
             int maxMana = (int) AttributeRegistry.getValueOrDefault(livingEntity, AttributeRegistry.MAX_MANA, 100.0D);
@@ -44,7 +45,7 @@ public class InstantManaEffect extends CustomDescriptionMobEffect {
         //IronsSpellbooks.LOGGER.debug("old mana: {}", pmg.getMana());
         pmg.setMana(pmg.getMana() + manaAdd);
         if (livingEntity instanceof ServerPlayer serverPlayer) {
-            PacketDistributor.sendToPlayer(serverPlayer, new SyncManaPacket(pmg, serverPlayer));
+            ServerPlayNetworking.send(serverPlayer, new SyncManaPacket(pmg, serverPlayer));
         }
         //IronsSpellbooks.LOGGER.debug("new mana: {}", pmg.getMana());
 
@@ -56,8 +57,8 @@ public class InstantManaEffect extends CustomDescriptionMobEffect {
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity livingEntity, int pAmplifier) {
-        applyInstantenousEffect(null, null, livingEntity, pAmplifier, livingEntity.getHealth());
+    public boolean applyEffectTick(ServerLevel level, LivingEntity livingEntity, int pAmplifier) {
+        applyInstantaneousEffect(level, null, null, livingEntity, pAmplifier, livingEntity.getHealth());
         return true;
     }
 }

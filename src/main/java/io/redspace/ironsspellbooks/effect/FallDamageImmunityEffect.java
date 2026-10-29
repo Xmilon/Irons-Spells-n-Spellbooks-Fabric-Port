@@ -3,6 +3,7 @@ package io.redspace.ironsspellbooks.effect;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.server.level.ServerLevel;
 
 public class FallDamageImmunityEffect extends MobEffect {
     public FallDamageImmunityEffect(MobEffectCategory category, int color) {
@@ -10,7 +11,7 @@ public class FallDamageImmunityEffect extends MobEffect {
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
+    public boolean applyEffectTick(ServerLevel level, LivingEntity livingEntity, int amplifier) {
         livingEntity.resetFallDistance();
         return true;
     }

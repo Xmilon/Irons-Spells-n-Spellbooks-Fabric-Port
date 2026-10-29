@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.mixin.LivingEntityAccessor;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.server.level.ServerLevel;
 
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class BurningDashEffect extends MagicMobEffect {
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
+    public boolean applyEffectTick(ServerLevel level, LivingEntity livingEntity, int amplifier) {
         List<Entity> list = livingEntity.level().getEntities(livingEntity, livingEntity.getBoundingBox().inflate(.25, .5, .25));
         if (!list.isEmpty()) {
             for (Entity entity : list) {
@@ -28,7 +29,7 @@ public class BurningDashEffect extends MagicMobEffect {
         } else if (livingEntity.horizontalCollision) {
             return false;
         }
-        livingEntity.fallDistance = 0;
+        livingEntity.resetFallDistance();
         return true;
     }
 

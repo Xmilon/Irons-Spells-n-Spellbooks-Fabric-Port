@@ -5,6 +5,7 @@ import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.spells.LightningStrike;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.server.level.ServerLevel;
 
 import javax.annotation.Nullable;
 
@@ -19,22 +20,22 @@ public class ThunderstormEffect extends MagicMobEffect {
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity entity, int pAmplifier) {
+    public boolean applyEffectTick(ServerLevel level, LivingEntity entity, int pAmplifier) {
         var radiusSqr = 400; //20
-        entity.level().getEntitiesOfClass(LivingEntity.class, entity.getBoundingBox().inflate(20, 12, 20),
+        level.getEntitiesOfClass(LivingEntity.class, entity.getBoundingBox().inflate(20, 12, 20),
                         livingEntity -> livingEntity != entity &&
                                 horizontalDistanceSqr(livingEntity, entity) < radiusSqr &&
                                 livingEntity.isPickable() &&
                                 !livingEntity.isSpectator() &&
                                 !Utils.shouldHealEntity((net.minecraft.world.entity.Entity) entity, livingEntity) &&
-                                Utils.hasLineOfSight(entity.level(), entity, livingEntity, false)
+                                Utils.hasLineOfSight(level, entity, livingEntity, false)
                 )
                 .forEach(targetEntity -> {
-                    LightningStrike lightningStrike = new LightningStrike(entity.level());
+                    LightningStrike lightningStrike = new LightningStrike(level);
                     lightningStrike.setOwner(entity);
                     lightningStrike.setDamage(getDamageFromAmplifier(pAmplifier, entity));
                     lightningStrike.setPos(targetEntity.position());
-                    entity.level().addFreshEntity(lightningStrike);
+                    level.addFreshEntity(lightningStrike);
                 });
         return true;
     }

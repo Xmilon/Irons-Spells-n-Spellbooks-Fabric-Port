@@ -11,6 +11,7 @@ import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.server.level.ServerLevel;
 import net.minecraft.world.level.ClipContext;
 import net.minecraft.world.phys.HitResult;
 import net.minecraft.world.phys.Vec3;
@@ -25,11 +26,7 @@ public class VoltStrikeEffect extends MagicMobEffect implements ISyncedMobEffect
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity livingEntity, int amplifier) {
-        var level = livingEntity.level();
-        if (level.isClientSide()) {
-            return true;
-        }
+    public boolean applyEffectTick(ServerLevel level, LivingEntity livingEntity, int amplifier) {
         List<Entity> list = level.getEntities(livingEntity, livingEntity.getBoundingBox().inflate(.25, .5, .25));
         boolean hit = false;
         UUID ignore = null;
@@ -76,7 +73,7 @@ public class VoltStrikeEffect extends MagicMobEffect implements ISyncedMobEffect
             level.playSound(null, x, y, z, SoundEvents.TRIDENT_THUNDER.value(), livingEntity.getSoundSource(), 4, 0.8f);
             return false;
         }
-        livingEntity.fallDistance = 0;
+        livingEntity.resetFallDistance();
         return true;
     }
 

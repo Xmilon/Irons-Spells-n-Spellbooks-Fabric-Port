@@ -105,9 +105,8 @@ public class ClientPlayerEvents {
         }
     }
 
-    @SubscribeEvent
-    public static void onClientEntityTick(EntityTickEvent.Pre event) {
-        if (event.getEntity() instanceof LivingEntity livingEntity) {
+    public static void tickSyncedEffects(Entity entity) {
+        if (entity instanceof LivingEntity livingEntity) {
             for (MobEffectInstance inst : livingEntity.getActiveEffects()) {
                 if (inst.getEffect().value() instanceof ISyncedMobEffect effect) {
                     effect.clientTick(livingEntity, inst);

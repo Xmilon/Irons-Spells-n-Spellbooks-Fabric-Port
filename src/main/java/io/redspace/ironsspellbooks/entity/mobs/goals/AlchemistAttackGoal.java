@@ -81,7 +81,7 @@ public class AlchemistAttackGoal extends WizardAttackGoal {
                 }
                 //PotionUtils.setCustomEffects(potion, List.of(new MobEffectInstance(effect, effect.isInstantenous() ? 0 : 200, amplifier)));
                 //Utils.setPotion(potion, Potions.WATER); //"Empty" potion skips rendering color. "water" checks for the effect and renders properly
-                potion.set(DataComponents.POTION_CONTENTS, new PotionContents(Potions.WATER).withEffectAdded(new MobEffectInstance(effect, effect.value().isInstantenous() ? 0 : 200, amplifier)));
+                potion.set(DataComponents.POTION_CONTENTS, new PotionContents(Potions.WATER).withEffectAdded(new MobEffectInstance(effect, effect.value().isInstantaneous() ? 0 : 200, amplifier)));
             } else {
                 Utils.setPotion(potion, Potions.STRONG_HEALING);
                 targetedEntity = this.mob;

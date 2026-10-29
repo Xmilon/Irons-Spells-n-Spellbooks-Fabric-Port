@@ -6,6 +6,7 @@ import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import io.redspace.ironsspellbooks.registries.SoundRegistry;
 import net.minecraft.world.effect.MobEffectCategory;
 import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.server.level.ServerLevel;
 
 public class ChilledEffect extends MagicMobEffect {
 
@@ -19,18 +20,21 @@ public class ChilledEffect extends MagicMobEffect {
     }
 
     @Override
-    public boolean applyEffectTick(LivingEntity pLivingEntity, int pAmplifier) {
+    public boolean applyEffectTick(ServerLevel level, LivingEntity pLivingEntity, int pAmplifier) {
         if (pLivingEntity.getVehicle() instanceof IceTombEntity) {
             return false;
         }
         if (pLivingEntity.isFullyFrozen()) {
-            IceTombEntity iceTombEntity = new IceTombEntity(pLivingEntity.level(), null);
+            IceTombEntity iceTombEntity = new IceTombEntity(level, null);
             iceTombEntity.snapTo(pLivingEntity.position());
             iceTombEntity.setDeltaMovement(pLivingEntity.getDeltaMovement());
             iceTombEntity.setEvil();
             iceTombEntity.setLifetime(20 * 5);
-            pLivingEntity.level().addFreshEntity(iceTombEntity);
-            pLivingEntity.startRiding(iceTombEntity, true);
+            if (!level.addFreshEntity(iceTombEntity)) return true;
+            if (!pLivingEntity.startRiding(iceTombEntity, true, true)) {
+                iceTombEntity.discard();
+                return true;
+            }
             pLivingEntity.playSound(SoundRegistry.FROSTBITE_FREEZE.get(), 2, Utils.random.nextInt(9, 11) * .1f);
             return false;
         }

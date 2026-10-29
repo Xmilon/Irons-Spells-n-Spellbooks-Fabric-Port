@@ -6,17 +6,12 @@ import com.google.common.collect.Multimap;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
-import io.redspace.ironsspellbooks.effect.IMobEffectEndCallback;
-import io.redspace.ironsspellbooks.effect.ISyncedMobEffect;
 import io.redspace.ironsspellbooks.entity.mobs.IMagicSummon;
 import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.Holder;
 import net.minecraft.core.component.DataComponents;
-import net.minecraft.network.protocol.game.ClientboundRemoveMobEffectPacket;
-import net.minecraft.network.protocol.game.ClientboundUpdateMobEffectPacket;
-import net.minecraft.server.level.ServerChunkCache;
 import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.effect.MobEffectInstance;
@@ -62,40 +57,7 @@ public abstract class LivingEntityMixin implements io.redspace.ironsspellbooks.a
     @Unique
     private boolean irons_spellbooks$wasFallFlying;
 
-    @Inject(method = "onEffectRemoved", at = @At(value = "HEAD"))
-    public void irons_spellbooks$onEffectRemoved(MobEffectInstance effectInstance, CallbackInfo ci) {
-        LivingEntity self = (LivingEntity) (Object) this;
-        if (!self.level().isClientSide()) {
-            if (effectInstance.getEffect().value() instanceof IMobEffectEndCallback mobEffect) {
-                mobEffect.onEffectRemoved(self, effectInstance.getAmplifier());
-            }
-            if (effectInstance.getEffect().value() instanceof ISyncedMobEffect && self.level().getChunkSource() instanceof ServerChunkCache serverChunk) {
-                serverChunk.broadcast(self, new ClientboundRemoveMobEffectPacket(self.getId(), effectInstance.getEffect()));
-            }
-        }
-    }
-
-    @Inject(method = "onEffectUpdated", at = @At(value = "HEAD"))
-    public void irons_spellbooks$onEffectUpdated(MobEffectInstance effectInstance, boolean forced, Entity entity, CallbackInfo ci) {
-        LivingEntity self = (LivingEntity) (Object) this;
-        if (!self.level().isClientSide()) {
-            if (effectInstance.getEffect().value() instanceof ISyncedMobEffect && self.level().getChunkSource() instanceof ServerChunkCache serverChunk) {
-                serverChunk.broadcast(self, new ClientboundUpdateMobEffectPacket(self.getId(), effectInstance, false));
-            }
-        }
-    }
-
-    @Inject(method = "onEffectAdded", at = @At(value = "HEAD"))
-    public void irons_spellbooks$onEffectAdded(MobEffectInstance effectInstance, Entity entity, CallbackInfo ci) {
-        LivingEntity self = (LivingEntity) (Object) this;
-        if (!self.level().isClientSide()) {
-            if (effectInstance.getEffect().value() instanceof ISyncedMobEffect && self.level().getChunkSource() instanceof ServerChunkCache serverChunk) {
-                serverChunk.broadcast(self, new ClientboundUpdateMobEffectPacket(self.getId(), effectInstance, false));
-            }
-        }
-    }
-
-    @Inject(method = "updateInvisibilityStatus", at = @At(value = "TAIL"))
+    @Inject(method = "updateEffectVisibility", at = @At(value = "TAIL"))
     public void irons_spellbooks$updateInvisibilityStatus(CallbackInfo ci) {
         LivingEntity self = (LivingEntity) (Object) this;
         if (self.hasEffect(MobEffectRegistry.TRUE_INVISIBILITY))

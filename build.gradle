@@ -247,6 +247,7 @@ tasks.named('check') {
 	dependsOn 'compilePortTargeting'
 	dependsOn 'verifyWizardAngerData'
 	dependsOn 'compilePortDamagePipeline'
+	dependsOn 'compilePortEffectTicks'
 }
 
 // Compile the production damage hooks without the unfinished main mod or old binaries.
@@ -267,6 +268,28 @@ tasks.register('damagePipelineProbeJar', Jar) {
 	destinationDirectory = layout.buildDirectory.dir('port-damage-pipeline')
 	from(tasks.named('compilePortDamagePipeline').flatMap { it.destinationDirectory })
 	from('src/portTest/resources/damage-pipeline')
+}
+
+tasks.register('compilePortEffectTicks', JavaCompile) {
+	source 'src/main/java/io/redspace/ironsspellbooks/effect/MagicMobEffect.java',
+		'src/main/java/io/redspace/ironsspellbooks/effect/IMobEffectEndCallback.java',
+		'src/main/java/io/redspace/ironsspellbooks/effect/ISyncedMobEffect.java',
+		'src/main/java/io/redspace/ironsspellbooks/effect/AirborneEffect.java',
+		'src/main/java/io/redspace/ironsspellbooks/effect/FallDamageImmunityEffect.java',
+		'src/main/java/io/redspace/ironsspellbooks/mixin/LivingEffectEventsMixin.java',
+		'src/portTest/java/io/redspace/ironsspellbooks/effect/EffectTickPortProbe.java'
+	classpath = sourceSets.main.compileClasspath
+	destinationDirectory = layout.buildDirectory.dir('port-effect-ticks/classes')
+	options.sourcepath = files()
+	javaCompiler = javaToolchains.compilerFor { languageVersion = JavaLanguageVersion.of(25) }
+}
+
+tasks.register('effectTickProbeJar', Jar) {
+	dependsOn 'compilePortEffectTicks'
+	archiveFileName = 'effect-tick-port-probe.jar'
+	destinationDirectory = layout.buildDirectory.dir('port-effect-ticks')
+	from(tasks.named('compilePortEffectTicks').flatMap { it.destinationDirectory })
+	from('src/portTest/resources/effect-ticks')
 }
 
 tasks.register('compileWizardAngerData', JavaCompile) {
