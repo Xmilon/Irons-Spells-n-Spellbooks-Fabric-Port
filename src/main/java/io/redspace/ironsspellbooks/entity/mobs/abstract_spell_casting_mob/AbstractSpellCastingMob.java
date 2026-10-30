@@ -70,7 +70,6 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         super(pEntityType, pLevel);
         this.level = pLevel;
         playerMagicData.setSyncedData(new SyncedSpellData(this));
-        this.noCulling = true;
         this.lookControl = createLookControl();
     }
 
@@ -420,9 +419,10 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     private AbstractSpell instantCastSpellType = SpellRegistry.none();
     private boolean cancelCastAnimation = false;
     private boolean animatingLegs = false;
-    private final AnimationController animationControllerOtherCast = new AnimationController<>("other_casting", 0, this::otherCastingPredicate);
-    private final AnimationController animationControllerInstantCast = new AnimationController<>("instant_casting", 0, this::instantCastingPredicate);
-    private final AnimationController animationControllerLongCast = new AnimationController<>("long_casting", 0, this::longCastingPredicate);
+    // Gecko 5 owns reset blending through each controller's transition duration.
+    private final AnimationController animationControllerOtherCast = new AnimationController<>("other_casting", 5, this::otherCastingPredicate);
+    private final AnimationController animationControllerInstantCast = new AnimationController<>("instant_casting", 5, this::instantCastingPredicate);
+    private final AnimationController animationControllerLongCast = new AnimationController<>("long_casting", 5, this::longCastingPredicate);
 
     @Override
     public AnimatableInstanceCache getAnimatableInstanceCache() {
@@ -432,11 +432,6 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     @Override
     public void triggerAnim(@org.jetbrains.annotations.Nullable String controllerName, String animName) {
         GeoEntity.super.triggerAnim(controllerName, animName);
-    }
-
-    @Override
-    public double getBoneResetTime() {
-        return 5;
     }
 
     @Override
@@ -453,7 +448,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         }
 
         var controller = event.controller();
-        if (instantCastSpellType != SpellRegistry.none() && controller.getAnimationState() == AnimationController.State.STOPPED) {
+        if (instantCastSpellType != SpellRegistry.none() && (!controller.isAnimatingBones() || controller.hasAnimationFinished())) {
             setStartAnimationFromSpell(controller, instantCastSpellType);
             instantCastSpellType = SpellRegistry.none();
         }
@@ -463,12 +458,12 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
     private PlayState longCastingPredicate(AnimationTest event) {
         var controller = event.controller();
 
-        if (cancelCastAnimation || (controller.getAnimationState() == AnimationController.State.STOPPED && !(isCasting() && castingSpell != null && castingSpell.getSpell().getCastType() == CastType.LONG))) {
+        if (cancelCastAnimation || ((!controller.isAnimatingBones() || controller.hasAnimationFinished()) && !(isCasting() && castingSpell != null && castingSpell.getSpell().getCastType() == CastType.LONG))) {
             return PlayState.STOP;
         }
 
         if (isCasting()) {
-            if (controller.getAnimationState() == AnimationController.State.STOPPED) {
+            if ((!controller.isAnimatingBones() || controller.hasAnimationFinished())) {
                 setStartAnimationFromSpell(controller, castingSpell.getSpell());
             }
         } else if (lastCastSpellType.getCastType() == CastType.LONG) {
@@ -484,7 +479,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
         }
 
         var controller = event.controller();
-        if (isCasting() && castingSpell != null && controller.getAnimationState() == AnimationController.State.STOPPED) {
+        if (isCasting() && castingSpell != null && (!controller.isAnimatingBones() || controller.hasAnimationFinished())) {
             if (castingSpell.getSpell().getCastType() == CastType.CONTINUOUS) {
                 setStartAnimationFromSpell(controller, castingSpell.getSpell());
             }
@@ -503,7 +498,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
             if (Log.SPELL_DEBUG) {
                 IronsSpellbooks.LOGGER.debug("ASCM.setStartAnimationFromSpell {}", animationBuilder);
             }
-            controller.forceAnimationReset();
+            controller.reset();
             controller.setAnimation(animationBuilder);
             lastCastSpellType = spell;
             cancelCastAnimation = false;
@@ -525,7 +520,7 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
             if (Log.SPELL_DEBUG) {
                 IronsSpellbooks.LOGGER.debug("ASCM.setFinishAnimationFromSpell {}", animationBuilder);
             }
-            controller.forceAnimationReset();
+            controller.reset();
             controller.setAnimation(animationBuilder);
             lastCastSpellType = SpellRegistry.none();
             cancelCastAnimation = false;
@@ -539,9 +534,9 @@ public abstract class AbstractSpellCastingMob extends PathfinderMob implements G
 
     public boolean isAnimating() {
         return isCasting()
-                || (animationControllerLongCast.getAnimationState() == AnimationController.State.RUNNING)
-                || (animationControllerOtherCast.getAnimationState() == AnimationController.State.RUNNING)
-                || (animationControllerInstantCast.getAnimationState() == AnimationController.State.RUNNING);
+                || ((animationControllerLongCast.isAnimatingBones() && !animationControllerLongCast.isTransitioning() && !animationControllerLongCast.hasAnimationFinished()))
+                || ((animationControllerOtherCast.isAnimatingBones() && !animationControllerOtherCast.isTransitioning() && !animationControllerOtherCast.hasAnimationFinished()))
+                || ((animationControllerInstantCast.isAnimatingBones() && !animationControllerInstantCast.isTransitioning() && !animationControllerInstantCast.hasAnimationFinished()));
     }
 
     public boolean shouldBeExtraAnimated() {

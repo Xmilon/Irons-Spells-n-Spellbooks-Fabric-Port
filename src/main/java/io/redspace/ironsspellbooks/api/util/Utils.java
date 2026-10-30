@@ -39,11 +39,13 @@ import net.minecraft.core.particles.ParticleTypes;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
+import net.minecraft.nbt.NbtOps;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.protocol.game.ClientboundSetActionBarTextPacket;
 import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.tags.ItemTags;
 import net.minecraft.util.Mth;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.Difficulty;
@@ -55,10 +57,9 @@ import net.minecraft.world.entity.item.ItemEntity;
 import net.minecraft.world.entity.monster.Enemy;
 import net.minecraft.world.entity.monster.Monster;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SwordItem;
+import net.minecraft.world.item.component.ItemAttributeModifiers;
 import net.minecraft.world.item.alchemy.Potion;
 import net.minecraft.world.item.alchemy.PotionContents;
 import net.minecraft.world.item.enchantment.*;
@@ -127,7 +128,7 @@ public class Utils {
         boolean isUpgradeable = stack.is(ModTags.CAN_BE_UPGRADED);
 
         return !ServerConfigs.UPGRADE_BLACKLIST_ITEMS.contains(item)
-                && (stack.getItem() instanceof SpellBook || stack.getItem() instanceof ArmorItem || stack.getItem() instanceof CastingItem
+                && (stack.getItem() instanceof SpellBook || EquipmentUtils.isArmor(stack) || stack.getItem() instanceof CastingItem
                 || ServerConfigs.UPGRADE_WHITELIST_ITEMS.contains(item)
                 || isUpgradeable
         );
@@ -171,7 +172,7 @@ public class Utils {
         if (equippedSpellbook != null && !equippedSpellbook.isEmpty()) {
             return equippedSpellbook;
         }
-        for (ItemStack stack : player.getInventory().items) {
+        for (ItemStack stack : player.getInventory().getNonEquipmentItems()) {
             if (stack.getItem() instanceof SpellBook) {
                 return stack;
             }
@@ -220,13 +221,13 @@ public class Utils {
             player.setItemSlot(EquipmentSlot.OFFHAND, itemStack);
             return;
         }
-        for (int i = 0; i < player.getInventory().items.size(); i++) {
-            if (player.getInventory().items.get(i).isEmpty()) {
-                player.getInventory().items.set(i, itemStack);
+        for (int i = 0; i < player.getInventory().getNonEquipmentItems().size(); i++) {
+            if (player.getInventory().getItem(i).isEmpty()) {
+                player.getInventory().setItem(i, itemStack);
                 return;
             }
         }
-        player.getInventory().items.set(player.getInventory().selected, itemStack);
+        player.getInventory().setSelectedItem(itemStack);
     }
 
     public static String stringTruncation(double f, int decimalPlaces) {
@@ -508,7 +509,7 @@ public class Utils {
         boolean flag = DamageSources.applyDamage(target, f, damageSource);
         if (flag) {
             if (f1 > 0.0F && target instanceof LivingEntity livingTarget) {
-                ((LivingEntity) target).knockback((double) (f1 * 0.5F), (double) Mth.sin(attacker.getYRot() * ((float) Math.PI / 180F)), (double) (-Mth.cos(attacker.getYRot() * ((float) Math.PI / 180F))));
+                livingTarget.knockback(f1 * 0.5F, Mth.sin(attacker.getYRot() * Mth.DEG_TO_RAD), -Mth.cos(attacker.getYRot() * Mth.DEG_TO_RAD), damageSource, f);
                 attacker.setDeltaMovement(attacker.getDeltaMovement().multiply(0.6D, 1.0D, 0.6D));
                 livingTarget.setLastHurtByMob(attacker);
             }
@@ -585,7 +586,7 @@ public class Utils {
         if (ServerConfigs.IMBUE_WHITELIST_ITEMS.contains(item)) {
             return true;
         }
-        if (itemStack.getItem() instanceof SwordItem) {
+        if (itemStack.is(ItemTags.SWORDS)) {
             return true;
         }
         if (ISpellContainer.isSpellContainer(itemStack) && !(itemStack.getItem() instanceof Scroll || itemStack.getItem() instanceof SpellBook)) {
@@ -657,10 +658,10 @@ public class Utils {
     }
 
     public static Vec3 moveToRelativeGroundLevel(Level level, Vec3 start, int maxStepsUp, int maxStepsDown) {
-        var blockcollisions = new BlockCollisions<>(level, null, new AABB(0, 0, 0, .5, .5, .5).move(start), true, (p_286215_, p_286216_) -> p_286216_);
+        var blockcollisions = new BlockCollisions<>(level, (Entity) null, new AABB(0, 0, 0, .5, .5, .5).move(start), true, (p_286215_, p_286216_) -> p_286216_);
         if (blockcollisions.hasNext()) {
             for (int i = 1; i < maxStepsUp; i++) {
-                blockcollisions = new BlockCollisions<>(level, null, new AABB(0, 0, 0, .5, .5, .5).move(start.add(0, i, 0)), true, (p_286215_, p_286216_) -> p_286216_);
+                blockcollisions = new BlockCollisions<>(level, (Entity) null, new AABB(0, 0, 0, .5, .5, .5).move(start.add(0, i, 0)), true, (p_286215_, p_286216_) -> p_286216_);
                 if (!blockcollisions.hasNext()) {
                     start = start.add(0, i, 0);
                     break;
@@ -773,7 +774,7 @@ public class Utils {
             if (!itemstack.isEmpty()) {
                 CompoundTag compoundtag = new CompoundTag();
                 compoundtag.putByte("Slot", (byte) i);
-                listtag.add(itemstack.save(pLevelRegistry, compoundtag));
+                listtag.add(ItemStack.CODEC.encode(itemstack, pLevelRegistry.createSerializationContext(NbtOps.INSTANCE), compoundtag).getOrThrow());
             }
         }
 
@@ -788,9 +789,9 @@ public class Utils {
         ListTag listtag = pTag.getListOrEmpty(location);
         for (int i = 0; i < listtag.size(); i++) {
             CompoundTag compoundtag = listtag.getCompoundOrEmpty(i);
-            int j = compoundtag.getByte("Slot") & 255;
+            int j = compoundtag.getByteOr("Slot", (byte) 0) & 255;
             if (j >= 0 && j < pItems.size()) {
-                pItems.set(j, ItemStack.parse(pLevelRegistry, compoundtag).orElse(ItemStack.EMPTY));
+                pItems.set(j, ItemStack.CODEC.parse(pLevelRegistry.createSerializationContext(NbtOps.INSTANCE), compoundtag).result().orElse(ItemStack.EMPTY));
             }
         }
     }
@@ -825,9 +826,9 @@ public class Utils {
 
     public static float processEnchantment(Level level, ResourceKey<Enchantment> enchantmentKey, DataComponentType<List<ConditionalEffect<EnchantmentValueEffect>>> component, ItemEnchantments enchantments) {
         if (enchantments != null) {
-            var reg = level.registryAccess().registry(Registries.ENCHANTMENT).orElse(null);
+            var reg = level.registryAccess().lookup(Registries.ENCHANTMENT).orElse(null);
             if (reg != null) {
-                var enchantment = reg.getHolder(enchantmentKey).orElse(null);
+                var enchantment = reg.get(enchantmentKey).orElse(null);
                 if (enchantment != null && enchantments.keySet().contains(enchantment)) {
                     var enchantmentLevel = enchantments.getLevel(enchantment);
                     var effectList = enchantment.value().effects().get(component);
@@ -863,12 +864,9 @@ public class Utils {
 
     @Nullable
     public static Holder<Enchantment> enchantmentFromKey(RegistryAccess registryAccess, ResourceKey<Enchantment> enchantmentkey) {
-        var reg = registryAccess.registry(Registries.ENCHANTMENT).orElse(null);
+        var reg = registryAccess.lookup(Registries.ENCHANTMENT).orElse(null);
         if (reg != null) {
-            var enchantment = reg.get(enchantmentkey);
-            if (enchantment != null) {
-                return reg.wrapAsHolder(enchantment);
-            }
+            return reg.get(enchantmentkey).orElse(null);
         }
         return null;
     }

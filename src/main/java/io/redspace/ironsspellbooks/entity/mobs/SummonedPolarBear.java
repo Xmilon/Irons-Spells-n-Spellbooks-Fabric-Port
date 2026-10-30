@@ -79,7 +79,7 @@ public class SummonedPolarBear extends PolarBear implements IMagicSummon {
         if (pPlayer == getSummoner()) {
             this.doPlayerRide(pPlayer);
         }
-        return InteractionResult.sidedSuccess(this.level().isClientSide());
+        return (this.level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
     }
 
     protected void doPlayerRide(Player pPlayer) {
@@ -138,8 +138,8 @@ public class SummonedPolarBear extends PolarBear implements IMagicSummon {
     }
 
     @Override
-    public boolean isAlliedTo(Entity pEntity) {
-        return super.isAlliedTo(pEntity) || this.isAlliedHelper(pEntity);
+    protected boolean considersEntityAsAlly(Entity pEntity) {
+        return super.considersEntityAsAlly(pEntity) || this.isAlliedHelper(pEntity);
     }
 
     @Override

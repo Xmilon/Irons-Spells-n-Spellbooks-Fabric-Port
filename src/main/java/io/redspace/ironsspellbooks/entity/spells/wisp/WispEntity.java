@@ -224,11 +224,6 @@ public class WispEntity extends PathfinderMob implements GeoEntity {
     }
 
     @Override
-    public Iterable<ItemStack> getArmorSlots() {
-        return Collections.singleton(ItemStack.EMPTY);
-    }
-
-    @Override
     public ItemStack getItemBySlot(EquipmentSlot pSlot) {
         return ItemStack.EMPTY;
     }

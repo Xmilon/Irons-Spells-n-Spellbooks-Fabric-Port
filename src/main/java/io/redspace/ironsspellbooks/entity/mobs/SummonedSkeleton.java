@@ -111,8 +111,8 @@ public class SummonedSkeleton extends Skeleton implements IMagicSummon, GeoAnima
     }
 
     @Override
-    public boolean isAlliedTo(Entity pEntity) {
-        return super.isAlliedTo(pEntity) || this.isAlliedHelper(pEntity);
+    protected boolean considersEntityAsAlly(Entity pEntity) {
+        return super.considersEntityAsAlly(pEntity) || this.isAlliedHelper(pEntity);
     }
 
     @Override
@@ -167,11 +167,6 @@ public class SummonedSkeleton extends Skeleton implements IMagicSummon, GeoAnima
     @Override
     public boolean doHurtTarget(Entity pEntity) {
         return Utils.doMeleeAttack(this, pEntity, SpellRegistry.RAISE_DEAD_SPELL.get().getDamageSource(this, getSummoner()));
-    }
-
-    @Override
-    protected boolean shouldDespawnInPeaceful() {
-        return false;
     }
 
     //
@@ -237,10 +232,10 @@ public class SummonedSkeleton extends Skeleton implements IMagicSummon, GeoAnima
         return this.tickCount;
     }
 
-    private PlayState risePredicate(com.geckolib.cache.animation.AnimationState event) {
+    private PlayState risePredicate(com.geckolib.animation.state.AnimationTest event) {
         if (!isAnimatingRise())
             return PlayState.STOP;
-        if (event.controller().getAnimationState() == AnimationController.State.STOPPED) {
+        if ((!event.controller().isAnimatingBones() || event.controller().hasAnimationFinished())) {
             String animation = new String[]{"rise_from_ground_01", "rise_from_ground_02", "rise_from_ground_03", "rise_from_ground_04"}[random.nextIntBetweenInclusive(0, 3)];
             event.controller().setAnimation(RawAnimation.begin().thenPlay(animation));
         }

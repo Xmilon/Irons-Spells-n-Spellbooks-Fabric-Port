@@ -31,7 +31,7 @@ public class ShieldPart extends PartEntity<AbstractShieldEntity> {
     }
 
     @Override
-    public boolean canBeCollidedWith() {
+    public boolean canBeCollidedWith(net.minecraft.world.entity.Entity other) {
         return hasCollision;
     }
 

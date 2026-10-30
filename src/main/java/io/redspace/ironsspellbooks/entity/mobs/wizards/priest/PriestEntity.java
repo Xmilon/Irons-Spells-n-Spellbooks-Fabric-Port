@@ -277,7 +277,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
                 }
                 this.startTrading(pPlayer);
             }
-            return InteractionResult.sidedSuccess(this.level().isClientSide());
+            return (this.level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
         }
         return super.mobInteract(pPlayer, pHand);
     }

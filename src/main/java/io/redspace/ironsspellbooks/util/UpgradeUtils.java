@@ -3,11 +3,12 @@ package io.redspace.ironsspellbooks.util;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.item.UpgradeData;
 import io.redspace.ironsspellbooks.item.armor.UpgradeOrbType;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import net.minecraft.core.Holder;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.component.ItemAttributeModifiers;
@@ -47,8 +48,8 @@ public class UpgradeUtils {
             if (slot.isPresent()) {
                 return slot.get();
             }
-        } else if (itemStack.getItem() instanceof ArmorItem armorItem) {
-            return armorItem.getEquipmentSlot().getName();
+        } else if (io.redspace.ironsspellbooks.api.util.EquipmentUtils.isArmor(itemStack)) {
+            return itemStack.get(DataComponents.EQUIPPABLE).slot().getName();
         }
         return EquipmentSlot.MAINHAND.getName();
     }

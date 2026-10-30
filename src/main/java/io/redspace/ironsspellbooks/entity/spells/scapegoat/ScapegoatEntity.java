@@ -47,7 +47,7 @@ public class ScapegoatEntity extends PathfinderMob implements AntiMagicSusceptib
 
         @Override
         public boolean canUse() {
-            return targetPos != null && ScapegoatEntity.this.distanceToSqr(ScapegoatEntity.this.targetPos.getCenter()) > 1.5 * 1.5;
+            return targetPos != null && ScapegoatEntity.this.distanceToSqr(Vec3.atCenterOf(ScapegoatEntity.this.targetPos)) > 1.5 * 1.5;
         }
 
         @Override
@@ -59,8 +59,8 @@ public class ScapegoatEntity extends PathfinderMob implements AntiMagicSusceptib
             var path = ScapegoatEntity.this.navigation.getPath();
             if (path != null && path.isDone() || (path == null && (pathingDelay-- <= 0 || tickCount < 20))) {
                 pathingDelay = 30;
-                Vec3 flee = ScapegoatEntity.this.targetPos.getCenter();
-//                Vec3 flee = Optional.ofNullable(DefaultRandomPos.getPosTowards(ScapegoatEntity.this, 16, 7, ScapegoatEntity.this.targetPos.getCenter(), 1f)).orElse(ScapegoatEntity.this.targetPos.getCenter());
+                Vec3 flee = Vec3.atCenterOf(ScapegoatEntity.this.targetPos);
+//                Vec3 flee = Optional.ofNullable(DefaultRandomPos.getPosTowards(ScapegoatEntity.this, 16, 7, Vec3.atCenterOf(ScapegoatEntity.this.targetPos), 1f)).orElse(Vec3.atCenterOf(ScapegoatEntity.this.targetPos));
                 ScapegoatEntity.this.getNavigation().moveTo(flee.x, flee.y, flee.z, 1);
             }
         }
@@ -250,7 +250,7 @@ public class ScapegoatEntity extends PathfinderMob implements AntiMagicSusceptib
     private PlayState animationPredicate(AnimationTest<ScapegoatEntity> event) {
         var controller = event.controller();
         if (this.animationToPlay != null) {
-            controller.forceAnimationReset();
+            controller.reset();
             controller.setAnimation(animationToPlay);
             animationToPlay = null;
         }

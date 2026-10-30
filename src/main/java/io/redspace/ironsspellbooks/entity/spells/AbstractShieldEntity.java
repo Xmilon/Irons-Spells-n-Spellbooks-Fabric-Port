@@ -109,7 +109,7 @@ public abstract class AbstractShieldEntity extends Entity implements AntiMagicSu
     }
 
     @Override
-    public boolean canBeCollidedWith() {
+    public boolean canBeCollidedWith(net.minecraft.world.entity.Entity other) {
         return false;
     }
 

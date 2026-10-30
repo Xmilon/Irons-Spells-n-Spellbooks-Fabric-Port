@@ -25,7 +25,7 @@ public class AnimationHolder {
 
     public AnimationHolder(Identifier animation, boolean playOnce, boolean animatesLegs) {
         this.playerAnimation = animation;
-        this.geckoAnimation = RawAnimation.begin().then(playerAnimation.getPath(), playOnce ? Animation.LoopType.PLAY_ONCE : Animation.LoopType.HOLD_ON_LAST_FRAME);
+        this.geckoAnimation = RawAnimation.begin().then(playerAnimation.getPath(), playOnce ? LoopType.PLAY_ONCE : LoopType.HOLD_ON_LAST_FRAME);
         this.isPass = false;
         this.animatesLegs = animatesLegs;
     }

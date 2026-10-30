@@ -347,8 +347,8 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     }
 
     @Override
-    public boolean isAlliedTo(Entity pEntity) {
-        return super.isAlliedTo(pEntity) || (pEntity instanceof IMagicSummon summon && summon.getSummoner() == this);
+    protected boolean considersEntityAsAlly(Entity pEntity) {
+        return super.considersEntityAsAlly(pEntity) || (pEntity instanceof IMagicSummon summon && summon.getSummoner() == this);
     }
 
     //Instead of being undead (smite is ridiculous)
@@ -372,7 +372,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
                         setHealth(halfHealth);
                     }
                     playSound(SoundRegistry.DEAD_KING_FAKE_DEATH.get());
-                    setInvulnerable(true);
+                    setPermanentlyInvulnerable(true);
                     this.getCombatGoal().stop();
                     this.cancelCast();
                 }
@@ -384,8 +384,11 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
                     setFinalPhaseGoals();
                     setNoGravity(true);
                     playSound(SoundRegistry.DEAD_KING_EXPLODE.get());
-                    level.getEntities(this, this.getBoundingBox().inflate(5), (entity) -> entity instanceof LivingEntity && entity.isPickable() && entity.distanceToSqr(position()) < 5 * 5).forEach(super::doHurtTarget);
-                    setInvulnerable(false);
+                    if (level instanceof ServerLevel serverLevel) {
+                        serverLevel.getEntities(this, this.getBoundingBox().inflate(5), (entity) -> entity instanceof LivingEntity && entity.isPickable() && entity.distanceToSqr(position()) < 5 * 5)
+                                .forEach(entity -> super.doHurtTarget(serverLevel, entity));
+                    }
+                    setPermanentlyInvulnerable(false);
                 }
             } else if (isPhase(Phases.FinalPhase)) {
                 this.bossEvent.setProgress(this.getHealth() / (this.getMaxHealth() - halfHealth));
@@ -438,7 +441,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
 
 
     @Override
-    public boolean causeFallDamage(float pFallDistance, float pMultiplier, DamageSource pSource) {
+    public boolean causeFallDamage(double pFallDistance, float pMultiplier, DamageSource pSource) {
         return false;
     }
 
@@ -491,11 +494,8 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     }
 
     @Override
-    protected void dropFromLootTable(DamageSource damageSource, boolean attackedRecently) {
-        if (!(this.level() instanceof ServerLevel serverLevel)) {
-            return;
-        }
-        ServerPlayer lastDamagingPlayer = attackedRecently && this.lastHurtByPlayer instanceof ServerPlayer serverPlayer ? serverPlayer : null;
+    protected void dropFromLootTable(ServerLevel serverLevel, DamageSource damageSource, boolean attackedRecently) {
+        ServerPlayer lastDamagingPlayer = attackedRecently && getLastHurtByPlayer() instanceof ServerPlayer serverPlayer ? serverPlayer : null;
         bossLoot.prepareDrops(this, serverLevel, damageSource, attackedRecently, isOminous(), lastDamagingPlayer);
         bossLoot.spawnPreparedDrops(this);
     }
@@ -552,7 +552,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
             pCompound.putBoolean("ominous", true);
         }
         if (spawnPos != null) {
-            pCompound.put("SpawnPos", NBT.writeVec3Pos(spawnPos));
+            pCompound.store("SpawnPos", CompoundTag.CODEC, NBT.writeVec3Pos(spawnPos));
         }
     }
 
@@ -569,11 +569,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         entityData.set(IS_OMINOUS, pCompound.getBooleanOr("ominous", false));
         this.playerScale = pCompound.getIntOr("playerScale", 0);
         bossLoot.load(pCompound, this.registryAccess());
-        if (pCompound.contains("SpawnPos")) {
-            this.spawnPos = NBT.readVec3(pCompound.childOrEmpty("SpawnPos"));
-        } else {
-            this.spawnPos = null;
-        }
+        this.spawnPos = pCompound.child("SpawnPos").map(NBT::readVec3).orElse(null);
     }
 
     @Override
@@ -604,11 +600,11 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     private PlayState meleePredicate(AnimationTest<DeadKingBoss> animationEvent) {
         var controller = animationEvent.controller();
         if (this.animationToPlay != null) {
-            controller.forceAnimationReset();
+            controller.reset();
             controller.setAnimation(animationToPlay);
             animationToPlay = null;
         }
-        return transitionController.getAnimationState() == AnimationController.State.STOPPED ? PlayState.CONTINUE : PlayState.STOP;
+        return (!transitionController.isAnimatingBones() || transitionController.hasAnimationFinished()) ? PlayState.CONTINUE : PlayState.STOP;
     }
 
     private PlayState transitionPredicate(AnimationTest animationEvent) {
@@ -639,13 +635,13 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
 
     @Override
     public boolean isAnimating() {
-        return transitionController.getAnimationState() != AnimationController.State.STOPPED || meleeController.getAnimationState() != AnimationController.State.STOPPED || super.isAnimating();
+        return (transitionController.isAnimatingBones() && !transitionController.hasAnimationFinished()) || (meleeController.isAnimatingBones() && !meleeController.hasAnimationFinished()) || super.isAnimating();
     }
 
     @Override
-    public boolean doHurtTarget(Entity pEntity) {
+    public boolean doHurtTarget(ServerLevel serverLevel, Entity pEntity) {
         level.playSound(null, getX(), getY(), getZ(), SoundRegistry.DEAD_KING_HIT.get(), SoundSource.HOSTILE, 1, 1);
-        return super.doHurtTarget(pEntity);
+        return super.doHurtTarget(serverLevel, pEntity);
     }
 
     @Override
@@ -668,7 +664,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         return new LookControl(this) {
             //This allows us to more rapidly turn towards our target. Helps to make sure his targets are aligned with his swing animations
             @Override
-            protected float rotateTowards(float pFrom, float pTo, float pMaxDelta) {
+            public float rotateTowards(float pFrom, float pTo, float pMaxDelta) {
                 return super.rotateTowards(pFrom, pTo, pMaxDelta * 2.5f);
             }
 

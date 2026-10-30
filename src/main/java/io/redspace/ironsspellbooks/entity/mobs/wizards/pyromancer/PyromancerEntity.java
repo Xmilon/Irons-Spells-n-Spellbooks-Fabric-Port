@@ -41,7 +41,7 @@ import net.minecraft.world.entity.ai.goal.LookAtPlayerGoal;
 import net.minecraft.world.entity.ai.goal.target.HurtByTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.ResetUniversalAngerTargetGoal;
-import net.minecraft.world.entity.npc.villager.VillagerTrades;
+import net.minecraft.world.item.trading.VillagerTrades;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -148,7 +148,7 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
                 }
                 this.startTrading(pPlayer);
             }
-            return InteractionResult.sidedSuccess(level().isClientSide());
+            return (level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
         }
         return super.mobInteract(pPlayer, pHand);
     }

@@ -163,11 +163,6 @@ public class VoidTentacle extends LivingEntity implements GeoEntity, AntiMagicSu
     }
 
     @Override
-    public Iterable<ItemStack> getArmorSlots() {
-        return Collections.singleton(ItemStack.EMPTY);
-    }
-
-    @Override
     public ItemStack getItemBySlot(EquipmentSlot pSlot) {
         return ItemStack.EMPTY;
     }
@@ -203,7 +198,7 @@ public class VoidTentacle extends LivingEntity implements GeoEntity, AntiMagicSu
 //        return entityData.get(DATA_DELAY);
 //    }
 
-    private PlayState animationPredicate(com.geckolib.cache.animation.AnimationState event) {
+    private PlayState animationPredicate(com.geckolib.animation.state.AnimationTest event) {
         //if (age >= getDelay()) {
         var controller = event.controller();
         //if (controller.getAnimationState() == AnimationState.Stopped) {
@@ -211,7 +206,7 @@ public class VoidTentacle extends LivingEntity implements GeoEntity, AntiMagicSu
         //IronsSpellbooks.LOGGER.debug("TentacleAnimOffset: {}", controller.tickOffset);
         if (age > 220 && Utils.random.nextFloat() < .04f) {
             controller.setAnimation(ANIMATION_RETREAT);
-        } else if (controller.getAnimationState() == AnimationController.State.STOPPED) {
+        } else if ((!controller.isAnimatingBones() || controller.hasAnimationFinished())) {
 //            controller.setAnimationSpeed((2 + Utils.random.nextFloat()) / 2f);
 //            int animation = random.nextInt(3);
 //            //IronsSpellbooks.LOGGER.debug("Choosing new animation ({})", animation);
@@ -229,7 +224,7 @@ public class VoidTentacle extends LivingEntity implements GeoEntity, AntiMagicSu
         //return PlayState.STOP;
     }
 
-    private PlayState risePredicate(com.geckolib.cache.animation.AnimationState event) {
+    private PlayState risePredicate(com.geckolib.animation.state.AnimationTest event) {
         //if (age >= getDelay()) {
         var controller = event.controller();
         //if (controller.getAnimationState() == AnimationState.Stopped) {

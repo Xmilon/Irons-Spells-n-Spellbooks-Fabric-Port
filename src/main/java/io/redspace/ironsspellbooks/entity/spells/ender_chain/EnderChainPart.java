@@ -62,7 +62,7 @@ public class EnderChainPart extends PartEntity<EnderChain> implements AntiMagicS
     }
 
     @Override
-    public boolean isAlliedTo(@NotNull Entity entity) {
+    protected boolean considersEntityAsAlly(@NotNull Entity entity) {
         return parentChain.isAlliedTo(entity);
     }
 

@@ -68,7 +68,7 @@ public class AlchemistAttackGoal extends WizardAttackGoal {
             if (hasLineOfSight && mob.getRandom().nextFloat() * (attackWeight + supportWeight) > supportWeight) {
                 // We want the potion amplifier to scale with the "difficulty" of our target, with a chunk of randomness. For vanilla players, this will stick to from I-II.
                 int amplifier = (mob.getRandom().nextFloat() < 0.75f ? 0 : 1) + (target.getMaxHealth() > 30 ? (mob.getRandom().nextFloat() < 0.5f ? 0 : 1) : 0);
-                var effect = target.isInvertedHealAndHarm() ? MobEffects.HEAL : MobEffects.HARM;
+                var effect = target.isInvertedHealAndHarm() ? MobEffects.INSTANT_HEALTH : MobEffects.INSTANT_DAMAGE;
                 if (mob.getRandom().nextFloat() < 0.45f) {
                     //Effect, instead of damage
                     for (int i = 0; i < ATTACK_POTIONS.size(); i++) {

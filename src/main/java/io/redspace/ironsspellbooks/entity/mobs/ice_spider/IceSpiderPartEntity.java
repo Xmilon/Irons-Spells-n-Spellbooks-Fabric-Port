@@ -45,7 +45,7 @@ public class IceSpiderPartEntity extends PartEntity<IceSpiderEntity> implements 
     }
 
     @Override
-    public boolean canBeCollidedWith() {
+    public boolean canBeCollidedWith(net.minecraft.world.entity.Entity other) {
         return collision;
     }
 //

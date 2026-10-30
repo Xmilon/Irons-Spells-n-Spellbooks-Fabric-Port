@@ -26,6 +26,13 @@ public class IronsGeoEntityRenderer<T extends Entity & GeoAnimatable> extends Ge
     }
 
     @Override
+    protected boolean affectedByCulling(T entity) {
+        return !(entity instanceof io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob)
+                && !(entity instanceof io.redspace.ironsspellbooks.entity.mobs.ice_spider.IceSpiderEntity)
+                && super.affectedByCulling(entity);
+    }
+
+    @Override
     public void addRenderData(T animatable, Void relatedObject, EntityRenderState renderState, float partialTick) {
         super.addRenderData(animatable, relatedObject, renderState, partialTick);
         renderState.addGeckolibData(ENTITY, animatable);

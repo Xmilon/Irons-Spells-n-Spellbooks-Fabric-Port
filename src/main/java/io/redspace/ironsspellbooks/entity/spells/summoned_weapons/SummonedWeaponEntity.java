@@ -139,8 +139,8 @@ public abstract class SummonedWeaponEntity extends AbstractSpellCastingMob imple
     protected UUID summonerUUID;
 
     @Override
-    public boolean isAlliedTo(Entity pEntity) {
-        return super.isAlliedTo(pEntity) || this.isAlliedHelper(pEntity);
+    protected boolean considersEntityAsAlly(Entity pEntity) {
+        return super.considersEntityAsAlly(pEntity) || this.isAlliedHelper(pEntity);
     }
 
     /**
@@ -199,7 +199,7 @@ public abstract class SummonedWeaponEntity extends AbstractSpellCastingMob imple
         var controller = animationEvent.controller();
 
         if (this.animationToPlay != null) {
-            controller.forceAnimationReset();
+            controller.reset();
             controller.setAnimation(animationToPlay);
             animationToPlay = null;
         }

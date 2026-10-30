@@ -97,11 +97,6 @@ public class ArchevokerEntity extends AbstractSpellCastingMob implements Enemy {
     protected SoundEvent getHurtSound(DamageSource pDamageSource) {
         return SoundEvents.EVOKER_HURT;
     }
-
-    @Override
-    protected boolean shouldDespawnInPeaceful() {
-        return true;
-    }
 }
 
 

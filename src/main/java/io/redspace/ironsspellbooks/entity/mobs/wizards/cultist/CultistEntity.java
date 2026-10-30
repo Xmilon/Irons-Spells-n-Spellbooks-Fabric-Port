@@ -167,7 +167,7 @@ public class CultistEntity extends NeutralWizard implements Enemy, IAnimatedAtta
         var controller = animationEvent.controller();
 
         if (this.animationToPlay != null) {
-            controller.forceAnimationReset();
+            controller.reset();
             controller.setAnimation(animationToPlay);
             animationToPlay = null;
         }
@@ -182,7 +182,7 @@ public class CultistEntity extends NeutralWizard implements Enemy, IAnimatedAtta
 
     @Override
     public boolean isAnimating() {
-        return meleeController.getAnimationState() != AnimationController.State.STOPPED || super.isAnimating();
+        return (meleeController.isAnimatingBones() && !meleeController.hasAnimationFinished()) || super.isAnimating();
     }
 
     @Override

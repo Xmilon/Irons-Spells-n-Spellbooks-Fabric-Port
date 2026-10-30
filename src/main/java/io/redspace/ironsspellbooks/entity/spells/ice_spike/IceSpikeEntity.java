@@ -151,7 +151,7 @@ public class IceSpikeEntity extends AoeEntity {
     }
 
     @Override
-    public boolean canBeCollidedWith() {
+    public boolean canBeCollidedWith(net.minecraft.world.entity.Entity other) {
         return true;
     }
 

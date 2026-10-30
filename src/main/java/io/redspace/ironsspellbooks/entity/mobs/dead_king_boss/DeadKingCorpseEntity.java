@@ -55,13 +55,8 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
     }
 
     @Override
-    public boolean canBeCollidedWith() {
+    public boolean canBeCollidedWith(net.minecraft.world.entity.Entity other) {
         return true;
-    }
-
-    @Override
-    protected boolean shouldDespawnInPeaceful() {
-        return false;
     }
 
     @Override
@@ -153,7 +148,7 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
     protected InteractionResult mobInteract(Player pPlayer, InteractionHand pHand) {
         if (!triggered()) {
             trigger();
-            return InteractionResult.sidedSuccess(level().isClientSide());
+            return (level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
         }
         return super.mobInteract(pPlayer, pHand);
     }

@@ -245,7 +245,7 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
     }
 
     @Override
-    public boolean canBeCollidedWith() {
+    public boolean canBeCollidedWith(net.minecraft.world.entity.Entity other) {
         return true;
     }
 
@@ -319,11 +319,6 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
 
     public void setShatterDamage(float damage) {
         this.shatterProjectileDamage = damage;
-    }
-
-    @Override
-    public Iterable<ItemStack> getArmorSlots() {
-        return Collections.singleton(ItemStack.EMPTY);
     }
 
     @Override

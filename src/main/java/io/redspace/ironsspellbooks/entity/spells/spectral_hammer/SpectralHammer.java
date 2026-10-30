@@ -300,11 +300,6 @@ public class SpectralHammer extends LivingEntity implements GeoEntity {
     }
 
     @Override
-    public Iterable<ItemStack> getArmorSlots() {
-        return Collections.singleton(ItemStack.EMPTY);
-    }
-
-    @Override
     public ItemStack getItemBySlot(EquipmentSlot pSlot) {
         return ItemStack.EMPTY;
     }
@@ -323,9 +318,9 @@ public class SpectralHammer extends LivingEntity implements GeoEntity {
     private final RawAnimation animationBuilder = RawAnimation.begin().thenPlay("hammer_swing");
     private final AnimationController animationController = new AnimationController<>("controller", 0, this::predicate);
 
-    private PlayState predicate(com.geckolib.cache.animation.AnimationState event) {
+    private PlayState predicate(com.geckolib.animation.state.AnimationTest event) {
 
-        if (event.controller().getAnimationState() == AnimationController.State.STOPPED) {
+        if ((!event.controller().isAnimatingBones() || event.controller().hasAnimationFinished())) {
             if (playSwingAnimation) {
                 event.controller().setAnimation(animationBuilder);
                 playSwingAnimation = false;

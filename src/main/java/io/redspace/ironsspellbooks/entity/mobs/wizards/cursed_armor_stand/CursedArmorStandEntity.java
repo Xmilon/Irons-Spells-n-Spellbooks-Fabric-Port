@@ -12,6 +12,7 @@ import com.geckolib.animation.RawAnimation;
 import com.geckolib.animation.AnimationController;
 
 import io.redspace.ironsspellbooks.IronsSpellbooks;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.entity.mobs.IAnimatedAttacker;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
@@ -20,6 +21,7 @@ import io.redspace.ironsspellbooks.entity.mobs.wizards.fire_boss.NotIdioticNavig
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.NBT;
 import net.minecraft.core.particles.ParticleTypes;
+import net.minecraft.core.component.DataComponents;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
@@ -45,7 +47,6 @@ import net.minecraft.world.entity.ai.goal.target.NearestAttackableTargetGoal;
 import net.minecraft.world.entity.ai.goal.target.ResetUniversalAngerTargetGoal;
 import net.minecraft.world.entity.ai.navigation.PathNavigation;
 import net.minecraft.world.entity.player.Player;
-import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.ServerLevelAccessor;
@@ -129,7 +130,7 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
     }
 
     @Override
-    public InteractionResult interactAt(Player pPlayer, Vec3 pVector, InteractionHand pHand) {
+    public InteractionResult interact(Player pPlayer, InteractionHand pHand, Vec3 pVector) {
         if (isArmorStandFrozen()) {
             if (pPlayer.level().isClientSide()) {
                 handleInteraction(pVector, slot -> {
@@ -144,13 +145,14 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
                 AtomicReference<SoundEvent> sound = new AtomicReference<>(SoundEvents.ARMOR_STAND_HIT);
 
                 handleInteraction(pVector, slot -> {
-                    if (hasItemInSlot(slot) && getItemBySlot(slot).getItem() instanceof ArmorItem armorItem) {
-                        sound.set(armorItem.getMaterial().value().equipSound().value());
+                    var equipped = getItemBySlot(slot);
+                    if (io.redspace.ironsspellbooks.api.util.EquipmentUtils.isArmor(equipped)) {
+                        sound.set(equipped.get(DataComponents.EQUIPPABLE).equipSound().value());
                     }
                     if (pPlayer.isCreative() && pPlayer.isCrouching()) {
-                        ItemStack equipped = getItemBySlot(slot);
                         ItemStack playerHeld = pPlayer.getItemInHand(pHand);
-                        if ((equipped.isEmpty() || equipped.getItem() instanceof ArmorItem) && (playerHeld.isEmpty() || (playerHeld.getItem() instanceof ArmorItem armorItem && armorItem.getEquipmentSlot().equals(slot)))) {
+                        if ((equipped.isEmpty() || io.redspace.ironsspellbooks.api.util.EquipmentUtils.isArmor(equipped)) && (playerHeld.isEmpty() ||
+                                (io.redspace.ironsspellbooks.api.util.EquipmentUtils.isArmor(playerHeld) && playerHeld.get(DataComponents.EQUIPPABLE).slot() == slot))) {
                             pPlayer.setItemInHand(pHand, equipped);
                             this.setItemSlot(slot, playerHeld);
                         }
@@ -163,7 +165,7 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
             }
             return InteractionResult.SUCCESS;
         }
-        return super.interactAt(pPlayer, pVector, pHand);
+        return super.interact(pPlayer, pHand, pVector);
     }
 
     private void handleInteraction(Vec3 interactionVector, Consumer<EquipmentSlot> onInteract) {
@@ -195,7 +197,7 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
         return new LookControl(this) {
             //This allows us to more rapidly turn towards our target. Helps to make sure his targets are aligned with his swing animations
             @Override
-            protected float rotateTowards(float pFrom, float pTo, float pMaxDelta) {
+            public float rotateTowards(float pFrom, float pTo, float pMaxDelta) {
                 return super.rotateTowards(pFrom, pTo, pMaxDelta * 2.5f);
             }
 
@@ -245,8 +247,8 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
     @Override
     protected void playHurtSound(DamageSource pSource) {
         var chestplate = this.getItemBySlot(EquipmentSlot.CHEST);
-        if (!chestplate.isEmpty() && chestplate.getItem() instanceof ArmorItem armorItem) {
-            this.playSound(armorItem.getMaterial().value().equipSound().value(), this.getSoundVolume(), this.getVoicePitch());
+        if (io.redspace.ironsspellbooks.api.util.EquipmentUtils.isArmor(chestplate)) {
+            this.playSound(chestplate.get(DataComponents.EQUIPPABLE).equipSound().value(), this.getSoundVolume(), this.getVoicePitch());
         }
         super.playHurtSound(pSource);
     }
@@ -263,7 +265,7 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
         pCompound.putFloat("originalYRot", originalYRot);
         pCompound.putBoolean("armorStandFrozen", isArmorStandFrozen());
         if (spawn != null) {
-            pCompound.put("spawnPos", NBT.writeVec3Pos(spawn));
+            pCompound.store("spawnPos", CompoundTag.CODEC, NBT.writeVec3Pos(spawn));
         }
         pCompound.putString("armorStandPose", getArmorstandPose().name());
         this.addPersistentAngerSaveData(pCompound);
@@ -273,9 +275,7 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
     public void readAdditionalSaveData(ValueInput pCompound) {
         super.readAdditionalSaveData(pCompound);
         this.originalYRot = pCompound.getFloatOr("originalYRot", 0f);
-        if (pCompound.contains("spawnPos")) {
-            this.spawn = NBT.readVec3(pCompound.childOrEmpty("spawnPos"));
-        }
+        this.spawn = pCompound.child("spawnPos").map(NBT::readVec3).orElse(null);
         this.setArmorStandFrozen(pCompound.getBooleanOr("armorStandFrozen", false));
         String pose = pCompound.getStringOr("armorStandPose", "");
         try {
@@ -405,7 +405,7 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
         var controller = animationEvent.controller();
 
         if (this.animationToPlay != null) {
-            controller.forceAnimationReset();
+            controller.reset();
             controller.setAnimation(animationToPlay);
             animationToPlay = null;
         }
@@ -420,7 +420,7 @@ public class CursedArmorStandEntity extends AbstractSpellCastingMob implements I
 
     @Override
     public boolean isAnimating() {
-        return meleeController.getAnimationState() != AnimationController.State.STOPPED || super.isAnimating();
+        return (meleeController.isAnimatingBones() && !meleeController.hasAnimationFinished()) || super.isAnimating();
     }
 
 

@@ -77,7 +77,7 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
     }
 
     @Override
-    public boolean canBeCollidedWith() {
+    public boolean canBeCollidedWith(net.minecraft.world.entity.Entity other) {
         return false;
     }
 
@@ -305,12 +305,6 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
         return false;
     }
 
-
-    @Override
-    public Iterable<ItemStack> getArmorSlots() {
-        return Collections.singleton(ItemStack.EMPTY);
-    }
-
     @Override
     public ItemStack getItemBySlot(EquipmentSlot pSlot) {
         return ItemStack.EMPTY;
@@ -323,11 +317,11 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
 
     private boolean played = false;
 
-    private PlayState animationPredicate(com.geckolib.cache.animation.AnimationState event) {
+    private PlayState animationPredicate(com.geckolib.animation.state.AnimationTest event) {
         var controller = event.controller();
 
-        if (!played && controller.getAnimationState() == AnimationController.State.STOPPED) {
-            controller.forceAnimationReset();
+        if (!played && (!controller.isAnimatingBones() || controller.hasAnimationFinished())) {
+            controller.reset();
             controller.setAnimation(ANIMATION);
             played = true;
         }

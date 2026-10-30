@@ -41,6 +41,7 @@ import com.geckolib.animatable.manager.AnimatableManager;
 import com.geckolib.animation.AnimationController;
 import com.geckolib.animation.object.PlayState;
 import com.geckolib.animation.RawAnimation;
+import com.geckolib.animation.state.AnimationTest;
 import com.geckolib.util.GeckoLibUtil;
 
 import javax.annotation.Nullable;
@@ -85,7 +86,7 @@ public class SummonedZombie extends Zombie implements IMagicSummon, GeoAnimatabl
     }
 
     @Override
-    public boolean isPreventingPlayerRest(Player pPlayer) {
+    public boolean isPreventingPlayerRest(ServerLevel serverLevel, Player pPlayer) {
         return !this.isAlliedTo(pPlayer);
     }
 
@@ -111,8 +112,8 @@ public class SummonedZombie extends Zombie implements IMagicSummon, GeoAnimatabl
     }
 
     @Override
-    public boolean isAlliedTo(Entity pEntity) {
-        return super.isAlliedTo(pEntity) || this.isAlliedHelper(pEntity);
+    protected boolean considersEntityAsAlly(Entity pEntity) {
+        return super.considersEntityAsAlly(pEntity) || this.isAlliedHelper(pEntity);
     }
 
     /**
@@ -138,7 +139,7 @@ public class SummonedZombie extends Zombie implements IMagicSummon, GeoAnimatabl
     }
 
     @Override
-    public boolean doHurtTarget(Entity pEntity) {
+    public boolean doHurtTarget(ServerLevel serverLevel, Entity pEntity) {
         return Utils.doMeleeAttack(this, pEntity, SpellRegistry.RAISE_DEAD_SPELL.get().getDamageSource(this, getSummoner()));
     }
 
@@ -164,11 +165,6 @@ public class SummonedZombie extends Zombie implements IMagicSummon, GeoAnimatabl
         } else {
             super.tick();
         }
-    }
-
-    @Override
-    protected boolean shouldDespawnInPeaceful() {
-        return false;
     }
 
     @Override
@@ -228,15 +224,10 @@ public class SummonedZombie extends Zombie implements IMagicSummon, GeoAnimatabl
         return this.cache;
     }
 
-    @Override
-    public double getTick(Object o) {
-        return this.tickCount;
-    }
-
-    private PlayState risePredicate(com.geckolib.cache.animation.AnimationState event) {
+    private PlayState risePredicate(AnimationTest<SummonedZombie> event) {
         if (!isAnimatingRise())
             return PlayState.STOP;
-        if (event.controller().getAnimationState() == AnimationController.State.STOPPED) {
+        if ((!event.controller().isAnimatingBones() || event.controller().hasAnimationFinished())) {
             String animation = new String[]{"rise_from_ground_01", "rise_from_ground_02", "rise_from_ground_03", "rise_from_ground_04"}[random.nextIntBetweenInclusive(0, 3)];
             event.controller().setAnimation(RawAnimation.begin().thenPlay(animation));
         }

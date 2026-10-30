@@ -88,8 +88,8 @@ public class EnderChain extends Entity implements AntiMagicSusceptible, IEntityW
     }
 
     @Override
-    public boolean isAlliedTo(@NotNull Entity entity) {
-        return super.isAlliedTo(entity) || entity.getUUID().equals(ownerUUID);
+    protected boolean considersEntityAsAlly(@NotNull Entity entity) {
+        return super.considersEntityAsAlly(entity) || entity.getUUID().equals(ownerUUID);
     }
 
     public void setVictim(@Nullable Entity victim) {

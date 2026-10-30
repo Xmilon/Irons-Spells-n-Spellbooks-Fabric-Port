@@ -61,7 +61,7 @@ public class HealingAoe extends AoeEntity implements AntiMagicSusceptible {
 
     @Override
     public Optional<ParticleOptions> getParticle() {
-        return Optional.of(ClientSpellCastHelper.coloredMobEffect(MobEffects.HEAL.value().getColor()));//Optional.of(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, MobEffects.HEAL.value().getColor()));
+        return Optional.of(ClientSpellCastHelper.coloredMobEffect(MobEffects.INSTANT_HEALTH.value().getColor()));//Optional.of(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, MobEffects.INSTANT_HEALTH.value().getColor()));
     }
 
     @Override

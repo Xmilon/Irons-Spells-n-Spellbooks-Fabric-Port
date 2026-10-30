@@ -49,8 +49,8 @@ public class UndeadRiftEntity extends Entity implements IMagicSummon {
     @Nullable LivingEntity forcedTarget;
 
     @Override
-    public boolean isAlliedTo(Entity entity) {
-        return super.isAlliedTo(entity) || isAlliedHelper(entity);
+    protected boolean considersEntityAsAlly(Entity entity) {
+        return super.considersEntityAsAlly(entity) || isAlliedHelper(entity);
     }
 
     @Override

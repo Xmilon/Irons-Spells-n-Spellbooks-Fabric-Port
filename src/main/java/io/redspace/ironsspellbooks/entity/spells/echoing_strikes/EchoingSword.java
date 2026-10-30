@@ -151,7 +151,7 @@ public class EchoingSword extends AbstractMagicProjectile implements IAnimatedAt
         var controller = animationEvent.controller();
 
         if (this.animationToPlay != null) {
-            controller.forceAnimationReset();
+            controller.reset();
             controller.setAnimation(animationToPlay);
             animationToPlay = null;
         }

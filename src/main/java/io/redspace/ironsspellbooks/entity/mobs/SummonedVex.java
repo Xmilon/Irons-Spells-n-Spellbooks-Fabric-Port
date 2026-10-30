@@ -99,8 +99,8 @@ public class SummonedVex extends Vex implements IMagicSummon {
     }
 
     @Override
-    public boolean isAlliedTo(Entity pEntity) {
-        return super.isAlliedTo(pEntity) || this.isAlliedHelper(pEntity);
+    protected boolean considersEntityAsAlly(Entity pEntity) {
+        return super.considersEntityAsAlly(pEntity) || this.isAlliedHelper(pEntity);
     }
 
     public void onUnSummon() {
@@ -108,11 +108,6 @@ public class SummonedVex extends Vex implements IMagicSummon {
             MagicManager.spawnParticles(level(), ParticleTypes.POOF, getX(), getY(), getZ(), 25, .4, .8, .4, .03, false);
             setRemoved(RemovalReason.DISCARDED);
         }
-    }
-
-    @Override
-    protected boolean shouldDespawnInPeaceful() {
-        return false;
     }
 
     class VexChargeAttackGoal extends Goal {

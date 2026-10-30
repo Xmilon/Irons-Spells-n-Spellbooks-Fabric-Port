@@ -68,7 +68,7 @@ public class DragonBreathProjectile extends AbstractConeProjectile {
 //        areaeffectcloud.setRadius(2.0F);
 //        areaeffectcloud.setDuration(80);
 //        areaeffectcloud.setRadiusPerTick(-.2f * ((7.0F - areaeffectcloud.getRadius()) / (float) areaeffectcloud.getDuration()));
-//        areaeffectcloud.addEffect(new MobEffectInstance(MobEffects.HARM, 1, (int) (damage / 5)));
+//        areaeffectcloud.addEffect(new MobEffectInstance(MobEffects.INSTANT_DAMAGE, 1, (int) (damage / 5)));
         DragonBreathPool pool = new DragonBreathPool(level());
         pool.setOwner(getOwner());
         pool.setDamage(this.damage);

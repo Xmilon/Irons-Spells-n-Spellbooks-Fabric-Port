@@ -224,7 +224,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         return new LookControl(this) {
             //This allows us to more rapidly turn towards our target. Helps to make sure his targets are aligned with his swing animations
             @Override
-            protected float rotateTowards(float pFrom, float pTo, float pMaxDelta) {
+            public float rotateTowards(float pFrom, float pTo, float pMaxDelta) {
                 return super.rotateTowards(pFrom, pTo, pMaxDelta * 2.5f);
             }
 
@@ -439,8 +439,8 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource pSource) {
-        return isSpawning() || isDespawning() || super.isInvulnerableTo(pSource);
+    public boolean isInvulnerableTo(ServerLevel serverLevel, DamageSource pSource) {
+        return isSpawning() || isDespawning() || super.isInvulnerableTo(serverLevel, pSource);
     }
 
     @Override
@@ -604,8 +604,8 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     @Override
-    public boolean doHurtTarget(Entity entity) {
-        if (super.doHurtTarget(entity)) {
+    public boolean doHurtTarget(ServerLevel serverLevel, Entity entity) {
+        if (super.doHurtTarget(serverLevel, entity)) {
             entity.igniteForSeconds(2);
             return true;
         }
@@ -785,7 +785,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             if (isSoulMode()) {
                 knight.setIsRestored();
             }
-            knight.finalizeSpawn(serverLevel, level.getCurrentDifficultyAt(this.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
+            knight.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(this.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
             level.addFreshEntity(knight);
             level.playSound(null, spawn.x, spawn.y, spawn.z, SoundRegistry.FIRE_BOSS_ACCENT.get(), this.getSoundSource(), 2, .9f);
         }
@@ -808,11 +808,11 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     @Override
-    public void kill() {
+    public void kill(ServerLevel serverLevel) {
         if (this.isDeadOrDying() || this.isSpawning()) {
             discard();
         } else {
-            super.kill();
+            super.kill(serverLevel);
         }
     }
 
@@ -835,17 +835,20 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     private void killNearbySummonedKnights() {
-        level.getEntitiesOfClass(KeeperEntity.class, this.getBoundingBox().inflate(50, 20, 50)).stream().filter(KeeperEntity::isSummoned).forEach(LivingEntity::kill);
+        if (level instanceof ServerLevel serverLevel) {
+            serverLevel.getEntitiesOfClass(KeeperEntity.class, this.getBoundingBox().inflate(50, 20, 50)).stream()
+                    .filter(KeeperEntity::isSummoned).forEach(knight -> knight.kill(serverLevel));
+        }
     }
 
     @Override
     protected void dropAllDeathLoot(ServerLevel pLevel, DamageSource pDamageSource) {
         // prevent drops from appearing before death animation, just store them
-        this.dropEquipment();
-        this.dropExperience(pDamageSource.getEntity());
-        boolean playerDeath = this.lastHurtByPlayerTime > 0;
+        this.dropEquipment(pLevel);
+        this.dropExperience(pLevel, pDamageSource.getEntity());
+        boolean playerDeath = this.getLastHurtByPlayerMemoryTime() > 0;
         this.dropCustomDeathLoot(pLevel, pDamageSource, playerDeath);
-        ServerPlayer lastDamagingPlayer = playerDeath && this.lastHurtByPlayer instanceof ServerPlayer serverPlayer ? serverPlayer : null;
+        ServerPlayer lastDamagingPlayer = playerDeath && getLastHurtByPlayer() instanceof ServerPlayer serverPlayer ? serverPlayer : null;
         this.bossLoot.prepareDrops(this, pLevel, pDamageSource, playerDeath, isOminous(), lastDamagingPlayer);
     }
 
@@ -897,7 +900,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     @Override
-    public boolean causeFallDamage(float pFallDistance, float pMultiplier, DamageSource pSource) {
+    public boolean causeFallDamage(double pFallDistance, float pMultiplier, DamageSource pSource) {
         return false;
     }
 
@@ -927,11 +930,11 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     @Override
-    public void knockback(double pStrength, double pX, double pZ) {
+    public void knockback(double pStrength, double pX, double pZ, DamageSource source, float amount, boolean force) {
         if (isStanceBroken()) {
             return;
         }
-        super.knockback(pStrength, pX, pZ);
+        super.knockback(pStrength, pX, pZ, source, amount, force);
     }
 
     @Override
@@ -961,7 +964,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         var controller = animationEvent.controller();
 
         if (this.animationToPlay != null) {
-            controller.forceAnimationReset();
+            controller.reset();
             controller.setAnimation(animationToPlay);
             animationToPlay = null;
         }
@@ -976,7 +979,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     @Override
     public boolean isAnimating() {
-        return (meleeController.getAnimationState() == AnimationController.State.RUNNING && !canAnimateOver) || super.isAnimating();
+        return ((meleeController.isAnimatingBones() && !meleeController.isTransitioning() && !meleeController.hasAnimationFinished()) && !canAnimateOver) || super.isAnimating();
     }
 
     @Override
@@ -1030,8 +1033,8 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     @Override
-    protected void actuallyHurt(DamageSource damageSource, float damageAmount) {
-        super.actuallyHurt(damageSource, damageAmount);
+    protected void actuallyHurt(ServerLevel serverLevel, DamageSource damageSource, float damageAmount) {
+        super.actuallyHurt(serverLevel, damageSource, damageAmount);
         if (isHalfHealthAttacking()) {
             halfHealthDamageAccumulated += damageAmount;
         }
@@ -1098,7 +1101,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         pCompound.putBoolean("halfHealthAttack", hasPerformedHalfHealthAttack);
         pCompound.putBoolean("ominous", isOminous());
         if (spawnPos != null) {
-            pCompound.put("SpawnPos", NBT.writeVec3Pos(spawnPos));
+            pCompound.store("SpawnPos", CompoundTag.CODEC, NBT.writeVec3Pos(spawnPos));
         }
     }
 
@@ -1125,17 +1128,14 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.halfHealthDamageAccumulated = pCompound.getFloatOr("halfHealthDamage", 0f);
         this.hasPerformedHalfHealthAttack = pCompound.getBooleanOr("halfHealthAttack", false);
         setIsOminous(pCompound.getBooleanOr("ominous", false));
-        if (pCompound.contains("SpawnPos")) {
-            this.spawnPos = NBT.readVec3(pCompound.childOrEmpty("SpawnPos"));
-        } else {
-            this.spawnPos = null;
-        }
+        this.spawnPos = pCompound.child("SpawnPos").map(NBT::readVec3).orElse(null);
     }
 
     @Override
     public void load(ValueInput pCompound) {
-        if (pCompound.contains("unloadedGametime")) {
-            var unloadTimestamp = pCompound.getLong("unloadedGametime");
+        var unloadedGametime = pCompound.getLong("unloadedGametime");
+        if (unloadedGametime.isPresent()) {
+            var unloadTimestamp = unloadedGametime.get();
             var delta = level.getGameTime() - unloadTimestamp;
             if (delta > UNLOADED_DESPAWN_LIMIT_SECONDS * 20) {
                 this.setRemoved(RemovalReason.DISCARDED);
@@ -1151,8 +1151,8 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
     }
 
     @Override
-    public boolean isAlliedTo(Entity pEntity) {
-        return super.isAlliedTo(pEntity) || pEntity.typeHolder().is(ModTags.INFERNAL_ALLIES);
+    protected boolean considersEntityAsAlly(Entity pEntity) {
+        return super.considersEntityAsAlly(pEntity) || pEntity.typeHolder().is(ModTags.INFERNAL_ALLIES);
     }
 
     @Override

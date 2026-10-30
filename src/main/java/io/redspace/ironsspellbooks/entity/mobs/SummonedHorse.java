@@ -147,7 +147,7 @@ public class SummonedHorse extends AbstractHorse implements IMagicSummon {
         } else {
             this.makeMad();
         }
-        return InteractionResult.sidedSuccess(this.level().isClientSide());
+        return (this.level().isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
     }
 
     /**

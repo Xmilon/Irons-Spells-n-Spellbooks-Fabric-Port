@@ -314,7 +314,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
         var controller = animationEvent.controller();
 
         if (this.animationToPlay != null) {
-            controller.forceAnimationReset();
+            controller.reset();
             controller.setAnimation(animationToPlay);
             animationToPlay = null;
         }
@@ -330,7 +330,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
 
     @Override
     public boolean isAnimating() {
-        return meleeController.getAnimationState() != AnimationController.State.STOPPED || super.isAnimating();
+        return (meleeController.isAnimatingBones() && !meleeController.hasAnimationFinished()) || super.isAnimating();
     }
 
     @Override
@@ -361,7 +361,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
     }
 
     @Override
-    public boolean isAlliedTo(Entity pEntity) {
-        return super.isAlliedTo(pEntity) || pEntity.typeHolder().is(ModTags.INFERNAL_ALLIES);
+    protected boolean considersEntityAsAlly(Entity pEntity) {
+        return super.considersEntityAsAlly(pEntity) || pEntity.typeHolder().is(ModTags.INFERNAL_ALLIES);
     }
 }

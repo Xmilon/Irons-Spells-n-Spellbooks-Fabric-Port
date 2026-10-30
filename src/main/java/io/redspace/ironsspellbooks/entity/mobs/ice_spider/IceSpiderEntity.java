@@ -86,8 +86,8 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
 
     protected static final EntityDataAccessor<Boolean> DATA_IS_CLIMBING = SynchedEntityData.defineId(IceSpiderEntity.class, EntityDataSerializers.BOOLEAN);
     protected static final EntityDataAccessor<Boolean> DATA_IS_CROUCHING = SynchedEntityData.defineId(IceSpiderEntity.class, EntityDataSerializers.BOOLEAN);
-    protected static final EntityDataAccessor<Optional<UUID>> DATA_GRAPPLE_UUID = SynchedEntityData.defineId(
-            IceSpiderEntity.class, EntityDataSerializers.OPTIONAL_UUID
+    protected static final EntityDataAccessor<Optional<EntityReference<LivingEntity>>> DATA_GRAPPLE_UUID = SynchedEntityData.defineId(
+            IceSpiderEntity.class, EntityDataSerializers.OPTIONAL_LIVING_ENTITY_REFERENCE
     );
 
     protected static final AttributeModifier CROUCH_SPEED_MODIFIER = new AttributeModifier(IronsSpellbooks.id("crouching"), -0.30, AttributeModifier.Operation.ADD_MULTIPLIED_TOTAL);
@@ -116,7 +116,6 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
 
     public IceSpiderEntity(EntityType<? extends PathfinderMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
-        this.noCulling = true;
         subEntities = new IceSpiderPartEntity[]{
                 //head
                 new IceSpiderPartEntity(this, TORSO_OFFSET.add(0, 0, 16), 1.2f, .8f),
@@ -125,7 +124,8 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
                 //abdomen
                 new IceSpiderPartEntity(this, TORSO_OFFSET.add(0, 0, -20), 1.75f, 1.5f)
         };
-        this.setId(ENTITY_COUNTER.getAndAdd(this.subEntities.length + 1) + 1); // Copy of forge fix to sub entity id's
+        // The native parent and part constructors already reserve consecutive IDs from this level.
+        this.setId(getId());
         this.moveControl = createMoveControl();
         setSatiation(0);
     }
@@ -519,8 +519,8 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource source) {
-        return super.isInvulnerableTo(source) || getPose().equals(Pose.EMERGING);
+    public boolean isInvulnerableTo(ServerLevel serverLevel, DamageSource source) {
+        return super.isInvulnerableTo(serverLevel, source) || getPose().equals(Pose.EMERGING);
     }
 
     public boolean hurtPart(ServerLevel damageLevel, IceSpiderPartEntity bodypart, DamageSource source, float amount) {
@@ -529,7 +529,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     }
 
     @Override
-    protected void actuallyHurt(DamageSource damageSource, float damageAmount) {
+    protected void actuallyHurt(ServerLevel serverLevel, DamageSource damageSource, float damageAmount) {
         // give ourselves resistance against our own grappled target
         if (damageSource.getEntity() != null && damageSource.getEntity().getUUID().equals(getGrappleTargetUUID())) {
             damageAmount *= .20f;
@@ -545,7 +545,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
                 wantsToLeapBack = true;
             }
         }
-        super.actuallyHurt(damageSource, damageAmount);
+        super.actuallyHurt(serverLevel, damageSource, damageAmount);
     }
 
     /**
@@ -611,7 +611,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
 
     @Nullable
     public UUID getGrappleTargetUUID() {
-        return this.entityData.get(DATA_GRAPPLE_UUID).orElse(null);
+        return this.entityData.get(DATA_GRAPPLE_UUID).map(EntityReference::getUUID).orElse(null);
     }
 
     public boolean isGrappling() {
@@ -619,7 +619,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     }
 
     public void setGrappleTargetUUID(@Nullable UUID uuid) {
-        this.entityData.set(DATA_GRAPPLE_UUID, Optional.ofNullable(uuid));
+        this.entityData.set(DATA_GRAPPLE_UUID, uuid == null ? Optional.empty() : Optional.of(EntityReference.<LivingEntity>of(uuid)));
         if (uuid == null) {
             cachedGrappleTarget = null;
         }
@@ -719,7 +719,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         iceTombEntity.setEvil();
         iceTombEntity.setLifetime(20 * 5);
         level.addFreshEntity(iceTombEntity);
-        entity.startRiding(iceTombEntity, true);
+        entity.startRiding(iceTombEntity, true, true);
         playSound(SoundRegistry.ICE_SPIDER_GRAPPLE_SPIT.get());
         return iceTombEntity;
     }
@@ -793,10 +793,8 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
     @Override
     public void readAdditionalSaveData(ValueInput pCompound) {
         super.readAdditionalSaveData(pCompound);
-        if (pCompound.contains("grappleTarget")) {
-            setGrappleTargetUUID(pCompound.read("grappleTarget", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
-            grappleTime = pCompound.getIntOr("grappleTime", 0);
-        }
+        setGrappleTargetUUID(pCompound.read("grappleTarget", net.minecraft.core.UUIDUtil.CODEC).orElse(null));
+        grappleTime = pCompound.getIntOr("grappleTime", 0);
         if (pCompound.getBooleanOr("crouching", false)) {
             startCrouching();
         }
@@ -816,7 +814,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         var controller = animationEvent.controller();
 
         if (this.animationToPlay != null) {
-            controller.forceAnimationReset();
+            controller.reset();
             controller.setAnimation(animationToPlay);
             animationToPlay = null;
         }
@@ -830,7 +828,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
 
     @Override
     public boolean isAnimating() {
-        return meleeController.getAnimationState() == AnimationController.State.RUNNING;
+        return (meleeController.isAnimatingBones() && !meleeController.isTransitioning() && !meleeController.hasAnimationFinished());
     }
 
 }
