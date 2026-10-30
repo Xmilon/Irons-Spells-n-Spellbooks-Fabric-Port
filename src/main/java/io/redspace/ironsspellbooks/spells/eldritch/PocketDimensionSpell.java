@@ -26,7 +26,7 @@ import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -107,21 +107,21 @@ public class PocketDimensionSpell extends AbstractSpell {
             portalData.firstPortal(serverPlayer.getUUID(), PortalPos.of(serverPlayer.level().dimension(), serverPlayer.position(), serverPlayer.getYRot()));
 
             PocketDimensionManager.INSTANCE.maybeGeneratePocketRoom(serverPlayer);
-            BlockPos portalPos = PocketDimensionManager.INSTANCE.findPortalForStructure(serverPlayer.serverLevel(), PocketDimensionManager.INSTANCE.structurePosForPlayer(serverPlayer));
-            ServerLevel pocketLevel = serverPlayer.getServer().getLevel(PocketDimensionManager.POCKET_DIMENSION);
+            BlockPos portalPos = PocketDimensionManager.INSTANCE.findPortalForStructure(serverPlayer.level(), PocketDimensionManager.INSTANCE.structurePosForPlayer(serverPlayer));
+            ServerLevel pocketLevel = serverPlayer.level().getServer().getLevel(PocketDimensionManager.POCKET_DIMENSION);
             var portal = pocketLevel.getBlockEntity(portalPos);
             if (portal instanceof PortalFrameBlockEntity portalFrameBlockEntity) {
                 Vec3 particlePos = serverPlayer.getBoundingBox().getCenter();
                 MagicManager.spawnParticles(level, ParticleTypes.SMOKE, particlePos.x, particlePos.y, particlePos.z, 100, 0.1, 0.2, 0.1, 0.1, false);
 
                 var uuid = portalFrameBlockEntity.getUUID();
-                portalData.secondPortal(uuid, PortalPos.of(PocketDimensionManager.POCKET_DIMENSION, portalPos.getBottomCenter(), 180));
+                portalData.secondPortal(uuid, PortalPos.of(PocketDimensionManager.POCKET_DIMENSION, Vec3.atBottomCenterOf(portalPos), 180));
                 PortalManager.INSTANCE.addPortalData(uuid, portalData);
                 portalFrameBlockEntity.setChanged();
                 PortalManager.INSTANCE.addDirectPortalCooldown(serverPlayer, uuid); // Manually add cooldown as if the player used the portal to help prevent immediately teleporting back
                 Scroll.attemptRemoveScrollAfterCast(serverPlayer); // Manually call this because this serverplayer will be removed from the level after the spellcast
                 serverPlayer.stopRiding();
-                serverPlayer.changeDimension(new DimensionTransition(pocketLevel, portalData.globalPos2.pos(), Vec3.ZERO, portalData.globalPos2.rotation(), serverPlayer.getXRot(), DimensionTransition.DO_NOTHING));
+                serverPlayer.teleport(new TeleportTransition(pocketLevel, portalData.globalPos2.pos(), Vec3.ZERO, portalData.globalPos2.rotation(), serverPlayer.getXRot(), TeleportTransition.DO_NOTHING));
 
             }
         }

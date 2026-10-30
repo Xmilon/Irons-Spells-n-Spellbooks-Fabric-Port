@@ -20,7 +20,7 @@ public class CreateScrollCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> pDispatcher) {
         pDispatcher.register(Commands.literal("createScroll").requires((p_138819_) -> {
-            return p_138819_.hasPermission(2);
+            return Commands.hasPermission(Commands.LEVEL_GAMEMASTERS).test(p_138819_);
         }).then(Commands.argument("spell", com.mojang.brigadier.arguments.StringArgumentType.word()).then(Commands.argument("level", IntegerArgumentType.integer(1)).executes((commandContext) -> {
             return createScroll(commandContext.getSource(), commandContext.getArgument("spell", String.class), IntegerArgumentType.getInteger(commandContext, "level"));
         }))));
@@ -31,7 +31,7 @@ public class CreateScrollCommand {
             spell = IronsSpellbooks.MODID + ":" + spell;
         }
 
-        var abstractSpell = SpellRegistry.REGISTRY.get(Identifier.parse(spell));
+        var abstractSpell = SpellRegistry.REGISTRY.getValue(Identifier.parse(spell));
 
         if (abstractSpell == null || abstractSpell == SpellRegistry.none()) {
             throw ERROR_FAILED.create();

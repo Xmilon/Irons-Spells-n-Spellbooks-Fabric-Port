@@ -138,14 +138,14 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
                 // individual player sync (such as logging in)
                 PacketDistributor.sendToPlayer(player, new SyncJsonConfigPacket(INSTANCE.createNetworkData()));
                 if (!noErrors) {
-                    player.displayClientMessage(Component.translatable("commands.irons_spellbooks.config_load_errors").withStyle(ChatFormatting.RED), false);
+                    player.sendSystemMessage(Component.translatable("commands.irons_spellbooks.config_load_errors").withStyle(ChatFormatting.RED));
                 }
             } else {
                 // global sync (such as /reload command)
                 PacketDistributor.sendToAllPlayers(new SyncJsonConfigPacket(INSTANCE.createNetworkData()));
                 if (!noErrors) {
                     for (Player p : server.getPlayerList().getPlayers()) {
-                        p.displayClientMessage(Component.translatable("commands.irons_spellbooks.config_load_errors").withStyle(ChatFormatting.RED), false);
+                        p.sendSystemMessage(Component.translatable("commands.irons_spellbooks.config_load_errors").withStyle(ChatFormatting.RED));
                     }
                 }
             }

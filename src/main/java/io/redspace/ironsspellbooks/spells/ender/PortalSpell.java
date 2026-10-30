@@ -142,7 +142,7 @@ public class PortalSpell extends AbstractSpell {
                 PortalManager.INSTANCE.addPortalData(portalData.portalEntityId1, portalData);
                 PortalManager.INSTANCE.addPortalData(portalData.portalEntityId2, portalData);
                 portalFrame.setChanged();
-                var firstPortalLevel = player.getServer().getLevel(portalData.globalPos1.dimension());
+                var firstPortalLevel = player.level().getServer().getLevel(portalData.globalPos1.dimension());
                 if (firstPortalLevel != null) {
                     var firstPortalPos = BlockPos.containing(portalData.globalPos1.pos());
                     if (firstPortalLevel.isLoaded(firstPortalPos)) {
@@ -210,7 +210,7 @@ public class PortalSpell extends AbstractSpell {
         if (recastResult != RecastResult.USED_ALL_RECASTS) {
             if (castDataSerializable instanceof PortalData portalData && portalData.portalEntityId1 != null) {
                 if (portalData.globalPos1 != null) {
-                    var server = serverPlayer.getServer();
+                    var server = serverPlayer.level().getServer();
                     if (server != null) {
                         var level = server.getLevel(portalData.globalPos1.dimension());
                         //TODO: IPortalHandler interface?

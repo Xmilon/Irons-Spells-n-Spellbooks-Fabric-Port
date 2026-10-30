@@ -19,7 +19,6 @@ import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.SwordItem;
 
 import java.util.stream.Collectors;
 
@@ -37,7 +36,7 @@ public class CreateImbuedSwordCommand {
 
     private static final SuggestionProvider<CommandSourceStack> SWORD_SUGGESTIONS = (context, builder) -> {
         var resources = BuiltInRegistries.ITEM.entrySet().stream()
-                .filter(e -> e.getValue() instanceof SwordItem)
+                .filter(e -> e.getValue().builtInRegistryHolder().is(net.minecraft.tags.ItemTags.SWORDS))
                 .map(e -> e.getKey().identifier())
                 .collect(Collectors.toSet());
         return SharedSuggestionProvider.suggestResource(resources, builder);
@@ -47,7 +46,7 @@ public class CreateImbuedSwordCommand {
     public static void register(CommandDispatcher<CommandSourceStack> pDispatcher, CommandBuildContext context) {
 
         pDispatcher.register(Commands.literal("createImbuedSword").requires((commandSourceStack) -> {
-            return commandSourceStack.hasPermission(2);
+            return Commands.hasPermission(Commands.LEVEL_GAMEMASTERS).test(commandSourceStack);
         }).then(Commands.argument("item", ItemArgument.item(context)).suggests(SWORD_SUGGESTIONS)
                 .then(Commands.argument("spell", com.mojang.brigadier.arguments.StringArgumentType.word())
                         .then(Commands.argument("level", IntegerArgumentType.integer(1)).executes((ctx) -> {
@@ -60,7 +59,9 @@ public class CreateImbuedSwordCommand {
             spell = IronsSpellbooks.MODID + ":" + spell;
         }
 
-        var abstractSpell = SpellRegistry.REGISTRY.get(Identifier.parse(spell));
+        var abstractSpell = SpellRegistry.REGISTRY.getValue(Identifier.parse(spell));
+
+        if (abstractSpell == null || abstractSpell == SpellRegistry.none()) throw ERROR_FAILED.create();
 
         if (spellLevel > abstractSpell.getMaxLevel()) {
             throw new SimpleCommandExceptionType(Component.translatable("commands.irons_spellbooks.create_spell.failed_max_level", abstractSpell.getSpellName(), abstractSpell.getMaxLevel())).create();
@@ -68,8 +69,8 @@ public class CreateImbuedSwordCommand {
 
         var serverPlayer = source.getPlayer();
         if (serverPlayer != null) {
-            ItemStack itemstack = new ItemStack(itemInput.getItem());
-            if (itemstack.getItem() instanceof SwordItem swordItem) {
+            ItemStack itemstack = itemInput.createItemStack(1);
+            if (itemstack.is(net.minecraft.tags.ItemTags.SWORDS)) {
                 var spellContainer = ISpellContainer.create(1, true, false).mutableCopy();
                 spellContainer.addSpell(abstractSpell, spellLevel, false);
                 ISpellContainer.set(itemstack, spellContainer.toImmutable());

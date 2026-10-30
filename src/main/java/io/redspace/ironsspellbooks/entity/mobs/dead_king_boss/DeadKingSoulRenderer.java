@@ -12,7 +12,7 @@ import net.minecraft.client.model.geom.builders.CubeListBuilder;
 import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
-import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -96,7 +96,7 @@ public class DeadKingSoulRenderer extends EntityRenderer<DeadKingSoulEntity> {
         poseStack.pushPose();
         scale += jitter;
         poseStack.scale(scale, scale, scale);
-        this.body.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderHelper.colorf(r * intensity / 255f, g * intensity / 255f, b * intensity / 255f, intensity));
+        this.body.render(poseStack, consumer, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, RenderHelper.colorf(r * intensity / 255f, g * intensity / 255f, b * intensity / 255f, intensity));
         poseStack.popPose();
     }
 

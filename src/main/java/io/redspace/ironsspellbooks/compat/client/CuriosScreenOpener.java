@@ -34,7 +34,7 @@ public final class CuriosScreenOpener {
             return true;
         }
 
-        minecraft.player.displayClientMessage(Component.translatable("message.irons_spellbooks.curios_screen_unavailable"), true);
+        minecraft.player.sendOverlayMessage(Component.translatable("message.irons_spellbooks.curios_screen_unavailable"));
         return false;
     }
 

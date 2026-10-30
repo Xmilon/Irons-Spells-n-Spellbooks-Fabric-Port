@@ -17,7 +17,7 @@ import java.util.Collection;
 public class ClearRecastsCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         LiteralCommandNode<CommandSourceStack> command = dispatcher.register(Commands.literal("clearRecasts")
-                .requires((p) -> p.hasPermission(2))
+                .requires((p) -> Commands.hasPermission(Commands.LEVEL_GAMEMASTERS).test(p))
                 .then(Commands.literal("all")
                         .executes((context) -> clearRecast(context.getSource(), null)))
                 .then(Commands.literal("player")

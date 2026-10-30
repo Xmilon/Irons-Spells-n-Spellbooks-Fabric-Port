@@ -140,7 +140,7 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
             MagicData.getPlayerMagicData(serverPlayer).getPlayerRecasts().forceAddRecast(recastInstance);
         } else if (recastResult != RecastResult.TIMEOUT) { // timeouts are handled by summon manager
             if (castDataSerializable instanceof SummonedEntitiesCastData summonedEntitiesCastData) {
-                var serverLevel = serverPlayer.serverLevel();
+                var serverLevel = serverPlayer.level();
                 summonedEntitiesCastData.getSummons().forEach(uuid -> {
                     var toRemove = serverLevel.getEntity(uuid);
                     if (toRemove instanceof IMagicSummon summon) {
@@ -225,7 +225,7 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
      */
     @Deprecated(forRemoval = true)
     public void handlePlayerDisconnect(ServerPlayer serverPlayer) {
-        saveSummonerData(serverPlayer.serverLevel(), serverPlayer);
+        saveSummonerData(serverPlayer.level(), serverPlayer);
     }
 
     /**

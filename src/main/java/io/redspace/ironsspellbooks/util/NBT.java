@@ -43,7 +43,7 @@ public class NBT {
         var posTag = (CompoundTag) compoundTag.get("pos");
         var pos = readVec3(posTag);
         var resourceKey = ResourceKey.create(Registries.DIMENSION, resourcelocation);
-        var rotation = compoundTag.getFloat("rot");
+        var rotation = compoundTag.getFloatOr("rot", 0);
         return PortalPos.of(resourceKey, pos, rotation);
     }
 

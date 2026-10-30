@@ -22,7 +22,7 @@ public class GenerateModList {
     public static void register(CommandDispatcher<CommandSourceStack> pDispatcher) {
         if (pDispatcher.getRoot().getChild("modlist") == null) {
             pDispatcher.register(Commands.literal("modlist").requires((p_138819_) -> {
-                return p_138819_.hasPermission(2);
+                return Commands.hasPermission(Commands.LEVEL_GAMEMASTERS).test(p_138819_);
             }).executes((commandContext) -> {
                 return generateModList(commandContext.getSource());
             }));
@@ -73,7 +73,7 @@ public class GenerateModList {
             writer.close();
 
             Component component = Component.literal(file.getName()).withStyle(ChatFormatting.UNDERLINE).withStyle((style) -> {
-                return style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
+                return style.withClickEvent(new ClickEvent.OpenFile(file.getAbsolutePath()));
             });
 
             source.sendSuccess(() -> Component.translatable("commands.irons_spellbooks.generate_mod_list.success", component), true);

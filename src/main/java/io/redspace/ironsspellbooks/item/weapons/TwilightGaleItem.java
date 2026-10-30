@@ -16,7 +16,7 @@ import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.entity.projectile.arrow.AbstractArrow;
 import net.minecraft.world.item.ItemStack;
-import net.minecraft.world.item.Tier;
+
 import net.minecraft.world.item.ItemUseAnimation;
 import net.minecraft.world.item.enchantment.Enchantment;
 import net.minecraft.world.item.enchantment.EnchantmentEffectComponents;
@@ -25,7 +25,7 @@ import net.minecraft.world.item.enchantment.Enchantments;
 import net.minecraft.world.level.Level;
 
 public class TwilightGaleItem extends MagicSwordItem {
-    public TwilightGaleItem(Tier pTier, Properties pProperties, SpellDataRegistryHolder[] spellDataRegistryHolders) {
+    public TwilightGaleItem(ExtendedWeaponTier pTier, Properties pProperties, SpellDataRegistryHolder[] spellDataRegistryHolders) {
         super(pTier, pProperties, spellDataRegistryHolders);
     }
 
@@ -67,7 +67,7 @@ public class TwilightGaleItem extends MagicSwordItem {
                     Holder<SoundEvent> holder = EnchantmentHelper.pickHighestLevel(stack, EnchantmentEffectComponents.TRIDENT_SOUND)
                             .orElse(SoundEvents.TRIDENT_THROW);
                     if (!level.isClientSide()) {
-                        stack.hurtAndBreak(1, player, LivingEntity.getSlotForHand(entityLiving.getUsedItemHand()));
+                        stack.hurtAndBreak(1, player, entityLiving.getUsedItemHand().asEquipmentSlot());
                         double damage = 1 + ExtendedWeaponTier.TWILIGHT_GALE.damage;
                         if (stack.equals(player.getWeaponItem())) {
                             damage = player.getAttributeValue(Attributes.ATTACK_DAMAGE);

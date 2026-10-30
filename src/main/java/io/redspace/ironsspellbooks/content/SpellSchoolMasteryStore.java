@@ -101,7 +101,7 @@ public final class SpellSchoolMasteryStore {
         ListTag players = new ListTag();
         for (var entry : dataByPlayer.entrySet()) {
             CompoundTag playerTag = new CompoundTag();
-            playerTag.put(PLAYER_UUID, NbtUtils.createUUID(entry.getKey()));
+            playerTag.store(PLAYER_UUID, net.minecraft.core.UUIDUtil.CODEC, entry.getKey());
             PlayerMasteryData data = entry.getValue();
             if (data.lastKnownName != null && !data.lastKnownName.isBlank()) {
                 playerTag.putString(PLAYER_NAME, data.lastKnownName);
@@ -131,24 +131,25 @@ public final class SpellSchoolMasteryStore {
         }
         ListTag players = root.getListOrEmpty(PLAYERS_TAG);
         for (Tag entry : players) {
-            CompoundTag playerTag = (CompoundTag) entry;
+            if (!(entry instanceof CompoundTag playerTag)) continue;
             if (!playerTag.contains(PLAYER_UUID)) {
                 continue;
             }
-            UUID uuid = NbtUtils.loadUUID(playerTag.get(PLAYER_UUID));
+            UUID uuid = playerTag.read(PLAYER_UUID, net.minecraft.core.UUIDUtil.CODEC).orElse(null);
+            if (uuid == null) continue;
             PlayerMasteryData data = new PlayerMasteryData();
             if (playerTag.contains(PLAYER_NAME)) {
                 data.lastKnownName = playerTag.getStringOr(PLAYER_NAME, "");
             }
             if (playerTag.contains(CASTS_TAG)) {
                 CompoundTag casts = playerTag.getCompoundOrEmpty(CASTS_TAG);
-                for (String key : casts.getAllKeys()) {
+                for (String key : casts.keySet()) {
                     data.castCounts.put(key, casts.getIntOr(key, 0));
                 }
             }
             if (playerTag.contains(BONUSES_TAG)) {
                 CompoundTag bonuses = playerTag.getCompoundOrEmpty(BONUSES_TAG);
-                for (String key : bonuses.getAllKeys()) {
+                for (String key : bonuses.keySet()) {
                     data.powerBonuses.put(key, bonuses.getDoubleOr(key, 0d));
                 }
             }

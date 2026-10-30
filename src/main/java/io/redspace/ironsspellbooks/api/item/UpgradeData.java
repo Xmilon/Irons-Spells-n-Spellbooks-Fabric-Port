@@ -50,7 +50,7 @@ public record UpgradeData(Map<Holder<UpgradeOrbType>, Integer> upgrades, String 
             Codec.list(ELEMENT_CODEC).fieldOf(UPGRADES)
                     .forGetter(
                             (UpgradeData data) -> data.upgrades().entrySet().stream()
-                                    .map(entry -> new ObjectObjectImmutablePair<String, Integer>(entry.getKey().unwrapKey().map(ResourceKey::location).orElse(Identifier.withDefaultNamespace("air")).toString(), entry.getValue()))
+                                    .map(entry -> new ObjectObjectImmutablePair<String, Integer>(entry.getKey().unwrapKey().map(ResourceKey::identifier).orElse(Identifier.withDefaultNamespace("air")).toString(), entry.getValue()))
                                     .toList())
     ).apply(builder, (slot, list) -> new UpgradeData(parseCodec(list), slot)));
 
@@ -113,7 +113,7 @@ public record UpgradeData(Map<Holder<UpgradeOrbType>, Integer> upgrades, String 
                 for (int j = 0; j < i; j++) {
                     var upgradeKey = buf.readIdentifier();
                     int c = buf.readInt();
-                    Optional.ofNullable(registry.get(upgradeKey)).ifPresent((upgrade) -> upgrades.put(registry.wrapAsHolder(upgrade), c));
+                    registry.get(upgradeKey).ifPresent((upgrade) -> upgrades.put(upgrade, c));
                 }
                 return new UpgradeData(upgrades.build(), slot);
             }

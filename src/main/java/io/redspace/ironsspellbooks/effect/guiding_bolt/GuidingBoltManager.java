@@ -62,7 +62,7 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
         var tag = new CompoundTag();
         ListTag uuids = new ListTag();
         for (UUID key : trackedEntities.keySet()) {
-            uuids.add(NbtUtils.createUUID(key));
+            uuids.add(net.minecraft.core.UUIDUtil.CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, key).getOrThrow());
         }
         tag.put("TrackedEntities", uuids);
         return tag;
@@ -70,10 +70,11 @@ public class GuidingBoltManager implements INBTSerializable<CompoundTag> {
 
     @Override
     public void deserializeNBT(HolderLookup.Provider pRegistries, CompoundTag compoundTag) {
+        trackedEntities.clear();
         ListTag list = compoundTag.getListOrEmpty("TrackedEntities");
         for (Tag uuidTag : list) {
             try {
-                var uuid = NbtUtils.loadUUID(uuidTag);
+                var uuid = net.minecraft.core.UUIDUtil.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, uuidTag).getOrThrow();
                 trackedEntities.put(uuid, new HashSet<>());
             } catch (Exception ignored) {
                 continue;

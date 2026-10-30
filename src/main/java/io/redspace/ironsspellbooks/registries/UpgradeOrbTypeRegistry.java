@@ -27,7 +27,7 @@ public class UpgradeOrbTypeRegistry {
     public static final StreamCodec<RegistryFriendlyByteBuf, Holder<UpgradeOrbType>> UPGRADE_ORB_REGISTRY_STREAM_CODEC = ByteBufCodecs.holderRegistry(UPGRADE_ORB_REGISTRY_KEY);
 
     public static Registry<UpgradeOrbType> upgradeTypeRegistry(RegistryAccess registryAccess) {
-        return registryAccess.registryOrThrow(UPGRADE_ORB_REGISTRY_KEY);
+        return registryAccess.lookupOrThrow(UPGRADE_ORB_REGISTRY_KEY);
     }
 
     public static void registerDatapackRegistries(DataPackRegistryEvent.NewRegistry event) {

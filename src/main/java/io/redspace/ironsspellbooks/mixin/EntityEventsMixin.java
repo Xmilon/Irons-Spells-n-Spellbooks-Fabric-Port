@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.Shadow;
-import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.level.portal.TeleportTransition;
 
 @Mixin(Entity.class)
 public abstract class EntityEventsMixin {
@@ -32,7 +32,7 @@ public abstract class EntityEventsMixin {
     }
 
     @Inject(method = "changeDimension", at = @At("HEAD"), cancellable = true)
-    private void irons_spellbooks$changeDimensionEvent(DimensionTransition transition, CallbackInfoReturnable<Entity> cir) {
+    private void irons_spellbooks$changeDimensionEvent(TeleportTransition transition, CallbackInfoReturnable<Entity> cir) {
         Entity self = (Entity) (Object) this;
         if (!self.level().isClientSide() && NeoForge.EVENT_BUS.post(new EntityTravelToDimensionEvent(self, transition.newLevel().dimension())).isCanceled()) {
             cir.setReturnValue(null);

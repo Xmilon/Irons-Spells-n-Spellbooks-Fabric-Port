@@ -54,7 +54,7 @@
 //
 //        try {
 //            levels = registries.compositeAccess()
-//                    .registryOrThrow(Registries.LEVEL_STEM)
+//                    .lookupOrThrow(Registries.LEVEL_STEM)
 //                    .registryKeySet()
 //                    .stream()
 //                    .map(Registries::levelStemToLevel)

@@ -49,7 +49,7 @@ public class SpellRegistry {
         if (bootstrapped) {
             return;
         }
-        if (BuiltInRegistries.REGISTRY.get(SPELL_REGISTRY_KEY.identifier()) == null) {
+        if (BuiltInRegistries.REGISTRY.getValue(SPELL_REGISTRY_KEY.identifier()) == null) {
             @SuppressWarnings("unchecked")
             Registry<Registry<?>> root = (Registry<Registry<?>>) (Registry<?>) BuiltInRegistries.REGISTRY;
             Registry.register(root, SPELL_REGISTRY_KEY.identifier(), REGISTRY);
@@ -88,7 +88,7 @@ public class SpellRegistry {
     }
 
     public static AbstractSpell getSpell(Identifier resourceLocation) {
-        var spell = REGISTRY.get(resourceLocation);
+        var spell = REGISTRY.getValue(resourceLocation);
         if (spell == null) {
             return noneSpell;
         }

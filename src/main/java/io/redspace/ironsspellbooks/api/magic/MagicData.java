@@ -367,7 +367,7 @@ public class MagicData {
         if (compound.contains(SCHOOL_CAST_COUNTS)) {
             CompoundTag castTag = compound.getCompoundOrEmpty(SCHOOL_CAST_COUNTS);
             schoolCastCounts.clear();
-            for (String key : castTag.getAllKeys()) {
+            for (String key : castTag.keySet()) {
                 schoolCastCounts.put(key, castTag.getIntOr(key, 0));
             }
         }
@@ -375,7 +375,7 @@ public class MagicData {
         if (compound.contains(SCHOOL_POWER_BONUSES)) {
             CompoundTag bonusTag = compound.getCompoundOrEmpty(SCHOOL_POWER_BONUSES);
             schoolPowerBonuses.clear();
-            for (String key : bonusTag.getAllKeys()) {
+            for (String key : bonusTag.keySet()) {
                 schoolPowerBonuses.put(key, bonusTag.getDoubleOr(key, 0d));
             }
         }

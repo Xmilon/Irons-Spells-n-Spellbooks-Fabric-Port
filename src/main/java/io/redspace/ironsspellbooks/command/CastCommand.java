@@ -22,7 +22,7 @@ public class CastCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         LiteralCommandNode<CommandSourceStack> command = dispatcher.register(Commands.literal("cast")
-                .requires((p) -> p.hasPermission(2))
+                .requires((p) -> Commands.hasPermission(Commands.LEVEL_GAMEMASTERS).test(p))
                 .then(Commands.argument("casters", EntityArgument.entities())
                         .then(Commands.argument("spell", com.mojang.brigadier.arguments.StringArgumentType.word())
                                 .executes((context) -> castSpell(context.getSource(), EntityArgument.getEntities(context, "casters"), context.getArgument("spell", String.class)))

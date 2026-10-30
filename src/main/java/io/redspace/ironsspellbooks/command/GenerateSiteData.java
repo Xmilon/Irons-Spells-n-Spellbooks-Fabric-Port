@@ -7,11 +7,14 @@ import io.redspace.ironsspellbooks.api.item.weapons.ExtendedSwordItem;
 import io.redspace.ironsspellbooks.api.registry.SpellRegistry;
 import io.redspace.ironsspellbooks.api.spells.AbstractSpell;
 import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
+import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.item.*;
 import io.redspace.ironsspellbooks.item.consumables.SimpleElixir;
 import io.redspace.ironsspellbooks.item.curios.CurioBaseItem;
 import io.redspace.ironsspellbooks.player.ClientInputEvents;
-import io.redspace.ironsspellbooks.recipe_types.NoAdditionSmithingTransformRecipe;
+import io.redspace.ironsspellbooks.recipe_types.alchemist_cauldron.BrewAlchemistCauldronRecipe;
+import io.redspace.ironsspellbooks.recipe_types.alchemist_cauldron.FillAlchemistCauldronRecipe;
+import io.redspace.ironsspellbooks.recipe_types.alchemist_cauldron.EmptyAlchemistCauldronRecipe;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.util.ModTags;
 import net.minecraft.commands.CommandSourceStack;
@@ -24,6 +27,9 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.*;
 import net.minecraft.world.item.crafting.*;
+import net.minecraft.world.item.crafting.display.SlotDisplayContext;
+import net.fabricmc.api.EnvType;
+import net.fabricmc.loader.api.FabricLoader;
 import org.jetbrains.annotations.NotNull;
 
 import javax.annotation.Nullable;
@@ -31,6 +37,7 @@ import java.io.BufferedWriter;
 import java.io.FileWriter;
 import java.util.*;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 public class GenerateSiteData {
 
@@ -94,7 +101,7 @@ public class GenerateSiteData {
 
     public static void register(CommandDispatcher<CommandSourceStack> pDispatcher) {
         pDispatcher.register(Commands.literal("generateSiteData").requires((p_138819_) -> {
-            return p_138819_.hasPermission(2);
+            return Commands.hasPermission(Commands.LEVEL_GAMEMASTERS).test(p_138819_);
         }).executes((commandContext) -> {
             return generateSiteData(commandContext.getSource());
         }));
@@ -124,7 +131,8 @@ public class GenerateSiteData {
 
             Set<Item> itemsTracked = new HashSet<>();
             //Reveal additional shift information
-            ClientInputEvents.setShowExpandedTooltip(true);
+            setExpandedTooltip(true);
+            CreativeModeTabs.tryRebuildTabContents(level.enabledFeatures(), true, level.registryAccess());
             handleAffinityRingEntry(curioBuilder, itemsTracked, source);
             getVisibleItems()
                     .stream()
@@ -138,43 +146,43 @@ public class GenerateSiteData {
                             var name = item.getName(ItemStack.EMPTY).getString();
                             if (item.getDescriptionId().contains("patchouli") || item.getDescriptionId().contains("spawn_egg") || item.getDescriptionId().equals("item.irons_spellbooks.scroll")) {
                                 //Skip
-                            } else if (item instanceof ArmorItem armorItem) {
-                                Class<? extends ArmorItem> armortype = armorItem.getClass();
+                            } else if (io.redspace.ironsspellbooks.api.util.EquipmentUtils.isArmor(new ItemStack(item))) {
+                                Class<? extends Item> armortype = item.getClass();
                                 boolean hasGroup = ItemRegistry.getIronsItems().stream().filter(holder -> armortype.isAssignableFrom(holder.value().getClass())).toList().size() > 1;
                                 int sort = 0;
                                 String group = "All Armor";
                                 if (hasGroup) {
                                     var words = name.split(" ");
                                     group = Arrays.stream(words).limit(words.length - 1).collect(Collectors.joining(" ")) + " Armor";
-                                    sort = 3 - armorItem.getEquipmentSlot().getIndex();
+                                    sort = 3 - item.components().get(DataComponents.EQUIPPABLE).slot().getIndex();
                                 }
                                 if (recipe != null) {
-                                    appendRecipeSorted(armorBuilder, recipe, getRecipeData(recipe), group, tooltip, sort);
+                                    appendRecipeSorted(armorBuilder, recipe, getRecipeData(recipe, item), group, tooltip, sort);
                                 } else {
                                     appendSimpleGroupedSorted(armorBuilder, name, itemResource, group, tooltip, sort);
                                 }
                             } else if (item instanceof SpellBook || item instanceof ExtendedSwordItem || item instanceof CastingItem || item instanceof ProjectileWeaponItem || item instanceof UniqueItem) {
                                 var group = item instanceof SpellBook ? "Spellbooks" : (item instanceof CastingItem ? "Staves" : "Weapons");
                                 if (recipe != null) {
-                                    appendRecipe(spellbookBuilder, recipe, getRecipeData(recipe), group, tooltip);
+                                    appendRecipe(spellbookBuilder, recipe, getRecipeData(recipe, item), group, tooltip);
                                 } else {
                                     appendSimpleGrouped(spellbookBuilder, name, itemResource, group, tooltip);
                                 }
                             } else if (item instanceof CurioBaseItem) {
                                 if (recipe != null) {
-                                    appendRecipe(curioBuilder, recipe, getRecipeData(recipe), "", tooltip);
+                                    appendRecipe(curioBuilder, recipe, getRecipeData(recipe, item), "", tooltip);
                                 } else {
                                     appendSimple(curioBuilder, name, itemResource, tooltip);
                                 }
                             } else if (item instanceof BlockItem) {
                                 if (recipe != null) {
-                                    appendRecipe(blockBuilder, recipe, getRecipeData(recipe), "", tooltip);
+                                    appendRecipe(blockBuilder, recipe, getRecipeData(recipe, item), "", tooltip);
                                 } else {
                                     appendSimple(blockBuilder, name, itemResource, tooltip);
                                 }
                             } else {
                                 if (recipe != null) {
-                                    appendRecipe(itemBuilder, recipe, getRecipeData(recipe), handleGenericItemGrouping(item), tooltip);
+                                    appendRecipe(itemBuilder, recipe, getRecipeData(recipe, item), handleGenericItemGrouping(item), tooltip);
                                 } else {
                                     appendSimpleGrouped(itemBuilder, name, itemResource, handleGenericItemGrouping(item), tooltip);
                                 }
@@ -183,7 +191,7 @@ public class GenerateSiteData {
 
                         }
                     });
-            ClientInputEvents.setShowExpandedTooltip(false);
+            setExpandedTooltip(false);
 
             var file = new BufferedWriter(new FileWriter("item_data.yml"));
             file.write(postProcess(itemBuilder));
@@ -206,6 +214,14 @@ public class GenerateSiteData {
             file.close();
         } catch (Exception e) {
             IronsSpellbooks.LOGGER.debug(e.getMessage());
+        } finally {
+            setExpandedTooltip(false);
+        }
+    }
+
+    private static void setExpandedTooltip(boolean expanded) {
+        if (FabricLoader.getInstance().getEnvironmentType() == EnvType.CLIENT) {
+            ClientInputEvents.setShowExpandedTooltip(expanded);
         }
     }
 
@@ -237,38 +253,53 @@ public class GenerateSiteData {
     }
 
     @NotNull
-    private static ArrayList<RecipeIngredientData> getRecipeData(Recipe<?> recipe) {
-        var resultItemIdentifier = BuiltInRegistries.ITEM.getKey(recipe.getResultItem(level.registryAccess()).getItem());
+    private static ArrayList<RecipeIngredientData> getRecipeData(Recipe<?> recipe, Item exportedItem) {
+        ItemStack result = recipeResults(recipe).filter(stack -> stack.is(exportedItem)).findFirst().orElseThrow();
+        var resultItemIdentifier = BuiltInRegistries.ITEM.getKey(result.getItem());
         var recipeData = new ArrayList<RecipeIngredientData>(10);
         recipeData.add(new RecipeIngredientData(
                 resultItemIdentifier.toString(),
-                recipe.getResultItem(level.registryAccess()).getItem().getName(ItemStack.EMPTY).getString(),
+                result.getItem().getName(ItemStack.EMPTY).getString(),
                 String.format("/img/items/%s.png", resultItemIdentifier.getPath()),
-                recipe.getResultItem(level.registryAccess()).getItem())
+                result.getItem())
         );
-        if (recipe instanceof ShapedRecipe || recipe instanceof ShapelessRecipe) {
-            recipe.getIngredients().forEach(ingredient -> {
-                handleIngredient(ingredient, recipeData, recipe);
-            });
-        } else if (recipe instanceof SmithingTransformRecipe smithingRecipe) {
-            handleIngredient(Ingredient.of(BuiltInRegistries.ITEM.stream().map(Item::getDefaultInstance).filter(smithingRecipe::isTemplateIngredient).findFirst().orElse(ItemStack.EMPTY)), recipeData, recipe);
-            handleIngredient(Ingredient.of(BuiltInRegistries.ITEM.stream().map(Item::getDefaultInstance).filter(smithingRecipe::isBaseIngredient).findFirst().orElse(ItemStack.EMPTY)), recipeData, recipe);
-            handleIngredient(Ingredient.of(BuiltInRegistries.ITEM.stream().map(Item::getDefaultInstance).filter(smithingRecipe::isAdditionIngredient).findFirst().orElse(ItemStack.EMPTY)), recipeData, recipe);
-        } else if (recipe instanceof NoAdditionSmithingTransformRecipe smithingRecipe) {
-            handleIngredient(Ingredient.of(BuiltInRegistries.ITEM.stream().map(Item::getDefaultInstance).filter(smithingRecipe::isTemplateIngredient).findFirst().orElse(ItemStack.EMPTY)), recipeData, recipe);
-            handleIngredient(Ingredient.of(BuiltInRegistries.ITEM.stream().map(Item::getDefaultInstance).filter(smithingRecipe::isBaseIngredient).findFirst().orElse(ItemStack.EMPTY)), recipeData, recipe);
+        if (recipe instanceof ShapedRecipe shaped) {
+            for (Optional<Ingredient> ingredient : shaped.getIngredients()) {
+                ingredient.ifPresentOrElse(value -> handleIngredient(value, recipeData, result.getItem()),
+                        () -> recipeData.add(RecipeIngredientData.EMPTY));
+            }
+        } else if (recipe instanceof SmithingRecipe smithing) {
+            smithing.templateIngredient().ifPresentOrElse(value -> handleIngredient(value, recipeData, result.getItem()),
+                    () -> recipeData.add(RecipeIngredientData.EMPTY));
+            handleIngredient(smithing.baseIngredient(), recipeData, result.getItem());
+            smithing.additionIngredient().ifPresent(value -> handleIngredient(value, recipeData, result.getItem()));
+        } else if (recipe instanceof FillAlchemistCauldronRecipe fill) {
+            handleIngredient(fill.input(), recipeData, result.getItem());
+        } else if (recipe instanceof EmptyAlchemistCauldronRecipe empty) {
+            handleIngredient(empty.input(), recipeData, result.getItem());
+        } else if (recipe instanceof BrewAlchemistCauldronRecipe brew) {
+            handleIngredient(brew.reagent(), recipeData, result.getItem());
+        } else {
+            recipe.placementInfo().ingredients().forEach(ingredient -> handleIngredient(ingredient, recipeData, result.getItem()));
         }
         return recipeData;
     }
 
-    private static @Nullable Recipe getRecipeFor(CommandSourceStack sourceStack, Item item) {
+    private static Stream<ItemStack> recipeResults(Recipe<?> recipe) {
+        if (recipe instanceof FillAlchemistCauldronRecipe fill) return Stream.of(fill.returned());
+        if (recipe instanceof EmptyAlchemistCauldronRecipe empty) return Stream.of(empty.result());
+        if (recipe instanceof BrewAlchemistCauldronRecipe brew) return brew.byproduct().stream();
+        var displayContext = SlotDisplayContext.fromLevel(level);
+        return recipe.display().stream().flatMap(display -> display.result().resolveForStacks(displayContext).stream());
+    }
+
+    private static @Nullable Recipe<?> getRecipeFor(CommandSourceStack sourceStack, Item item) {
         return sourceStack.getServer().getRecipeManager().getRecipes().stream()
-                .filter(recipe -> recipe.value().getResultItem(level.registryAccess()).is(item))
+                .filter(recipe -> recipeResults(recipe.value()).anyMatch(result -> result.is(item)))
                 // max prioritizes smithing recipes over crafting recipes (If both present) due to alphabetical sorting
                 .max(Comparator.comparing(recipeHolder -> BuiltInRegistries.RECIPE_TYPE.getKey(recipeHolder.value().getType()).toString()))
                 .map(RecipeHolder::value).orElse(null);
     }
-
     private static String postProcess(StringBuilder sb) {
         return sb.toString()
                 .replace("netherite_spell_book.png", "netherite_spell_book.gif")
@@ -400,33 +431,21 @@ public class GenerateSiteData {
         ));
     }
 
-    private static void handleIngredient(Ingredient ingredient, ArrayList<RecipeIngredientData> recipeData, Recipe recipe) {
-        Arrays.stream(ingredient.getItems())
-                .findFirst()
-                .ifPresentOrElse(itemStack -> {
-                    var itemResource = BuiltInRegistries.ITEM.getKey(itemStack.getItem());
-                    var path = "";
-
-                    if (itemResource.toString().contains("irons_spellbooks")) {
-                        path = String.format("/img/items/%s.png", itemResource.getPath());
-                    } else {
-                        path = String.format("/img/items/minecraft/%s.png", itemResource.getPath());
-                    }
-                    //Detect a specific ingredient tag and replace it will a gif of all applicable items
-                    if (itemStack.is(ModTags.INSCRIBED_RUNES) && recipe.getResultItem(level.registryAccess()).is(ItemRegistry.BLANK_RUNE.get())) {
-                        path = "/img/items/all_runes.gif";
-                    }
-                    recipeData.add(new RecipeIngredientData(
-                            itemResource.toString(),
-                            itemStack.getItem().getName(ItemStack.EMPTY).getString(),
-                            path,
-                            recipe.getResultItem(level.registryAccess()).getItem()));
-
-                }, () -> {
-                    recipeData.add(RecipeIngredientData.EMPTY);
-                });
+    private static void handleIngredient(Ingredient ingredient, ArrayList<RecipeIngredientData> recipeData, Item resultItem) {
+        ingredient.items().findFirst().ifPresentOrElse(holder -> {
+            Item ingredientItem = holder.value();
+            var itemResource = BuiltInRegistries.ITEM.getKey(ingredientItem);
+            String path = itemResource.getNamespace().equals(IronsSpellbooks.MODID)
+                    ? String.format("/img/items/%s.png", itemResource.getPath())
+                    : String.format("/img/items/minecraft/%s.png", itemResource.getPath());
+            // Detect a specific ingredient tag and replace it with a gif of all applicable items.
+            if (holder.is(ModTags.INSCRIBED_RUNES) && resultItem == ItemRegistry.BLANK_RUNE.get()) {
+                path = "/img/items/all_runes.gif";
+            }
+            recipeData.add(new RecipeIngredientData(itemResource.toString(),
+                    ingredientItem.getName(ItemStack.EMPTY).getString(), path, ingredientItem));
+        }, () -> recipeData.add(RecipeIngredientData.EMPTY));
     }
-
     private static RecipeIngredientData getRecipeDataAtIndex(List<RecipeIngredientData> recipeIngredientData, int index) {
         if (index < recipeIngredientData.size()) {
             return recipeIngredientData.get(index);

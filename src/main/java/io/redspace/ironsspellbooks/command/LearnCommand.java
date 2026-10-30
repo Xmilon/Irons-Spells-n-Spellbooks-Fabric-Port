@@ -13,7 +13,7 @@ public class LearnCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         LiteralCommandNode<CommandSourceStack> command = dispatcher.register(Commands.literal("learnSpell")
-                .requires((p) -> p.hasPermission(2))
+                .requires((p) -> Commands.hasPermission(Commands.LEVEL_GAMEMASTERS).test(p))
                 .then(Commands.literal("forget_all")
                         .executes((context) -> forgetAll(context.getSource())))
                 .then(Commands.literal("learn_all")

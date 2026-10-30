@@ -1,15 +1,14 @@
 package io.redspace.ironsspellbooks.command;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.serialization.JsonOps;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
-import io.redspace.ironsspellbooks.registries.RecipeRegistry;
-import net.minecraft.client.Minecraft;
+import io.redspace.ironsspellbooks.recipe_types.alchemist_cauldron.EmptyAlchemistCauldronRecipe;
+import io.redspace.ironsspellbooks.recipe_types.alchemist_cauldron.FillAlchemistCauldronRecipe;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.resources.Identifier;
+import net.minecraft.resources.RegistryOps;
 import net.minecraft.world.item.crafting.Ingredient;
 import net.minecraft.world.item.crafting.RecipeManager;
 
@@ -20,57 +19,41 @@ public class CreateRecipeCompatGenerator {
 
 
     public static int run(CommandContext<CommandSourceStack> context) {
-        RecipeManager recipeManager = Minecraft.getInstance().level.getRecipeManager();
-        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        RecipeManager recipeManager = context.getSource().getServer().getRecipeManager();
+        var registryOps = RegistryOps.create(JsonOps.INSTANCE, context.getSource().registryAccess());
         new File("create_compat").mkdir();
-        recipeManager.getAllRecipesFor(RecipeRegistry.ALCHEMIST_CAULDRON_EMPTY_TYPE.get()).stream()
-                .forEach(
-                        recipeHolder -> {
-                            var recipe = recipeHolder.value();
-                            Identifier resultId = recipe.result().getItemHolder().unwrapKey().map(key -> key.identifier()).orElse(BuiltInRegistries.ITEM.getKey(recipe.result().getItem()));
-                            if (resultId.getNamespace().equals("irons_spellbooks")) {
-                                String stringJson = String.format(FILL_FORMAT,
-                                        Ingredient.CODEC.encodeStart(JsonOps.INSTANCE, recipe.input()).getOrThrow().toString(),
-                                        recipe.fluid().getFluidHolder().unwrapKey().map(key -> key.identifier()).orElse(BuiltInRegistries.FLUID.getKey(recipe.fluid().getFluid())).toString(),
-                                        recipe.fluid().getAmount(),
-                                        recipe.result().getItemHolder().unwrapKey().map(key -> key.identifier()).orElse(BuiltInRegistries.ITEM.getKey(recipe.result().getItem())).toString()
-                                );
-                                String outputFilepath = String.format("create_compat/create_fill_%s.json", recipeHolder.id().getPath().split("/", 2)[1].split("_", 2)[1]);
-                                var file = new File(outputFilepath);
-                                try (FileWriter writer = new FileWriter(file)) {
-                                    writer.write(stringJson);
-                                } catch (Exception e) {
-                                    IronsSpellbooks.LOGGER.debug("Failed to generate recipe \"{}\": {}", outputFilepath, e.getMessage());
-                                }
-                            }
-                        }
-                );
-        recipeManager.getAllRecipesFor(RecipeRegistry.ALCHEMIST_CAULDRON_FILL_TYPE.get()).stream()
-                .forEach(
-                        recipeHolder -> {
-                            var recipe = recipeHolder.value();
-                            Identifier inputId = recipe.result().getFluidHolder().unwrapKey().map(key -> key.identifier()).orElse(BuiltInRegistries.FLUID.getKey(recipe.result().getFluid()));
-                            if (inputId.getNamespace().equals("irons_spellbooks")) {
-                                String stringJson = String.format(EMPTY_FORMAT,
-                                        Ingredient.CODEC.encodeStart(JsonOps.INSTANCE, recipe.input()).getOrThrow().toString(),
-                                        recipe.returned().getItemHolder().unwrapKey().map(key -> key.identifier()).orElse(BuiltInRegistries.ITEM.getKey(recipe.returned().getItem())).toString(),
-                                        recipe.result().getFluidHolder().unwrapKey().map(key -> key.identifier()).orElse(BuiltInRegistries.FLUID.getKey(recipe.result().getFluid())).toString(),
-                                        recipe.result().getAmount()
-                                );
-                                new File("create_compat").mkdir();
-                                String outputFilepath = String.format("create_compat/create_empty_%s.json", recipeHolder.id().getPath().split("/", 2)[1].split("_", 2)[1]);
-                                var file = new File(outputFilepath);
-                                try (FileWriter writer = new FileWriter(file)) {
-                                    writer.write(stringJson);
-                                } catch (Exception e) {
-                                    IronsSpellbooks.LOGGER.debug("Failed to generate recipe \"{}\": {}", outputFilepath, e.getMessage());
-                                }
-                            }
-                        }
-                );
+        for (var recipeHolder : recipeManager.getRecipes()) {
+            String path = recipeHolder.id().identifier().getPath();
+            if (recipeHolder.value() instanceof EmptyAlchemistCauldronRecipe recipe) {
+                Identifier resultId = BuiltInRegistries.ITEM.getKey(recipe.result().getItem());
+                if (resultId.getNamespace().equals(IronsSpellbooks.MODID)) {
+                    String stringJson = String.format(FILL_FORMAT,
+                            Ingredient.CODEC.encodeStart(registryOps, recipe.input()).getOrThrow(),
+                            BuiltInRegistries.FLUID.getKey(recipe.fluid().getFluid()),
+                            recipe.fluid().getAmount(), resultId);
+                    writeRecipe("create_compat/create_fill_" + path.replaceFirst("^alchemist_cauldron/empty_", "").replace('/', '_') + ".json", stringJson);
+                }
+            } else if (recipeHolder.value() instanceof FillAlchemistCauldronRecipe recipe) {
+                Identifier fluidId = BuiltInRegistries.FLUID.getKey(recipe.result().getFluid());
+                if (fluidId.getNamespace().equals(IronsSpellbooks.MODID)) {
+                    String stringJson = String.format(EMPTY_FORMAT,
+                            Ingredient.CODEC.encodeStart(registryOps, recipe.input()).getOrThrow(),
+                            BuiltInRegistries.ITEM.getKey(recipe.returned().getItem()),
+                            fluidId, recipe.result().getAmount());
+                    writeRecipe("create_compat/create_empty_" + path.replaceFirst("^alchemist_cauldron/fill_", "").replace('/', '_') + ".json", stringJson);
+                }
+            }
+        }
         return 1;
     }
 
+    private static void writeRecipe(String path, String json) {
+        try (FileWriter writer = new FileWriter(path)) {
+            writer.write(json);
+        } catch (Exception e) {
+            IronsSpellbooks.LOGGER.error("Failed to generate recipe {}", path, e);
+        }
+    }
     private static final String EMPTY_FORMAT =
             """
                     {

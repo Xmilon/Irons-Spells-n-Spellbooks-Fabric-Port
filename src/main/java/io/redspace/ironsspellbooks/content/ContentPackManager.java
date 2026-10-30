@@ -110,7 +110,7 @@ public final class ContentPackManager {
         if (tag.contains(ENABLED_TAG)) {
             ListTag list = tag.getListOrEmpty(ENABLED_TAG);
             for (Tag entry : list) {
-                enabledPacks.add(normalize(entry.getAsString()));
+                enabledPacks.add(normalize(entry.asString().orElse("")));
             }
         }
         // Strip unknown ids to keep state clean and consistent.

@@ -66,7 +66,7 @@ public class EvasionEffect extends CustomDescriptionMobEffect implements ISynced
             vec = vec.yRot(degrees*Mth.DEG_TO_RAD);
 
             double x = d0 + vec.x;
-            double y = Mth.clamp(livingEntity.getY() + (double) (livingEntity.getRandom().nextInt((int) maxRadius) - maxRadius / 2), (double) level.getMinBuildHeight(), (double) (level.getMinBuildHeight() + ((ServerLevel) level).getLogicalHeight() - 1));
+            double y = Mth.clamp(livingEntity.getY() + (double) (livingEntity.getRandom().nextInt((int) maxRadius) - maxRadius / 2), (double) level.getMinY(), (double) (level.getMinY() + ((ServerLevel) level).getLogicalHeight() - 1));
             double z = d2 + vec.z;
 
             if (livingEntity.isPassenger()) {

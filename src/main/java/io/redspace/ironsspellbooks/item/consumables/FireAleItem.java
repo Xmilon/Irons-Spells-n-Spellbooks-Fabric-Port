@@ -11,9 +11,9 @@ public class FireAleItem extends DrinkableItem {
     public FireAleItem(Properties pProperties) {
         super(pProperties,
                 (itemstack, livingentity) -> {
-                    livingentity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 20 * 5, 3, false, true, true));
+                    livingentity.addEffect(new MobEffectInstance(MobEffects.NAUSEA, 20 * 5, 3, false, true, true));
                     livingentity.addEffect(new MobEffectInstance(MobEffects.FIRE_RESISTANCE, 20 * 45, 0, false, true, true));
-                    livingentity.addEffect(new MobEffectInstance(MobEffects.DIG_SPEED, 20 * 45, 2, false, true, true));
+                    livingentity.addEffect(new MobEffectInstance(MobEffects.HASTE, 20 * 45, 2, false, true, true));
                 }, Items.GLASS_BOTTLE, false);
     }
 

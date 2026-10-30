@@ -20,7 +20,7 @@ public class LocateBlock {
 
     public static void register(CommandDispatcher<CommandSourceStack> pDispatcher, CommandBuildContext pContext) {
         pDispatcher.register(Commands.literal("locateBlock").requires((p_138819_) -> {
-            return p_138819_.hasPermission(2);
+            return Commands.hasPermission(Commands.LEVEL_GAMEMASTERS).test(p_138819_);
         }).then(Commands.argument("block", BlockPredicateArgument.blockPredicate(pContext)).executes((commandContext) -> {
             return locateBlock(commandContext.getSource(), BlockPredicateArgument.getBlockPredicate(commandContext, "block"));
         })));

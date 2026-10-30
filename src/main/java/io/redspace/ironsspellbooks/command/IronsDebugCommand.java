@@ -26,7 +26,7 @@ public class IronsDebugCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> pDispatcher) {
         pDispatcher.register(Commands.literal("ironsDebug").requires((p_138819_) -> {
-                    return p_138819_.hasPermission(2);
+                    return Commands.hasPermission(Commands.LEVEL_GAMEMASTERS).test(p_138819_);
                 }).then(Commands.argument("dataType", EnumArgument.enumArgument(IronsDebugCommandTypes.class)).executes((commandContext) -> {
                     return getDataForType(commandContext.getSource(), commandContext.getArgument("dataType", IronsDebugCommandTypes.class));
                 })).then(Commands.literal("spellCount").executes((commandContext -> {
@@ -106,7 +106,7 @@ public class IronsDebugCommand {
             writer.close();
 
             Component component = Component.literal(file.getName()).withStyle(ChatFormatting.UNDERLINE).withStyle((style) -> {
-                return style.withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, file.getAbsolutePath()));
+                return style.withClickEvent(new ClickEvent.OpenFile(file.getAbsolutePath()));
             });
             source.sendSuccess(() -> Component.translatable("commands.irons_spellbooks.irons_debug_command.success", component), true);
         } catch (Exception ignored) {

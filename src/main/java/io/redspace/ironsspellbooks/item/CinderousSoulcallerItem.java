@@ -48,7 +48,7 @@ public class CinderousSoulcallerItem extends Item {
             var keystone = poimanager.findClosest(poi -> poi.value() == PoiTypeRegistry.CINDEROUS_KEYSTONE_POI.get(), playerBlockPos, 22, PoiManager.Occupancy.ANY);
             if (keystone.isPresent() && playerBlockPos.getY() + 2 >= keystone.get().getY()) {
                 BlockPos keystonePos = keystone.get();
-                AABB exclusiveRange = AABB.ofSize(keystonePos.getCenter(), 80, 80, 80);
+                AABB exclusiveRange = AABB.ofSize(Vec3.atCenterOf(keystonePos), 80, 80, 80);
                 if (level.getEntitiesOfClass(FireBossEntity.class, exclusiveRange).isEmpty()) {
                     //success, consume and summon
                     if (!player.getAbilities().instabuild) {
@@ -57,7 +57,7 @@ public class CinderousSoulcallerItem extends Item {
                         itemStack.shrink(1);
                         player.setItemInHand(hand, itemStack);
                     }
-                    Vec3 center = keystonePos.getCenter().add(0, 0.6, 0);
+                    Vec3 center = Vec3.atCenterOf(keystonePos).add(0, 0.6, 0);
                     float yRot = Utils.getAngle(center.x, center.z, player.getX(), player.getZ()) * Mth.RAD_TO_DEG;
                     FireBossEntity fireBoss = EntityRegistry.FIRE_BOSS.get().create(serverlevel);
                     fireBoss.snapTo(center);

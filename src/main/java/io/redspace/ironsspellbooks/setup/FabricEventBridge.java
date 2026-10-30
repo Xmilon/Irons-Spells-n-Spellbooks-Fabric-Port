@@ -50,7 +50,7 @@ public final class FabricEventBridge {
         ServerEntityEvents.ENTITY_UNLOAD.register((entity, level) -> NeoForge.EVENT_BUS.post(new EntityLeaveLevelEvent(entity)));
 
         ServerTickEvents.END_SERVER_TICK.register(server -> NeoForge.EVENT_BUS.post(new ServerTickEvent.Post(server)));
-        ServerTickEvents.END_WORLD_TICK.register(level -> NeoForge.EVENT_BUS.post(new LevelTickEvent.Post(level)));
+        ServerTickEvents.END_LEVEL_TICK.register(level -> NeoForge.EVENT_BUS.post(new LevelTickEvent.Post(level)));
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> NeoForge.EVENT_BUS.post(new ServerStoppingEvent(server)));
 
         ServerPlayConnectionEvents.JOIN.register((handler, sender, server) -> NeoForge.EVENT_BUS.post(new PlayerEvent.PlayerLoggedInEvent(handler.getPlayer())));
@@ -70,7 +70,7 @@ public final class FabricEventBridge {
 
         net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents.COPY_FROM.register((oldPlayer, newPlayer, alive) ->
                 NeoForge.EVENT_BUS.post(new PlayerEvent.Clone(newPlayer, oldPlayer, !alive)));
-        net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((player, origin, destination) ->
+        net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register((player, origin, destination) ->
                 NeoForge.EVENT_BUS.post(new PlayerEvent.PlayerChangedDimensionEvent(player)));
         net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents.EQUIPMENT_CHANGE.register((entity, slot, previous, current) ->
                 NeoForge.EVENT_BUS.post(new LivingEquipmentChangeEvent(entity, previous, current)));
@@ -79,7 +79,7 @@ public final class FabricEventBridge {
             var event = new PlayerInteractEvent.RightClickItem(player, stack, hand);
             NeoForge.EVENT_BUS.post(event);
             return event.isCanceled()
-                    ? new net.minecraft.world.InteractionResultHolder<>(event.getCancellationResult(), stack)
+                    ? event.getCancellationResult()
                     : net.minecraft.world.InteractionResult.PASS;
         });
         net.fabricmc.fabric.api.event.player.UseEntityCallback.EVENT.register((player, level, hand, entity, hit) -> {

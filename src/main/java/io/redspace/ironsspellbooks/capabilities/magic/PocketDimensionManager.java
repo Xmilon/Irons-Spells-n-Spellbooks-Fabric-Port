@@ -123,7 +123,7 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
     }
 
     public boolean maybeGeneratePocketRoom(ServerPlayer player) {
-        var serverLevel = player.serverLevel();
+        var serverLevel = player.level();
         var structurePos = structurePosForPlayer(player);
         var pocketLevel = serverLevel.getServer().getLevel(POCKET_DIMENSION);
         BlockState blockState = pocketLevel.getBlockState(structurePos);
@@ -155,7 +155,7 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
                         var blockPos = structurePosForPlayer(player);
                         var portalPos = findPortalForStructure(serverLevel, blockPos);
                         player.resetFallDistance();
-                        player.moveTo(portalPos.getBottomCenter());
+                        player.moveTo(Vec3.atBottomCenterOf(portalPos));
                     }
                 }
             });

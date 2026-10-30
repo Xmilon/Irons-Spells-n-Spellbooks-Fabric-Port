@@ -463,3 +463,71 @@ tick implementations or the new lifecycle mixin. Evasion teleport APIs and Guidi
 data remain separate effect-related blockers. Full Heartstop/Immolate/Instant Mana gameplay,
 tracking-player packet delivery, client sounds/particles, Vulkan/OpenGL and multiplayer are
 not runtime-validated by this isolated probe. Main-mod startup is still blocked.
+
+## Shared native API batch (2026-10-30)
+
+Main compiler diagnostics dropped from **1,176 to 583** (593 removed, 50.4%). No source
+packages were excluded to obtain this count. Compilation still fails; this is an integration
+milestone, not a playable build. The largest remaining groups are entity rendering/animation,
+shared render layers, compatibility classes, player hooks and mixins.
+
+Combat and entity contracts now use native server context, collision participants, rest hooks,
+bidirectional ally checks and current invulnerability/knockback signatures. Boss phase logic,
+parries, summon ownership and saved spawn positions were retained. Native entity builders receive
+the existing resource keys rather than null/string keys. Necromancer/archevoker registrations
+retain peaceful despawning via `notInPeaceful`; persistent summons retain the native default.
+Spider living-reference synchronization preserves its UUID save API. Multipart collision/IDs
+still need runtime validation. Culling exceptions moved to the renderer contract.
+
+Gecko controller predicates use current bone-animation, transition and completion state; resets
+use the native controller API. Casting controllers use five-tick transitions to retain reset
+blending. This also introduces five-tick blend-in, which needs visual review. Procedural model
+animation and several render layers remain incomplete.
+
+Equipment classification uses native equippable components plus an armor modifier applying to
+the equipped slot. This retains zero-defense armor while excluding pumpkins and elytra.
+Inventory/enchantment lookups, item encoding and source-aware melee knockback use current APIs.
+Commands retain game-master/admin permission levels. Registry lookups preserve missing-spell
+fallbacks. Native profile names, messages, potion constants and Fabric networking/lifecycle
+names replace removed calls. Three unused compatibility event classes were deleted.
+
+Block neighbor/inside callbacks use native arguments and scheduled-tick access. Obsolete block
+codecs were removed because blocks no longer expose that contract. State properties, piston
+reactions and block-entity constructors use native types. Drops/portal disconnection moved from
+removed block callbacks into `BlockEntity.preRemoveSideEffects`. Pedestal and scroll-forge saves
+use native value I/O; scroll-forge explicitly persists slot items because its remaining legacy
+inventory service serialized an empty compound. Full inventory/drop/menu behavior is untested.
+Portal owner UUIDs are now saved; malformed UUID reads avoid creating an invalid optional.
+
+All four custom recipe classes/serializers use native APIs, typed registration and current
+metadata. Recipe fields, network ordering and defensive copies were retained. Smithing uses
+native simple-recipe matching with an empty addition slot. Export tools enumerate the server's
+recipes and resolve native displays/ingredient holders. Cauldron execution/startup remains
+blocked by its other unported services, so complete recipes and their wire codecs are not
+runtime-validated by this batch.
+
+Loot-function types now register MapCodecs directly under unchanged IDs. Number providers use
+native float-provider holders and validation. Fifty-two JSON files gained explicit uniform
+provider types; the server decoded all 68 custom loot-quality definitions. The singular native
+condition field is used by the codecs; no custom-function condition resources were present in
+this probe (zero condition cases), so that path still needs a concrete runtime test.
+
+Mithril uses the native feature registry/type codecs; generated feature JSON moved from
+`worldgen/configured_feature` to `worldgen/feature` with native block-state keys. Vein size three,
+seven attempts and uniform Y -63 to -38 were retained. Datagen providers use current Fabric
+output/registry APIs and native scroll item definitions. Full `runData` and ore generation still
+require main compilation. Exposed-air feature configuration keeps its existing bounded fields.
+
+`nativeContentProbeJar` compiles production equipment/feature logic plus an isolated Fabric
+server check without any old main-mod binary. The server passed armor exclusions, zero-defense
+and wrong-slot cases, component-bearing item/count/legacy-Slot round trips, feature codec round
+trips and invalid-size rejection, and 68 loot-quality decodes. Vanilla item components are bound
+by server data loading, so plain bootstrap alone cannot run the item checks. The existing library
+world saved/shut down and the temporary probe was removed. This does not instantiate the custom
+bosses, blocks, recipes or loot functions.
+
+Targeting compilation, wizard anger regression checks, damage/effect hook compilation, bundled
+dependency verification and `:irons-lib:build` pass. Library checks also pass attribute/statue
+codec, cape ownership, PIP and soul-fire snapshots. Full startup, multiplayer, save migration,
+Vulkan/OpenGL, resource reload and in-game visuals remain unverified. Pocket-dimension sky and
+several old rendering/registry compatibility classes remain explicit next blockers.

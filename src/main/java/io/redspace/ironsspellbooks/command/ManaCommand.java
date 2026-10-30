@@ -18,7 +18,7 @@ public class ManaCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         LiteralCommandNode<CommandSourceStack> command = dispatcher.register(Commands.literal("mana")
-                .requires((p) -> p.hasPermission(2))
+                .requires((p) -> Commands.hasPermission(Commands.LEVEL_GAMEMASTERS).test(p))
                 .then(Commands.literal("set")
                         .then(Commands.argument("targets", EntityArgument.players())
                                 .then(Commands.argument("amount", IntegerArgumentType.integer())

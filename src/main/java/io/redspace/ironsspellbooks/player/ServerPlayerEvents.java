@@ -657,7 +657,7 @@ public class ServerPlayerEvents {
             if (event.getItemStack().getItem() instanceof BlockItem blockItem && blockItem.getBlock().builtInRegistryHolder().is(ModTags.PREVENT_POCKET_DIMENSION_PLACEMENT)) {
                 event.setCanceled(true);
                 if (event.getEntity() instanceof ServerPlayer serverPlayer) {
-                    serverPlayer.displayClientMessage(Component.translatable("ui.irons_spellbooks.error_place_block_dimension").withStyle(ChatFormatting.RED), true);
+                    serverPlayer.sendOverlayMessage(Component.translatable("ui.irons_spellbooks.error_place_block_dimension").withStyle(ChatFormatting.RED));
                 }
             }
         }

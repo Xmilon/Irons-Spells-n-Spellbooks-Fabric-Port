@@ -42,11 +42,11 @@ public class SpellSchoolMasteryPack implements ContentPack {
             return;
         }
         String schoolId = schoolType.getId().toString();
-        int newCount = SpellSchoolMasteryStore.INSTANCE.incrementCast(player.getUUID(), player.getGameProfile().getName(), schoolId);
+        int newCount = SpellSchoolMasteryStore.INSTANCE.incrementCast(player.getUUID(), player.getGameProfile().name(), schoolId);
         if (newCount % CASTS_PER_BONUS == 0) {
-            double newBonus = SpellSchoolMasteryStore.INSTANCE.addBonus(player.getUUID(), player.getGameProfile().getName(), schoolId, BONUS_STEP);
+            double newBonus = SpellSchoolMasteryStore.INSTANCE.addBonus(player.getUUID(), player.getGameProfile().name(), schoolId, BONUS_STEP);
             applyMasteryBonus(player, schoolType, newBonus);
-            player.displayClientMessage(buildIncreaseMessage(schoolType, newBonus), false);
+            player.sendSystemMessage(buildIncreaseMessage(schoolType, newBonus));
         }
     }
 
@@ -124,7 +124,7 @@ public class SpellSchoolMasteryPack implements ContentPack {
             }
             SpellSchoolMasteryStore.INSTANCE.ensureSchoolInitialized(
                     player.getUUID(),
-                    player.getGameProfile().getName(),
+                    player.getGameProfile().name(),
                     school.getId().toString()
             );
             double bonus = SpellSchoolMasteryStore.INSTANCE.getBonus(player.getUUID(), school.getId().toString());

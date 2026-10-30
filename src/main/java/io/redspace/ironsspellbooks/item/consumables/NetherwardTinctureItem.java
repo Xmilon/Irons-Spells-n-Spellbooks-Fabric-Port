@@ -46,7 +46,7 @@ public class NetherwardTinctureItem extends DrinkableItem {
             hoglin.setImmuneToZombification(true);
             hoglin.playSound(SoundEvents.HOGLIN_CONVERTED_TO_ZOMBIFIED);
         }
-        livingEntity.addEffect(new MobEffectInstance(MobEffects.CONFUSION, 10 * 20));
+        livingEntity.addEffect(new MobEffectInstance(MobEffects.NAUSEA, 10 * 20));
         livingEntity.playSound(SoundEvents.INK_SAC_USE);
     }
 

@@ -97,7 +97,7 @@ public class Messages {
         if (!REGISTERED_S2C_TYPES.containsKey(type)) {
             @SuppressWarnings("unchecked")
             StreamCodec<RegistryFriendlyByteBuf, T> castCodec = (StreamCodec<RegistryFriendlyByteBuf, T>) codec;
-            PayloadTypeRegistry.playS2C().register(type, castCodec);
+            PayloadTypeRegistry.clientboundPlay().register(type, castCodec);
             REGISTERED_S2C_TYPES.put(type, true);
         }
         PLAY_TO_CLIENT.add(new ReceiverRegistration<>(type, handler));
@@ -109,7 +109,7 @@ public class Messages {
         if (!REGISTERED_C2S_TYPES.containsKey(type)) {
             @SuppressWarnings("unchecked")
             StreamCodec<RegistryFriendlyByteBuf, T> castCodec = (StreamCodec<RegistryFriendlyByteBuf, T>) codec;
-            PayloadTypeRegistry.playC2S().register(type, castCodec);
+            PayloadTypeRegistry.serverboundPlay().register(type, castCodec);
             REGISTERED_C2S_TYPES.put(type, true);
         }
         PLAY_TO_SERVER.add(new ReceiverRegistration<>(type, handler));
@@ -143,8 +143,8 @@ public class Messages {
 
         @Override
         public void enqueueWork(Runnable runnable) {
-            if (player.getServer() != null) {
-                player.getServer().execute(runnable);
+            if (player.level().getServer() != null) {
+                player.level().getServer().execute(runnable);
             } else {
                 runnable.run();
             }

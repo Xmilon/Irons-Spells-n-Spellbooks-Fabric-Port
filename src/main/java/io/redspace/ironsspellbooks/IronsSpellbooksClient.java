@@ -66,17 +66,17 @@ import net.fabricmc.api.ClientModInitializer;
 import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
-import net.fabricmc.fabric.api.client.keybinding.v1.KeyBindingHelper;
+import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
 
 import net.fabricmc.fabric.api.client.networking.v1.ClientPlayConnectionEvents;
 
 import net.fabricmc.fabric.api.client.rendering.v1.BlockEntityRendererRegistry;
-import net.fabricmc.fabric.api.client.rendering.v1.EntityModelLayerRegistry;
+import net.fabricmc.fabric.api.client.rendering.v1.ModelLayerRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.EntityRendererRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElementRegistry;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.VanillaHudElements;
-import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback;
-import net.fabricmc.fabric.api.client.gui.screen.v1.ScreenEvents;
+import net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback;
+import net.fabricmc.fabric.api.client.screen.v1.ScreenEvents;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.geom.ModelLayerLocation;
 import io.redspace.ironsspellbooks.item.WaywardCompass;
@@ -86,7 +86,7 @@ import io.redspace.ironsspellbooks.registries.ComponentRegistry;
 import net.minecraft.client.renderer.culling.Frustum;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.entity.player.PlayerRenderer;
+import net.minecraft.client.renderer.entity.player.AvatarRenderer;
 import net.minecraft.client.gui.screens.MenuScreens;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.core.component.DataComponents;
@@ -131,12 +131,12 @@ public class IronsSpellbooksClient implements ClientModInitializer {
     }
 
     private static void registerKeyMappingsAndInputTick() {
-        KeyBindingHelper.registerKeyBinding(KeyMappings.SPELL_WHEEL_KEYMAP);
-        KeyBindingHelper.registerKeyBinding(KeyMappings.SPELL_WHEEL_TOGGLE_KEYMAP);
-        KeyBindingHelper.registerKeyBinding(KeyMappings.SPELLBOOK_CAST_ACTIVE_KEYMAP);
-        KeyBindingHelper.registerKeyBinding(KeyMappings.SPELLBAR_SCROLL_MODIFIER_KEYMAP);
+        KeyMappingHelper.registerKeyMapping(KeyMappings.SPELL_WHEEL_KEYMAP);
+        KeyMappingHelper.registerKeyMapping(KeyMappings.SPELL_WHEEL_TOGGLE_KEYMAP);
+        KeyMappingHelper.registerKeyMapping(KeyMappings.SPELLBOOK_CAST_ACTIVE_KEYMAP);
+        KeyMappingHelper.registerKeyMapping(KeyMappings.SPELLBAR_SCROLL_MODIFIER_KEYMAP);
         for (var quickCast : KeyMappings.QUICK_CAST_MAPPINGS) {
-            KeyBindingHelper.registerKeyBinding(quickCast);
+            KeyMappingHelper.registerKeyMapping(quickCast);
         }
         ClientTickEvents.END_CLIENT_TICK.register(client -> {
             CauldronVisualSyncPacket.flushPending();
@@ -306,15 +306,15 @@ public class IronsSpellbooksClient implements ClientModInitializer {
     }
 
     private static void registerPlayerRenderLayers() {
-        net.fabricmc.fabric.api.client.rendering.v1.LivingEntityFeatureRendererRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) -> {
-            if (entityRenderer instanceof PlayerRenderer playerRenderer) {
+        net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) -> {
+            if (entityRenderer instanceof AvatarRenderer<?> playerRenderer) {
                 registrationHelper.register(new io.redspace.ironsspellbooks.render.EnergySwirlLayer.Vanilla(playerRenderer, io.redspace.ironsspellbooks.render.EnergySwirlLayer.CHARGE_TEXTURE, MobEffectRegistry.CHARGED));
             }
         });
     }
 
     private static void registerModelLayer(ModelLayerLocation location, java.util.function.Supplier<net.minecraft.client.model.geom.builders.LayerDefinition> supplier) {
-        EntityModelLayerRegistry.registerModelLayer(location, supplier::get);
+        ModelLayerRegistry.registerModelLayer(location, supplier::get);
     }
 
     private static void registerModelLayers() {
@@ -372,19 +372,19 @@ public class IronsSpellbooksClient implements ClientModInitializer {
         }
     }
 
-    private static class NullEntityRenderer extends EntityRenderer<Entity> {
+    private static class NullEntityRenderer extends EntityRenderer<Entity, net.minecraft.client.renderer.entity.state.EntityRenderState> {
         protected NullEntityRenderer(EntityRendererProvider.Context context) {
             super(context);
         }
 
         @Override
-        public boolean shouldRender(Entity livingEntity, Frustum camera, double camX, double camY, double camZ) {
+        public boolean shouldRender(Entity livingEntity, Frustum camera, double camX, double camY, double camZ, float partialTick) {
             return false;
         }
 
         @Override
-        public Identifier getTextureLocation(Entity entity) {
-            return Identifier.withDefaultNamespace("textures/misc/unknown_pack.png");
+        public net.minecraft.client.renderer.entity.state.EntityRenderState createRenderState() {
+            return new net.minecraft.client.renderer.entity.state.EntityRenderState();
         }
     }
 }

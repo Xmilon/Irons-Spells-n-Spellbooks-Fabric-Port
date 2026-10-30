@@ -32,7 +32,7 @@ public class SchoolRegistry {
         if (bootstrapped) {
             return;
         }
-        if (BuiltInRegistries.REGISTRY.get(SCHOOL_REGISTRY_KEY.identifier()) == null) {
+        if (BuiltInRegistries.REGISTRY.getValue(SCHOOL_REGISTRY_KEY.identifier()) == null) {
             @SuppressWarnings("unchecked")
             Registry<Registry<?>> root = (Registry<Registry<?>>) (Registry<?>) BuiltInRegistries.REGISTRY;
             Registry.register(root, SCHOOL_REGISTRY_KEY.identifier(), REGISTRY);
@@ -58,7 +58,7 @@ public class SchoolRegistry {
     }
 
     public static SchoolType getSchool(Identifier resourceLocation) {
-        return REGISTRY.get(resourceLocation);
+        return REGISTRY.getValue(resourceLocation);
     }
 
     public static final Identifier FIRE_RESOURCE = IronsSpellbooks.id("fire");

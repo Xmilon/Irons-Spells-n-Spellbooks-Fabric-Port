@@ -4,7 +4,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.player.SpinAttackType;
-import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.layers.SpinAttackEffectLayer;
@@ -38,6 +38,6 @@ public class SpinAttackEffectLayerMixin {
             index = 2
     )
     int modifyLight(int originalLight) {
-        return irons_spellbooks$fullbright ? LightTexture.FULL_BRIGHT : originalLight;
+        return irons_spellbooks$fullbright ? LightCoordsUtil.FULL_BRIGHT : originalLight;
     }
 }

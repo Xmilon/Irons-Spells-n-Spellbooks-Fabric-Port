@@ -11,7 +11,7 @@ import net.minecraft.network.chat.Component;
 public class ClearSpellSelectionCommand {
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         LiteralCommandNode<CommandSourceStack> command = dispatcher.register(Commands.literal("clearSpellSelection")
-                .requires((p) -> p.hasPermission(2))
+                .requires((p) -> Commands.hasPermission(Commands.LEVEL_GAMEMASTERS).test(p))
                 .executes((context) -> clearCooldowns(context.getSource()))
         );
     }

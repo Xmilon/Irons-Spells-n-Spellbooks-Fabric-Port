@@ -20,7 +20,7 @@ public class CreateSpellBookCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> pDispatcher) {
         pDispatcher.register(
-                Commands.literal("createSpellBook").requires((p_138819_) -> p_138819_.hasPermission(2))
+                Commands.literal("createSpellBook").requires((p_138819_) -> Commands.hasPermission(Commands.LEVEL_GAMEMASTERS).test(p_138819_))
                         .then(Commands.argument("slots", IntegerArgumentType.integer(1, 20))
                                 .executes((commandContext) -> crateSpellBook(commandContext.getSource(), IntegerArgumentType.getInteger(commandContext, "slots")))
                                 .then(Commands.literal("randomize")

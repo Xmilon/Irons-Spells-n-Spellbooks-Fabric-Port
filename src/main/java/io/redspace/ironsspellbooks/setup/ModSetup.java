@@ -12,7 +12,7 @@ import io.redspace.ironsspellbooks.data.IronsDataStorage;
 import io.redspace.ironsspellbooks.effect.guiding_bolt.GuidingBoltManager;
 import io.redspace.ironsspellbooks.network.SyncManaPacket;
 import io.redspace.ironsspellbooks.worldgen.IceSpiderPatrolSpawner;
-import net.fabricmc.fabric.api.entity.event.v1.ServerEntityWorldChangeEvents;
+import net.fabricmc.fabric.api.entity.event.v1.ServerEntityLevelChangeEvents;
 import net.fabricmc.fabric.api.entity.event.v1.ServerPlayerEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerEntityEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -40,7 +40,7 @@ public class ModSetup {
         FabricEventBridge.init();
 
         // Drive server-level magic and pocket-dimension ticking on Fabric.
-        ServerTickEvents.START_WORLD_TICK.register(world -> {
+        ServerTickEvents.START_LEVEL_TICK.register(world -> {
             if (world.isClientSide()) {
                 return;
             }
@@ -49,7 +49,7 @@ public class ModSetup {
         });
 
         // Restore custom patrol spawner behavior.
-        ServerTickEvents.END_WORLD_TICK.register(world -> {
+        ServerTickEvents.END_LEVEL_TICK.register(world -> {
             if (world.isClientSide()) {
                 return;
             }
@@ -77,7 +77,7 @@ public class ModSetup {
             );
         });
         ServerPlayerEvents.AFTER_RESPAWN.register((oldPlayer, newPlayer, alive) -> syncPlayerMagicState(newPlayer));
-        ServerEntityWorldChangeEvents.AFTER_PLAYER_CHANGE_WORLD.register((player, origin, destination) -> syncPlayerMagicState(player));
+        ServerEntityLevelChangeEvents.AFTER_PLAYER_CHANGE_LEVEL.register((player, origin, destination) -> syncPlayerMagicState(player));
 
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
             io.redspace.ironsspellbooks.IronsSpellbooks.MCS = server;

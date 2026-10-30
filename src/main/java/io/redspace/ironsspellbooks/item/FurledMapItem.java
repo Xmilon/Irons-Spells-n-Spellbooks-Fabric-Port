@@ -59,7 +59,7 @@ public class FurledMapItem extends Item {
             if (itemStack.has(ComponentRegistry.FURLED_MAP_COMPONENT)) {
                 var furledMapData = itemStack.get(ComponentRegistry.FURLED_MAP_COMPONENT);
                 ResourceKey<Structure> structureResourceKey = ResourceKey.create(Registries.STRUCTURE, furledMapData.destinationResource);
-                var holder = serverlevel.registryAccess().registryOrThrow(Registries.STRUCTURE).getHolder(structureResourceKey).map(HolderSet::direct);
+                var holder = serverlevel.registryAccess().lookupOrThrow(Registries.STRUCTURE).getHolder(structureResourceKey).map(HolderSet::direct);
                 if (furledMapData.dimension().isPresent()) {
                     var dimensionRestriction = furledMapData.dimension().get();
                     if (!serverlevel.dimension().equals(dimensionRestriction)) {

@@ -7,7 +7,7 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.spells.acid_orb.AcidOrbRenderer;
 import io.redspace.ironsspellbooks.entity.spells.fireball.FireballRenderer;
 import net.minecraft.client.model.geom.ModelPart;
-import net.minecraft.client.renderer.LightTexture;
+import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.EntityRenderer;
@@ -69,7 +69,7 @@ public class OminousFireOrbRenderer extends EntityRenderer<OminousFireOrbEntity>
 
         if (entity.getFuseProgressTicks() > 0) {
             VertexConsumer consumer = bufferSource.getBuffer(RenderType.entityCutoutNoCull(BASE_TEXTURE));
-            fireball.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, -1);
+            fireball.render(poseStack, consumer, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, -1);
         }
         if (fuse > 0 || chargeTime > 0) {
             float percent = entity.tickCount >= chargeTime ? fusePercent : 1f - chargePercent;
@@ -81,7 +81,7 @@ public class OminousFireOrbRenderer extends EntityRenderer<OminousFireOrbEntity>
             poseStack.rotate(Axis.YP.rotationDegrees(swirlY));
             poseStack.rotate(Axis.ZP.rotationDegrees(swirlZ));
 
-            outline.render(poseStack, consumer, LightTexture.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, -1);
+            outline.render(poseStack, consumer, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, -1);
         }
         poseStack.popPose();
 

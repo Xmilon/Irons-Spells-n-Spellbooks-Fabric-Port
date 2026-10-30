@@ -97,7 +97,7 @@ public class ThunderStepSpell extends AbstractSpell {
     @Override
     public void onRecastFinished(ServerPlayer entity, RecastInstance recastInstance, RecastResult recastResult, ICastDataSerializable castDataSerializable) {
         super.onRecastFinished(entity, recastInstance, recastResult, castDataSerializable);
-        var serverlevel = entity.serverLevel();
+        var serverlevel = entity.level();
         if (castDataSerializable instanceof MultiTargetEntityCastData targetData && !targetData.getTargets().isEmpty()) {
             Entity orb = serverlevel.getEntity(targetData.getTargets().getFirst());
             if (orb == null) {

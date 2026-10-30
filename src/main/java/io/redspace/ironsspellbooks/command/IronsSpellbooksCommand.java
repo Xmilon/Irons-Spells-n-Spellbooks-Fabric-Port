@@ -56,7 +56,7 @@ public class IronsSpellbooksCommand {
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
         LiteralArgumentBuilder<CommandSourceStack> command = Commands.literal("ironsSpellbooks")
-                .requires((p) -> p.hasPermission(3));
+                .requires((p) -> Commands.hasPermission(Commands.LEVEL_ADMINS).test(p));
 
         registerSummonCommandChain(command);
         registerUpgradeChain(command);
@@ -300,7 +300,7 @@ public class IronsSpellbooksCommand {
         double delta = (add ? percent : -percent) / 100d;
         var targets = EntityArgument.getPlayers(context, "targets");
         for (ServerPlayer player : targets) {
-            double total = SpellSchoolMasteryStore.INSTANCE.addBonus(player.getUUID(), player.getGameProfile().getName(), school.getId().toString(), delta);
+            double total = SpellSchoolMasteryStore.INSTANCE.addBonus(player.getUUID(), player.getGameProfile().name(), school.getId().toString(), delta);
             if (ContentPackManager.INSTANCE.isEnabled(SpellSchoolMasteryPack.ID)) {
                 SpellSchoolMasteryPack.applyMasteryBonus(player, school, total);
             }
@@ -370,7 +370,7 @@ public class IronsSpellbooksCommand {
             context.getSource().sendSuccess(
                     () -> Component.translatable("commands.irons_spellbooks.generic.create_file",
                             Component.literal(result.getSecond().getName())
-                                    .withStyle(Style.EMPTY.withUnderlined(true).withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, result.getSecond().getPath()))))
+                                    .withStyle(Style.EMPTY.withUnderlined(true).withClickEvent(new ClickEvent.OpenFile(result.getSecond().getPath()))))
                     , true);
             return 1;
         } else {
@@ -396,7 +396,7 @@ public class IronsSpellbooksCommand {
             source.sendSuccess(
                     () -> Component.translatable("commands.irons_spellbooks.generic.create_file",
                             Component.literal(result.getSecond().getName())
-                                    .withStyle(Style.EMPTY.withUnderlined(true).withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_FILE, result.getSecond().getPath()))))
+                                    .withStyle(Style.EMPTY.withUnderlined(true).withClickEvent(new ClickEvent.OpenFile(result.getSecond().getPath()))))
                     , true);
             return 1;
         } else if (result.getSecond() != null) {

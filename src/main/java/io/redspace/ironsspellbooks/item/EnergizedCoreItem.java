@@ -59,10 +59,10 @@ public class EnergizedCoreItem extends Item {
                 }
             } else {
                 if (level.isClientSide()) {
-                    pContext.getPlayer().displayClientMessage(Component.translatable("item.irons_spellbooks.energized_core.failure").withStyle(ChatFormatting.AQUA), true);
+                    pContext.getPlayer().sendOverlayMessage(Component.translatable("item.irons_spellbooks.energized_core.failure").withStyle(ChatFormatting.AQUA));
                 }
             }
-            return InteractionResult.sidedSuccess(level.isClientSide());
+            return (level.isClientSide() ? InteractionResult.SUCCESS : InteractionResult.CONSUME);
         }
         return super.useOn(pContext);
     }
