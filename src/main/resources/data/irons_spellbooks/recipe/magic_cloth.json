@@ -6,12 +6,8 @@
     "DDD"
   ],
   "key": {
-    "D": {
-      "item": "irons_spellbooks:arcane_essence"
-    },
-    "W": {
-      "tag": "minecraft:wool"
-    }
+    "D": "irons_spellbooks:arcane_essence",
+    "W": "#minecraft:wool"
   },
   "result": {
     "id": "irons_spellbooks:magic_cloth",

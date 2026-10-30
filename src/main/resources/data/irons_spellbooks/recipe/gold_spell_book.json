@@ -6,15 +6,9 @@
     "GMM"
   ],
   "key": {
-    "G": {
-      "tag": "c:ingots/gold"
-    },
-    "M": {
-      "item": "irons_spellbooks:arcane_essence"
-    },
-    "H": {
-      "item": "irons_spellbooks:hogskin"
-    }
+    "G": "#c:ingots/gold",
+    "M": "irons_spellbooks:arcane_essence",
+    "H": "irons_spellbooks:hogskin"
   },
   "result": {
     "id": "irons_spellbooks:gold_spell_book",

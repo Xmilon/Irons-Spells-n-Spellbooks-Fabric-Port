@@ -50,7 +50,7 @@ public class SummonedHorse extends AbstractHorse implements IMagicSummon {
     @Deprecated(forRemoval = true)
     public SummonedHorse(Level pLevel, LivingEntity owner) {
         this(pLevel);
-        setOwnerUUID(owner.getUUID());
+        setOwner(owner);
         setSummoner(owner);
     }
 
@@ -175,13 +175,11 @@ public class SummonedHorse extends AbstractHorse implements IMagicSummon {
     @Override
     public void readAdditionalSaveData(ValueInput compoundTag) {
         super.readAdditionalSaveData(compoundTag);
-        setOwnerUUID(OwnerHelper.deserializeOwner(compoundTag));
     }
 
     @Override
     public void addAdditionalSaveData(ValueOutput compoundTag) {
         super.addAdditionalSaveData(compoundTag);
-        OwnerHelper.serializeOwner(compoundTag, getOwnerUUID());
     }
 
     @Override

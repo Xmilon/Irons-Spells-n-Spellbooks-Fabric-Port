@@ -9,8 +9,9 @@
           "weight": 2,
           "functions": [
             {
-              "function": "minecraft:set_damage",
+              "type": "minecraft:set_damage",
               "damage": {
+                "type": "minecraft:uniform",
                 "min": 0.01,
                 "max": 0.23
               },
@@ -19,7 +20,7 @@
           ],
           "conditions": [
             {
-              "condition": "minecraft:random_chance",
+              "type": "minecraft:random_chance",
               "chance": 0.25
             }
           ]
@@ -35,8 +36,9 @@
           "weight": 2,
           "functions": [
             {
-              "function": "minecraft:set_damage",
+              "type": "minecraft:set_damage",
               "damage": {
+                "type": "minecraft:uniform",
                 "min": 0.1,
                 "max": 0.4
               },
@@ -45,7 +47,7 @@
           ],
           "conditions": [
             {
-              "condition": "minecraft:random_chance",
+              "type": "minecraft:random_chance",
               "chance": 0.55
             }
           ]
@@ -60,8 +62,9 @@
           "name": "minecraft:lantern",
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 0,
                 "max": 8
               }
@@ -78,7 +81,7 @@
           "name": "minecraft:soul_sand",
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 4,
@@ -92,7 +95,7 @@
           "name": "minecraft:bone",
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 4,
@@ -106,7 +109,7 @@
           "name": "minecraft:flint",
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 4,
@@ -120,7 +123,7 @@
           "name": "irons_spellbooks:arcane_essence",
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 2,
@@ -139,7 +142,7 @@
           "name": "minecraft:emerald",
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 4,
@@ -153,7 +156,7 @@
           "name": "minecraft:diamond",
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 1,
@@ -179,7 +182,7 @@
           "name": "minecraft:emerald",
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 4,
@@ -193,7 +196,7 @@
           "name": "minecraft:diamond",
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 1,
@@ -216,7 +219,7 @@
           "name": "irons_spellbooks:scroll",
           "functions": [
             {
-              "function": "irons_spellbooks:randomize_spell",
+              "type": "irons_spellbooks:randomize_spell",
               "quality": {
                 "min": 0.2,
                 "max": 0.5,

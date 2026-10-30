@@ -10,21 +10,28 @@ import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.Tag;
 import net.minecraft.world.level.saveddata.SavedData;
-import net.minecraft.world.level.storage.DimensionDataStorage;
+import net.minecraft.world.level.storage.SavedDataStorage;
+import net.minecraft.world.level.saveddata.SavedDataType;
+import net.minecraft.util.datafix.DataFixTypes;
 import org.jetbrains.annotations.NotNull;
 
 public class IronsDataStorage extends SavedData {
     public static IronsDataStorage INSTANCE;
 
-    public static void init(DimensionDataStorage dimensionDataStorage) {
+    // The managers only need a registry provider for nested codecs that are not present in this data
+    private static final HolderLookup.Provider PROVIDER = net.minecraft.core.RegistryAccess.EMPTY;
+    private static final SavedDataType<IronsDataStorage> TYPE = new SavedDataType<>(
+            net.minecraft.resources.Identifier.fromNamespaceAndPath("irons_spellbooks", "irons_spellbooks_data"),
+            IronsDataStorage::new,
+            CompoundTag.CODEC.xmap(tag -> IronsDataStorage.load(tag, PROVIDER), storage -> storage.save(new CompoundTag(), PROVIDER)),
+            DataFixTypes.SAVED_DATA_COMMAND_STORAGE);
+
+    public static void init(SavedDataStorage dimensionDataStorage) {
         if (dimensionDataStorage != null) {
-            IronsDataStorage.INSTANCE = dimensionDataStorage.computeIfAbsent(
-                    new Factory<IronsDataStorage>(IronsDataStorage::new, IronsDataStorage::load, null),
-                    "irons_spellbooks_data");
+            IronsDataStorage.INSTANCE = dimensionDataStorage.computeIfAbsent(TYPE);
         }
     }
 
-    @Override
     public @NotNull CompoundTag save(@NotNull CompoundTag pCompoundTag, HolderLookup.Provider pRegistries) {
         var tag = new CompoundTag();
         //TODO: make annotation for this?

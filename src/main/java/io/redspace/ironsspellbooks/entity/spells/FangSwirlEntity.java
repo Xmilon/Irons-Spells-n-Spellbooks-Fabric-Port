@@ -112,6 +112,6 @@ public class FangSwirlEntity extends AoeEntity {
     @Override
     protected void addAdditionalSaveData(ValueOutput compound) {
         super.addAdditionalSaveData(compound);
-        compound.put("startPos", NBT.writeVec3Pos(startPos));
+        compound.store("startPos", net.minecraft.nbt.CompoundTag.CODEC, NBT.writeVec3Pos(startPos));
     }
 }

@@ -27,8 +27,9 @@ public abstract class CameraMixin {
     @Shadow
     protected abstract void setRotation(float yRot, float xRot);
 
-    @Inject(method = "setup", at = @At("RETURN"))
-    private void irons_spellbooks$computeCameraAngles(BlockGetter level, Entity entity, boolean detached, boolean thirdPersonReverse, float partialTick, CallbackInfo ci) {
+    @Inject(method = "update", at = @At("RETURN"))
+    private void irons_spellbooks$computeCameraAngles(net.minecraft.client.DeltaTracker deltaTracker, CallbackInfo ci) {
+        float partialTick = deltaTracker.getGameTimeDeltaPartialTick(true);
         var event = new ViewportEvent.ComputeCameraAngles((Camera) (Object) this, partialTick, this.yRot, this.xRot, 0f);
         NeoForge.EVENT_BUS.post(event);
         if (event.getYaw() != this.yRot || event.getPitch() != this.xRot) {

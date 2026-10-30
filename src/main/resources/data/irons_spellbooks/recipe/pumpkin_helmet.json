@@ -6,15 +6,9 @@
     " P "
   ],
   "key": {
-    "C": {
-      "item": "irons_spellbooks:magic_cloth"
-    },
-    "H": {
-      "item": "minecraft:leather_helmet"
-    },
-    "P": {
-      "item": "minecraft:carved_pumpkin"
-    }
+    "C": "irons_spellbooks:magic_cloth",
+    "H": "minecraft:leather_helmet",
+    "P": "minecraft:carved_pumpkin"
   },
   "result": {
     "id": "irons_spellbooks:pumpkin_helmet",

@@ -404,7 +404,7 @@ public class Utils {
             }
             if (heldSpellbookStack.getItem() instanceof SpellBook spellBook) {
                 Utils.setPlayerSpellbookStack(serverPlayer, heldSpellbookStack.split(1));
-                //serverPlayer.level().playSound(null, serverPlayer.blockPosition(), SoundRegistry.EQUIP_SPELL_BOOK.get(), SoundSource.PLAYERS, 1, 1);
+                //serverPlayer.level().playSound(null, serverPlayer.blockPosition(), SoundRegistry.EQUIP_SPELL_BOOK.value(), SoundSource.PLAYERS, 1, 1);
             }
         }
         return false;
@@ -1019,7 +1019,20 @@ public class Utils {
         entity.addEffect(inst);
         return inst;
     }
+
+    /** Native replacement for the removed Player#disableShield: puts the used shield on a 5 second cooldown. */
+    public static void disableShield(Player player) {
+        if (player.level() instanceof ServerLevel serverLevel) {
+            var stack = player.getUseItem();
+            var blocks = stack.get(DataComponents.BLOCKS_ATTACKS);
+            if (blocks != null) {
+                blocks.disable(serverLevel, player, 5f, stack);
+            }
+        }
+    }
+
+    /** Spell/ability knockback with no originating damage source. */
+    public static void knockback(net.minecraft.world.entity.LivingEntity entity, double strength, double x, double z) {
+        entity.knockback(strength, x, z, entity.damageSources().generic(), 0f);
+    }
 }
-
-
-

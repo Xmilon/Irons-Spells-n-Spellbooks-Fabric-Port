@@ -145,7 +145,7 @@ public class SacrificeSpell extends AbstractSpell {
             }
         }
         CameraShakeManager.addCameraShake(new CameraShakeData(level, 10, pos, 20));
-        level.playSound(null, BlockPos.containing(pos), SoundRegistry.BLOOD_EXPLOSION.get(), SoundSource.PLAYERS, 3, Utils.random.nextIntBetweenInclusive(8, 12) * .1f);
+        level.playSound(null, BlockPos.containing(pos), SoundRegistry.BLOOD_EXPLOSION.value(), SoundSource.PLAYERS, 3, Utils.random.nextIntBetweenInclusive(8, 12) * .1f);
     }
 
     public float getDamage(int spellLevel, @Nullable LivingEntity caster) {

@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "irons_spellbooks:electromancer_leggings_crafting"
+        "recipes": "irons_spellbooks:electromancer_leggings_crafting"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

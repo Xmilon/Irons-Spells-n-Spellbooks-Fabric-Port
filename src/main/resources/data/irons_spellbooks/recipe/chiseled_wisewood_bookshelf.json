@@ -6,12 +6,8 @@
     "FFF"
   ],
   "key": {
-    "F": {
-      "item": "minecraft:chiseled_bookshelf"
-    },
-    "R": {
-      "item": "irons_spellbooks:arcane_essence"
-    }
+    "F": "minecraft:chiseled_bookshelf",
+    "R": "irons_spellbooks:arcane_essence"
   },
   "result": {
     "id": "irons_spellbooks:wisewood_chiseled_bookshelf",

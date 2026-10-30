@@ -70,12 +70,12 @@ public class PocketDimensionSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.POCKET_DIMENSION_TRAVEL.get());
+        return Optional.of(SoundRegistry.POCKET_DIMENSION_TRAVEL.value());
     }
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.ELDRITCH_PREPARE.get());
+        return Optional.of(SoundRegistry.ELDRITCH_PREPARE.value());
     }
 
     @Override

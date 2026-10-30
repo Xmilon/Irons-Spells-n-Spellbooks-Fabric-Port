@@ -67,7 +67,7 @@ public class IceBlockSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.ICE_BLOCK_CAST.get());
+        return Optional.of(SoundRegistry.ICE_BLOCK_CAST.value());
     }
 
     @Override

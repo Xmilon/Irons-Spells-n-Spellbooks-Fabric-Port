@@ -1,69 +1,74 @@
 package io.redspace.ironsspellbooks.render;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import io.redspace.ironsspellbooks.effect.EchoingStrikesData;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
-import net.minecraft.client.model.HumanoidModel;
+import net.minecraft.client.model.player.PlayerModel;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.util.LightCoordsUtil;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.util.Mth;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.player.Player;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.api.distmarker.OnlyIn;
-import com.geckolib.cache.model.BakedGeoModel;
-import com.geckolib.renderer.GeoEntityRenderer;
+import com.geckolib.renderer.base.GeoRenderer;
+import com.geckolib.renderer.base.RenderPassInfo;
 import com.geckolib.renderer.layer.GeoRenderLayer;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 
 @OnlyIn(Dist.CLIENT)
 public class EchoingStrikesHologramLayer {
-    public static class Vanilla extends RenderLayer<Player, HumanoidModel<Player>> {
+    public static class Vanilla extends RenderLayer<AvatarRenderState, PlayerModel> {
 
-        public Vanilla(RenderLayerParent pRenderer) {
-            super(pRenderer);
-        }
-
-        public void render(PoseStack pMatrixStack, MultiBufferSource pBuffer, int pPackedLight, Player pLivingEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTicks, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
-            float percent = getRenderPercent(pLivingEntity);
-            if (percent > 0) {
-                float f = (float) pLivingEntity.tickCount + pPartialTicks;
-                float offset = Mth.sin(f * 2) * 0.75f * percent;
-                pMatrixStack.translate(offset, 0, 0);
-                pMatrixStack.scale(1.01f, 1.01f, 1.01f);
-                int color = RenderHelper.colorf(.988f * percent, .313f * percent, .968f * percent, percent);
-                this.getParentModel().renderToBuffer(pMatrixStack, pBuffer.getBuffer(RenderHelper.CustomerRenderType.magic(this.getTextureLocation(pLivingEntity))), LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, color);
-            }
-        }
-    }
-
-    public static class Geo extends GeoRenderLayer<AbstractSpellCastingMob> {
-        public Geo(GeoEntityRenderer<AbstractSpellCastingMob> entityRendererIn) {
-            super(entityRendererIn);
+        public Vanilla(RenderLayerParent<AvatarRenderState, PlayerModel> renderer) {
+            super(renderer);
         }
 
         @Override
-        public void render(PoseStack pMatrixStack, AbstractSpellCastingMob pLivingEntity, BakedGeoModel bakedModel, RenderType renderType2, MultiBufferSource bufferSource, VertexConsumer buffer, float pPartialTicks, int packedLight, int packedOverlay) {
-            float percent = getRenderPercent(pLivingEntity);
-            if (percent > 0) {
-                float f = (float) pLivingEntity.tickCount + pPartialTicks;
-                float offset = Mth.sin(f * 2) * 0.75f * percent;
-                pMatrixStack.translate(offset, 0, 0);
-                pMatrixStack.scale(1.01f, 1.01f, 1.01f);
-                int color = RenderHelper.colorf(.988f * percent, .313f * percent, .968f * percent, percent);
-                var type = RenderHelper.CustomerRenderType.magic(this.getRenderer().getTextureLocation(pLivingEntity));
-                this.getRenderer().actuallyRender(pMatrixStack, pLivingEntity, bakedModel, type, bufferSource, bufferSource.getBuffer(type), true, pPartialTicks, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, color);
+        public void submit(PoseStack poseStack, SubmitNodeCollector collector, int packedLight, AvatarRenderState state, float yRot, float xRot) {
+            var effects = LivingEffectsRenderState.get(state);
+            if (effects == null || effects.hideAll() || effects.echo() <= 0) {
+                return;
             }
+            float percent = effects.echo();
+            float offset = Mth.sin(effects.age() * 2) * 0.75f * percent;
+            poseStack.pushPose();
+            poseStack.translate(offset, 0, 0);
+            poseStack.scale(1.01f, 1.01f, 1.01f);
+            int color = RenderHelper.colorf(.988f * percent, .313f * percent, .968f * percent, percent);
+            collector.submitModel(getParentModel(), state, poseStack, RenderHelper.CustomerRenderType.magic(effects.texture()), LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, color, null, state.outlineColor);
+            poseStack.popPose();
         }
     }
 
-    private static float getRenderPercent(LivingEntity entity) {
-        return EchoingStrikesData.has(entity) ?
-                Mth.clamp((EchoingStrikesData.get(entity).vfxTimestamp - entity.tickCount) / 20f, 0, 1) :
-                0;
+    public static class Geo extends GeoRenderLayer<AbstractSpellCastingMob, Void, EntityRenderState> {
+        public Geo(GeoRenderer<AbstractSpellCastingMob, Void, EntityRenderState> renderer) {
+            super(renderer);
+        }
+
+        // unverified: redraws the top level bones at the pose GeckoLib leaves in the pass, tinted and jittered by the echo.
+        @Override
+        public void submitRenderTask(RenderPassInfo<EntityRenderState> info, SubmitNodeCollector collector) {
+            var effects = LivingEffectsRenderState.get(info.renderState());
+            if (!info.willRender() || effects == null || effects.hideAll() || effects.echo() <= 0) {
+                return;
+            }
+            float percent = effects.echo();
+            float offset = Mth.sin(effects.age() * 2) * 0.75f * percent;
+            int color = RenderHelper.colorf(.988f * percent, .313f * percent, .968f * percent, percent);
+            var poseStack = info.poseStack();
+            poseStack.pushPose();
+            poseStack.translate(offset, 0, 0);
+            poseStack.scale(1.01f, 1.01f, 1.01f);
+            collector.submitCustomGeometry(poseStack, RenderHelper.CustomerRenderType.magic(effects.texture()), (pose, vertexConsumer) -> {
+                var drawStack = new PoseStack();
+                drawStack.last().set(pose);
+                for (var bone : info.model().topLevelBones()) {
+                    bone.render(info, drawStack, vertexConsumer, LightCoordsUtil.FULL_BRIGHT, OverlayTexture.NO_OVERLAY, color);
+                }
+            });
+            poseStack.popPose();
+        }
     }
 }

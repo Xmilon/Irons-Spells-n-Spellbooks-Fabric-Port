@@ -8,7 +8,7 @@
           "type": "minecraft:item",
           "functions": [
             {
-              "function": "minecraft:enchant_with_levels",
+              "type": "minecraft:enchant_with_levels",
               "levels": 30.0,
               "options": "#minecraft:on_random_loot"
             }
@@ -24,7 +24,7 @@
           "name": "irons_spellbooks:scroll",
           "functions": [
             {
-              "function": "irons_spellbooks:randomize_spell",
+              "type": "irons_spellbooks:randomize_spell",
               "quality": {
                 "min": 0.2,
                 "max": 0.5,
@@ -39,7 +39,7 @@
       ],
       "conditions": [
         {
-          "condition": "minecraft:random_chance",
+          "type": "minecraft:random_chance",
           "chance": 0.75
         }
       ]
@@ -54,7 +54,7 @@
       ],
       "conditions": [
         {
-          "condition": "minecraft:random_chance",
+          "type": "minecraft:random_chance",
           "chance": 0.1
         }
       ]
@@ -69,7 +69,7 @@
       ],
       "conditions": [
         {
-          "condition": "minecraft:random_chance",
+          "type": "minecraft:random_chance",
           "chance": 0.25
         }
       ]
@@ -84,13 +84,14 @@
       ],
       "conditions": [
         {
-          "condition": "minecraft:random_chance",
+          "type": "minecraft:random_chance",
           "chance": 0.15
         }
       ]
     },
     {
       "rolls": {
+        "type": "minecraft:uniform",
         "min": 6,
         "max": 12
       },
@@ -100,8 +101,9 @@
           "name": "minecraft:snowball",
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 1,
                 "max": 2
               }
@@ -113,8 +115,9 @@
           "name": "minecraft:ice",
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 2,
                 "max": 4
               }
@@ -126,8 +129,9 @@
           "name": "minecraft:cobweb",
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 2,
                 "max": 4
               }
@@ -148,8 +152,9 @@
           "name": "irons_spellbooks:arcane_essence",
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 3,
                 "max": 12
               }
@@ -171,8 +176,9 @@
           "name": "minecraft:iron_ingot",
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 1,
                 "max": 2
               }
@@ -185,8 +191,9 @@
           "name": "minecraft:emerald",
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 2,
                 "max": 3
               }

@@ -108,7 +108,7 @@ public class ArcaneAnvilJeiRecipe {
                     tuple.a.add(baseRing);
                 });
                 IntStream.rangeClosed(this.spell.getMinLevel(), this.spell.getMaxLevel()).forEach(i -> {
-                    var scroll = new ItemStack(ItemRegistry.SCROLL);
+                    var scroll = new ItemStack(ItemRegistry.SCROLL.get());
                     ISpellContainer.createScrollContainer(this.spell, i, scroll);
 
                     tuple.b.add(scroll);

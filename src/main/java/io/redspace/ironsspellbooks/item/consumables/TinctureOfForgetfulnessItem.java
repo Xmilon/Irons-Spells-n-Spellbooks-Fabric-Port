@@ -27,8 +27,8 @@ public class TinctureOfForgetfulnessItem extends Item {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack pStack, @NotNull TooltipContext context, @NotNull List<Component> pTooltipComponents, @NotNull TooltipFlag pIsAdvanced) {
-        pTooltipComponents.add(DESCRIPTION);
+    public void appendHoverText(@NotNull ItemStack pStack, @NotNull TooltipContext context, @NotNull net.minecraft.world.item.component.TooltipDisplay display, @NotNull java.util.function.Consumer<Component> pTooltipComponents, @NotNull TooltipFlag pIsAdvanced) {
+        pTooltipComponents.accept(DESCRIPTION);
     }
 
     @Override
@@ -63,7 +63,7 @@ public class TinctureOfForgetfulnessItem extends Item {
         vaultBlockEntity.setChanged();
         level.sendBlockUpdated(pos, state, state, 3);
         level.playSound(null, pos, SoundEvents.APPLY_EFFECT_BAD_OMEN, SoundSource.BLOCKS, 1f, 1f);
-        level.playSound(null, pos, SoundEvents.HONEY_DRINK, SoundSource.BLOCKS, 1f, 1f);
+        level.playSound(null, pos, SoundEvents.HONEY_DRINK.value(), SoundSource.BLOCKS, 1f, 1f);
         if (!player.getAbilities().instabuild) {
             context.getItemInHand().shrink(1);
         }

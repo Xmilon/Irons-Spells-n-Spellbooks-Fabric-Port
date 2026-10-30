@@ -17,16 +17,16 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(ItemStack.class)
 public abstract class ItemStackMixin {
-    @Inject(method = "Lnet/minecraft/world/item/ItemStack;<init>(Lnet/minecraft/world/level/ItemLike;ILnet/minecraft/core/component/PatchedDataComponentMap;)V", at = @At("TAIL"))
-    public void init(ItemLike itemLike, int pCount, PatchedDataComponentMap pComponents, CallbackInfo ci) {
-        if (itemLike instanceof IPresetSpellContainer iPresetSpellContainer) {
+    @Inject(method = "Lnet/minecraft/world/item/ItemStack;<init>(Lnet/minecraft/core/Holder;ILnet/minecraft/core/component/PatchedDataComponentMap;)V", at = @At("TAIL"))
+    public void init(net.minecraft.core.Holder<net.minecraft.world.item.Item> holder, int pCount, PatchedDataComponentMap pComponents, CallbackInfo ci) {
+        if (holder.value() instanceof IPresetSpellContainer iPresetSpellContainer) {
             iPresetSpellContainer.initializeSpellContainer((ItemStack) (Object) this);
         }
     }
 
     // Fabric has no ItemAttributeModifierEvent in 1.21.1; post it ourselves so upgrade orbs apply their attributes
     @ModifyExpressionValue(method = {
-            "forEachModifier(Lnet/minecraft/world/entity/EquipmentSlotGroup;Ljava/util/function/BiConsumer;)V",
+            "forEachModifier(Lnet/minecraft/world/entity/EquipmentSlotGroup;Lorg/apache/commons/lang3/function/TriConsumer;)V",
             "forEachModifier(Lnet/minecraft/world/entity/EquipmentSlot;Ljava/util/function/BiConsumer;)V"
     }, at = @At(value = "INVOKE", target = "Lnet/minecraft/world/item/ItemStack;getOrDefault(Lnet/minecraft/core/component/DataComponentType;Ljava/lang/Object;)Ljava/lang/Object;"))
     private Object irons_spellbooks$postAttributeModifierEvent(Object original) {
@@ -36,6 +36,6 @@ public abstract class ItemStackMixin {
         }
         var entries = new java.util.ArrayList<>(modifiers.modifiers());
         NeoForge.EVENT_BUS.post(new ItemAttributeModifierEvent(stack, entries));
-        return new ItemAttributeModifiers(java.util.List.copyOf(entries), modifiers.showInTooltip());
+        return new ItemAttributeModifiers(java.util.List.copyOf(entries));
     }
 }

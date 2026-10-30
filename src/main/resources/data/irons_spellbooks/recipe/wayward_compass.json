@@ -6,15 +6,9 @@
     "DID"
   ],
   "key": {
-    "D": {
-      "item": "irons_spellbooks:arcane_essence"
-    },
-    "I": {
-      "tag": "c:ingots/iron"
-    },
-    "L": {
-      "item": "minecraft:soul_lantern"
-    }
+    "D": "irons_spellbooks:arcane_essence",
+    "I": "#c:ingots/iron",
+    "L": "minecraft:soul_lantern"
   },
   "result": {
     "id": "irons_spellbooks:wayward_compass",

@@ -77,7 +77,7 @@ public class StarfallSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.ENDER_CAST.get());
+        return Optional.of(SoundRegistry.ENDER_CAST.value());
     }
 
     @Override

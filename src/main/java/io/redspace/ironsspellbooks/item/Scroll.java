@@ -90,13 +90,19 @@ public class Scroll extends Item implements IScroll {
     }
 
     @Override
-    public void inventoryTick(@NotNull ItemStack stack, @NotNull Level level, @NotNull Entity entity, int slotId, boolean isSelected) {
-        super.inventoryTick(stack, level, entity, slotId, isSelected);
+    public void inventoryTick(@NotNull ItemStack stack, @NotNull net.minecraft.server.level.ServerLevel level, @NotNull Entity entity, @org.jetbrains.annotations.Nullable net.minecraft.world.entity.EquipmentSlot slot) {
+        super.inventoryTick(stack, level, entity, slot);
         ScrollSchoolTag.syncModelData(stack);
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack itemStack, TooltipContext context, @NotNull List<Component> lines, @NotNull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack itemStack, @NotNull TooltipContext context, @NotNull net.minecraft.world.item.component.TooltipDisplay display, @NotNull java.util.function.Consumer<Component> consumer, @NotNull TooltipFlag flag) {
+        var lines = new java.util.ArrayList<Component>();
+        appendHoverLines(itemStack, lines);
+        lines.forEach(consumer);
+    }
+
+    private void appendHoverLines(ItemStack itemStack, List<Component> lines) {
         MinecraftInstanceHelper.ifPlayerPresent(player -> {
             lines.addAll(TooltipsUtils.formatScrollTooltip(itemStack, player));
         });

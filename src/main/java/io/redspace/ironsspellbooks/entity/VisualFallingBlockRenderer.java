@@ -1,49 +1,49 @@
 package io.redspace.ironsspellbooks.entity;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.block.BlockRenderDispatcher;
+import net.minecraft.client.multiplayer.ClientLevel;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.EntityRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
-import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.client.renderer.entity.state.FallingBlockRenderState;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.core.BlockPos;
-import net.minecraft.resources.Identifier;
-import net.minecraft.util.RandomSource;
-import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.RenderShape;
-import net.minecraft.world.level.block.state.BlockState;
-import net.neoforged.api.distmarker.Dist;
-import net.neoforged.api.distmarker.OnlyIn;
-import net.neoforged.neoforge.client.model.data.ModelData;
 
-
-@OnlyIn(Dist.CLIENT)
-public class VisualFallingBlockRenderer extends EntityRenderer<VisualFallingBlockEntity> {
-    private final BlockRenderDispatcher dispatcher;
-
-    public VisualFallingBlockRenderer(EntityRendererProvider.Context pContext) {
-        super(pContext);
-        this.shadowRadius = 0.5F;
-        this.dispatcher = pContext.getBlockRenderDispatcher();
+/** Visual debris deliberately renders even when its block matches the block beneath it. */
+public class VisualFallingBlockRenderer extends EntityRenderer<VisualFallingBlockEntity, FallingBlockRenderState> {
+    public VisualFallingBlockRenderer(EntityRendererProvider.Context context) {
+        super(context);
+        shadowRadius = .5f;
     }
 
-    public void render(VisualFallingBlockEntity entity, float pEntityYaw, float pPartialTicks, PoseStack pMatrixStack, MultiBufferSource pBuffer, int pPackedLight) {
-        BlockState blockstate = entity.getBlockState();
-        if (blockstate.getRenderShape() == RenderShape.MODEL) {
-            Level level = entity.level();
-//         if (blockstate != level.getBlockState(pEntity.blockPosition()) && blockstate.getRenderShape() != RenderShape.INVISIBLE) {
-            pMatrixStack.pushPose();
-            BlockPos blockpos = BlockPos.containing(entity.getX(), entity.getBoundingBox().maxY, entity.getZ());
-            pMatrixStack.translate(-0.5D, 0.0D, -0.5D);
-            var model = this.dispatcher.getBlockModel(blockstate);
-            this.dispatcher.getModelRenderer().tesselateBlock(level, model, blockstate, blockpos, pMatrixStack, pBuffer.getBuffer(net.minecraft.client.renderer.ItemBlockRenderTypes.getChunkRenderType(blockstate)), false, RandomSource.create(), blockstate.getSeed(entity.getStartPos()), OverlayTexture.NO_OVERLAY);
-            pMatrixStack.popPose();
-            super.render(entity, pEntityYaw, pPartialTicks, pMatrixStack, pBuffer, pPackedLight);
+    @Override
+    public FallingBlockRenderState createRenderState() {
+        return new FallingBlockRenderState();
+    }
+
+    @Override
+    public void extractRenderState(VisualFallingBlockEntity entity, FallingBlockRenderState state, float partialTick) {
+        super.extractRenderState(entity, state, partialTick);
+        var block = state.movingBlockRenderState;
+        BlockPos position = BlockPos.containing(entity.getX(), entity.getBoundingBox().maxY, entity.getZ());
+        block.blockState = entity.getBlockState();
+        block.blockPos = position;
+        block.randomSeedPos = entity.getStartPos();
+        if (entity.level() instanceof ClientLevel level) {
+            block.biome = level.getBiome(position);
+            block.cardinalLighting = level.cardinalLighting();
+            block.lightEngine = level.getLightEngine();
         }
     }
 
-    public Identifier getTextureLocation(VisualFallingBlockEntity pEntity) {
-        return TextureAtlas.LOCATION_BLOCKS;
+    @Override
+    public void submit(FallingBlockRenderState state, PoseStack poses, SubmitNodeCollector collector, CameraRenderState camera) {
+        if (state.movingBlockRenderState.blockState.getRenderShape() != RenderShape.MODEL) return;
+        poses.pushPose();
+        poses.translate(-.5, 0, -.5);
+        collector.submitMovingBlock(poses, state.movingBlockRenderState, state.outlineColor);
+        poses.popPose();
+        super.submit(state, poses, collector, camera);
     }
 }

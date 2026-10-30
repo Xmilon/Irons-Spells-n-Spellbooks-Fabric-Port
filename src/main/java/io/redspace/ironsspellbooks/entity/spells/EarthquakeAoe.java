@@ -52,7 +52,7 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
         var damageSource = SpellRegistry.EARTHQUAKE_SPELL.get().getDamageSource(this, getOwner());
         DamageSources.ignoreNextKnockback(target);
         if (target.hurtServer(damageLevel, damageSource, getDamage())) {
-            target.addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SLOWDOWN, 120, slownessAmplifier));
+            target.addEffect(new MobEffectInstance(MobEffects.SLOWNESS, 120, slownessAmplifier));
             target.setDeltaMovement(target.getDeltaMovement().add(0, .5, 0));
             target.syncVelocity = true;
         }
@@ -88,12 +88,12 @@ public class EarthquakeAoe extends AoeEntity implements AntiMagicSusceptible {
             createScreenShake();
         }
         if (tickCount % 20 == 1) {
-            this.playSound(SoundRegistry.EARTHQUAKE_LOOP.get(), 2f, .9f + random.nextFloat() * .15f);
+            this.playSound(SoundRegistry.EARTHQUAKE_LOOP.value(), 2f, .9f + random.nextFloat() * .15f);
         }
         if (tickCount % reapplicationDelay == 1) {
             //aligns with damage tick
             waveAnim = 0;
-            this.playSound(SoundRegistry.EARTHQUAKE_IMPACT.get(), 1.5f, .9f + random.nextFloat() * .2f);
+            this.playSound(SoundRegistry.EARTHQUAKE_IMPACT.value(), 1.5f, .9f + random.nextFloat() * .2f);
         }
         if (!level().isClientSide()) {
             var radius = this.getRadius();

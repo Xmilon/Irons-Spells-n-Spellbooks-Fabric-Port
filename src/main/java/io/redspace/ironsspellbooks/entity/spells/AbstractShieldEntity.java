@@ -78,7 +78,7 @@ public abstract class AbstractShieldEntity extends Entity implements AntiMagicSu
     }
 
     protected void destroy() {
-        kill();
+        if (level() instanceof ServerLevel serverLevel) kill(serverLevel);
     }
 
     public boolean isMultipartEntity() {

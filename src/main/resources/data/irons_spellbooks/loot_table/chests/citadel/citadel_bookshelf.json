@@ -8,7 +8,7 @@
           "name": "minecraft:paper",
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
                 "type": "minecraft:uniform",
                 "min": 8,
@@ -27,7 +27,7 @@
           "name": "irons_spellbooks:ancient_knowledge_fragment",
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
                 "type": "minecraft:binomial",
                 "n": 5,
@@ -46,7 +46,7 @@
           "name": "irons_spellbooks:chained_book",
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
                 "type": "minecraft:binomial",
                 "n": 2,
@@ -67,7 +67,7 @@
       ],
       "conditions": [
         {
-          "condition": "minecraft:random_chance",
+          "type": "minecraft:random_chance",
           "chance": 0.01
         }
       ]
@@ -82,7 +82,7 @@
       ],
       "conditions": [
         {
-          "condition": "minecraft:random_chance",
+          "type": "minecraft:random_chance",
           "chance": 0.2
         }
       ]
@@ -95,7 +95,7 @@
           "name": "irons_spellbooks:furled_map",
           "functions": [
             {
-              "function": "irons_spellbooks:set_furled_map",
+              "type": "irons_spellbooks:set_furled_map",
               "destination": "irons_spellbooks:ancient_battleground",
               "dimension": "minecraft:the_nether",
               "description_translation": "item.irons_spellbooks.ancient_battleground_map"
@@ -105,7 +105,7 @@
       ],
       "conditions": [
         {
-          "condition": "minecraft:random_chance",
+          "type": "minecraft:random_chance",
           "chance": 0.05
         }
       ]
@@ -123,7 +123,7 @@
           "name": "irons_spellbooks:scroll",
           "functions": [
             {
-              "function": "irons_spellbooks:randomize_spell",
+              "type": "irons_spellbooks:randomize_spell",
               "quality": {
                 "min": 0.0,
                 "max": 1.0,
@@ -138,7 +138,7 @@
           "name": "irons_spellbooks:scroll",
           "functions": [
             {
-              "function": "irons_spellbooks:randomize_spell",
+              "type": "irons_spellbooks:randomize_spell",
               "quality": {
                 "min": 0.0,
                 "max": 1.0,
@@ -160,7 +160,7 @@
           "name": "minecraft:book",
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
                 "type": "minecraft:binomial",
                 "n": 8,
@@ -181,7 +181,7 @@
       ],
       "conditions": [
         {
-          "condition": "minecraft:random_chance",
+          "type": "minecraft:random_chance",
           "chance": 0.5
         }
       ]

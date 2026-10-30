@@ -6,12 +6,8 @@
     "RRR"
   ],
   "key": {
-    "O": {
-      "item": "minecraft:poisonous_potato"
-    },
-    "R": {
-      "item": "minecraft:potato"
-    }
+    "O": "minecraft:poisonous_potato",
+    "R": "minecraft:potato"
   },
   "result": {
     "id": "minecraft:poisonous_potato",

@@ -10,9 +10,7 @@
     },
     "id": "irons_spellbooks:potion"
   },
-  "input": {
-    "item": "minecraft:echo_shard"
-  },
+  "input": "minecraft:echo_shard",
   "results": [
     {
       "amount": 250,

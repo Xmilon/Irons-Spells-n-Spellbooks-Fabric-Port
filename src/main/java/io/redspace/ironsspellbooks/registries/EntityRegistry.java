@@ -269,7 +269,7 @@ public class EntityRegistry {
 
     public static final DeferredHolder<EntityType<?>, EntityType<SummonedPolarBear>> SUMMONED_POLAR_BEAR =
             ENTITIES.register("summoned_polar_bear", () -> EntityType.Builder.<SummonedPolarBear>of(SummonedPolarBear::new, MobCategory.CREATURE)
-                    .immuneTo(Blocks.POWDER_SNOW)
+                    .immuneTo(net.minecraft.tags.TagKey.create(Registries.BLOCK, IronsSpellbooks.id("powder_snow_immune")))
                     .sized(1.4F, 1.4F)
                     .clientTrackingRange(64)
                     .build(net.minecraft.resources.ResourceKey.create(Registries.ENTITY_TYPE, IronsSpellbooks.id("summoned_polar_bear"))));

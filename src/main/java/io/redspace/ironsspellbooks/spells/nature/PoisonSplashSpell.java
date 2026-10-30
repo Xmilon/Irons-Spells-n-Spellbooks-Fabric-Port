@@ -66,12 +66,12 @@ public class PoisonSplashSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.POISON_SPLASH_BEGIN.get());
+        return Optional.of(SoundRegistry.POISON_SPLASH_BEGIN.value());
     }
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.POISON_CAST.get());
+        return Optional.of(SoundRegistry.POISON_CAST.value());
     }
 
     @Override

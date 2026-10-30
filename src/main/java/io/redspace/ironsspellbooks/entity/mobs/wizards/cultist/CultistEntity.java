@@ -59,7 +59,7 @@ public class CultistEntity extends NeutralWizard implements Enemy, IAnimatedAtta
         return new LookControl(this) {
             //This allows us to more rapidly turn towards our target. Helps to make sure his targets are aligned with his swing animations
             @Override
-            protected float rotateTowards(float pFrom, float pTo, float pMaxDelta) {
+            public float rotateTowards(float pFrom, float pTo, float pMaxDelta) {
                 return super.rotateTowards(pFrom, pTo, pMaxDelta * 2.5f);
             }
 

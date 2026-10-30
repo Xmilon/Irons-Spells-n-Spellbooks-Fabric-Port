@@ -10,7 +10,7 @@
       ],
       "conditions": [
         {
-          "condition": "minecraft:random_chance",
+          "type": "minecraft:random_chance",
           "chance": 0.15
         }
       ]
@@ -24,8 +24,9 @@
           "weight": 5,
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 3,
                 "max": 5
               }
@@ -43,8 +44,9 @@
           "weight": 3,
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 2,
                 "max": 5
               }
@@ -62,8 +64,9 @@
           "weight": 1,
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 1,
                 "max": 3
               }
@@ -74,6 +77,7 @@
     },
     {
       "rolls": {
+        "type": "minecraft:uniform",
         "min": 1,
         "max": 2
       },
@@ -83,7 +87,7 @@
           "name": "irons_spellbooks:scroll",
           "functions": [
             {
-              "function": "irons_spellbooks:randomize_spell",
+              "type": "irons_spellbooks:randomize_spell",
               "quality": {
                 "min": 0.0,
                 "max": 0.5,
@@ -102,8 +106,9 @@
           "name": "irons_spellbooks:arcane_essence",
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 5,
                 "max": 16
               }
@@ -120,7 +125,7 @@
           "name": "minecraft:diamond_sword",
           "functions": [
             {
-              "function": "irons_spellbooks:randomize_spell",
+              "type": "irons_spellbooks:randomize_spell",
               "quality": {
                 "min": 0.2,
                 "max": 0.75,
@@ -128,7 +133,7 @@
               }
             },
             {
-              "function": "minecraft:enchant_with_levels",
+              "type": "minecraft:enchant_with_levels",
               "levels": {
                 "type": "minecraft:uniform",
                 "max": 39.0,
@@ -144,7 +149,7 @@
           "weight": 2,
           "functions": [
             {
-              "function": "irons_spellbooks:randomize_spell",
+              "type": "irons_spellbooks:randomize_spell",
               "quality": {
                 "min": 0.2,
                 "max": 0.75,
@@ -152,7 +157,7 @@
               }
             },
             {
-              "function": "minecraft:enchant_with_levels",
+              "type": "minecraft:enchant_with_levels",
               "levels": {
                 "type": "minecraft:uniform",
                 "max": 39.0,
@@ -167,7 +172,7 @@
           "name": "minecraft:iron_sword",
           "functions": [
             {
-              "function": "irons_spellbooks:randomize_spell",
+              "type": "irons_spellbooks:randomize_spell",
               "quality": {
                 "min": 0.2,
                 "max": 0.75,
@@ -181,7 +186,7 @@
           "name": "minecraft:iron_helmet",
           "functions": [
             {
-              "function": "minecraft:enchant_with_levels",
+              "type": "minecraft:enchant_with_levels",
               "levels": {
                 "type": "minecraft:uniform",
                 "max": 20.0,
@@ -196,7 +201,7 @@
           "name": "minecraft:iron_chestplate",
           "functions": [
             {
-              "function": "minecraft:enchant_with_levels",
+              "type": "minecraft:enchant_with_levels",
               "levels": {
                 "type": "minecraft:uniform",
                 "max": 20.0,
@@ -211,7 +216,7 @@
           "name": "minecraft:iron_leggings",
           "functions": [
             {
-              "function": "minecraft:enchant_with_levels",
+              "type": "minecraft:enchant_with_levels",
               "levels": {
                 "type": "minecraft:uniform",
                 "max": 20.0,
@@ -226,7 +231,7 @@
           "name": "minecraft:iron_boots",
           "functions": [
             {
-              "function": "minecraft:enchant_with_levels",
+              "type": "minecraft:enchant_with_levels",
               "levels": {
                 "type": "minecraft:uniform",
                 "max": 20.0,
@@ -241,7 +246,7 @@
           "name": "minecraft:diamond_helmet",
           "functions": [
             {
-              "function": "minecraft:enchant_with_levels",
+              "type": "minecraft:enchant_with_levels",
               "levels": {
                 "type": "minecraft:uniform",
                 "max": 20.0,
@@ -256,7 +261,7 @@
           "name": "minecraft:diamond_chestplate",
           "functions": [
             {
-              "function": "minecraft:enchant_with_levels",
+              "type": "minecraft:enchant_with_levels",
               "levels": {
                 "type": "minecraft:uniform",
                 "max": 20.0,
@@ -271,7 +276,7 @@
           "name": "minecraft:diamond_leggings",
           "functions": [
             {
-              "function": "minecraft:enchant_with_levels",
+              "type": "minecraft:enchant_with_levels",
               "levels": {
                 "type": "minecraft:uniform",
                 "max": 20.0,
@@ -286,7 +291,7 @@
           "name": "minecraft:diamond_boots",
           "functions": [
             {
-              "function": "minecraft:enchant_with_levels",
+              "type": "minecraft:enchant_with_levels",
               "levels": {
                 "type": "minecraft:uniform",
                 "max": 20.0,

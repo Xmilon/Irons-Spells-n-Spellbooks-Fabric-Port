@@ -75,7 +75,7 @@ public class SonicBoomSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.SONIC_BOOM.get());
+        return Optional.of(SoundRegistry.SONIC_BOOM.value());
     }
 
     @Override

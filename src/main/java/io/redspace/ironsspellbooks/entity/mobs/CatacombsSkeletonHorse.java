@@ -7,6 +7,7 @@ import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
 import net.minecraft.world.entity.EntityType;
+import net.minecraft.world.entity.EntitySpawnReason;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.animal.equine.SkeletonHorse;
 import net.minecraft.world.item.ItemStack;
@@ -20,12 +21,12 @@ public class CatacombsSkeletonHorse extends SkeletonHorse {
     public CatacombsSkeletonHorse(EntityType<? extends SkeletonHorse> pEntityType, Level level) {
         super(EntityTypes.SKELETON_HORSE, level);
         this.setTamed(true);
-        NecromancerEntity necromancer = EntityRegistry.NECROMANCER.get().create(level);
+        NecromancerEntity necromancer = EntityRegistry.NECROMANCER.get().create(level, EntitySpawnReason.LOAD);
         if (necromancer != null) {
             necromancer.setPersistenceRequired();
             necromancer.setItemSlot(EquipmentSlot.CHEST, new ItemStack(Items.CHAINMAIL_CHESTPLATE));
             necromancer.setItemSlot(EquipmentSlot.HEAD, new ItemStack(ItemRegistry.TARNISHED_CROWN.get()));
-            necromancer.addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 1));
+            necromancer.addEffect(new MobEffectInstance(MobEffects.RESISTANCE, Integer.MAX_VALUE, 1));
             necromancer.startRiding(this);
         }
     }

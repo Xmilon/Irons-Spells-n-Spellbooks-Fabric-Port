@@ -29,7 +29,7 @@ public class AquiferHelper {
             synchronized (structuresInterruptingAquifers) {
                 var registry = registryAccess.registryAccess().lookupOrThrow(Registries.STRUCTURE);
                 for (Identifier r : structuresToTrack) {
-                    var str = registry.get(r);
+                    var str = registry.getValue(r);
                     if (str != null) {
                         structuresInterruptingAquifers.add(str);
                     }

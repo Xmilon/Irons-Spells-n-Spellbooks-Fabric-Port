@@ -62,7 +62,7 @@ public class FireballSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.FIREBALL_START.get());
+        return Optional.of(SoundRegistry.FIREBALL_START.value());
     }
 
     @Override

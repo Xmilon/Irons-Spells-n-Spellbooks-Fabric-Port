@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "tag": "irons_spellbooks:wizard_base_boots"
-    },
-    {
-      "item": "irons_spellbooks:fire_rune"
-    },
-    {
-      "item": "irons_spellbooks:arcane_essence"
-    }
+    "#irons_spellbooks:wizard_base_boots",
+    "irons_spellbooks:fire_rune",
+    "irons_spellbooks:arcane_essence"
   ],
   "result": {
     "count": 1,

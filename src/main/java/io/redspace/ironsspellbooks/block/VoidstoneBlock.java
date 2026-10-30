@@ -41,7 +41,7 @@ public class VoidstoneBlock extends Block {
     }
 
     public boolean connectsTo(BlockState state, Direction direction) {
-        return state.is(BlockRegistry.VOIDSTONE);
+        return state.is(BlockRegistry.VOIDSTONE.get());
     }
 
     @Override

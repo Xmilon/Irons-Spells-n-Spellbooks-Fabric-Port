@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "M": {
-      "item": "irons_spellbooks:nature_rune"
-    },
-    "X": {
-      "item": "irons_spellbooks:mithril_scrap"
-    }
+    "M": "irons_spellbooks:nature_rune",
+    "X": "irons_spellbooks:mithril_scrap"
   },
   "pattern": [
     "M ",

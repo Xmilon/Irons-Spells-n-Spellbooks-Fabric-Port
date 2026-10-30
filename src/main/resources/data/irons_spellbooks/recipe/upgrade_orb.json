@@ -6,15 +6,9 @@
     "ICI"
   ],
   "key": {
-    "I": {
-      "item": "irons_spellbooks:arcane_ingot"
-    },
-    "C": {
-      "item": "irons_spellbooks:cinder_essence"
-    },
-    "S": {
-      "tag": "irons_spellbooks:mithril_material"
-    }
+    "I": "irons_spellbooks:arcane_ingot",
+    "C": "irons_spellbooks:cinder_essence",
+    "S": "#irons_spellbooks:mithril_material"
   },
   "result": {
     "id": "irons_spellbooks:upgrade_orb",

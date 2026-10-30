@@ -24,10 +24,10 @@ public abstract class PassiveAbilityCurio extends SimpleDescriptiveCurio {
      * If the curio is off cooldown, return true and trigger cooldown. Otherwise, return false
      */
     public boolean tryProcCooldown(Player player) {
-        if (player.getCooldowns().isOnCooldown(this)) {
+        if (player.getCooldowns().isOnCooldown(new net.minecraft.world.item.ItemStack(this))) {
             return false;
         } else {
-            player.getCooldowns().addCooldown(this, getCooldownTicks(player));
+            player.getCooldowns().addCooldown(new net.minecraft.world.item.ItemStack(this), getCooldownTicks(player));
             return true;
         }
     }

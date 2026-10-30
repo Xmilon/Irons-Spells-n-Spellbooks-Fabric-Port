@@ -79,7 +79,7 @@ public class SlowSpell extends AbstractSpell {
         if (Utils.preCastTargetHelper(level, entity, playerMagicData, this, 32, .35f)) {
             float radius = 3f;
             var target = ((TargetEntityCastData) playerMagicData.getAdditionalCastData()).getTarget((ServerLevel) level);
-            var area = TargetedAreaEntity.createTargetAreaEntity(level, target.position(), radius, MobEffectRegistry.SLOWED.get().getColor(), target);
+            var area = TargetedAreaEntity.createTargetAreaEntity(level, target.position(), radius, MobEffectRegistry.SLOWED.value().getColor(), target);
             playerMagicData.setAdditionalCastData(new TargetedTargetAreaCastData(target, area));
             return true;
         }
@@ -95,7 +95,7 @@ public class SlowSpell extends AbstractSpell {
                 AtomicInteger targets = new AtomicInteger(0);
                 targetEntity.level().getEntitiesOfClass(LivingEntity.class, targetEntity.getBoundingBox().inflate(radius)).forEach((victim) -> {
                     if (targets.get() < MAX_TARGETS && victim != entity && victim.distanceToSqr(targetEntity) < radius * radius && !DamageSources.isFriendlyFireBetween(entity, victim)) {
-                        victim.addEffect(new MobEffectInstance(net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MobEffectRegistry.SLOWED.get()), getDuration(spellLevel, entity), getAmplifier(spellLevel, entity)));
+                        victim.addEffect(new MobEffectInstance(MobEffectRegistry.SLOWED, getDuration(spellLevel, entity), getAmplifier(spellLevel, entity)));
                         targets.incrementAndGet();
                     }
                 });
@@ -114,7 +114,7 @@ public class SlowSpell extends AbstractSpell {
 
     @Override
     public Vector3f getTargetingColor() {
-        return Utils.deconstructRGB(MobEffectRegistry.SLOWED.get().getColor());
+        return Utils.deconstructRGB(MobEffectRegistry.SLOWED.value().getColor());
     }
 }
 

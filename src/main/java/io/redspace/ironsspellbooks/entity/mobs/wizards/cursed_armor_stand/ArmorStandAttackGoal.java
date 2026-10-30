@@ -44,7 +44,7 @@ public class ArmorStandAttackGoal extends GenericAnimatedWarlockAttackGoal<Curse
                 if (boundaryDistanceSqr > (PROTECTION_RANGE + 6) * (PROTECTION_RANGE + 6)) {
                     mob.stopBeingAngry();
                     mob.setLastHurtByMob(null);
-                    mob.setLastHurtByPlayer(null);
+                    mob.setLastHurtByPlayer((net.minecraft.world.entity.player.Player) null, 0);
                     mob.setPersistentAngerTarget(null);
                     mob.setTarget(null);
                     stop();

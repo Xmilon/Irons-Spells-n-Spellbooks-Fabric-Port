@@ -28,6 +28,7 @@ import net.minecraft.tags.ItemTags;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Stream;
 
 /**
  * Humanoid GeckoLib renderer: worn armor and held items attach to the standard biped bones.
@@ -43,7 +44,8 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends IronsGeoEnt
         withRenderLayer(new ItemArmorGeoLayer<T, Void, EntityRenderState>(this, context) {
             @Override
             protected List<RenderData> getRelevantBones(RenderPassInfo<EntityRenderState> info) {
-                return List.of(
+                // models only have some of these bones (the second leg/foot sets are optional); GeckoLib 5 logs an error per frame for each missing one
+                return Stream.of(
                         RenderData.head(DefaultBipedBoneIdents.HEAD_ARMOR_BONE_IDENT),
                         RenderData.body(DefaultBipedBoneIdents.BODY_ARMOR_BONE_IDENT),
                         RenderData.leftArm(DefaultBipedBoneIdents.LEFT_ARM_ARMOR_BONE_IDENT),
@@ -55,7 +57,9 @@ public class HumanoidRenderer<T extends Mob & GeoAnimatable> extends IronsGeoEnt
                         RenderData.leftFoot(DefaultBipedBoneIdents.LEFT_FOOT_ARMOR_BONE_IDENT),
                         RenderData.leftFoot(DefaultBipedBoneIdents.LEFT_FOOT_ARMOR_BONE_2_IDENT),
                         RenderData.rightFoot(DefaultBipedBoneIdents.RIGHT_FOOT_ARMOR_BONE_IDENT),
-                        RenderData.rightFoot(DefaultBipedBoneIdents.RIGHT_FOOT_ARMOR_BONE_2_IDENT));
+                        RenderData.rightFoot(DefaultBipedBoneIdents.RIGHT_FOOT_ARMOR_BONE_2_IDENT))
+                        .filter(data -> info.model().getBone(data.boneName()).isPresent())
+                        .toList();
             }
         });
 

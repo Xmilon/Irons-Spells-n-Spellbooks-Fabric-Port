@@ -240,8 +240,9 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
         for (UUID uuid : summons) {
             Entity entity = serverLevel.getEntity(uuid);
             if (entity != null) {
-                CompoundTag saveData = new CompoundTag();
-                entity.save(saveData);
+                var saveOutput = net.minecraft.world.level.storage.TagValueOutput.createWithContext(net.minecraft.util.ProblemReporter.DISCARDING, serverLevel.registryAccess());
+                entity.save(saveOutput);
+                CompoundTag saveData = saveOutput.buildResult();
                 int durationRemaining = INSTANCE.getExpirationTick(entity.getUUID()) - serverLevel.getServer().getTickCount();
                 saveData.putInt("summon_duration_remaining", durationRemaining);
                 entity.setRemoved(Entity.RemovalReason.UNLOADED_WITH_PLAYER);
@@ -355,13 +356,14 @@ public class SummonManager implements INBTSerializable<CompoundTag> {
                 Set<UUID> summonsSet = new HashSet<>();
                 UUID ownerUUID = entity.getUUID();
                 for (CompoundTag summon : savedSummons) {
-                    var summonedEntity = EntityType.create(summon, serverLevel).orElse(null);
+                    var summonInput = net.minecraft.world.level.storage.TagValueInput.create(net.minecraft.util.ProblemReporter.DISCARDING, serverLevel.registryAccess(), summon);
+                    var summonedEntity = EntityType.by(summonInput).flatMap(type -> EntityType.create(type, summonInput, serverLevel, net.minecraft.world.entity.EntitySpawnReason.LOAD)).orElse(null);
                     if (summonedEntity != null) {
                         serverLevel.addFreshEntityWithPassengers(summonedEntity);
                         var summonUUID = summonedEntity.getUUID();
                         summonsSet.add(summonUUID);
                         INSTANCE.summonToOwner.put(summonUUID, ownerUUID);
-                        INSTANCE.summonExpirations.add(new ExpirationInstance(summonUUID, server.getTickCount(), server.getTickCount() + summon.getInt("summon_duration_remaining")));
+                        INSTANCE.summonExpirations.add(new ExpirationInstance(summonUUID, server.getTickCount(), server.getTickCount() + summon.getIntOr("summon_duration_remaining", 0)));
                     }
                     INSTANCE.ownerToSummons.put(ownerUUID, summonsSet);
                 }

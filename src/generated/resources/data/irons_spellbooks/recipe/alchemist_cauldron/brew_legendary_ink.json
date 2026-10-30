@@ -4,9 +4,7 @@
     "amount": 1000,
     "id": "irons_spellbooks:epic_ink"
   },
-  "input": {
-    "tag": "c:gems/amethyst"
-  },
+  "input": "#c:gems/amethyst",
   "results": [
     {
       "amount": 250,

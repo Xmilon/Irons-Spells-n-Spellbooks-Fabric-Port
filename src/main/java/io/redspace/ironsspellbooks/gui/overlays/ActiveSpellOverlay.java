@@ -68,7 +68,7 @@ public class ActiveSpellOverlay implements HudElement {
 
         int centerX, centerY;
         //GUI:522 (offhand slot location)
-        centerX = screenWidth / 2 + 91 + 33;
+        centerX = screenWidth / 2 + 91 + 9;// + 29;
         centerY = screenHeight - 23;
 
         //

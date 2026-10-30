@@ -65,7 +65,7 @@ import java.util.Optional;
 public class AlchemistCauldronTile extends BlockEntity implements WorldlyContainer {
     @Override
     public void preRemoveSideEffects(BlockPos pos, BlockState newState) {
-        if (level instanceof net.minecraft.server.level.ServerLevel) drops();
+        // The native Container hook drops these slots exactly once.
         super.preRemoveSideEffects(pos, newState);
     }
 
@@ -254,34 +254,16 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
             }
         }
 
-        public void save(String name, CompoundTag tag, HolderLookup.Provider access) {
-            ListTag fluids = new ListTag();
-            for (IFluidTank tank : tanks) {
-                if (!tank.getFluid().isEmpty()) {
-                    fluids.add(tank.getFluid().save(access));
-                }
-            }
-            tag.put(name, fluids);
+        public void save(String name, net.minecraft.world.level.storage.ValueOutput output) {
+            output.store(name, FluidStack.CODEC.listOf(), fluids());
         }
 
-        public void load(String name, CompoundTag tag, HolderLookup.Provider access) {
-            if (tag.contains(name)) {
-                ListTag fluids = tag.getListOrEmpty(name);
-                int i = 0;
-                try {
-                    for (Tag l : fluids) {
-                        if (i >= tanks.length || fluidAmount() >= 1000) {
-                            break;
-                        }
-                        FluidStack stack = FluidStack.parseOptional(access, (CompoundTag) l);
-                        int allowed = Math.min(1000 - fluidAmount(), stack.getAmount());
-                        if (allowed > 0) {
-                            tanks[i++].fill(stack.copyWithAmount(allowed), FluidAction.EXECUTE);
-                        }
-                    }
-                } catch (Exception e) {
-                    IronsSpellbooks.LOGGER.error("Alchemist Cauldron Handler Failed to load fluid, skipping: {}", e.getMessage());
-                }
+        public void load(String name, net.minecraft.world.level.storage.ValueInput input) {
+            int index = 0;
+            for (FluidStack stack : input.listOrEmpty(name, FluidStack.CODEC)) {
+                if (index >= tanks.length || fluidAmount() >= 1000) break;
+                int allowed = Math.min(1000 - fluidAmount(), stack.getAmount());
+                if (allowed > 0 && !stack.isEmpty()) tanks[index++].fill(stack.copyWithAmount(allowed), FluidAction.EXECUTE);
             }
         }
     }
@@ -294,6 +276,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
     public IFluidHandler fluidCapability;
     public AlchemistCauldronFluidHandler fluidInventory;
     private boolean needsClientSync;
+    private boolean loadingState;
 
     public void refreshCapabilities() {
         this.fluidCapability = fluidInventory;
@@ -340,7 +323,8 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
 
     public ItemStack tryExecuteRecipeInteractions(Level level, ItemStack itemStack, boolean execute) {
         SingleRecipeInput fillRecipeInput = new SingleRecipeInput(itemStack);
-        var recipeManager = level.getServer().getRecipeManager();
+        if (!(level instanceof ServerLevel serverLevel)) return ItemStack.EMPTY;
+        var recipeManager = serverLevel.recipeAccess();
         var fillRecipe = recipeManager.getRecipeFor(RecipeRegistry.ALCHEMIST_CAULDRON_FILL_TYPE.get(), fillRecipeInput, level).map(RecipeHolder::value);
         if (fillRecipe.isEmpty() && itemStack.has(DataComponents.POTION_CONTENTS)) {
             // dynamic potion handling
@@ -350,7 +334,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
             } else {
                 fluid = PotionFluid.from(itemStack);
             }
-            fillRecipe = Optional.of(new FillAlchemistCauldronRecipe(Ingredient.of(itemStack.getItem()), new ItemStack(Items.GLASS_BOTTLE), fluid, true, BuiltInRegistries.SOUND_EVENT.wrapAsHolder(SoundEvents.BOTTLE_EMPTY)));
+            fillRecipe = Optional.of(new FillAlchemistCauldronRecipe(Ingredient.of(itemStack.getItem()), net.minecraft.world.item.ItemStackTemplate.fromNonEmptyStack(new ItemStack(Items.GLASS_BOTTLE)), fluid, true, BuiltInRegistries.SOUND_EVENT.wrapAsHolder(SoundEvents.BOTTLE_EMPTY)));
         }
         if (fillRecipe.isPresent()) {
             var recipe = fillRecipe.get();
@@ -373,7 +357,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
 
             var potionStack = PotionFluid.from(topFluid);
             if (!potionStack.isEmpty()) {
-                emptyRecipe = Optional.of(new EmptyAlchemistCauldronRecipe(Ingredient.of(Items.GLASS_BOTTLE), potionStack, topFluid.copyWithAmount(250), BuiltInRegistries.SOUND_EVENT.wrapAsHolder(SoundEvents.BOTTLE_FILL)));
+                emptyRecipe = Optional.of(new EmptyAlchemistCauldronRecipe(Ingredient.of(Items.GLASS_BOTTLE), net.minecraft.world.item.ItemStackTemplate.fromNonEmptyStack(potionStack), topFluid.copyWithAmount(250), BuiltInRegistries.SOUND_EVENT.wrapAsHolder(SoundEvents.BOTTLE_FILL)));
             }
         }
         if (emptyRecipe.isPresent()) {
@@ -439,7 +423,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                             player.setItemInHand(hand, take);
                         } else {
                             if (!player.getInventory().add(take)) {
-                                player.drop(take, false);
+                                player.drop(take, false, net.minecraft.util.Prediction.SERVER_ONLY);
                             }
                         }
                         this.setChanged();
@@ -473,7 +457,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
         if (!shouldMelt) {
             for (FluidStack fluid : fluidInventory.fluids()) {
                 BrewAlchemistCauldronRecipe.Input input = new BrewAlchemistCauldronRecipe.Input(fluid, itemStack);
-                var brewRecipeOpt = serverLevel.getRecipeManager().getRecipeFor(RecipeRegistry.ALCHEMIST_CAULDRON_BREW_TYPE.get(), input, serverLevel).map(RecipeHolder::value);
+                var brewRecipeOpt = serverLevel.recipeAccess().getRecipeFor(RecipeRegistry.ALCHEMIST_CAULDRON_BREW_TYPE.get(), input, serverLevel).map(RecipeHolder::value);
                 if (brewRecipeOpt.isPresent()) {
                     var recipe = brewRecipeOpt.get();
                     int totalNewFluid = recipe.results().stream().mapToInt(FluidStack::getAmount).sum();
@@ -494,8 +478,10 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
                 if (potionGhostStack.isEmpty()) {
                     continue;
                 }
-                if ((serverLevel.potionBrewing().hasPotionMix(potionGhostStack, itemStack) || level.potionBrewing().hasContainerMix(potionGhostStack, itemStack))) {
-                    var potionResult = serverLevel.potionBrewing().mix(itemStack, potionGhostStack); // yes, the order switched
+                var brewingInput = new net.minecraft.world.item.crafting.BrewingInput(potionGhostStack, itemStack);
+                var brewingRecipe = serverLevel.recipeAccess().getRecipeFor(net.minecraft.world.item.crafting.RecipeType.BREWING, brewingInput, serverLevel);
+                if (brewingRecipe.isPresent()) {
+                    var potionResult = brewingRecipe.get().value().assemble(brewingInput);
                     FluidStack fluidResult = PotionFluid.from(potionResult);
                     if (fluidResult.isEmpty()) {
                         continue;
@@ -537,11 +523,13 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
      ***********************************************************/
     public boolean isValidInput(ItemStack itemStack) {
         return itemStack.is(ItemRegistry.SCROLL.get()) || isBrewable(itemStack) ||
-                (this.level != null && level.getRecipeManager().getAllRecipesFor(RecipeRegistry.ALCHEMIST_CAULDRON_BREW_TYPE.get()).stream().anyMatch(holder -> holder.value().reagent().test(itemStack)));
+                (level instanceof ServerLevel serverLevel && serverLevel.recipeAccess().getRecipes().stream()
+                        .anyMatch(holder -> holder.value() instanceof BrewAlchemistCauldronRecipe recipe && recipe.reagent().test(itemStack)));
     }
 
     public boolean isBrewable(ItemStack itemStack) {
-        return ServerConfigs.safeGet(ServerConfigs.ALLOW_CAULDRON_BREWING) && this.level != null && level.potionBrewing().isIngredient(itemStack);
+        return ServerConfigs.safeGet(ServerConfigs.ALLOW_CAULDRON_BREWING) && level != null
+                && level.recipeAccess().propertySet(net.minecraft.world.item.crafting.RecipePropertySet.BREWING_REAGENTS).test(itemStack);
     }
 
     public static InkItem getInkFromScroll(ItemStack scrollStack) {
@@ -557,6 +545,7 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
      ***********************************************************/
     @Override
     public void setChanged() {
+        if (loadingState) return;
         super.setChanged();
         if (level != null && !level.isClientSide()) {
             needsClientSync = true;
@@ -596,22 +585,37 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
     }
 
     @Override
-    public void loadAdditional(CompoundTag tag, HolderLookup.Provider registryAccess) {
-        // Make NBT application idempotent: packet replays/double-delivery must not stack fluid amount.
-        for (int i = 0; i < this.inputItems.size(); i++) {
-            this.inputItems.set(i, ItemStack.EMPTY);
+    public void loadAdditional(net.minecraft.world.level.storage.ValueInput input) {
+        loadingState = true;
+        try {
+            super.loadAdditional(input);
+            for (int i = 0; i < inputItems.size(); i++) inputItems.set(i, ItemStack.EMPTY);
+            fluidInventory.clear();
+            for (var entry : input.childrenListOrEmpty("Items")) {
+                int slot = entry.getIntOr("Slot", -1);
+                if (slot >= 0 && slot < inputItems.size()) {
+                    entry.read(ItemStack.MAP_CODEC).ifPresent(stack -> inputItems.set(slot, stack));
+                }
+            }
+            fluidInventory.load("Results", input);
+        } finally {
+            loadingState = false;
         }
-        fluidInventory.clear();
-        Utils.loadAllItems(tag, this.inputItems, "Items", registryAccess);
-        fluidInventory.load("Results", tag, registryAccess);
-        super.loadAdditional(tag, registryAccess);
     }
 
     @Override
-    protected void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider registryAccess) {
-        Utils.saveAllItems(tag, this.inputItems, "Items", registryAccess);
-        fluidInventory.save("Results", tag, registryAccess);
-        super.saveAdditional(tag, registryAccess);
+    protected void saveAdditional(net.minecraft.world.level.storage.ValueOutput output) {
+        super.saveAdditional(output);
+        var items = output.childrenList("Items");
+        for (int slot = 0; slot < inputItems.size(); slot++) {
+            ItemStack stack = inputItems.get(slot);
+            if (!stack.isEmpty()) {
+                var entry = items.addChild();
+                entry.putInt("Slot", slot);
+                entry.store(ItemStack.MAP_CODEC, stack);
+            }
+        }
+        fluidInventory.save("Results", output);
     }
 
     @Override
@@ -623,39 +627,26 @@ public class AlchemistCauldronTile extends BlockEntity implements WorldlyContain
 
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider lookupProvider) {
         handleUpdateTag(pkt.getTag(), lookupProvider);
-        forceClientVisualRefresh();
     }
 
     public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
         if (level != null) {
             handleUpdateTag(pkt.getTag(), level.registryAccess());
-            forceClientVisualRefresh();
         }
     }
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
-        CompoundTag tag = new CompoundTag();
-        saveAdditional(tag, pRegistries);
-        return tag;
+        return saveWithoutMetadata(pRegistries);
     }
 
     public CompoundTag getUpdateTag() {
-        CompoundTag tag = new CompoundTag();
-        if (level != null) {
-            saveAdditional(tag, level.registryAccess());
-        }
-        return tag;
+        return level == null ? new CompoundTag() : getUpdateTag(level.registryAccess());
     }
 
     public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider lookupProvider) {
-        for (int i = 0; i < this.inputItems.size(); i++) {
-            this.inputItems.set(i, ItemStack.EMPTY);
-        }
-        this.fluidInventory.clear();
-        if (tag != null) {
-            loadAdditional(tag, lookupProvider);
-        }
+        loadAdditional(net.minecraft.world.level.storage.TagValueInput.create(net.minecraft.util.ProblemReporter.DISCARDING,
+                lookupProvider, tag == null ? new CompoundTag() : tag));
         forceClientVisualRefresh();
     }
 

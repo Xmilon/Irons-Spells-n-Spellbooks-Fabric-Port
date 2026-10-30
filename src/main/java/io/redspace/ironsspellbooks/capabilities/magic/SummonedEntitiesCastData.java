@@ -71,7 +71,7 @@ public class SummonedEntitiesCastData implements ICastDataSerializable {
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
         ListTag list = new ListTag();
-        summons.forEach(uuid -> list.add(NbtUtils.createUUID(uuid)));
+        summons.forEach(uuid -> list.add(net.minecraft.core.UUIDUtil.CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, uuid).getOrThrow()));
         tag.put("summons", list);
         tag.putFloat("maxHealthPool", maxHealthPool);
         return tag;
@@ -80,7 +80,7 @@ public class SummonedEntitiesCastData implements ICastDataSerializable {
     @Override
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         ListTag list = nbt.getListOrEmpty("summons");
-        list.forEach(tag -> summons.add(NbtUtils.loadUUID(tag)));
+        list.forEach(tag -> net.minecraft.core.UUIDUtil.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, tag).result().ifPresent(summons::add));
         this.maxHealthPool = nbt.getFloatOr("maxHealthPool", 0f);
     }
 }

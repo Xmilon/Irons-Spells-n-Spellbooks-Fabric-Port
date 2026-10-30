@@ -35,7 +35,7 @@ public class ChilledEffect extends MagicMobEffect {
                 iceTombEntity.discard();
                 return true;
             }
-            pLivingEntity.playSound(SoundRegistry.FROSTBITE_FREEZE.get(), 2, Utils.random.nextInt(9, 11) * .1f);
+            pLivingEntity.playSound(SoundRegistry.FROSTBITE_FREEZE.value(), 2, Utils.random.nextInt(9, 11) * .1f);
             return false;
         }
         return true;

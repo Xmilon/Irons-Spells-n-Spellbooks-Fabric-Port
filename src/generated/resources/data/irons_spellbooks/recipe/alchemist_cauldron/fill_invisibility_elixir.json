@@ -4,9 +4,7 @@
     "amount": 250,
     "id": "irons_spellbooks:invisibility_elixir"
   },
-  "input": {
-    "item": "irons_spellbooks:invisibility_elixir"
-  },
+  "input": "irons_spellbooks:invisibility_elixir",
   "result": {
     "count": 1,
     "id": "minecraft:glass_bottle"

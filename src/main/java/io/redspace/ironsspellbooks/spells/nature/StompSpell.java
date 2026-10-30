@@ -56,7 +56,7 @@ public class StompSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.EARTHQUAKE_CAST.get());
+        return Optional.of(SoundRegistry.EARTHQUAKE_CAST.value());
     }
 
     @Override

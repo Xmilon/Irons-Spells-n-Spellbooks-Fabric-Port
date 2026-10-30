@@ -10,10 +10,10 @@
       ],
       "conditions": [
         {
-          "condition": "minecraft:killed_by_player"
+          "type": "minecraft:killed_by_player"
         },
         {
-          "condition": "minecraft:random_chance_with_enchanted_bonus",
+          "type": "minecraft:random_chance_with_enchanted_bonus",
           "enchantment": "minecraft:looting",
           "unenchanted_chance": 0.5,
           "enchanted_chance": {
@@ -33,7 +33,7 @@
           "name": "irons_spellbooks:scroll",
           "functions": [
             {
-              "function": "irons_spellbooks:randomize_spell",
+              "type": "irons_spellbooks:randomize_spell",
               "quality": {
                 "min": 0.0,
                 "max": 0.5,
@@ -50,10 +50,10 @@
       ],
       "conditions": [
         {
-          "condition": "minecraft:killed_by_player"
+          "type": "minecraft:killed_by_player"
         },
         {
-          "condition": "minecraft:random_chance_with_enchanted_bonus",
+          "type": "minecraft:random_chance_with_enchanted_bonus",
           "enchantment": "minecraft:looting",
           "unenchanted_chance": 0.7,
           "enchanted_chance": {
@@ -76,7 +76,7 @@
                 "max": 45.0,
                 "min": 28.0
               },
-              "function": "minecraft:set_count"
+              "type": "minecraft:set_count"
             },
             {
               "count": {
@@ -84,7 +84,7 @@
                 "max": 3.0,
                 "min": 1.0
               },
-              "function": "minecraft:enchanted_count_increase",
+              "type": "minecraft:enchanted_count_increase",
               "enchantment": "minecraft:looting"
             }
           ],
@@ -101,6 +101,7 @@
         }
       ],
       "rolls": {
+        "type": "minecraft:uniform",
         "min": 1,
         "max": 2
       }

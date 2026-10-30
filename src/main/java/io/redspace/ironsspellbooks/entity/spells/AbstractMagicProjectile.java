@@ -91,7 +91,7 @@ public abstract class AbstractMagicProjectile extends Projectile implements Anti
 
     @Override
     public void checkDespawn() {
-        if (this.level() instanceof ServerLevel serverLevel && !serverLevel.getChunkSource().chunkMap.getDistanceManager().inEntityTickingRange(this.chunkPosition().toLong())) {
+        if (this.level() instanceof ServerLevel serverLevel && !serverLevel.getChunkSource().chunkMap.getDistanceManager().inEntityTickingRange(this.chunkPosition().pack())) {
             this.discard();
         }
     }

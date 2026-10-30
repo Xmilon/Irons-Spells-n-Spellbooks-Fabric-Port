@@ -11,7 +11,7 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.effect.MobEffect;
 import net.minecraft.world.effect.MobEffectInstance;
 import net.minecraft.world.effect.MobEffects;
-import net.minecraft.world.entity.projectile.ThrownPotion;
+import net.minecraft.world.entity.projectile.throwableitemprojectile.ThrownSplashPotion;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.alchemy.PotionContents;
@@ -55,7 +55,7 @@ public class AlchemistAttackGoal extends WizardAttackGoal {
         return (AlchemistAttackGoal) super.setIsFlying();
     }
 
-    public static final List<Holder<MobEffect>> ATTACK_POTIONS = List.of(MobEffects.WEAKNESS, MobEffects.BLINDNESS, MobEffects.LEVITATION, MobEffects.MOVEMENT_SLOWDOWN, MobEffects.DIG_SLOWDOWN);
+    public static final List<Holder<MobEffect>> ATTACK_POTIONS = List.of(MobEffects.WEAKNESS, MobEffects.BLINDNESS, MobEffects.LEVITATION, MobEffects.SLOWNESS, MobEffects.MINING_FATIGUE);
 
     @Override
     protected void doSpellAction() {
@@ -86,7 +86,7 @@ public class AlchemistAttackGoal extends WizardAttackGoal {
                 Utils.setPotion(potion, Potions.STRONG_HEALING);
                 targetedEntity = this.mob;
             }
-            ThrownPotion thrownpotion = new ThrownPotion(this.mob.level(), this.mob);
+            ThrownSplashPotion thrownpotion = new ThrownSplashPotion(this.mob.level(), this.mob, potion);
             thrownpotion.setItem(potion);
             thrownpotion.setXRot(thrownpotion.getXRot() - -20.0F);
             Vec3 vec3 = targetedEntity.getDeltaMovement();
@@ -99,7 +99,7 @@ public class AlchemistAttackGoal extends WizardAttackGoal {
                 this.mob.level().playSound(null, this.mob.getX(), this.mob.getY(), this.mob.getZ(), SoundEvents.WITCH_THROW, this.mob.getSoundSource(), 1.0F, 0.8F + this.mob.getRandom().nextFloat() * 0.4F);
             }
             this.mob.level().addFreshEntity(thrownpotion);
-            this.mob.swing(InteractionHand.MAIN_HAND, true);
+            this.mob.swingForAttack(InteractionHand.MAIN_HAND);
         } else {
             super.doSpellAction();
         }

@@ -2,6 +2,7 @@
   "pools": [
     {
       "rolls": {
+        "type": "minecraft:uniform",
         "min": 0,
         "max": 2
       },
@@ -14,6 +15,7 @@
     },
     {
       "rolls": {
+        "type": "minecraft:uniform",
         "min": 3,
         "max": 9
       },
@@ -27,7 +29,7 @@
           "name": "minecraft:potion",
           "functions": [
             {
-              "function": "minecraft:set_potion",
+              "type": "minecraft:set_potion",
               "id": "minecraft:water"
             }
           ]

@@ -44,30 +44,30 @@ public class FluidRegistry {
 //    public static final DeferredHolder<FluidType, FluidType> ICE_SPIDER_PHEROMONE_TYPE = FLUID_TYPES.register("ice_spider_pheromone", () -> new FluidType(FluidType.Properties.create()));
 
 
-    public static final DeferredHolder<Fluid, NoopFluid> BLOOD = registerNoop("blood", BLOOD_TYPE::value);
-    public static final DeferredHolder<Fluid, NoopFluid> COMMON_INK = registerNoop("common_ink", COMMON_INK_TYPE::value);
-    public static final DeferredHolder<Fluid, NoopFluid> UNCOMMON_INK = registerNoop("uncommon_ink", UNCOMMON_INK_TYPE::value);
-    public static final DeferredHolder<Fluid, NoopFluid> RARE_INK = registerNoop("rare_ink", RARE_INK_TYPE::value);
-    public static final DeferredHolder<Fluid, NoopFluid> EPIC_INK = registerNoop("epic_ink", EPIC_INK_TYPE::value);
-    public static final DeferredHolder<Fluid, NoopFluid> LEGENDARY_INK = registerNoop("legendary_ink", LEGENDARY_INK_TYPE::value);
-    public static final DeferredHolder<Fluid, NoopFluid> POTION_FLUID = registerNoop("potion", POTION_FLUID_TYPE::value);
-    public static final DeferredHolder<Fluid, NoopFluid> OAKSKIN_ELIXIR_FLUID = registerNoop("oakskin_elixir", OAKSKIN_ELIXIR_TYPE::value);
-    public static final DeferredHolder<Fluid, NoopFluid> GREATER_OAKSKIN_ELIXIR_FLUID = registerNoop("greater_oakskin_elixir", GREATER_OAKSKIN_ELIXIR_TYPE::value);
-    public static final DeferredHolder<Fluid, NoopFluid> INVISIBILITY_ELIXIR_FLUID = registerNoop("invisibility_elixir", INVISIBILITY_ELIXIR_TYPE::value);
-    public static final DeferredHolder<Fluid, NoopFluid> GREATER_INVISIBILITY_ELIXIR_FLUID = registerNoop("greater_invisibility_elixir", GREATER_INVISIBILITY_ELIXIR_TYPE::value);
-    public static final DeferredHolder<Fluid, NoopFluid> EVASION_ELIXIR_FLUID = registerNoop("evasion_elixir", EVASION_ELIXIR_TYPE::value);
-    public static final DeferredHolder<Fluid, NoopFluid> GREATER_EVASION_ELIXIR_FLUID = registerNoop("greater_evasion_elixir", GREATER_EVASION_ELIXIR_TYPE::value);
-    public static final DeferredHolder<Fluid, NoopFluid> GREATER_HEALING_ELIXIR_FLUID = registerNoop("greater_healing_elixir", GREATER_HEALING_ELIXIR_TYPE::value);
-    public static final DeferredHolder<Fluid, NoopFluid> TIMELESS_SLURRY_FLUID = registerNoop("timeless_slurry", TIMELESS_SLURRY_TYPE::value);
-    public static final DeferredHolder<Fluid, NoopFluid> ICE_VENOM_FLUID = registerNoop("ice_venom", ICE_VENOM_TYPE::value);
+    public static final DeferredHolder<Fluid, NoopFluid> BLOOD = registerNoop("blood", BLOOD_TYPE::get);
+    public static final DeferredHolder<Fluid, NoopFluid> COMMON_INK = registerNoop("common_ink", COMMON_INK_TYPE::get);
+    public static final DeferredHolder<Fluid, NoopFluid> UNCOMMON_INK = registerNoop("uncommon_ink", UNCOMMON_INK_TYPE::get);
+    public static final DeferredHolder<Fluid, NoopFluid> RARE_INK = registerNoop("rare_ink", RARE_INK_TYPE::get);
+    public static final DeferredHolder<Fluid, NoopFluid> EPIC_INK = registerNoop("epic_ink", EPIC_INK_TYPE::get);
+    public static final DeferredHolder<Fluid, NoopFluid> LEGENDARY_INK = registerNoop("legendary_ink", LEGENDARY_INK_TYPE::get);
+    public static final DeferredHolder<Fluid, NoopFluid> POTION_FLUID = registerNoop("potion", POTION_FLUID_TYPE::get);
+    public static final DeferredHolder<Fluid, NoopFluid> OAKSKIN_ELIXIR_FLUID = registerNoop("oakskin_elixir", OAKSKIN_ELIXIR_TYPE::get);
+    public static final DeferredHolder<Fluid, NoopFluid> GREATER_OAKSKIN_ELIXIR_FLUID = registerNoop("greater_oakskin_elixir", GREATER_OAKSKIN_ELIXIR_TYPE::get);
+    public static final DeferredHolder<Fluid, NoopFluid> INVISIBILITY_ELIXIR_FLUID = registerNoop("invisibility_elixir", INVISIBILITY_ELIXIR_TYPE::get);
+    public static final DeferredHolder<Fluid, NoopFluid> GREATER_INVISIBILITY_ELIXIR_FLUID = registerNoop("greater_invisibility_elixir", GREATER_INVISIBILITY_ELIXIR_TYPE::get);
+    public static final DeferredHolder<Fluid, NoopFluid> EVASION_ELIXIR_FLUID = registerNoop("evasion_elixir", EVASION_ELIXIR_TYPE::get);
+    public static final DeferredHolder<Fluid, NoopFluid> GREATER_EVASION_ELIXIR_FLUID = registerNoop("greater_evasion_elixir", GREATER_EVASION_ELIXIR_TYPE::get);
+    public static final DeferredHolder<Fluid, NoopFluid> GREATER_HEALING_ELIXIR_FLUID = registerNoop("greater_healing_elixir", GREATER_HEALING_ELIXIR_TYPE::get);
+    public static final DeferredHolder<Fluid, NoopFluid> TIMELESS_SLURRY_FLUID = registerNoop("timeless_slurry", TIMELESS_SLURRY_TYPE::get);
+    public static final DeferredHolder<Fluid, NoopFluid> ICE_VENOM_FLUID = registerNoop("ice_venom", ICE_VENOM_TYPE::get);
     //todo: reimplement ice spider lure mechanics
-//    public static final DeferredHolder<Fluid, NoopFluid> ICE_SPIDER_PHEROMONE_FLUID = registerNoop("ice_spider_pheromone", ICE_SPIDER_PHEROMONE_TYPE::value);
+//    public static final DeferredHolder<Fluid, NoopFluid> ICE_SPIDER_PHEROMONE_FLUID = registerNoop("ice_spider_pheromone", ICE_SPIDER_PHEROMONE_TYPE::get);
 
     @SuppressWarnings("unchecked")
     private static DeferredHolder<Fluid, NoopFluid> registerNoop(String name, Supplier<FluidType> fluidType) {
         final DeferredHolder<Fluid, NoopFluid>[] holderRef = new DeferredHolder[1];
         holderRef[0] = FLUIDS.register(name, () -> {
-            BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(fluidType, holderRef[0]::value, holderRef[0]::value).bucket(() -> Items.AIR);
+            BaseFlowingFluid.Properties properties = new BaseFlowingFluid.Properties(fluidType, holderRef[0]::get, holderRef[0]::get).bucket(() -> Items.AIR);
             return new NoopFluid(properties);
         });
         return holderRef[0];

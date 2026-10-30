@@ -56,7 +56,7 @@ public class ScreenTooltipOverlay implements HudElement {
         var bgColor2 = toRender.colors.map(Vector4i::y).orElse(0x90100010);
         var edgeColor1 = toRender.colors.map(Vector4i::z).orElse(0x705000FF);
         var edgeColor2 = toRender.colors.map(Vector4i::w).orElse(0x7028007f);
-        TooltipRenderUtil.extractTooltipBackground(guiHelper, x, y, maxTextWidth, totalHeight, null);
+        extractColoredBackground(guiHelper, x, y, maxTextWidth, totalHeight, bgColor1, bgColor2, edgeColor1, edgeColor2);
         guiHelper.nextStratum();
         int lineY = y;
 
@@ -68,6 +68,24 @@ public class ScreenTooltipOverlay implements HudElement {
 
 
         toRender = null;
+    }
+
+    // 26.x tooltips are sprite based; the original gradient background (TooltipRenderUtil#renderTooltipBackground) is rebuilt here to keep custom colors.
+    private static void extractColoredBackground(GuiGraphicsExtractor g, int x, int y, int w, int h, int bg1, int bg2, int edge1, int edge2) {
+        int left = x - 3;
+        int top = y - 3;
+        int width = w + 6;
+        int height = h + 6;
+        g.fill(left, top - 1, left + width, top, bg1);
+        g.fill(left, top + height, left + width, top + height + 1, bg2);
+        g.fillGradient(left, top, left + width, top + height, bg1, bg2);
+        g.fillGradient(left - 1, top, left, top + height, bg1, bg2);
+        g.fillGradient(left + width, top, left + width + 1, top + height, bg1, bg2);
+        int frameY = top + 1;
+        g.fillGradient(left, frameY, left + 1, frameY + height - 2, edge1, edge2);
+        g.fillGradient(left + width - 1, frameY, left + width, frameY + height - 2, edge1, edge2);
+        g.fill(left, frameY - 1, left + width, frameY, edge1);
+        g.fill(left, frameY + height - 2, left + width, frameY + height - 1, edge2);
     }
 
     private static FormattedText cast(Component component) {

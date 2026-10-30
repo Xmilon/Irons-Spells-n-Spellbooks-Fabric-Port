@@ -1,5 +1,9 @@
 package io.redspace.ironsspellbooks.gui.overlays;
 
+import com.mojang.renderpearl.api.pipeline.BlendFactor;
+import com.mojang.renderpearl.api.pipeline.BlendFunction;
+import com.mojang.renderpearl.api.pipeline.ColorTargetState;
+import com.mojang.renderpearl.api.pipeline.RenderPipeline;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
@@ -35,7 +39,7 @@ public class ScreenEffectsOverlay implements HudElement {
 //            guiHelper.text(Minecraft.getInstance().font, String.format("blood: %s", Minecraft.getInstance().player.getAttributeValue(AttributeRegistry.BLOOD_SPELL_POWER)), 10, 20, 0xFFFFFF);
 //        }
 
-        if (player.hasEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MobEffectRegistry.HEARTSTOP.get()))) {
+        if (player.hasEffect(MobEffectRegistry.HEARTSTOP)) {
             renderOverlayAdditive(guiHelper, HEARTSTOP_TEXTURE, 0.25f, 0, 0, .25f, screenWidth, screenHeight);
         }
         if (Minecraft.getInstance().options.getCameraType().isFirstPerson() && player.getRootVehicle().getType().equals(EntityRegistry.ICE_TOMB.get())) {
@@ -43,9 +47,13 @@ public class ScreenEffectsOverlay implements HudElement {
         }
     }
 
-    // shortcut: no custom additive GUI pipeline yet, so the heartstop vignette alpha-blends instead of adding; add one when it can be checked in game.
+    private static final RenderPipeline ADDITIVE_GUI_PIPELINE = RenderPipeline.builder(RenderPipelines.GUI_TEXTURED_SNIPPET)
+            .withLocation(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "pipeline/gui_additive"))
+            .withColorTargetState(new ColorTargetState(new BlendFunction(BlendFactor.ONE, BlendFactor.ONE, BlendFactor.ONE, BlendFactor.ONE)))
+            .build();
+
     private static void renderOverlayAdditive(GuiGraphicsExtractor gui, Identifier texture, float r, float g, float b, float a, int screenWidth, int screenHeight) {
-        renderOverlay(gui, texture, r, g, b, a, screenWidth, screenHeight);
+        gui.blit(ADDITIVE_GUI_PIPELINE, texture, 0, 0, 0f, 0f, screenWidth, screenHeight, screenWidth, screenHeight, ARGB.colorFromFloat(a, r, g, b));
     }
 
     private static void renderOverlay(GuiGraphicsExtractor gui, Identifier texture, float r, float g, float b, float a, int screenWidth, int screenHeight) {

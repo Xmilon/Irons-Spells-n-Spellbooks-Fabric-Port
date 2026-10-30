@@ -65,12 +65,12 @@ public class FireBossMusicHandler implements IMusicHandler {
 
     public FireBossMusicHandler(boolean withIntro) {
         this.soundManager = Minecraft.getInstance().getSoundManager();
-        melodyA = new FadeableSoundInstance(SoundRegistry.MUSIC_FIRE_BOSS_MELODY_A.get(), SoundSource.RECORDS, false);
-        melodyB = new FadeableSoundInstance(SoundRegistry.MUSIC_FIRE_BOSS_MELODY_B.get(), SoundSource.RECORDS, false);
-        bellsA = new FadeableSoundInstance(SoundRegistry.MUSIC_FIRE_BOSS_BELLS_A.get(), SoundSource.RECORDS, false);
-        bellsB = new FadeableSoundInstance(SoundRegistry.MUSIC_FIRE_BOSS_BELLS_B.get(), SoundSource.RECORDS, false);
-        drums = new FadeableSoundInstance(SoundRegistry.MUSIC_FIRE_BOSS_DRUMS.get(), SoundSource.RECORDS, false);
-        backtrack = new FadeableSoundInstance(SoundRegistry.MUSIC_FIRE_BOSS_BACKTRACK.get(), SoundSource.RECORDS, false);
+        melodyA = new FadeableSoundInstance(SoundRegistry.MUSIC_FIRE_BOSS_MELODY_A.value(), SoundSource.RECORDS, false);
+        melodyB = new FadeableSoundInstance(SoundRegistry.MUSIC_FIRE_BOSS_MELODY_B.value(), SoundSource.RECORDS, false);
+        bellsA = new FadeableSoundInstance(SoundRegistry.MUSIC_FIRE_BOSS_BELLS_A.value(), SoundSource.RECORDS, false);
+        bellsB = new FadeableSoundInstance(SoundRegistry.MUSIC_FIRE_BOSS_BELLS_B.value(), SoundSource.RECORDS, false);
+        drums = new FadeableSoundInstance(SoundRegistry.MUSIC_FIRE_BOSS_DRUMS.value(), SoundSource.RECORDS, false);
+        backtrack = new FadeableSoundInstance(SoundRegistry.MUSIC_FIRE_BOSS_BACKTRACK.value(), SoundSource.RECORDS, false);
         this.withIntro = withIntro;
     }
 

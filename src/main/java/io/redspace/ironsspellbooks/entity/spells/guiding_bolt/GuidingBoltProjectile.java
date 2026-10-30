@@ -71,7 +71,7 @@ public class GuidingBoltProjectile extends AbstractMagicProjectile {
 
         if (DamageSources.applyDamage(entityHitResult.getEntity(), damage, SpellRegistry.GUIDING_BOLT_SPELL.get().getDamageSource(this, getOwner()))) {
             if (entityHitResult.getEntity() instanceof LivingEntity livingEntity) {
-                livingEntity.addEffect(new MobEffectInstance(net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MobEffectRegistry.GUIDING_BOLT.get()), 25 * 20));
+                livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.GUIDING_BOLT, 25 * 20));
             }
         }
         pierceOrDiscard();

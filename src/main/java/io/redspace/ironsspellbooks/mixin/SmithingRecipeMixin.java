@@ -23,8 +23,8 @@ public class SmithingRecipeMixin {
      * <p>
      * Also fix dye status copying to non-dyeable items because that too
      */
-    @Inject(method = "Lnet/minecraft/world/item/crafting/SmithingTransformRecipe;assemble(Lnet/minecraft/world/item/crafting/SmithingRecipeInput;Lnet/minecraft/core/HolderLookup$Provider;)Lnet/minecraft/world/item/ItemStack;", at = @At(value = "RETURN"), cancellable = true)
-    public void fixSpellbookSlotCount(SmithingRecipeInput pInput, HolderLookup.Provider pRegistries, CallbackInfoReturnable<ItemStack> cir) {
+    @Inject(method = "Lnet/minecraft/world/item/crafting/SmithingTransformRecipe;assemble(Lnet/minecraft/world/item/crafting/SmithingRecipeInput;)Lnet/minecraft/world/item/ItemStack;", at = @At(value = "RETURN"), cancellable = true)
+    public void fixSpellbookSlotCount(SmithingRecipeInput pInput, CallbackInfoReturnable<ItemStack> cir) {
         ItemStack result = cir.getReturnValue();
         ItemStack input = pInput.base();
         ISpellContainer defaultResultContainer = result.getItem().getDefaultInstance().get(ComponentRegistry.SPELL_CONTAINER);
@@ -39,7 +39,7 @@ public class SmithingRecipeMixin {
             cir.setReturnValue(result);
         }
 
-        if (input.is(ItemTags.DYEABLE) && !result.is(ItemTags.DYEABLE) && input.has(DataComponents.DYED_COLOR)) {
+        if (input.getItem().components().has(DataComponents.DYED_COLOR) && !result.getItem().components().has(DataComponents.DYED_COLOR) && input.has(DataComponents.DYED_COLOR)) {
             result.remove(DataComponents.DYED_COLOR);
             cir.setReturnValue(result);
         }

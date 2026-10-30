@@ -37,7 +37,7 @@ import java.nio.file.Path;
 import java.util.*;
 
 @EventBusSubscriber
-public class SpellConfigManager extends SimpleJsonResourceReloadListener {
+public class SpellConfigManager extends SimpleJsonResourceReloadListener<JsonElement> {
 
     /*
      * API Accessible
@@ -81,7 +81,7 @@ public class SpellConfigManager extends SimpleJsonResourceReloadListener {
     private ImmutableMap<AbstractSpell, SpellConfigHolder> config = ImmutableMap.of();
 
     public SpellConfigManager() {
-        super(new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create(), "irons_spellbooks_spell_config");
+        super(net.minecraft.util.ExtraCodecs.JSON, net.minecraft.resources.FileToIdConverter.json("irons_spellbooks_spell_config"));
         this.gson = new GsonBuilder().setPrettyPrinting().disableHtmlEscaping().create();
     }
 

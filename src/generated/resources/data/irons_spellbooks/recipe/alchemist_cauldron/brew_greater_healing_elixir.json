@@ -10,9 +10,7 @@
     },
     "id": "irons_spellbooks:potion"
   },
-  "input": {
-    "item": "minecraft:amethyst_shard"
-  },
+  "input": "minecraft:amethyst_shard",
   "results": [
     {
       "amount": 250,

@@ -12,7 +12,7 @@ import net.minecraft.resources.Identifier;
 import org.jetbrains.annotations.Nullable;
 import io.redspace.ironsspellbooks.render.IronsGeoEntityRenderer;
 
-public class WispRenderer extends GeoEntityRenderer<WispEntity, EntityRenderState> {
+public class WispRenderer extends IronsGeoEntityRenderer<WispEntity> {
     public static final Identifier textureLocation = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/wisp/wisp.png");
 
     public WispRenderer(EntityRendererProvider.Context renderManager) {

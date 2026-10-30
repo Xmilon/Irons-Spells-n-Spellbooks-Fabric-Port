@@ -77,7 +77,7 @@ public class FrostStepSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.FROST_STEP.get());
+        return Optional.of(SoundRegistry.FROST_STEP.value());
     }
 
     @Override
@@ -131,8 +131,8 @@ public class FrostStepSpell extends AbstractSpell {
                 double dx = Utils.random.nextDouble() * .1 * (Utils.random.nextBoolean() ? 1 : -1);
                 double dy = Utils.random.nextDouble() * .1 * (Utils.random.nextBoolean() ? 1 : -1);
                 double dz = Utils.random.nextDouble() * .1 * (Utils.random.nextBoolean() ? 1 : -1);
-                level.addParticle(ParticleHelper.SNOWFLAKE, true, x, y, z, dx, dy, dz);
-                level.addParticle(ParticleTypes.SNOWFLAKE, true, x, y, z, -dx, -dy, -dz);
+                level.addParticle(ParticleHelper.SNOWFLAKE, true, false, x, y, z, dx, dy, dz);
+                level.addParticle(ParticleTypes.SNOWFLAKE, true, false, x, y, z, -dx, -dy, -dz);
             }
         }
     }

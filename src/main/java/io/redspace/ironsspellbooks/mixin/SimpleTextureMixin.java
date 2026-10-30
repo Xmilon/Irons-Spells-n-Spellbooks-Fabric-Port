@@ -14,8 +14,9 @@ public class SimpleTextureMixin implements IExtendedSimpleTexture {
     @Unique
     boolean irons_spellbooks$isRectangular;
 
-    @Inject(method = "doLoad", at = @At("HEAD"))
-    void irons_spellbooks$captureImageData(NativeImage image, boolean blur, boolean clamp, CallbackInfo ci) {
+    @Inject(method = "loadContents", at = @At("RETURN"))
+    void irons_spellbooks$captureImageData(net.minecraft.server.packs.resources.ResourceManager resourceManager, org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable<net.minecraft.client.renderer.texture.TextureContents> cir) {
+        NativeImage image = cir.getReturnValue().image();
         irons_spellbooks$isRectangular = image.getHeight() != image.getWidth();
     }
 

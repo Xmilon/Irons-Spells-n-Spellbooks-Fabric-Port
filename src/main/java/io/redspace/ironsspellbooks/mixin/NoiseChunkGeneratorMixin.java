@@ -7,6 +7,7 @@ import net.minecraft.world.level.StructureManager;
 import net.minecraft.world.level.chunk.ChunkAccess;
 import net.minecraft.world.level.levelgen.NoiseBasedChunkGenerator;
 import net.minecraft.world.level.levelgen.NoiseChunk;
+import net.minecraft.world.level.levelgen.NoiseSettings;
 import net.minecraft.world.level.levelgen.RandomState;
 import net.minecraft.world.level.levelgen.blending.Blender;
 import net.minecraft.world.level.levelgen.structure.BoundingBox;
@@ -20,12 +21,12 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 public class NoiseChunkGeneratorMixin {
 
     @Inject(method = "createNoiseChunk", at = @At("RETURN"))
-    void irons_spellbooks$detectAquifers(ChunkAccess chunk, StructureManager structureManager, Blender blender, RandomState random, CallbackInfoReturnable<NoiseChunk> cir) {
+    void irons_spellbooks$detectAquifers(ChunkAccess chunk, StructureManager structureManager, Blender blender, RandomState random, NoiseSettings noiseSettings, CallbackInfoReturnable<NoiseChunk> cir) {
         if (ServerConfigs.SPEC.isLoaded() && !ServerConfigs.safeGet(ServerConfigs.AQUIFER_DETECTION)) {
             return;
         }
         IExtendedNoiseChunk noisechunk = (IExtendedNoiseChunk) cir.getReturnValue();
-        var starts = structureManager.startsForStructure(chunk.getPos(), structure -> AquiferHelper.getOrCacheStructures(structureManager).contains(structure));
+        var starts = structureManager.startsForStructure(chunk.getPos().x(), chunk.getPos().z(), structure -> AquiferHelper.getOrCacheStructures(structureManager).contains(structure));
         if (!starts.isEmpty()
         ) {
             BoundingBox[] boundingBoxes = starts.stream().flatMap(s -> s.getPieces().stream()).map(StructurePiece::getBoundingBox).toArray(BoundingBox[]::new);

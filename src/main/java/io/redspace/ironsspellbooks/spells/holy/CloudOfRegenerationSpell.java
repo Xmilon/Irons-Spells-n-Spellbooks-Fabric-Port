@@ -72,12 +72,12 @@ public class CloudOfRegenerationSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.HOLY_CAST.get());
+        return Optional.of(SoundRegistry.HOLY_CAST.value());
     }
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.CLOUD_OF_REGEN_LOOP.get());
+        return Optional.of(SoundRegistry.CLOUD_OF_REGEN_LOOP.value());
     }
 
     @Override

@@ -66,7 +66,7 @@ public class ElectrocuteSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.ELECTROCUTE_LOOP.get());
+        return Optional.of(SoundRegistry.ELECTROCUTE_LOOP.value());
     }
 
     @Override

@@ -14,7 +14,7 @@
                 "max": 16.0,
                 "min": 4.0
               },
-              "function": "minecraft:set_count"
+              "type": "minecraft:set_count"
             },
             {
               "count": {
@@ -22,7 +22,7 @@
                 "max": 2.0,
                 "min": 0.0
               },
-              "function": "minecraft:enchanted_count_increase",
+              "type": "minecraft:enchanted_count_increase",
               "enchantment": "minecraft:looting"
             }
           ],
@@ -44,7 +44,7 @@
                 "max": 5.0,
                 "min": 2.0
               },
-              "function": "minecraft:set_count"
+              "type": "minecraft:set_count"
             },
             {
               "count": {
@@ -53,7 +53,7 @@
                 "min": 0.0
               },
               "enchantment": "minecraft:looting",
-              "function": "minecraft:enchanted_count_increase"
+              "type": "minecraft:enchanted_count_increase"
             }
           ],
           "name": "minecraft:string"
@@ -69,7 +69,7 @@
           "name": "irons_spellbooks:icy_fang",
           "conditions": [
             {
-              "condition": "minecraft:random_chance_with_enchanted_bonus",
+              "type": "minecraft:random_chance_with_enchanted_bonus",
               "enchantment": "minecraft:looting",
               "unenchanted_chance": 0.40,
               "enchanted_chance": {
@@ -79,7 +79,7 @@
               }
             },
             {
-              "condition": "minecraft:killed_by_player"
+              "type": "minecraft:killed_by_player"
             }
           ]
         }

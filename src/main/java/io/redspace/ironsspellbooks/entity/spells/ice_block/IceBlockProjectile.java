@@ -208,7 +208,7 @@ public class IceBlockProjectile extends AbstractMagicProjectile implements GeoEn
         if (!level().isClientSide()) {
             if (onGround()) {
                 doImpactDamage();
-                playSound(SoundRegistry.ICE_BLOCK_IMPACT.get(), 2.5f, .8f + random.nextFloat() * .4f);
+                playSound(SoundRegistry.ICE_BLOCK_IMPACT.value(), 2.5f, .8f + random.nextFloat() * .4f);
                 impactParticles(getX(), getY(), getZ());
                 discard();
             } else {

@@ -72,7 +72,7 @@ public class RayOfFrostSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.RAY_OF_FROST.get());
+        return Optional.of(SoundRegistry.RAY_OF_FROST.value());
     }
 
     @Override

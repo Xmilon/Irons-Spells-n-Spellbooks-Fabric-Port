@@ -16,7 +16,7 @@ public class DeadKingBossMusicInstance extends AbstractTickableSoundInstance {
     private static final int END_TRANSITION_TIME = 40;
 
     protected DeadKingBossMusicInstance(DeadKingBoss boss) {
-        super(SoundRegistry.DEAD_KING_DRUM_LOOP.get(), SoundSource.RECORDS, SoundInstance.createUnseededRandom());
+        super(SoundRegistry.DEAD_KING_DRUM_LOOP.value(), SoundSource.RECORDS, SoundInstance.createUnseededRandom());
         this.attenuation = SoundInstance.Attenuation.NONE;
         this.looping = true;
         this.delay = 0;

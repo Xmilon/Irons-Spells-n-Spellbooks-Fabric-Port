@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "irons_spellbooks:heavy_chain_necklace"
+        "recipes": "irons_spellbooks:heavy_chain_necklace"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

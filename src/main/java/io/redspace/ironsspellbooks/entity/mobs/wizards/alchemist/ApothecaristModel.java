@@ -58,8 +58,8 @@ public class ApothecaristModel extends AbstractSpellCastingMobModel {
         transformStack.pushPosition(rightLeg, forward);
         transformStack.pushPosition(leftLeg, new Vector3f(0, 0, 1));
         //Potion throw animation
-        if (entity.swingTime > 0) {
-            float rot = Mth.lerp((entity.swingTime - partialTick) / 10f, 0, Mth.PI);
+        if (entity instanceof ApothecaristEntity apothecarist && apothecarist.swingTime > 0) {
+            float rot = Mth.lerp((apothecarist.swingTime - partialTick) / 10f, 0, Mth.PI);
             transformStack.pushRotation(rightArm, rot, 0, 0);
         }
         //Ear animations

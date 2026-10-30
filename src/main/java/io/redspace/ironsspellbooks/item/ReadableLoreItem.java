@@ -30,7 +30,7 @@ public class ReadableLoreItem extends Item implements ILecternPlaceable {
     public InteractionResult use(Level pLevel, Player pPlayer, InteractionHand pHand) {
         var itemstack = pPlayer.getItemInHand(pHand);
         if (pPlayer instanceof ServerPlayer serverPlayer) {
-            if (WrittenBookItem.resolveBookComponents(itemstack, serverPlayer.createCommandSourceStack(), serverPlayer)) {
+            if (net.minecraft.world.item.component.WrittenBookContent.resolveForItem(itemstack, net.minecraft.network.chat.ResolutionContext.create(serverPlayer.createCommandSourceStack()), serverPlayer.registryAccess())) {
                 // not sure why vanilla broadcasts book resolution changes, but i will too
                 serverPlayer.containerMenu.broadcastChanges();
             }

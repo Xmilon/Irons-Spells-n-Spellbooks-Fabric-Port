@@ -24,7 +24,7 @@ public class PotionFluidType extends FluidType {
         var potionContents = stack.get(DataComponents.POTION_CONTENTS);
         var bottle = stack.getOrDefault(ComponentRegistry.POTION_BOTTLE_TYPE, PotionFluid.BottleType.REGULAR);
         if (potionContents != null) {
-            return Potion.getName(potionContents.potion(), String.format("item.minecraft.%s.effect.", bottle.descriptionId()));
+            return String.format("item.minecraft.%s.effect.", bottle.descriptionId()) + potionContents.potion().map(holder -> holder.value().name()).orElse("empty");
         }
         return super.getDescriptionId(stack);
     }

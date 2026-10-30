@@ -6,18 +6,10 @@
     "L  "
   ],
   "key": {
-    "M": {
-      "tag": "c:ingots/mithril"
-    },
-    "L": {
-      "item": "irons_spellbooks:lightning_bottle"
-    },
-    "W": {
-      "item": "irons_spellbooks:weapon_parts"
-    },
-    "Q": {
-      "tag": "irons_spellbooks:twilight_gale_crystal"
-    }
+    "M": "#c:ingots/mithril",
+    "L": "irons_spellbooks:lightning_bottle",
+    "W": "irons_spellbooks:weapon_parts",
+    "Q": "#irons_spellbooks:twilight_gale_crystal"
   },
   "result": {
     "id": "irons_spellbooks:twilight_gale",

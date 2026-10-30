@@ -6,15 +6,9 @@
     "L L"
   ],
   "key": {
-    "C": {
-      "item": "irons_spellbooks:magic_cloth"
-    },
-    "H": {
-      "item": "minecraft:hay_block"
-    },
-    "L": {
-      "item": "minecraft:leather"
-    }
+    "C": "irons_spellbooks:magic_cloth",
+    "H": "minecraft:hay_block",
+    "L": "minecraft:leather"
   },
   "result": {
     "id": "irons_spellbooks:pumpkin_leggings",

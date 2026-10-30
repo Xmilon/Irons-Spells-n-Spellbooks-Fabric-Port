@@ -5,10 +5,10 @@
       "bonus_rolls": 0.0,
       "conditions": [
         {
-          "condition": "minecraft:killed_by_player"
+          "type": "minecraft:killed_by_player"
         },
         {
-          "condition": "minecraft:random_chance_with_enchanted_bonus",
+          "type": "minecraft:random_chance_with_enchanted_bonus",
           "enchantment": "minecraft:looting",
           "unenchanted_chance": 0.01,
           "enchanted_chance": {

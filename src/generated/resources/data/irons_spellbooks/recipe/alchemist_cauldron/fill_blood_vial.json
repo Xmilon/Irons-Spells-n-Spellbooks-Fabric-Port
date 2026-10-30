@@ -4,9 +4,7 @@
     "amount": 250,
     "id": "irons_spellbooks:blood"
   },
-  "input": {
-    "item": "irons_spellbooks:blood_vial"
-  },
+  "input": "irons_spellbooks:blood_vial",
   "result": {
     "count": 1,
     "id": "minecraft:glass_bottle"

@@ -6,15 +6,9 @@
     "DOD"
   ],
   "key": {
-    "O": {
-      "tag": "c:obsidians"
-    },
-    "R": {
-      "item": "irons_spellbooks:ruined_book"
-    },
-    "D": {
-      "item": "irons_spellbooks:dragonskin"
-    }
+    "O": "#c:obsidians",
+    "R": "irons_spellbooks:ruined_book",
+    "D": "irons_spellbooks:dragonskin"
   },
   "result": {
     "id": "irons_spellbooks:dragonskin_spell_book",

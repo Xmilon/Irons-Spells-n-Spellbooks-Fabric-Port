@@ -4,9 +4,7 @@
     "amount": 1000,
     "id": "irons_spellbooks:uncommon_ink"
   },
-  "input": {
-    "tag": "c:ingots/iron"
-  },
+  "input": "#c:ingots/iron",
   "results": [
     {
       "amount": 250,

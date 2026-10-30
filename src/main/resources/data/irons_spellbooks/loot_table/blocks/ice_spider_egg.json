@@ -5,7 +5,7 @@
       "bonus_rolls": 0.0,
       "conditions": [
         {
-          "condition": "minecraft:match_tool",
+          "type": "minecraft:match_tool",
           "predicate": {
             "predicates": {
               "minecraft:enchantments": [
@@ -20,7 +20,7 @@
           }
         },
         {
-          "condition": "minecraft:block_state_property",
+          "type": "minecraft:block_state_property",
           "block": "irons_spellbooks:ice_spider_egg",
           "properties": {
             "frosted": "false"

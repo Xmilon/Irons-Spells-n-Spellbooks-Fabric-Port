@@ -84,7 +84,7 @@ public class SummonedSkeleton extends Skeleton implements IMagicSummon, GeoAnima
     }
 
     @Override
-    public boolean isPreventingPlayerRest(Player pPlayer) {
+    public boolean isPreventingPlayerRest(ServerLevel serverLevel, Player pPlayer) {
         return !this.isAlliedTo(pPlayer);
     }
 
@@ -147,10 +147,6 @@ public class SummonedSkeleton extends Skeleton implements IMagicSummon, GeoAnima
         }
     }
 
-    @Override
-    protected boolean isSunBurnTick() {
-        return false;
-    }
 
     @Override
     public SpawnGroupData finalizeSpawn(ServerLevelAccessor pLevel, DifficultyInstance pDifficulty, EntitySpawnReason pReason, @Nullable SpawnGroupData pSpawnData) {
@@ -165,7 +161,7 @@ public class SummonedSkeleton extends Skeleton implements IMagicSummon, GeoAnima
     }
 
     @Override
-    public boolean doHurtTarget(Entity pEntity) {
+    public boolean doHurtTarget(ServerLevel serverLevel, Entity pEntity) {
         return Utils.doMeleeAttack(this, pEntity, SpellRegistry.RAISE_DEAD_SPELL.get().getDamageSource(this, getSummoner()));
     }
 
@@ -227,10 +223,6 @@ public class SummonedSkeleton extends Skeleton implements IMagicSummon, GeoAnima
         return this.cache;
     }
 
-    @Override
-    public double getTick(Object o) {
-        return this.tickCount;
-    }
 
     private PlayState risePredicate(com.geckolib.animation.state.AnimationTest event) {
         if (!isAnimatingRise())

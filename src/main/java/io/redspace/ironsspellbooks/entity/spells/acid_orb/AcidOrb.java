@@ -82,7 +82,7 @@ public class AcidOrb extends AbstractMagicProjectile {
                 double distance = entity.position().distanceTo(hitresult.getLocation());
                 if (distance < explosionRadius && Utils.hasLineOfSight(level(), hitresult.getLocation(), entity.getEyePosition(), true)) {
                     if (entity instanceof LivingEntity livingEntity && livingEntity != getOwner())
-                        livingEntity.addEffect(new MobEffectInstance(net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MobEffectRegistry.REND.get()), getRendDuration(), getRendLevel()));
+                        livingEntity.addEffect(new MobEffectInstance(MobEffectRegistry.REND, getRendDuration(), getRendLevel()));
                 }
             }
             this.discardHelper(hitresult);

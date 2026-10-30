@@ -6,12 +6,8 @@
     "FFF"
   ],
   "key": {
-    "F": {
-      "tag": "irons_spellbooks:ice_focus"
-    },
-    "R": {
-      "item": "irons_spellbooks:blank_rune"
-    }
+    "F": "#irons_spellbooks:ice_focus",
+    "R": "irons_spellbooks:blank_rune"
   },
   "result": {
     "id": "irons_spellbooks:ice_rune",

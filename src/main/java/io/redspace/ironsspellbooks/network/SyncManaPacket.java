@@ -13,6 +13,7 @@ import net.minecraft.world.entity.LivingEntity;
 import net.neoforged.neoforge.network.handling.IPayloadContext;
 
 public class SyncManaPacket implements CustomPacketPayload {
+    private static int received;
     private float playerMana = 0;
     private int playerMaxMana = -1;
     private MagicData playerMagicData = null;
@@ -37,6 +38,9 @@ public class SyncManaPacket implements CustomPacketPayload {
 
     public static void handle(SyncManaPacket packet, IPayloadContext context) {
         context.enqueueWork(() -> {
+            if (++received % 20 == 1) {
+                IronsSpellbooks.LOGGER.info("[mana] client received mana={} max={}", packet.playerMana, packet.playerMaxMana);
+            }
             ClientMagicData.setMana(packet.playerMana);
             ClientMagicData.setSyncedMaxMana(packet.playerMaxMana);
         });

@@ -31,10 +31,10 @@ public abstract class EntityEventsMixin {
         }
     }
 
-    @Inject(method = "changeDimension", at = @At("HEAD"), cancellable = true)
+    @Inject(method = "teleport", at = @At("HEAD"), cancellable = true)
     private void irons_spellbooks$changeDimensionEvent(TeleportTransition transition, CallbackInfoReturnable<Entity> cir) {
         Entity self = (Entity) (Object) this;
-        if (!self.level().isClientSide() && NeoForge.EVENT_BUS.post(new EntityTravelToDimensionEvent(self, transition.newLevel().dimension())).isCanceled()) {
+        if (!self.level().isClientSide() && transition.newLevel() != self.level() && NeoForge.EVENT_BUS.post(new EntityTravelToDimensionEvent(self, transition.newLevel().dimension())).isCanceled()) {
             cir.setReturnValue(null);
         }
     }

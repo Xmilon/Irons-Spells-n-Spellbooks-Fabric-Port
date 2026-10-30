@@ -34,7 +34,7 @@ public class CinderousVaultBlock extends VaultBlock {
                 ResourceKey.create(Registries.LOOT_TABLE, IronsSpellbooks.id("chests/citadel/citadel_vault")),
                 4.0,
                 4.5,
-                new ItemStack(ItemRegistry.DECREPIT_KEY),
+                new ItemStack(ItemRegistry.DECREPIT_KEY.get()),
                 Optional.empty(),
                 PlayerDetector.INCLUDING_CREATIVE_PLAYERS,
                 PlayerDetector.EntitySelector.SELECT_FROM_LEVEL

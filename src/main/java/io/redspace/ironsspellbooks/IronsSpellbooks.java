@@ -45,15 +45,17 @@ public class IronsSpellbooks implements ModInitializer {
         var eventBus = NeoForge.EVENT_BUS;
         SchoolRegistry.register(eventBus);
         SpellRegistry.register(eventBus);
+        // items are constructed at registration and hold fluids, blocks and entity types by then; those register first
+        FluidRegistry.register(eventBus);
+        BlockRegistry.register(eventBus);
+        EntityRegistry.register(eventBus);
         ItemRegistry.register(eventBus);
         AttributeRegistry.register();
-        BlockRegistry.register(eventBus);
         MenuRegistry.register(eventBus);
-        EntityRegistry.register(eventBus);
         LootRegistry.register(eventBus);
-        MobEffectRegistry.register(eventBus);
+        MobEffectRegistry.register();
         ParticleRegistry.register();
-        SoundRegistry.register(eventBus);
+        SoundRegistry.register();
         FeatureRegistry.register();
         PotionRegistry.register(eventBus);
         CommandArgumentRegistry.register(eventBus);
@@ -64,7 +66,6 @@ public class IronsSpellbooks implements ModInitializer {
 
         ComponentRegistry.register();
         PoiTypeRegistry.register(eventBus);
-        FluidRegistry.register(eventBus);
         RecipeRegistry.register(eventBus);
         CommandRegistry.bootstrapFabric();
 

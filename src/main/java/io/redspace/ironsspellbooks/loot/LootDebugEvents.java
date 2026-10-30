@@ -24,7 +24,7 @@ public class LootDebugEvents {
                 var lootTable = chest.getLootTable();
                 if (lootTable != null) {
                     if (event.getEntity() instanceof ServerPlayer serverPlayer)
-                        serverPlayer.sendSystemMessage(Component.literal(chest.getLootTable().toString()).withStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.COPY_TO_CLIPBOARD, lootTable.toString()))));
+                        serverPlayer.sendSystemMessage(Component.literal(chest.getLootTable().toString()).withStyle(Style.EMPTY.withClickEvent(new ClickEvent.CopyToClipboard(lootTable.toString()))));
                     IronsSpellbooks.LOGGER.info("{}", chest.getLootTable());
                 }
             }

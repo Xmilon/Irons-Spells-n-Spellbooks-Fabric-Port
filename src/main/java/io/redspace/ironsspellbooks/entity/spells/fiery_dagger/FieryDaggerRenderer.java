@@ -39,6 +39,11 @@ public class FieryDaggerRenderer extends IronsGeoEntityRenderer<FieryDaggerEntit
 
 
     @Override
+    public RenderType getRenderType(EntityRenderState state, Identifier texture) {
+        return RenderHelper.CustomerRenderType.magic(FieryDaggerModel.TEXTURE);
+    }
+
+    @Override
     public int getRenderColor(FieryDaggerEntity animatable, Void relatedObject, float partialTick) {
         return 0xFFC0C0C0;
     }

@@ -1,12 +1,8 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "tag": "c:raw_materials/iron"
-    },
-    {
-      "tag": "c:gems/amethyst"
-    }
+    "#c:raw_materials/iron",
+    "#c:gems/amethyst"
   ],
   "result": {
     "id": "irons_spellbooks:shriving_stone"

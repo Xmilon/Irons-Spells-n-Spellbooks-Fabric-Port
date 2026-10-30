@@ -77,7 +77,7 @@ public class ChainLightning extends AbstractMagicProjectile {
                     entities.forEach((victim) -> {
                         if (zapsThisWave.get() < maxConnectionsPerWave && hits < maxConnections && victim.distanceToSqr(entity) < range * range && Utils.hasLineOfSight(level(), entity.getEyePosition(), victim.getEyePosition(), true)) {
                             doHurt(victim);
-                            victim.playSound(SoundRegistry.CHAIN_LIGHTNING_CHAIN.get(), 2, 1);
+                            victim.playSound(SoundRegistry.CHAIN_LIGHTNING_CHAIN.value(), 2, 1);
                             zapsThisWave.getAndIncrement();
                             Vec3 start = new Vec3(entity.xOld, entity.yOld, entity.zOld).add(0, entity.getBbHeight() / 2, 0);
                             var dest = victim.position().add(0, victim.getBbHeight() / 2, 0);

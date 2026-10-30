@@ -4,9 +4,7 @@
     "amount": 250,
     "id": "irons_spellbooks:evasion_elixir"
   },
-  "input": {
-    "item": "minecraft:dragon_breath"
-  },
+  "input": "minecraft:dragon_breath",
   "results": [
     {
       "amount": 250,

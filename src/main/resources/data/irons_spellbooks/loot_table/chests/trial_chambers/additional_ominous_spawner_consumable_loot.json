@@ -14,7 +14,7 @@
           "weight": 6,
           "functions": [
             {
-              "function": "minecraft:set_potion",
+              "type": "minecraft:set_potion",
               "id": "irons_spellbooks:instant_mana_two"
             }
           ]
@@ -25,7 +25,7 @@
           "weight": 8,
           "functions": [
             {
-              "function": "minecraft:set_potion",
+              "type": "minecraft:set_potion",
               "id": "irons_spellbooks:instant_mana_three"
             }
           ]
@@ -36,7 +36,7 @@
           "weight": 4,
           "functions": [
             {
-              "function": "minecraft:set_potion",
+              "type": "minecraft:set_potion",
               "id": "irons_spellbooks:instant_mana_four"
             }
           ]

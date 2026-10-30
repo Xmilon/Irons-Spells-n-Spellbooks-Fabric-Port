@@ -8,14 +8,14 @@
           "name": "minecraft:written_book",
           "functions": [
             {
-              "function": "minecraft:set_name",
+              "type": "minecraft:set_name",
               "name": {
                 "translate": "lore.citadel_book.title",
                 "italic": false
               }
             },
             {
-              "function": "minecraft:set_written_book_pages",
+              "type": "minecraft:set_written_book_pages",
               "pages": [
                 {
                   "translate": "lore.citadel_book.construction_ledger",
@@ -32,14 +32,14 @@
           "name": "minecraft:written_book",
           "functions": [
             {
-              "function": "minecraft:set_name",
+              "type": "minecraft:set_name",
               "name": {
                 "translate": "lore.citadel_book.title",
                 "italic": false
               }
             },
             {
-              "function": "minecraft:set_written_book_pages",
+              "type": "minecraft:set_written_book_pages",
               "pages": [
                 {
                   "translate": "lore.citadel_book.soul_research",
@@ -56,14 +56,14 @@
           "name": "minecraft:written_book",
           "functions": [
             {
-              "function": "minecraft:set_name",
+              "type": "minecraft:set_name",
               "name": {
                 "translate": "lore.citadel_book.title",
                 "italic": false
               }
             },
             {
-              "function": "minecraft:set_written_book_pages",
+              "type": "minecraft:set_written_book_pages",
               "pages": [
                 {
                   "translate": "lore.citadel_book.planar_travel",
@@ -80,14 +80,14 @@
           "name": "minecraft:written_book",
           "functions": [
             {
-              "function": "minecraft:set_name",
+              "type": "minecraft:set_name",
               "name": {
                 "translate": "lore.citadel_book.title",
                 "italic": false
               }
             },
             {
-              "function": "minecraft:set_written_book_pages",
+              "type": "minecraft:set_written_book_pages",
               "pages": [
                 {
                   "translate": "lore.citadel_book.legion_war_journal",
@@ -104,14 +104,14 @@
           "name": "minecraft:written_book",
           "functions": [
             {
-              "function": "minecraft:set_name",
+              "type": "minecraft:set_name",
               "name": {
                 "translate": "lore.citadel_book.title",
                 "italic": false
               }
             },
             {
-              "function": "minecraft:set_written_book_pages",
+              "type": "minecraft:set_written_book_pages",
               "pages": [
                 {
                   "translate": "lore.citadel_book.armory_ledger",
@@ -128,14 +128,14 @@
           "name": "minecraft:written_book",
           "functions": [
             {
-              "function": "minecraft:set_name",
+              "type": "minecraft:set_name",
               "name": {
                 "translate": "lore.citadel_book.title",
                 "italic": false
               }
             },
             {
-              "function": "minecraft:set_written_book_pages",
+              "type": "minecraft:set_written_book_pages",
               "pages": [
                 {
                   "translate": "lore.citadel_book.training_manual",
@@ -152,14 +152,14 @@
           "name": "minecraft:written_book",
           "functions": [
             {
-              "function": "minecraft:set_name",
+              "type": "minecraft:set_name",
               "name": {
                 "translate": "lore.citadel_book.title",
                 "italic": false
               }
             },
             {
-              "function": "minecraft:set_written_book_pages",
+              "type": "minecraft:set_written_book_pages",
               "pages": [
                 {
                   "translate": "lore.citadel_book.cinderous_rituals",
@@ -176,14 +176,14 @@
           "name": "minecraft:written_book",
           "functions": [
             {
-              "function": "minecraft:set_name",
+              "type": "minecraft:set_name",
               "name": {
                 "translate": "lore.citadel_book.title",
                 "italic": false
               }
             },
             {
-              "function": "minecraft:set_written_book_pages",
+              "type": "minecraft:set_written_book_pages",
               "pages": [
                 {
                   "translate": "lore.citadel_book.architectural_diagrams",
@@ -200,14 +200,14 @@
           "name": "minecraft:written_book",
           "functions": [
             {
-              "function": "minecraft:set_name",
+              "type": "minecraft:set_name",
               "name": {
                 "translate": "lore.citadel_book.title",
                 "italic": false
               }
             },
             {
-              "function": "minecraft:set_written_book_pages",
+              "type": "minecraft:set_written_book_pages",
               "pages": [
                 {
                   "translate": "lore.citadel_book.fire_notes",
@@ -224,14 +224,14 @@
           "name": "minecraft:written_book",
           "functions": [
             {
-              "function": "minecraft:set_name",
+              "type": "minecraft:set_name",
               "name": {
                 "translate": "lore.citadel_book.title",
                 "italic": false
               }
             },
             {
-              "function": "minecraft:set_written_book_pages",
+              "type": "minecraft:set_written_book_pages",
               "pages": [
                 {
                   "translate": "lore.citadel_book.quarry",
@@ -248,14 +248,14 @@
           "name": "minecraft:written_book",
           "functions": [
             {
-              "function": "minecraft:set_name",
+              "type": "minecraft:set_name",
               "name": {
                 "translate": "lore.citadel_book.title",
                 "italic": false
               }
             },
             {
-              "function": "minecraft:set_written_book_pages",
+              "type": "minecraft:set_written_book_pages",
               "pages": [
                 {
                   "translate": "lore.citadel_book.complaint",
@@ -272,14 +272,14 @@
           "name": "minecraft:written_book",
           "functions": [
             {
-              "function": "minecraft:set_name",
+              "type": "minecraft:set_name",
               "name": {
                 "translate": "lore.citadel_book.title",
                 "italic": false
               }
             },
             {
-              "function": "minecraft:set_written_book_pages",
+              "type": "minecraft:set_written_book_pages",
               "pages": [
                 {
                   "translate": "lore.citadel_book.soul_warning",

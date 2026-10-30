@@ -6,18 +6,10 @@
     "DHH"
   ],
   "key": {
-    "D": {
-      "tag": "c:gems/diamond"
-    },
-    "E": {
-      "item": "minecraft:enchanted_book"
-    },
-    "T": {
-      "item": "irons_spellbooks:magic_cloth"
-    },
-    "H": {
-      "item": "irons_spellbooks:hogskin"
-    }
+    "D": "#c:gems/diamond",
+    "E": "minecraft:enchanted_book",
+    "T": "irons_spellbooks:magic_cloth",
+    "H": "irons_spellbooks:hogskin"
   },
   "result": {
     "id": "irons_spellbooks:diamond_spell_book",

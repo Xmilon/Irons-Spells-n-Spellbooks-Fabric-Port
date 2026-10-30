@@ -1,43 +1,40 @@
 package io.redspace.ironsspellbooks.mixin;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
-import io.redspace.ironsspellbooks.player.ClientMagicData;
 import io.redspace.ironsspellbooks.player.SpinAttackType;
-import net.minecraft.util.LightCoordsUtil;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import io.redspace.ironsspellbooks.render.LivingEffectsRenderState;
+import net.minecraft.client.model.effects.SpinAttackEffectModel;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.entity.layers.SpinAttackEffectLayer;
-import net.minecraft.world.entity.LivingEntity;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
+import net.minecraft.client.renderer.texture.OverlayTexture;
+import net.minecraft.util.LightCoordsUtil;
+import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Unique;
+import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
-import org.spongepowered.asm.mixin.injection.ModifyArg;
-import org.spongepowered.asm.mixin.injection.ModifyVariable;
+import org.spongepowered.asm.mixin.injection.Inject;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 
 @Mixin(SpinAttackEffectLayer.class)
 public class SpinAttackEffectLayerMixin {
+    @Shadow
+    @Final
+    private SpinAttackEffectModel model;
 
-    @Unique
-    private static boolean irons_spellbooks$fullbright = false;
-
-    @ModifyVariable(method = "render", at = @At("STORE"))
-    public VertexConsumer selectSpinAttackTexture(VertexConsumer original, PoseStack poseStack, MultiBufferSource buffer, int p_117528_, LivingEntity livingEntity, float f1, float f2, float f3, float f4, float f5, float f6) {
-        irons_spellbooks$fullbright = false;
-        SpinAttackType type = ClientMagicData.getSyncedSpellData(livingEntity).getSpinAttackType();
-        if(type.textureId() == SpinAttackType.RIPTIDE.textureId()){
-            return original;
+    /** Draws custom spin attack textures (fire, lightning...) in place of the vanilla riptide effect. */
+    @Inject(method = "submit(Lcom/mojang/blaze3d/vertex/PoseStack;Lnet/minecraft/client/renderer/SubmitNodeCollector;ILnet/minecraft/client/renderer/entity/state/AvatarRenderState;FF)V", at = @At("HEAD"), cancellable = true)
+    private void irons_spellbooks$customSpinAttack(PoseStack poseStack, SubmitNodeCollector collector, int packedLight, AvatarRenderState state, float yRot, float xRot, CallbackInfo ci) {
+        var effects = LivingEffectsRenderState.get(state);
+        if (effects == null || !state.isAutoSpinAttack) {
+            return;
         }
-        irons_spellbooks$fullbright = type.fullbright();
-        return buffer.getBuffer(RenderType.entityCutoutNoCull(type.textureId()));
-    }
-
-    @ModifyArg(
-            method = "render",
-            at = @At(value = "INVOKE", target = "Lnet/minecraft/client/model/geom/ModelPart;render(Lcom/mojang/blaze3d/vertex/PoseStack;Lcom/mojang/blaze3d/vertex/VertexConsumer;II)V"),
-            index = 2
-    )
-    int modifyLight(int originalLight) {
-        return irons_spellbooks$fullbright ? LightCoordsUtil.FULL_BRIGHT : originalLight;
+        SpinAttackType type = effects.spinAttack();
+        if (type.textureId().equals(SpinAttackType.RIPTIDE.textureId())) {
+            return;
+        }
+        int light = type.fullbright() ? LightCoordsUtil.FULL_BRIGHT : packedLight;
+        collector.submitModel(this.model, state, poseStack, type.textureId(), light, OverlayTexture.NO_OVERLAY, state.outlineColor);
+        ci.cancel();
     }
 }

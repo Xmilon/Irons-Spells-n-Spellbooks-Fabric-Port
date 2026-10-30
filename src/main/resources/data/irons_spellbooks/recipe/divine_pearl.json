@@ -1,12 +1,8 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "tag": "c:ingots/gold"
-    },
-    {
-      "tag": "c:gems/amethyst"
-    }
+    "#c:ingots/gold",
+    "#c:gems/amethyst"
   ],
   "result": {
     "id": "irons_spellbooks:divine_pearl"

@@ -6,12 +6,8 @@
     "FFF"
   ],
   "key": {
-    "F": {
-      "item": "minecraft:phantom_membrane"
-    },
-    "R": {
-      "item": "irons_spellbooks:blank_rune"
-    }
+    "F": "minecraft:phantom_membrane",
+    "R": "irons_spellbooks:blank_rune"
   },
   "result": {
     "id": "irons_spellbooks:cooldown_rune",

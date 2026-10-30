@@ -73,16 +73,14 @@ public class ThrownItemProjectile extends AbstractMagicProjectile {
         super.addAdditionalSaveData(tag);
         var item = getThrownItem();
         if (!item.isEmpty()) {
-            tag.put("item", item.save(this.level().registryAccess()));
+            tag.store("item", ItemStack.CODEC, item);
         }
     }
 
     @Override
     protected void readAdditionalSaveData(ValueInput tag) {
         super.readAdditionalSaveData(tag);
-        if (tag.contains("item")) {
-            this.setThrownItem(ItemStack.parseOptional(level().registryAccess(), tag.childOrEmpty("item")));
-        }
+        tag.read("item", ItemStack.CODEC).ifPresent(this::setThrownItem);
     }
 
     @Override

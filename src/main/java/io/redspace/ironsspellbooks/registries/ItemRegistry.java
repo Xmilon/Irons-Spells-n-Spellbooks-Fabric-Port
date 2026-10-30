@@ -123,27 +123,27 @@ public class ItemRegistry {
     /**
      * Ink
      */
-    public static final DeferredHolder<Item, Item> INK_COMMON = ITEMS.register("common_ink", () -> new InkItem(SpellRarity.COMMON, FluidRegistry.COMMON_INK));
-    public static final DeferredHolder<Item, Item> INK_UNCOMMON = ITEMS.register("uncommon_ink", () -> new InkItem(SpellRarity.UNCOMMON, FluidRegistry.UNCOMMON_INK));
-    public static final DeferredHolder<Item, Item> INK_RARE = ITEMS.register("rare_ink", () -> new InkItem(SpellRarity.RARE, FluidRegistry.RARE_INK));
-    public static final DeferredHolder<Item, Item> INK_EPIC = ITEMS.register("epic_ink", () -> new InkItem(SpellRarity.EPIC, FluidRegistry.EPIC_INK));
-    public static final DeferredHolder<Item, Item> INK_LEGENDARY = ITEMS.register("legendary_ink", () -> new InkItem(SpellRarity.LEGENDARY, FluidRegistry.LEGENDARY_INK));
+    public static final DeferredHolder<Item, Item> INK_COMMON = ITEMS.register("common_ink", () -> new InkItem(SpellRarity.COMMON, FluidRegistry.COMMON_INK.holder()));
+    public static final DeferredHolder<Item, Item> INK_UNCOMMON = ITEMS.register("uncommon_ink", () -> new InkItem(SpellRarity.UNCOMMON, FluidRegistry.UNCOMMON_INK.holder()));
+    public static final DeferredHolder<Item, Item> INK_RARE = ITEMS.register("rare_ink", () -> new InkItem(SpellRarity.RARE, FluidRegistry.RARE_INK.holder()));
+    public static final DeferredHolder<Item, Item> INK_EPIC = ITEMS.register("epic_ink", () -> new InkItem(SpellRarity.EPIC, FluidRegistry.EPIC_INK.holder()));
+    public static final DeferredHolder<Item, Item> INK_LEGENDARY = ITEMS.register("legendary_ink", () -> new InkItem(SpellRarity.LEGENDARY, FluidRegistry.LEGENDARY_INK.holder()));
 
     /**
      * Potions
      */
 //    public static final DeferredHolder<Item, Item> CASTERS_TEA = ITEMS.register("casters_tea", () -> new CastersTea(ItemPropertiesHelper.material().stacksTo(4)));
-    public static final DeferredHolder<Item, Item> OAKSKIN_ELIXIR = ITEMS.register("oakskin_elixir", () -> new SimpleElixir(ItemPropertiesHelper.material(4), () -> new MobEffectInstance(net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MobEffectRegistry.OAKSKIN.get()), 900, 1)));
-    public static final DeferredHolder<Item, Item> GREATER_OAKSKIN_ELIXIR = ITEMS.register("greater_oakskin_elixir", () -> new SimpleElixir(ItemPropertiesHelper.material(4), () -> new MobEffectInstance(net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MobEffectRegistry.OAKSKIN.get()), 1800, 5), true));
+    public static final DeferredHolder<Item, Item> OAKSKIN_ELIXIR = ITEMS.register("oakskin_elixir", () -> new SimpleElixir(ItemPropertiesHelper.material(4), () -> new MobEffectInstance(MobEffectRegistry.OAKSKIN, 900, 1)));
+    public static final DeferredHolder<Item, Item> GREATER_OAKSKIN_ELIXIR = ITEMS.register("greater_oakskin_elixir", () -> new SimpleElixir(ItemPropertiesHelper.material(4), () -> new MobEffectInstance(MobEffectRegistry.OAKSKIN, 1800, 5), true));
     public static final DeferredHolder<Item, Item> GREATER_HEALING_POTION = ITEMS.register("greater_healing_potion", () -> new SimpleElixir(ItemPropertiesHelper.material(4), () -> new MobEffectInstance(MobEffects.INSTANT_HEALTH, 1, 2)));
-    public static final DeferredHolder<Item, Item> INVISIBILITY_ELIXIR = ITEMS.register("invisibility_elixir", () -> new SimpleElixir(ItemPropertiesHelper.material(4), () -> new MobEffectInstance(net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MobEffectRegistry.TRUE_INVISIBILITY.get()), 20 * 15, 0, false, false, true)));
-    public static final DeferredHolder<Item, Item> GREATER_INVISIBILITY_ELIXIR = ITEMS.register("greater_invisibility_elixir", () -> new SimpleElixir(ItemPropertiesHelper.material(4), () -> new MobEffectInstance(net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MobEffectRegistry.TRUE_INVISIBILITY.get()), 20 * 40, 0, false, false, true), true));
-    public static final DeferredHolder<Item, Item> EVASION_ELIXIR = ITEMS.register("evasion_elixir", () -> new SimpleElixir(ItemPropertiesHelper.material(4), () -> new MobEffectInstance(net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MobEffectRegistry.EVASION.get()), 20 * 60, 1, false, false, true)));
-    public static final DeferredHolder<Item, Item> GREATER_EVASION_ELIXIR = ITEMS.register("greater_evasion_elixir", () -> new SimpleElixir(ItemPropertiesHelper.material(4), () -> new MobEffectInstance(net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MobEffectRegistry.EVASION.get()), 20 * 60, 3, false, false, true), true));
+    public static final DeferredHolder<Item, Item> INVISIBILITY_ELIXIR = ITEMS.register("invisibility_elixir", () -> new SimpleElixir(ItemPropertiesHelper.material(4), () -> new MobEffectInstance(MobEffectRegistry.TRUE_INVISIBILITY, 20 * 15, 0, false, false, true)));
+    public static final DeferredHolder<Item, Item> GREATER_INVISIBILITY_ELIXIR = ITEMS.register("greater_invisibility_elixir", () -> new SimpleElixir(ItemPropertiesHelper.material(4), () -> new MobEffectInstance(MobEffectRegistry.TRUE_INVISIBILITY, 20 * 40, 0, false, false, true), true));
+    public static final DeferredHolder<Item, Item> EVASION_ELIXIR = ITEMS.register("evasion_elixir", () -> new SimpleElixir(ItemPropertiesHelper.material(4), () -> new MobEffectInstance(MobEffectRegistry.EVASION, 20 * 60, 1, false, false, true)));
+    public static final DeferredHolder<Item, Item> GREATER_EVASION_ELIXIR = ITEMS.register("greater_evasion_elixir", () -> new SimpleElixir(ItemPropertiesHelper.material(4), () -> new MobEffectInstance(MobEffectRegistry.EVASION, 20 * 60, 3, false, false, true), true));
     public static final DeferredHolder<Item, Item> FIRE_ALE = ITEMS.register("fire_ale", () -> new FireAleItem(ItemPropertiesHelper.material(4)));
     public static final DeferredHolder<Item, Item> NETHERWARD_TINCTURE = ITEMS.register("netherward_tincture", NetherwardTinctureItem::new);
     //todo: reimplement ice spider lure mechanics
-//    public static final DeferredHolder<Item, Item> ICE_SPIDER_PHEROMONES = ITEMS.register("ice_spider_pheromones", () -> new SimpleElixir(ItemPropertiesHelper.material(4), () -> new MobEffectInstance(net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MobEffectRegistry.ICE_SPIDER_LURE.get()), 120, 0)));
+//    public static final DeferredHolder<Item, Item> ICE_SPIDER_PHEROMONES = ITEMS.register("ice_spider_pheromones", () -> new SimpleElixir(ItemPropertiesHelper.material(4), () -> new MobEffectInstance(MobEffectRegistry.ICE_SPIDER_LURE, 120, 0)));
 
     /**
      * Upgrade Orbs

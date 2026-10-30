@@ -4,9 +4,7 @@
     "amount": 250,
     "id": "irons_spellbooks:invisibility_elixir"
   },
-  "input": {
-    "item": "minecraft:amethyst_cluster"
-  },
+  "input": "minecraft:amethyst_cluster",
   "results": [
     {
       "amount": 250,

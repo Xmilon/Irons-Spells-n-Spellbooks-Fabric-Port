@@ -13,7 +13,7 @@ public class PotionClientFluidType extends SimpleClientFluidType {
 
     @Override
     public int getTintColor(FluidStack stack) {
-        return (stack.has(DataComponents.POTION_CONTENTS) ? stack.get(DataComponents.POTION_CONTENTS).getColor() : PotionContents.getColor(Potions.WATER)) | 0xFF000000; // force full ARGB alpha ('or' on alpha component)
+        return (stack.has(DataComponents.POTION_CONTENTS) ? stack.get(DataComponents.POTION_CONTENTS).getColor() : new PotionContents(Potions.WATER).getColor()) | 0xFF000000; // force full ARGB alpha ('or' on alpha component)
     }
 
 }

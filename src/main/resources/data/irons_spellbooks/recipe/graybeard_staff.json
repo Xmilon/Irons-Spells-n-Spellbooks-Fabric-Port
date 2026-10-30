@@ -6,15 +6,9 @@
     "I  "
   ],
   "key": {
-    "S": {
-      "item": "minecraft:wooden_shovel"
-    },
-    "I": {
-      "tag": "c:ingots/iron"
-    },
-    "E": {
-      "item": "irons_spellbooks:arcane_essence"
-    }
+    "S": "minecraft:wooden_shovel",
+    "I": "#c:ingots/iron",
+    "E": "irons_spellbooks:arcane_essence"
   },
   "result": {
     "id": "irons_spellbooks:graybeard_staff",

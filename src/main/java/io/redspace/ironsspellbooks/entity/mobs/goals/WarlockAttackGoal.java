@@ -101,7 +101,7 @@ public class WarlockAttackGoal extends WizardAttackGoal {
         if (!wantsToMelee || distanceSquared > meleeRange * meleeRange || spellCastingMob.isCasting()) {
             super.handleAttackLogic(distanceSquared);
         } else if (--this.meleeAttackDelay <= 0) {
-            this.mob.swing(InteractionHand.MAIN_HAND);
+            this.mob.swingForAttack(InteractionHand.MAIN_HAND);
             doMeleeAction();
         }
 
@@ -109,7 +109,7 @@ public class WarlockAttackGoal extends WizardAttackGoal {
 
     protected void doMeleeAction() {
         double distanceSquared = this.mob.distanceToSqr(this.target.getX(), this.target.getY(), this.target.getZ());
-        this.mob.doHurtTarget(target);
+        this.mob.doHurtTarget((net.minecraft.server.level.ServerLevel) this.mob.level(), target);
         resetMeleeAttackInterval(distanceSquared);
     }
 

@@ -63,7 +63,7 @@ public class FireBossModel extends AbstractSpellCastingMobModel {
             } else {
                 fireBossEntity.isAnimatingDampener = Mth.lerp(.05f * partialTick, fireBossEntity.isAnimatingDampener, 1);
             }
-            if (entity.getMainHandItem().is(ItemRegistry.HELLRAZOR) || entity.getMainHandItem().is(ItemRegistry.DECREPIT_SCYTHE)) {
+            if (entity.getMainHandItem().is(ItemRegistry.HELLRAZOR.get()) || entity.getMainHandItem().is(ItemRegistry.DECREPIT_SCYTHE.get())) {
                 String rightArm = PartNames.RIGHT_ARM;
                 String rightHand = DefaultBipedBoneIdents.RIGHT_HAND_BONE_IDENT;
                 Vector3f armPose = new Vector3f(-30, -30, 10);

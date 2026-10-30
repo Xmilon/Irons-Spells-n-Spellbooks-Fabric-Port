@@ -6,12 +6,8 @@
     " A "
   ],
   "key": {
-    "A": {
-      "item": "irons_spellbooks:arcane_ingot"
-    },
-    "D": {
-      "tag": "c:gems/diamond"
-    }
+    "A": "irons_spellbooks:arcane_ingot",
+    "D": "#c:gems/diamond"
   },
   "result": {
     "id": "irons_spellbooks:mana_ring",

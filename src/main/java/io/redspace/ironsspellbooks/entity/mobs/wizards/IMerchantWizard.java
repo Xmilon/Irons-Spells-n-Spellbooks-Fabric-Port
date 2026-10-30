@@ -52,6 +52,14 @@ public interface IMerchantWizard extends Merchant {
         setRestocksToday(pCompound.getIntOr("RestocksToday", 0));
     }
 
+    @Override
+    default boolean stillValid(net.minecraft.world.entity.player.Player player) {
+        return this instanceof net.minecraft.world.entity.Entity entity
+                && getTradingPlayer() == player
+                && entity.isAlive()
+                && player.isWithinEntityInteractionRange(entity, 4.0);
+    }
+
     default boolean isTrading() {
         return getTradingPlayer() != null;
     }
@@ -85,7 +93,7 @@ public interface IMerchantWizard extends Merchant {
         //If total game time has exceeded one half day, we can restock.
         boolean hasDayElapsed = currentGameTime > timeToNextRestock;
 
-        long currentDayTime = level().getDayTime();
+        long currentDayTime = level().getOverworldClockTime();
         if (getLastRestockCheckDayTime() > 0L) {
             long lastRestockDay = getLastRestockCheckDayTime() / 24000L;
             long currentDay = currentDayTime / 24000L;

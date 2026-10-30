@@ -4,9 +4,7 @@
     "amount": 250,
     "id": "irons_spellbooks:rare_ink"
   },
-  "input": {
-    "item": "irons_spellbooks:rare_ink"
-  },
+  "input": "irons_spellbooks:rare_ink",
   "result": {
     "count": 1,
     "id": "minecraft:glass_bottle"

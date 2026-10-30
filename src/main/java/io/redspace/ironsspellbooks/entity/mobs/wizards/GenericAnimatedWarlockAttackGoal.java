@@ -124,7 +124,7 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
     }
 
     protected boolean handleDamaging(LivingEntity target, AttackKeyframe attackData) {
-        boolean flag = this.mob.doHurtTarget(target);
+        boolean flag = this.mob.doHurtTarget((net.minecraft.server.level.ServerLevel) this.mob.level(), target);
         target.damageCooldownTime = 0;
         float f = -Utils.getAngle(mob.getX(), mob.getZ(), target.getX(), target.getZ()) - Mth.HALF_PI;
         if (flag) {
@@ -170,7 +170,7 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
         //anim duration
         currentAttack = nextAttack;
         if (currentAttack != null) {
-            this.mob.swing(InteractionHand.MAIN_HAND);
+            this.mob.swingForAttack(InteractionHand.MAIN_HAND);
             meleeAnimTimer = currentAttack.lengthInTicks;
             PacketDistributor.sendToPlayersTrackingEntity(mob, new SyncAnimationPacket<>(currentAttack.animationId, mob));
         }
@@ -189,11 +189,11 @@ public class GenericAnimatedWarlockAttackGoal<T extends PathfinderMob & IAnimate
     }
 
     public void playSwingSound() {
-        mob.playSound(SoundRegistry.GENERIC_BLADE_SWING.get(), 1, Mth.randomBetweenInclusive(mob.getRandom(), 12, 18) * .1f);
+        mob.playSound(SoundRegistry.GENERIC_BLADE_SWING.value(), 1, Mth.randomBetweenInclusive(mob.getRandom(), 12, 18) * .1f);
     }
 
     public void playImpactSound() {
-//        mob.playSound(SoundRegistry.KEEPER_SWORD_IMPACT.get(), 1, Mth.randomBetweenInclusive(mob.getRandom(), 9, 13) * .1f);
+//        mob.playSound(SoundRegistry.KEEPER_SWORD_IMPACT.value(), 1, Mth.randomBetweenInclusive(mob.getRandom(), 9, 13) * .1f);
     }
 
     public GenericAnimatedWarlockAttackGoal<T> setMoveset(List<AttackAnimationData> moveset) {

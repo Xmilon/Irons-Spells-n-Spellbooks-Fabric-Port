@@ -7,8 +7,6 @@
   "byproduct": {
     "id": "irons_spellbooks:bloody_vellum"
   },
-  "input": {
-    "item": "irons_spellbooks:hogskin"
-  },
+  "input": "irons_spellbooks:hogskin",
   "results": []
 }

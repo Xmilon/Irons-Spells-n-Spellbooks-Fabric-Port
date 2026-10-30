@@ -51,7 +51,7 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
             meleeAnimTimer--;
             if (currentAttack.data.isHitFrame(meleeAnimTimer - 4)) {
                 if (currentAttack == DeadKingBoss.AttackType.SLAM) {
-                    mob.playSound(SoundRegistry.DEAD_KING_SLAM.get());
+                    mob.playSound(SoundRegistry.DEAD_KING_SLAM.value());
                 } else {
                     playSwingSound();
                 }
@@ -69,13 +69,13 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
                             entity.setDeltaMovement(entity.getDeltaMovement().add(impulse));
                             entity.syncVelocity = true;
                             if (entity instanceof Player player && player.isBlocking()) {
-                                player.disableShield();
+                                Utils.disableShield(player);
                             }
                         }
                     });
                 } else {
                     if (distanceSquared <= meleeRange * meleeRange && Utils.hasLineOfSight(mob.level(), mob, target, true)) {
-                        boolean flag = this.mob.doHurtTarget(target);
+                        boolean flag = this.mob.doHurtTarget((net.minecraft.server.level.ServerLevel) this.mob.level(), target);
                         target.damageCooldownTime = 0;
                         if (flag) {
                             if (currentAttack.data.isSingleHit() && ((mob.getRandom().nextFloat() < .75f) || target.isBlocking())) {
@@ -129,7 +129,7 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
         //anim duration
         currentAttack = nextAttack;
         if (currentAttack != null) {
-            this.mob.swing(InteractionHand.MAIN_HAND);
+            this.mob.swingForAttack(InteractionHand.MAIN_HAND);
             meleeAnimTimer = currentAttack.data.lengthInTicks;
             PacketDistributor.sendToPlayersTrackingEntity(deadKing, new SyncAnimationPacket<>(currentAttack.toString(), deadKing));
         }
@@ -179,7 +179,7 @@ public class DeadKingAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     }
 
     public void playSwingSound() {
-        mob.playSound(SoundRegistry.DEAD_KING_SWING.get(), 1, Mth.randomBetweenInclusive(mob.getRandom(), 9, 13) * .1f);
+        mob.playSound(SoundRegistry.DEAD_KING_SWING.value(), 1, Mth.randomBetweenInclusive(mob.getRandom(), 9, 13) * .1f);
     }
 
 }

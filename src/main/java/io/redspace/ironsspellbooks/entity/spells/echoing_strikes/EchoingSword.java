@@ -85,7 +85,7 @@ public class EchoingSword extends AbstractMagicProjectile implements IAnimatedAt
     }
 
     private void performHit() {
-        this.playSound(SoundRegistry.ECHOING_STRIKE.get(), 1.5f, Utils.random.nextIntBetweenInclusive(8, 12) * .1f);
+        this.playSound(SoundRegistry.ECHOING_STRIKE.value(), 1.5f, Utils.random.nextIntBetweenInclusive(8, 12) * .1f);
         if (level().isClientSide()) {
             return;
         }

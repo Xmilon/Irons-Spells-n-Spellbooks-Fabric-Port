@@ -19,6 +19,7 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.ItemStackTemplate;
 import net.minecraft.world.item.Items;
 import net.minecraft.world.item.crafting.*;
 import net.minecraft.world.level.Level;
@@ -36,7 +37,7 @@ import java.util.Optional;
  */
 public record BrewAlchemistCauldronRecipe(FluidStack fluidIn, Ingredient reagent,
                                           List<FluidStack> results,
-                                          Optional<ItemStack> byproduct) implements Recipe<BrewAlchemistCauldronRecipe.Input> {
+                                          Optional<ItemStackTemplate> byproductItem) implements Recipe<BrewAlchemistCauldronRecipe.Input> {
 
     public static BrewAlchemistCauldronRecipe.Builder builder() {
         return new BrewAlchemistCauldronRecipe.Builder();
@@ -64,9 +65,8 @@ public record BrewAlchemistCauldronRecipe(FluidStack fluidIn, Ingredient reagent
         return List.copyOf(this.results);
     }
 
-    @Override
     public Optional<ItemStack> byproduct() {
-        return byproduct.map(ItemStack::copy);
+        return byproductItem.map(ItemStackTemplate::create);
     }
 
     @Override
@@ -113,26 +113,18 @@ public record BrewAlchemistCauldronRecipe(FluidStack fluidIn, Ingredient reagent
     public static final class Serializer {
         private Serializer() {}
 
-        // Byproducts keep the original single-item JSON shape: id/components, with count fixed to one.
-        private static final Codec<ItemStack> BYPRODUCT_CODEC = RecordCodecBuilder.create(builder -> builder.group(
-                BuiltInRegistries.ITEM.holderByNameCodec()
-                        .validate(item -> item.value() == Items.AIR ? DataResult.error(() -> "Byproduct cannot be air") : DataResult.success(item))
-                        .fieldOf("id").forGetter(ItemStack::typeHolder),
-                DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(ItemStack::getComponentsPatch)
-        ).apply(builder, (item, components) -> new ItemStack(item, 1, components)));
-
         public static final MapCodec<BrewAlchemistCauldronRecipe> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
                 FluidStack.CODEC.fieldOf("base_fluid").forGetter(BrewAlchemistCauldronRecipe::fluidIn),
                 Ingredient.CODEC.fieldOf("input").forGetter(BrewAlchemistCauldronRecipe::reagent),
                 Codec.list(FluidStack.CODEC).fieldOf("results").forGetter(BrewAlchemistCauldronRecipe::results),
-                BYPRODUCT_CODEC.optionalFieldOf("byproduct").forGetter(BrewAlchemistCauldronRecipe::byproduct)
+                ItemStackTemplate.CODEC.optionalFieldOf("byproduct").forGetter(BrewAlchemistCauldronRecipe::byproductItem)
         ).apply(builder, BrewAlchemistCauldronRecipe::new));
 
         public static final StreamCodec<RegistryFriendlyByteBuf, BrewAlchemistCauldronRecipe> STREAM_CODEC = StreamCodec.composite(
                 FluidStack.STREAM_CODEC, BrewAlchemistCauldronRecipe::fluidIn,
                 Ingredient.CONTENTS_STREAM_CODEC, BrewAlchemistCauldronRecipe::reagent,
                 ByteBufCodecs.fromCodec(Codec.list(FluidStack.CODEC)), BrewAlchemistCauldronRecipe::results,
-                ByteBufCodecs.optional(ItemStack.STREAM_CODEC), BrewAlchemistCauldronRecipe::byproduct,
+                ByteBufCodecs.optional(ItemStackTemplate.STREAM_CODEC), BrewAlchemistCauldronRecipe::byproductItem,
                 BrewAlchemistCauldronRecipe::new
         );
 
@@ -215,7 +207,7 @@ public record BrewAlchemistCauldronRecipe(FluidStack fluidIn, Ingredient reagent
             Objects.requireNonNull(input);
             if (reagentTag != null) reagent = Ingredient.of(recipeOutput.lookup(Registries.ITEM).getOrThrow(reagentTag));
             Objects.requireNonNull(reagent);
-            recipeOutput.accept(id, new BrewAlchemistCauldronRecipe(input, reagent, results, Optional.ofNullable(byproduct)), null);
+            recipeOutput.accept(id, new BrewAlchemistCauldronRecipe(input, reagent, results, Optional.ofNullable(byproduct).map(ItemStackTemplate::fromNonEmptyStack)), null);
         }
 
         public void saveSoak(RecipeOutput recipeOutput) {

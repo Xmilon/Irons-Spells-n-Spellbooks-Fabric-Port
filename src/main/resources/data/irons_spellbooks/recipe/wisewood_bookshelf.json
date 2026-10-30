@@ -6,12 +6,8 @@
     "FFF"
   ],
   "key": {
-    "F": {
-      "tag": "c:bookshelves"
-    },
-    "R": {
-      "item": "irons_spellbooks:arcane_essence"
-    }
+    "F": "#c:bookshelves",
+    "R": "irons_spellbooks:arcane_essence"
   },
   "result": {
     "id": "irons_spellbooks:wisewood_bookshelf",

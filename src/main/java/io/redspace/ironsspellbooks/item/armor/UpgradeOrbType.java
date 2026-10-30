@@ -11,7 +11,8 @@ import net.minecraft.network.codec.StreamCodec;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.item.Item;
-import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.component.DataComponentPatch;
+import net.minecraft.world.item.ItemStackTemplate;
 
 import java.util.Optional;
 
@@ -19,9 +20,9 @@ public record UpgradeOrbType(
         Holder<Attribute> attribute,
         double amount,
         AttributeModifier.Operation operation,
-        Optional<ItemStack> containerItem
+        Optional<ItemStackTemplate> containerItem
 ) {
-    private static final Codec<ItemStack> ITEM_OR_ITEMSTACK_CODEC = Codec.withAlternative(ItemStack.STRICT_CODEC, BuiltInRegistries.ITEM.holderByNameCodec().xmap(ItemStack::new, ItemStack::getItemHolder));
+    private static final Codec<ItemStackTemplate> ITEM_OR_ITEMSTACK_CODEC = Codec.withAlternative(ItemStackTemplate.CODEC, BuiltInRegistries.ITEM.holderByNameCodec().xmap(item -> new ItemStackTemplate(item, 1, DataComponentPatch.EMPTY), ItemStackTemplate::typeHolder));
     public static final Codec<UpgradeOrbType> CODEC = RecordCodecBuilder.create(builder -> builder.group(
             BuiltInRegistries.ATTRIBUTE.holderByNameCodec().fieldOf("attribute").forGetter(UpgradeOrbType::attribute),
             Codec.DOUBLE.fieldOf("amount").forGetter(UpgradeOrbType::amount),
@@ -35,7 +36,7 @@ public record UpgradeOrbType(
             AttributeModifier.Operation operation,
             Holder<Item> container
     ) {
-        this(attribute, amount, operation, Optional.of(new ItemStack(container)));
+        this(attribute, amount, operation, Optional.of(new ItemStackTemplate(container, 1, DataComponentPatch.EMPTY)));
     }
 
     public static final StreamCodec<RegistryFriendlyByteBuf, UpgradeOrbType> STREAM_CODEC = StreamCodec.composite(
@@ -45,7 +46,7 @@ public record UpgradeOrbType(
             type -> type.amount,
             AttributeModifier.Operation.STREAM_CODEC,
             type -> type.operation,
-            ByteBufCodecs.optional(ByteBufCodecs.fromCodec(ITEM_OR_ITEMSTACK_CODEC)),
+            ByteBufCodecs.optional(ItemStackTemplate.STREAM_CODEC),
             type -> type.containerItem,
             UpgradeOrbType::new
     );

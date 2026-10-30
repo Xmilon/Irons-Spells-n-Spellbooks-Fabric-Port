@@ -51,7 +51,7 @@ public class NetherwardTinctureItem extends DrinkableItem {
     }
 
     public SoundEvent getDrinkingSound() {
-        return SoundEvents.HONEY_DRINK;
+        return SoundEvents.HONEY_DRINK.value();
     }
 
     @Override

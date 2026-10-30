@@ -65,7 +65,7 @@ public class TouchDigSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.TOUCH_DIG_CAST.get());
+        return Optional.of(SoundRegistry.TOUCH_DIG_CAST.value());
     }
 
     @Override

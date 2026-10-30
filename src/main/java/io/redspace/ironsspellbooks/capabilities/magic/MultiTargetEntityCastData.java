@@ -61,7 +61,7 @@ public class MultiTargetEntityCastData implements ICastDataSerializable {
     public CompoundTag serializeNBT(HolderLookup.Provider provider) {
         CompoundTag tag = new CompoundTag();
         ListTag uuids = new ListTag();
-        targetUUIDs.stream().map(NbtUtils::createUUID).forEach(uuids::add);
+        targetUUIDs.stream().map(uuid -> net.minecraft.core.UUIDUtil.CODEC.encodeStart(net.minecraft.nbt.NbtOps.INSTANCE, uuid).getOrThrow()).forEach(uuids::add);
         tag.put("targets", uuids);
         return tag;
     }
@@ -70,6 +70,6 @@ public class MultiTargetEntityCastData implements ICastDataSerializable {
     public void deserializeNBT(HolderLookup.Provider provider, CompoundTag nbt) {
         targetUUIDs = new ArrayList<>();
         ListTag listTag = nbt.getListOrEmpty("targets");
-        listTag.stream().map(NbtUtils::loadUUID).forEach(targetUUIDs::add);
+        listTag.forEach(t -> net.minecraft.core.UUIDUtil.CODEC.parse(net.minecraft.nbt.NbtOps.INSTANCE, t).result().ifPresent(targetUUIDs::add));
     }
 }

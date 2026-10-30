@@ -27,9 +27,4 @@ public class FieryDaggerModel extends GeoModel<FieryDaggerEntity> {
     public Identifier getAnimationResource(FieryDaggerEntity animatable) {
         return AbstractSpellCastingMob.animationInstantCast;
     }
-
-    @Override
-    public @Nullable RenderType getRenderType(FieryDaggerEntity animatable, Identifier texture) {
-        return RenderHelper.CustomerRenderType.magic(TEXTURE);
-    }
 }

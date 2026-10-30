@@ -9,8 +9,9 @@
           "name": "minecraft:honey_bottle",
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 1,
                 "max": 4
               }
@@ -27,8 +28,9 @@
           "name": "minecraft:glass_bottle",
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 4,
                 "max": 10
               }
@@ -45,8 +47,9 @@
           "name": "minecraft:sweet_berries",
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 5,
                 "max": 16
               }
@@ -63,8 +66,9 @@
           "name": "minecraft:ice",
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 15,
                 "max": 25
               }

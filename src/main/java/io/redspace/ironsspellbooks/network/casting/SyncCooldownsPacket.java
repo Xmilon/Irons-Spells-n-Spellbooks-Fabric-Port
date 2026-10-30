@@ -41,11 +41,19 @@ public class SyncCooldownsPacket implements CustomPacketPayload {
     }
 
     public SyncCooldownsPacket(FriendlyByteBuf buf) {
-        this.spellCooldowns = buf.readMap(SyncCooldownsPacket::readSpellID, SyncCooldownsPacket::readCoolDownInstance);
+        int size = buf.readVarInt();
+        this.spellCooldowns = new java.util.HashMap<>(size);
+        for (int i = 0; i < size; i++) {
+            this.spellCooldowns.put(readSpellID(buf), readCoolDownInstance(buf));
+        }
     }
 
     public void write(FriendlyByteBuf buf) {
-        buf.writeMap(spellCooldowns, SyncCooldownsPacket::writeSpellId, SyncCooldownsPacket::writeCoolDownInstance);
+        buf.writeVarInt(spellCooldowns.size());
+        spellCooldowns.forEach((spellId, instance) -> {
+            writeSpellId(buf, spellId);
+            writeCoolDownInstance(buf, instance);
+        });
     }
 
     public static void handle(SyncCooldownsPacket packet, IPayloadContext context) {

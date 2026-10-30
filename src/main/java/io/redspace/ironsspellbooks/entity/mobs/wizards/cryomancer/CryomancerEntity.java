@@ -245,7 +245,7 @@ public class CryomancerEntity  extends NeutralWizard implements IMerchantWizard 
         return this.offers;
     }
 
-    private static final List<VillagerTrades.ItemListing> fillerOffers = List.of(
+    private static final List<AdditionalWanderingTrades.TradeListing> fillerOffers = List.of(
 //            new AdditionalWanderingTrades.SimpleBuy(16, new ItemCost(Items.CANDLE, 4), 1, 1),
 //            new AdditionalWanderingTrades.SimpleSell(8, new ItemStack(Items.CANDLE, 4), 10, 14),
 //            new AdditionalWanderingTrades.SimpleSell(8, new ItemStack(Items.FIRE_CHARGE, 3), 9, 13),
@@ -287,12 +287,12 @@ public class CryomancerEntity  extends NeutralWizard implements IMerchantWizard 
     }
 
     protected SoundEvent getTradeUpdatedSound(boolean pIsYesSound) {
-        return pIsYesSound ? SoundRegistry.TRADER_YES.get() : SoundRegistry.TRADER_NO.get();
+        return pIsYesSound ? SoundRegistry.TRADER_YES.value() : SoundRegistry.TRADER_NO.value();
     }
 
     @Override
     public SoundEvent getNotifyTradeSound() {
-        return SoundRegistry.TRADER_YES.get();
+        return SoundRegistry.TRADER_YES.value();
     }
 
     @Override

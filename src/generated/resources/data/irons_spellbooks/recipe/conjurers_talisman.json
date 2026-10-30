@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "M": {
-      "item": "minecraft:skeleton_skull"
-    },
-    "S": {
-      "item": "minecraft:string"
-    },
-    "X": {
-      "item": "irons_spellbooks:mithril_scrap"
-    }
+    "M": "minecraft:skeleton_skull",
+    "S": "minecraft:string",
+    "X": "irons_spellbooks:mithril_scrap"
   },
   "pattern": [
     " S ",

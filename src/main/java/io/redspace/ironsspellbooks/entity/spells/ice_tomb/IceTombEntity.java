@@ -164,7 +164,7 @@ public class IceTombEntity extends Entity implements PreventDismount, AntiMagicS
     }
 
     @Override
-    public void kill() {
+    public void kill(ServerLevel serverLevel) {
         destroyTomb();
     }
 

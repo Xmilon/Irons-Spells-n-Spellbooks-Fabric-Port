@@ -283,11 +283,11 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
     }
 
     protected SoundEvent getHurtSound(DamageSource pDamageSource) {
-        return SoundRegistry.DEAD_KING_HURT.get();
+        return SoundRegistry.DEAD_KING_HURT.value();
     }
 
     protected SoundEvent getDeathSound() {
-        return SoundRegistry.DEAD_KING_DEATH.get();
+        return SoundRegistry.DEAD_KING_DEATH.value();
     }
 
     @Override
@@ -321,9 +321,9 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
         this.bossLoot.setParticipantsFromPlayers(nearbyPlayers);
         int extraPlayers = Math.max(0, playerScale - 1);
         double extraHealthPercent = extraPlayers * 0.40 + extraPlayers * extraPlayers * 0.10;
-        double extraHealth = ServerConfigs.DEAD_KING_ADDITIONAL_HEALTH.get();
-        double extraDamage = ServerConfigs.DEAD_KING_ADDITIONAL_ATTACK_DAMAGE.get();
-        double extraPower = ServerConfigs.DEAD_KING_ADDITIONAL_SPELL_POWER.get();
+        double extraHealth = ServerConfigs.safeGet(ServerConfigs.DEAD_KING_ADDITIONAL_HEALTH);
+        double extraDamage = ServerConfigs.safeGet(ServerConfigs.DEAD_KING_ADDITIONAL_ATTACK_DAMAGE);
+        double extraPower = ServerConfigs.safeGet(ServerConfigs.DEAD_KING_ADDITIONAL_SPELL_POWER);
         if (extraHealth != 0) {
             this.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier(IronsSpellbooks.id("config"), extraHealth, AttributeModifier.Operation.ADD_VALUE));
         }
@@ -371,7 +371,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
                     if (!isDeadOrDying()) {
                         setHealth(halfHealth);
                     }
-                    playSound(SoundRegistry.DEAD_KING_FAKE_DEATH.get());
+                    playSound(SoundRegistry.DEAD_KING_FAKE_DEATH.value());
                     setPermanentlyInvulnerable(true);
                     this.getCombatGoal().stop();
                     this.cancelCast();
@@ -383,7 +383,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
                     MagicManager.spawnParticles(level, particle, position().x, position().y + 2.5, position().z, 80, .2, .2, .2, .25, true);
                     setFinalPhaseGoals();
                     setNoGravity(true);
-                    playSound(SoundRegistry.DEAD_KING_EXPLODE.get());
+                    playSound(SoundRegistry.DEAD_KING_EXPLODE.value());
                     if (level instanceof ServerLevel serverLevel) {
                         serverLevel.getEntities(this, this.getBoundingBox().inflate(5), (entity) -> entity instanceof LivingEntity && entity.isPickable() && entity.distanceToSqr(position()) < 5 * 5)
                                 .forEach(entity -> super.doHurtTarget(serverLevel, entity));
@@ -640,7 +640,7 @@ public class DeadKingBoss extends AbstractSpellCastingMob implements Enemy, IAni
 
     @Override
     public boolean doHurtTarget(ServerLevel serverLevel, Entity pEntity) {
-        level.playSound(null, getX(), getY(), getZ(), SoundRegistry.DEAD_KING_HIT.get(), SoundSource.HOSTILE, 1, 1);
+        level.playSound(null, getX(), getY(), getZ(), SoundRegistry.DEAD_KING_HIT.value(), SoundSource.HOSTILE, 1, 1);
         return super.doHurtTarget(serverLevel, pEntity);
     }
 

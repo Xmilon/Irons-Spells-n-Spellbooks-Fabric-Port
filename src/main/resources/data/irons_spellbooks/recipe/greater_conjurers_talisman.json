@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "V": {
-      "item": "irons_spellbooks:bloody_vellum"
-    },
-    "A": {
-      "item": "irons_spellbooks:arcane_rune"
-    },
-    "T": {
-      "item": "irons_spellbooks:conjurers_talisman"
-    }
+    "V": "irons_spellbooks:bloody_vellum",
+    "A": "irons_spellbooks:arcane_rune",
+    "T": "irons_spellbooks:conjurers_talisman"
   },
   "pattern": [
     " V ",

@@ -11,7 +11,7 @@
       ],
       "conditions": [
         {
-          "condition": "minecraft:random_chance",
+          "type": "minecraft:random_chance",
           "chance": 0.25
         }
       ]
@@ -24,7 +24,7 @@
           "name": "minecraft:bundle",
           "functions": [
             {
-              "function": "minecraft:set_contents",
+              "type": "minecraft:set_contents",
               "component": "minecraft:bundle_contents",
               "entries": [
                 {
@@ -32,8 +32,9 @@
                   "name": "minecraft:emerald",
                   "functions": [
                     {
-                      "function": "minecraft:set_count",
+                      "type": "minecraft:set_count",
                       "count": {
+                        "type": "minecraft:uniform",
                         "min": 42,
                         "max": 56
                       }
@@ -81,7 +82,7 @@
           "name": "minecraft:goat_horn",
           "functions": [
             {
-              "function": "minecraft:set_instrument",
+              "type": "minecraft:set_instrument",
               "options": "#irons_spellbooks:fog_horn"
             }
           ]
@@ -96,8 +97,9 @@
           "name": "minecraft:paper",
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 27,
                 "max": 35
               }

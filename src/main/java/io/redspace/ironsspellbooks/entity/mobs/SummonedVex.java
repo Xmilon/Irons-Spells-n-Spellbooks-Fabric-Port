@@ -60,12 +60,12 @@ public class SummonedVex extends Vex implements IMagicSummon {
     }
 
     @Override
-    public boolean isPreventingPlayerRest(Player pPlayer) {
+    public boolean isPreventingPlayerRest(ServerLevel serverLevel, Player pPlayer) {
         return !this.isAlliedTo(pPlayer);
     }
 
     @Override
-    public boolean doHurtTarget(Entity pEntity) {
+    public boolean doHurtTarget(ServerLevel serverLevel, Entity pEntity) {
         return Utils.doMeleeAttack(this, pEntity, SpellRegistry.SUMMON_VEX_SPELL.get().getDamageSource(this, getSummoner()));
     }
 
@@ -167,7 +167,7 @@ public class SummonedVex extends Vex implements IMagicSummon {
             LivingEntity livingentity = SummonedVex.this.getTarget();
             if (livingentity != null) {
                 if (SummonedVex.this.getBoundingBox().intersects(livingentity.getBoundingBox())) {
-                    SummonedVex.this.doHurtTarget(livingentity);
+                    SummonedVex.this.doHurtTarget((ServerLevel) SummonedVex.this.level(), livingentity);
                     SummonedVex.this.setIsCharging(false);
                 } else {
                     double d0 = SummonedVex.this.distanceToSqr(livingentity);

@@ -68,11 +68,11 @@ public class WispSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.EVOCATION_CAST.get());
+        return Optional.of(SoundRegistry.EVOCATION_CAST.value());
     }
 
     public static SoundEvent getImpactSound() {
-        return SoundRegistry.DARK_MAGIC_BUFF_03_CUSTOM_1.get();
+        return SoundRegistry.DARK_MAGIC_BUFF_03_CUSTOM_1.value();
     }
 
     @Override

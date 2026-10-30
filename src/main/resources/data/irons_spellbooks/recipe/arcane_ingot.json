@@ -6,12 +6,8 @@
     "DDD"
   ],
   "key": {
-    "D": {
-      "item": "irons_spellbooks:arcane_essence"
-    },
-    "W": {
-      "tag": "irons_spellbooks:arcane_ingot_base"
-    }
+    "D": "irons_spellbooks:arcane_essence",
+    "W": "#irons_spellbooks:arcane_ingot_base"
   },
   "result": {
     "id": "irons_spellbooks:arcane_ingot",

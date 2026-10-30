@@ -9,7 +9,7 @@ public class EventHooks {
         return true;
     }
 
-    public static boolean checkSpawnPosition(net.minecraft.world.entity.Mob mob, net.minecraft.server.level.ServerLevel level, net.minecraft.world.entity.MobSpawnType spawnType) {
+    public static boolean checkSpawnPosition(net.minecraft.world.entity.Mob mob, net.minecraft.server.level.ServerLevel level, net.minecraft.world.entity.EntitySpawnReason spawnType) {
         return true;
     }
 }

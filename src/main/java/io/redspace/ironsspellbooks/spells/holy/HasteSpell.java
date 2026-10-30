@@ -72,7 +72,7 @@ public class HasteSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.CLOUD_OF_REGEN_LOOP.get());
+        return Optional.of(SoundRegistry.CLOUD_OF_REGEN_LOOP.value());
     }
 
     @Override
@@ -100,7 +100,7 @@ public class HasteSpell extends AbstractSpell {
                 AtomicInteger targets = new AtomicInteger(0);
                 targetEntity.level().getEntitiesOfClass(LivingEntity.class, targetEntity.getBoundingBox().inflate(radius)).forEach((victim) -> {
                     if (targets.get() < MAX_TARGETS && victim.distanceToSqr(targetEntity) < radius * radius && Utils.shouldHealEntity(entity, victim)) {
-                        victim.addEffect(new MobEffectInstance(net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MobEffectRegistry.HASTENED.get()), getDuration(spellLevel, entity), getAmplifier(spellLevel, entity)));
+                        victim.addEffect(new MobEffectInstance(MobEffectRegistry.HASTENED, getDuration(spellLevel, entity), getAmplifier(spellLevel, entity)));
                         targets.incrementAndGet();
                     }
                 });

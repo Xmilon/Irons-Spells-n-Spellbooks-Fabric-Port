@@ -69,7 +69,7 @@ public class ArrowVolleySpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.ARROW_VOLLEY_PREPARE.get());
+        return Optional.of(SoundRegistry.ARROW_VOLLEY_PREPARE.value());
     }
 
     @Override

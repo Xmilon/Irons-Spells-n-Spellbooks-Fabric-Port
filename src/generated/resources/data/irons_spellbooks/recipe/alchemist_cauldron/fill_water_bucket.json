@@ -4,9 +4,7 @@
     "amount": 1000,
     "id": "minecraft:water"
   },
-  "input": {
-    "item": "minecraft:water_bucket"
-  },
+  "input": "minecraft:water_bucket",
   "mustFitAll": true,
   "result": {
     "count": 1,

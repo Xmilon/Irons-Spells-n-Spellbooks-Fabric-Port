@@ -66,12 +66,12 @@ public class BlightSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.BLIGHT_BEGIN.get());
+        return Optional.of(SoundRegistry.BLIGHT_BEGIN.value());
     }
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.POISON_CAST.get());
+        return Optional.of(SoundRegistry.POISON_CAST.value());
     }
 
 
@@ -85,7 +85,7 @@ public class BlightSpell extends AbstractSpell {
         if (playerMagicData.getAdditionalCastData() instanceof TargetEntityCastData targetData) {
             var targetEntity = targetData.getTarget((ServerLevel) world);
             if (targetEntity != null) {
-                targetEntity.addEffect(new MobEffectInstance(net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MobEffectRegistry.BLIGHT.get()), getDuration(spellLevel, entity), getAmplifier(spellLevel, entity)));
+                targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.BLIGHT, getDuration(spellLevel, entity), getAmplifier(spellLevel, entity)));
             }
         }
 

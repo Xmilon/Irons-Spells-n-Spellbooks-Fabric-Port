@@ -21,19 +21,19 @@ public class PotionRegistry {
         POTIONS.register(eventBus);
     }
 
-    public static final DeferredHolder<Potion, Potion> INSTANT_MANA_ONE = POTIONS.register("instant_mana_one", () -> new Potion("mana", new MobEffectInstance(net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MobEffectRegistry.INSTANT_MANA.get()))));
-    public static final DeferredHolder<Potion, Potion> INSTANT_MANA_TWO = POTIONS.register("instant_mana_two", () -> new Potion("mana", new MobEffectInstance(net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MobEffectRegistry.INSTANT_MANA.get()), 0, 1)));
-    public static final DeferredHolder<Potion, Potion> INSTANT_MANA_THREE = POTIONS.register("instant_mana_three", () -> new Potion("mana", new MobEffectInstance(net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MobEffectRegistry.INSTANT_MANA.get()), 0, 2)));
-    public static final DeferredHolder<Potion, Potion> INSTANT_MANA_FOUR = POTIONS.register("instant_mana_four", () -> new Potion("mana", new MobEffectInstance(net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MobEffectRegistry.INSTANT_MANA.get()), 0, 3)));
+    public static final DeferredHolder<Potion, Potion> INSTANT_MANA_ONE = POTIONS.register("instant_mana_one", () -> new Potion("mana", new MobEffectInstance(MobEffectRegistry.INSTANT_MANA)));
+    public static final DeferredHolder<Potion, Potion> INSTANT_MANA_TWO = POTIONS.register("instant_mana_two", () -> new Potion("mana", new MobEffectInstance(MobEffectRegistry.INSTANT_MANA, 0, 1)));
+    public static final DeferredHolder<Potion, Potion> INSTANT_MANA_THREE = POTIONS.register("instant_mana_three", () -> new Potion("mana", new MobEffectInstance(MobEffectRegistry.INSTANT_MANA, 0, 2)));
+    public static final DeferredHolder<Potion, Potion> INSTANT_MANA_FOUR = POTIONS.register("instant_mana_four", () -> new Potion("mana", new MobEffectInstance(MobEffectRegistry.INSTANT_MANA, 0, 3)));
 
     @SubscribeEvent
     public static void addRecipes(RegisterBrewingRecipesEvent event) {
         //IronsSpellbooks.LOGGER.debug("adding potion recipes");
 
-        event.getBuilder().addMix(Potions.AWKWARD, ItemRegistry.ARCANE_ESSENCE.get(), PotionRegistry.INSTANT_MANA_ONE);
-        event.getBuilder().addMix(PotionRegistry.INSTANT_MANA_ONE, Items.GLOWSTONE_DUST, PotionRegistry.INSTANT_MANA_TWO);
-        event.getBuilder().addMix(PotionRegistry.INSTANT_MANA_TWO, Items.AMETHYST_SHARD, PotionRegistry.INSTANT_MANA_THREE);
-        event.getBuilder().addMix(PotionRegistry.INSTANT_MANA_THREE, Items.AMETHYST_CLUSTER, PotionRegistry.INSTANT_MANA_FOUR);
+        event.getBuilder().addMix(Potions.AWKWARD, ItemRegistry.ARCANE_ESSENCE.get(), PotionRegistry.INSTANT_MANA_ONE.holder());
+        event.getBuilder().addMix(PotionRegistry.INSTANT_MANA_ONE.holder(), Items.GLOWSTONE_DUST, PotionRegistry.INSTANT_MANA_TWO.holder());
+        event.getBuilder().addMix(PotionRegistry.INSTANT_MANA_TWO.holder(), Items.AMETHYST_SHARD, PotionRegistry.INSTANT_MANA_THREE.holder());
+        event.getBuilder().addMix(PotionRegistry.INSTANT_MANA_THREE.holder(), Items.AMETHYST_CLUSTER, PotionRegistry.INSTANT_MANA_FOUR.holder());
     }
 }
 

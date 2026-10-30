@@ -82,11 +82,11 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
                     boss.yBodyRot = f;
                     boss.yBodyRotO = f;
                     boss.setSpawnPos(boss.position());
-                    boss.finalizeSpawn((ServerLevel) level(), level().getCurrentDifficultyAt(boss.getOnPos()), EntitySpawnReason.TRIGGERED, null);
+                    boss.finalizeSpawn((ServerLevel) level(), ((ServerLevel) level()).getCurrentDifficultyAt(boss.getOnPos()), EntitySpawnReason.TRIGGERED, null);
                     boss.setPersistenceRequired();
                     level.addFreshEntity(boss);
                     MagicManager.spawnParticles(level(), ParticleTypes.SCULK_SOUL, position().x, position().y + 2.5, position().z, 80, .2, .2, .2, .25, true);
-                    level.playSound(null, getX(), getY(), getZ(), SoundRegistry.DEAD_KING_SPAWN.get(), SoundSource.MASTER, 20, 1);
+                    level.playSound(null, getX(), getY(), getZ(), SoundRegistry.DEAD_KING_SPAWN.value(), SoundSource.MASTER, 20, 1);
                     discard();
                 }
             } else {
@@ -155,7 +155,7 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
 
     public void trigger() {
         if (!triggered()) {
-            level.playSound(null, getX(), getY(), getZ(), SoundRegistry.DEAD_KING_RESURRECT.get(), SoundSource.AMBIENT, 2, 1);
+            level.playSound(null, getX(), getY(), getZ(), SoundRegistry.DEAD_KING_RESURRECT.value(), SoundSource.AMBIENT, 2, 1);
             this.entityData.set(TRIGGERED, true);
             if (this.ambienceSoundManager != null) {
                 ambienceSoundManager.triggerStop();
@@ -185,7 +185,7 @@ public class DeadKingCorpseEntity extends AbstractSpellCastingMob {
         controllerRegistrar.add(new AnimationController<>("idle", 0, this::idlePredicate));
     }
 
-    private PlayState idlePredicate(AnimationState event) {
+    private PlayState idlePredicate(com.geckolib.animation.state.AnimationTest event) {
         if (triggered()) {
             event.controller().setAnimation(rise);
         } else {

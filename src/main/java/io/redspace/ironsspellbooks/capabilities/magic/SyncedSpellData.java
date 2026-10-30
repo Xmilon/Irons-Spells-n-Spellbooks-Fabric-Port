@@ -49,13 +49,13 @@ public class SyncedSpellData {
     }
 
     public static void write(FriendlyByteBuf buffer, SyncedSpellData data) {
-        buffer.writeInt(data.serverPlayerId);
+        buffer.writeInt(data.getServerPlayerId());
         buffer.writeBoolean(data.isCasting);
         buffer.writeUtf(data.castingSpellId);
         buffer.writeInt(data.castingSpellLevel);
         buffer.writeFloat(data.heartStopAccumulatedDamage);
         buffer.writeInt(data.evasionHitsRemaining);
-        buffer.writeResourceLocation(data.spinAttackType.textureId());
+        buffer.writeIdentifier(data.spinAttackType.textureId());
         buffer.writeBoolean(data.spinAttackType.fullbright());
         buffer.writeUtf(data.castingEquipmentSlot);
         data.learnedSpellData.writeToBuffer(buffer);
@@ -69,7 +69,7 @@ public class SyncedSpellData {
         data.castingSpellLevel = buffer.readInt();
         data.heartStopAccumulatedDamage = buffer.readFloat();
         data.evasionHitsRemaining = buffer.readInt();
-        data.spinAttackType = new SpinAttackType(buffer.readResourceLocation(), buffer.readBoolean());
+        data.spinAttackType = new SpinAttackType(buffer.readIdentifier(), buffer.readBoolean());
         data.castingEquipmentSlot = buffer.readUtf();
         data.learnedSpellData.readFromBuffer(buffer);
         data.spellSelection.readFromBuffer(buffer);
@@ -78,7 +78,8 @@ public class SyncedSpellData {
 
     //Use this on the server
     public SyncedSpellData(LivingEntity livingEntity) {
-        this(livingEntity == null ? -1 : livingEntity.getId());
+        // the entity id is read lazily: on the client the id is assigned after construction and Entity#getId throws before that
+        this(-1);
         this.livingEntity = livingEntity;
     }
 
@@ -150,7 +151,7 @@ public class SyncedSpellData {
     }
 
     public int getServerPlayerId() {
-        return serverPlayerId;
+        return livingEntity != null ? livingEntity.getId() : serverPlayerId;
     }
 
     public String getCastingEquipmentSlot() {

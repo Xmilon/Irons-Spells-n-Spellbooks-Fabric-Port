@@ -56,8 +56,8 @@ public class DevourJawRenderer extends EntityBackedRenderer<DevourJaw> {
         public DevourJawModel(ModelPart pRoot) {
             this.root = pRoot;
             this.base = pRoot.getChild("base");
-            this.upperJaw = pRoot.getChild("upper_jaw");
-            this.lowerJaw = pRoot.getChild("lower_jaw");
+            this.upperJaw = this.base.getChild("upper_jaw");
+            this.lowerJaw = this.base.getChild("lower_jaw");
         }
 
         public void setupAnim(DevourJaw entity, float time) {
@@ -72,9 +72,8 @@ public class DevourJawRenderer extends EntityBackedRenderer<DevourJaw> {
             float f2 = (time / interval);
             f2 = .5f * Mth.cos(.5f * Mth.PI * (f2 - 1)) + .5f;
             f2 *= f2;
-            this.upperJaw.y = -18F * f2 + 16f;
-            this.lowerJaw.y = this.upperJaw.y;
-            this.base.y = this.upperJaw.y;
+            // jaws are children of base in 26.x, so moving base moves all three
+            this.base.y = -18F * f2 + 16f;
         }
     }
 }

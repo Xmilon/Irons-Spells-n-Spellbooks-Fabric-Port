@@ -59,7 +59,7 @@ public class SpectralHammer extends LivingEntity implements GeoEntity {
         super(entityType, level);
         this.level = level;
         this.setNoGravity(true);
-        this.setInvulnerable(true);
+        this.setPermanentlyInvulnerable(true);
     }
 
     public SpectralHammer(Level levelIn, LivingEntity owner, BlockHitResult blockHitResult, int depth, int radius) {
@@ -104,7 +104,7 @@ public class SpectralHammer extends LivingEntity implements GeoEntity {
 
         if (ticksAlive == doDamageTick - 2 && !didDamage) {
             var location = this.position();
-            level().playSound(null, location.x, location.y, location.z, SoundRegistry.FORCE_IMPACT.get(), SoundSource.NEUTRAL, 2f, random.nextIntBetweenInclusive(6, 8) * .1f);
+            level().playSound(null, location.x, location.y, location.z, SoundRegistry.FORCE_IMPACT.value(), SoundSource.NEUTRAL, 2f, random.nextIntBetweenInclusive(6, 8) * .1f);
             level().playSound(null, location.x, location.y, location.z, SoundEvents.ZOMBIE_ATTACK_IRON_DOOR, SoundSource.NEUTRAL, 1f, random.nextIntBetweenInclusive(6, 8) * .1f);
 
         }

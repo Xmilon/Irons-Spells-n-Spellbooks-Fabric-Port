@@ -67,12 +67,12 @@ public class BlackHoleSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.BLACK_HOLE_CHARGE.get());
+        return Optional.of(SoundRegistry.BLACK_HOLE_CHARGE.value());
     }
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.BLACK_HOLE_CAST.get());
+        return Optional.of(SoundRegistry.BLACK_HOLE_CAST.value());
     }
 
     @Override
@@ -91,7 +91,7 @@ public class BlackHoleSpell extends AbstractSpell {
             }
         }
 
-        level.playSound(null, center.x, center.y, center.z, SoundRegistry.BLACK_HOLE_CAST.get(), SoundSource.AMBIENT, 4, 1);
+        level.playSound(null, center.x, center.y, center.z, SoundRegistry.BLACK_HOLE_CAST.value(), SoundSource.AMBIENT, 4, 1);
 
         BlackHole blackHole = new BlackHole(level, entity);
         blackHole.setRadius(radius);

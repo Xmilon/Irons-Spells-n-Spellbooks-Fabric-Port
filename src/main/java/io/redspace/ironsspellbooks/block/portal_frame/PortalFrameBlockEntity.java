@@ -155,7 +155,7 @@ public class PortalFrameBlockEntity extends BlockEntity {
                     serverLevel.playSound(null, this.getBlockPos(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.BLOCKS, 1f, 1f);
                     ServerLevel destinationLevel = serverLevel;
                     if (serverLevel.dimension().equals(portalPos.dimension())) {
-                        entity.teleportTo(serverLevel, destination.x, destination.y, destination.z, Relative.ROTATION, portalPos.rotation(), entity.getXRot());
+                        entity.teleportTo(serverLevel, destination.x, destination.y, destination.z, java.util.Set.of(), portalPos.rotation(), entity.getXRot(), false);
                     } else {
                         var server = serverLevel.getServer();
                         var dim = server.getLevel(portalPos.dimension());

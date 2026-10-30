@@ -10,7 +10,7 @@ import java.util.function.Supplier;
 
 public class DeferredSpawnEggItem extends SpawnEggItem {
     public DeferredSpawnEggItem(Supplier<? extends EntityType<?>> type, int primaryColor, int secondaryColor, Item.Properties properties) {
-        super((EntityType<? extends Mob>) type.get(), primaryColor, secondaryColor, properties);
+        super(properties.spawnEgg(type.get()));
     }
 
     public DeferredSpawnEggItem(DeferredHolder<EntityType<?>, ? extends EntityType<?>> type, int primaryColor, int secondaryColor, Item.Properties properties) {

@@ -10,7 +10,6 @@ import com.geckolib.renderer.base.RenderPassInfo;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.SyncedSpellData;
@@ -21,7 +20,9 @@ import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.client.model.HumanoidModel;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
-import net.minecraft.client.renderer.entity.layers.EyesLayer;
+import net.minecraft.client.renderer.SubmitNodeCollector;
+import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.EquipmentSlot;
@@ -35,28 +36,24 @@ public class GlowingEyesLayer {
     public static final Identifier EYE_TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/purple_eyes.png");
     public static final RenderType EYES = RenderTypes.eyes(EYE_TEXTURE);
 
-    public static class Vanilla<T extends LivingEntity, M extends HumanoidModel<T>> extends EyesLayer<T, M> {
+    public static class Vanilla<S extends HumanoidRenderState, M extends HumanoidModel<S>> extends RenderLayer<S, M> {
 
-        public Vanilla(RenderLayerParent pRenderer) {
-            super(pRenderer);
+        public Vanilla(RenderLayerParent<S, M> renderer) {
+            super(renderer);
         }
 
         @Override
-        public RenderType renderType() {
-            return EYES;
-        }
-
-        @Override
-        public void render(PoseStack poseStack, MultiBufferSource multiBufferSource, int pPackedLight, T livingEntity, float limbSwing, float limbSwingAmount, float partialTicks, float ageInTicks, float netHeadYaw, float headPitch) {
-            var eye = getEyeType(livingEntity);
-            if (eye != EyeType.None) {
-                VertexConsumer vertexconsumer = multiBufferSource.getBuffer(this.renderType());
-
-                //pMatrixStack.translate(0, -eye.yOffset, -eye.forwardOffset);
-                float scale = getEyeScale(livingEntity);
-                poseStack.scale(scale, scale, scale);
-                this.getParentModel().renderToBuffer(poseStack, vertexconsumer, 15728640, OverlayTexture.NO_OVERLAY, Utils.packRGB(new Vector3f(eye.r, eye.g, eye.b)));
+        public void submit(PoseStack poseStack, SubmitNodeCollector collector, int packedLight, S state, float yRot, float xRot) {
+            var effects = LivingEffectsRenderState.get(state);
+            if (effects == null || effects.hideAll() || effects.eye() == EyeType.None) {
+                return;
             }
+            var eye = effects.eye();
+            poseStack.pushPose();
+            float scale = effects.eyeScale();
+            poseStack.scale(scale, scale, scale);
+            collector.submitModel(this.getParentModel(), state, poseStack, EYES, 15728640, OverlayTexture.NO_OVERLAY, Utils.packRGB(new Vector3f(eye.r, eye.g, eye.b)) | 0xFF000000, null, state.outlineColor);
+            poseStack.popPose();
         }
     }
 

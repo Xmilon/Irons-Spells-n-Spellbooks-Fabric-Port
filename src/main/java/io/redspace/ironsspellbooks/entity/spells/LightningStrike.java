@@ -59,7 +59,7 @@ public class LightningStrike extends AoeEntity {
                 Vec3 split = middle.add(Utils.getRandomScaled(2), -Math.abs(Utils.getRandomScaled(2)), Utils.getRandomScaled(2));
                 MagicManager.spawnParticles(level, new ZapParticleOption(middle), split.x, split.y, split.z, 1, 0, 0, 0, 0, true);
             }
-            playSound(SoundRegistry.SMALL_LIGHTNING_STRIKE.get(), 2f, .8f + random.nextFloat() * .5f);
+            playSound(SoundRegistry.SMALL_LIGHTNING_STRIKE.value(), 2f, .8f + random.nextFloat() * .5f);
         }
         if (this.tickCount > chargeTime) {
             discard();

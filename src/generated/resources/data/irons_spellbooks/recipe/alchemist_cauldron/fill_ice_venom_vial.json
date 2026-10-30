@@ -4,9 +4,7 @@
     "amount": 250,
     "id": "irons_spellbooks:ice_venom"
   },
-  "input": {
-    "item": "irons_spellbooks:ice_venom_vial"
-  },
+  "input": "irons_spellbooks:ice_venom_vial",
   "result": {
     "count": 1,
     "id": "minecraft:glass_bottle"

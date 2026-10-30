@@ -27,7 +27,8 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Recipe Type for taking liquids out of the cauldron (emptying cauldron)
  */
-public record EmptyAlchemistCauldronRecipe(Ingredient input, ItemStack result,
+// the result stack is a template: recipes load before item components are bound
+public record EmptyAlchemistCauldronRecipe(Ingredient input, net.minecraft.world.item.ItemStackTemplate resultItem,
                                            FluidStack fluid,
                                            Holder<SoundEvent> emptySound) implements Recipe<EmptyAlchemistCauldronRecipe.Input> {
     public record Input(ItemStack item, FluidStack fluid) implements RecipeInput {
@@ -43,7 +44,7 @@ public record EmptyAlchemistCauldronRecipe(Ingredient input, ItemStack result,
     }
 
     public ItemStack result() {
-        return result.copy();
+        return resultItem.create();
     }
 
     @Override
@@ -58,7 +59,7 @@ public record EmptyAlchemistCauldronRecipe(Ingredient input, ItemStack result,
 
     @Override
     public ItemStack assemble(EmptyAlchemistCauldronRecipe.Input input) {
-        return result.copy();
+        return resultItem.create();
     }
 
     @Override
@@ -101,13 +102,13 @@ public record EmptyAlchemistCauldronRecipe(Ingredient input, ItemStack result,
 
         public static final MapCodec<EmptyAlchemistCauldronRecipe> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
                 Ingredient.CODEC.fieldOf("input").forGetter(EmptyAlchemistCauldronRecipe::input),
-                ItemStack.CODEC.fieldOf("result").forGetter(EmptyAlchemistCauldronRecipe::result),
+                net.minecraft.world.item.ItemStackTemplate.CODEC.fieldOf("result").forGetter(EmptyAlchemistCauldronRecipe::resultItem),
                 FluidStack.CODEC.fieldOf("fluid").forGetter(EmptyAlchemistCauldronRecipe::fluid),
                 BuiltInRegistries.SOUND_EVENT.holderByNameCodec().optionalFieldOf("sound", BuiltInRegistries.SOUND_EVENT.wrapAsHolder(SoundEvents.BOTTLE_FILL)).forGetter(EmptyAlchemistCauldronRecipe::emptySound)
         ).apply(builder, EmptyAlchemistCauldronRecipe::new));
         public static final StreamCodec<RegistryFriendlyByteBuf, EmptyAlchemistCauldronRecipe> STREAM_CODEC = StreamCodec.composite(
                 Ingredient.CONTENTS_STREAM_CODEC, EmptyAlchemistCauldronRecipe::input,
-                ItemStack.STREAM_CODEC, EmptyAlchemistCauldronRecipe::result,
+                net.minecraft.world.item.ItemStackTemplate.STREAM_CODEC, EmptyAlchemistCauldronRecipe::resultItem,
                 FluidStack.STREAM_CODEC, EmptyAlchemistCauldronRecipe::fluid,
                 ByteBufCodecs.holderRegistry(Registries.SOUND_EVENT), EmptyAlchemistCauldronRecipe::emptySound,
                 EmptyAlchemistCauldronRecipe::new
@@ -162,7 +163,7 @@ public record EmptyAlchemistCauldronRecipe(Ingredient input, ItemStack result,
 
         @Override
         public void save(RecipeOutput recipeOutput, ResourceKey<Recipe<?>> id) {
-            recipeOutput.accept(id, new EmptyAlchemistCauldronRecipe(input, returned, fluid, BuiltInRegistries.SOUND_EVENT.wrapAsHolder(soundEvent)), null);
+            recipeOutput.accept(id, new EmptyAlchemistCauldronRecipe(input, net.minecraft.world.item.ItemStackTemplate.fromNonEmptyStack(returned), fluid, BuiltInRegistries.SOUND_EVENT.wrapAsHolder(soundEvent)), null);
         }
     }
 }

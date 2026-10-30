@@ -8,7 +8,7 @@
           "name": "irons_spellbooks:scroll",
           "functions": [
             {
-              "function": "irons_spellbooks:randomize_spell",
+              "type": "irons_spellbooks:randomize_spell",
               "quality": {
                 "min": 0.0,
                 "max": 0.75,
@@ -31,7 +31,7 @@
           "name": "irons_spellbooks:affinity_ring",
           "functions": [
             {
-              "function": "irons_spellbooks:randomize_ring_enhancement",
+              "type": "irons_spellbooks:randomize_ring_enhancement",
               "school": "irons_spellbooks:ice"
             }
           ]
@@ -49,6 +49,7 @@
     },
     {
       "rolls": {
+        "type": "minecraft:uniform",
         "min": 6,
         "max": 12
       },
@@ -58,8 +59,9 @@
           "name": "minecraft:snowball",
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 1,
                 "max": 2
               }
@@ -71,8 +73,9 @@
           "name": "minecraft:ice",
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 2,
                 "max": 4
               }

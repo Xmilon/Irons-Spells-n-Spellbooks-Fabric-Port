@@ -51,8 +51,8 @@ public class OminousSpawnFireOrbGoal extends Goal {
         cooldown = BASE_COOLDOWN_TICKS + mob.getRandom().nextIntBetweenInclusive(7, 13) * 20;
         var target = mob.getTarget();
         if (target != null) {
-            mob.playSound(SoundRegistry.FIRE_BOSS_FIREBALL.get(), 3f, Utils.random.nextIntBetweenInclusive(80, 110) * .01f);
-            mob.playSound(SoundRegistry.SOULCALLER_TOLL_SUCCESS.get(), 3f, .75f);
+            mob.playSound(SoundRegistry.FIRE_BOSS_FIREBALL.value(), 3f, Utils.random.nextIntBetweenInclusive(80, 110) * .01f);
+            mob.playSound(SoundRegistry.SOULCALLER_TOLL_SUCCESS.value(), 3f, .75f);
             MagicManager.spawnParticles(mob.level(), new BlastwaveParticleOptions(.3f, .4f, 1f, 24), pos.x, pos.y + 1, pos.z, 0, 0, 0, 0, 0, true);
 
             float intensity = Mth.lerp(mob.getHealth() / mob.getMaxHealth(), 1, 0.75f);

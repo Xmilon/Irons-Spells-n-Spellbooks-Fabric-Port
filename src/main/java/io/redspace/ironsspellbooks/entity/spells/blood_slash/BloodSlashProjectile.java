@@ -176,7 +176,7 @@ public class BloodSlashProjectile extends Projectile implements AntiMagicSuscept
                 double dx = Math.random() * speed * 2 - speed;
                 double dy = Math.random() * speed * 2 - speed;
                 double dz = Math.random() * speed * 2 - speed;
-                level().addParticle(ParticleHelper.BLOOD, false, x + rotX + dx, y + dy, z + rotZ + dz, dx, dy, dz);
+                level().addParticle(ParticleHelper.BLOOD, false, false, x + rotX + dx, y + dy, z + rotZ + dz, dx, dy, dz);
             }
         }
     }

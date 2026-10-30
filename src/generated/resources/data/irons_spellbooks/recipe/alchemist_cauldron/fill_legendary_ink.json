@@ -4,9 +4,7 @@
     "amount": 250,
     "id": "irons_spellbooks:legendary_ink"
   },
-  "input": {
-    "item": "irons_spellbooks:legendary_ink"
-  },
+  "input": "irons_spellbooks:legendary_ink",
   "result": {
     "count": 1,
     "id": "minecraft:glass_bottle"

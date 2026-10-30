@@ -174,7 +174,9 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityWit
             anchor.putFloat("z", (float) vec.z);
             anchors.add(anchor);
         }
-        compoundTag.put("Anchors", anchors);
+        var anchorsWrapper = new CompoundTag();
+        anchorsWrapper.put("a", anchors);
+        compoundTag.store("Anchors", CompoundTag.CODEC, anchorsWrapper);
         super.addAdditionalSaveData(compoundTag);
     }
 
@@ -189,9 +191,9 @@ public class WallOfFireEntity extends AbstractShieldEntity implements IEntityWit
         //9 is list tag id
         //TODO: use castData
         anchorPoints = new ArrayList<>();
-        if (compoundTag.contains("Anchors")) {
-            ListTag anchors = (ListTag) compoundTag.get("Anchors");
-            for (Tag tag : anchors) {
+        var storedAnchors = compoundTag.read("Anchors", CompoundTag.CODEC).map(w -> w.getListOrEmpty("a"));
+        if (storedAnchors.isPresent()) {
+            for (Tag tag : storedAnchors.get()) {
                 if (tag instanceof CompoundTag anchor) {
                     anchorPoints.add(new Vec3(anchor.getDoubleOr("x", 0d), anchor.getDoubleOr("y", 0d), anchor.getDoubleOr("z", 0d)));
                 }

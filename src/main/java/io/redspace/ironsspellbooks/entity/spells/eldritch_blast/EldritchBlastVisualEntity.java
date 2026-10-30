@@ -47,7 +47,7 @@ public class EldritchBlastVisualEntity extends Entity implements IEntityWithComp
                 var forward = getForward();
                 for (float i = 1; i < distance; i += .5f) {
                     Vec3 pos = position().add(forward.scale(i));
-                    level().addParticle(ParticleTypes.SMOKE, false, pos.x, pos.y + .5, pos.z, 0, 0, 0);
+                    level().addParticle(ParticleTypes.SMOKE, false, false, pos.x, pos.y + .5, pos.z, 0, 0, 0);
                 }
             }
         } else if (tickCount > lifetime) {

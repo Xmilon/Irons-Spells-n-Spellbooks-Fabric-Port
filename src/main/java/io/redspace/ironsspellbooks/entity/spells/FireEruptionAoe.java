@@ -69,7 +69,7 @@ public class FireEruptionAoe extends AoeEntity {
             if (!level().isClientSide()) {
                 if (waveAnim % 2 == 0) {
                     float volume = (waveAnim + 8) / 16f;
-                    this.playSound(SoundRegistry.EARTHQUAKE_IMPACT.get(), volume, Utils.random.nextIntBetweenInclusive(90, 110) * .01f);
+                    this.playSound(SoundRegistry.EARTHQUAKE_IMPACT.value(), volume, Utils.random.nextIntBetweenInclusive(90, 110) * .01f);
                 }
                 var circumferenceMin = (waveAnim - 1) * 2 * 3.14f;
                 var circumferenceMax = (waveAnim + 1) * 2 * 3.14f;

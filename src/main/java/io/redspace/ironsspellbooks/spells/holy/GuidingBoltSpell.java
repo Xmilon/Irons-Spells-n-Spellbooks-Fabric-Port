@@ -64,7 +64,7 @@ public class GuidingBoltSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.GUIDING_BOLT_CAST.get());
+        return Optional.of(SoundRegistry.GUIDING_BOLT_CAST.value());
     }
 
     @Override

@@ -8,12 +8,15 @@ import io.redspace.ironsspellbooks.player.ClientMagicData;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.DeltaTracker;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.gui.Gui;
 import net.minecraft.client.gui.GuiGraphicsExtractor;
 import net.minecraft.client.renderer.RenderPipelines;
 import net.fabricmc.fabric.api.client.rendering.v1.hud.HudElement;
 import net.minecraft.resources.Identifier;
+import net.minecraft.tags.FluidTags;
+import net.minecraft.util.Mth;
 import net.minecraft.world.entity.player.Player;
+
+import static io.redspace.ironsspellbooks.api.registry.AttributeRegistry.MAX_MANA;
 
 public class ManaBarOverlay implements HudElement {
     public static final ManaBarOverlay instance = new ManaBarOverlay();
@@ -45,9 +48,8 @@ public class ManaBarOverlay implements HudElement {
     static final int ICON_ROW_HEIGHT = 11;
     static final int CHAR_WIDTH = 6;
     static final int HUNGER_BAR_OFFSET = 50;
-    static final int HUNGER_BAR_RIGHT_OFFSET = 97;
     static final int SCREEN_BORDER_MARGIN = 20;
-    static final int TEXT_COLOR = 0x55FFFF;
+    static final int TEXT_COLOR = 0xFF55FFFF;
 
     @Override
     public void extractRenderState(GuiGraphicsExtractor guiHelper, DeltaTracker deltaTracker) {
@@ -74,7 +76,7 @@ public class ManaBarOverlay implements HudElement {
         if (anchor == Anchor.XP && player.getJumpRidingScale() > 0) //Hide XP Mana bar when actively jumping on a horse
             return;
         barX = getBarX(anchor, screenWidth) + configOffsetX;
-        barY = getBarY(anchor, screenHeight, Minecraft.getInstance().gui) - configOffsetY;
+        barY = getBarY(anchor, screenHeight, player) - configOffsetY;
 
         //FIXME: while we do not have to set the texture, we do have to set the shader (mainly for transparency)
         //RenderSystem.setShader(GameRenderer::getPositionTexShader);
@@ -103,42 +105,62 @@ public class ManaBarOverlay implements HudElement {
         if (player == null) {
             return false;
         }
+        //We show mana if they are holding an item that can cast spells or if their mana is not full
         var display = ClientConfigs.safeGet(ClientConfigs.MANA_BAR_DISPLAY);
-        int maxMana = getPlayerMaxMana(player);
-        int mana = ClientMagicData.getPlayerMana();
         return !player.isSpectator() && display != Display.Never &&
-                (display == Display.Always || mana < maxMana);
+                (display == Display.Always || player.isHolding(itemStack -> itemStack.getItem() instanceof CastingItem || (ISpellContainer.isSpellContainer(itemStack) && !ISpellContainer.get(itemStack).mustEquip())) || ClientMagicData.getPlayerMana() < getPlayerMaxMana(player));
 
     }
 
+    // the server sends its own max mana (attributes + equipment); the client-side attribute alone can be stale
     private static int getPlayerMaxMana(Player player) {
-        int fromSynced = ClientMagicData.getSyncedMaxMana();
-        return fromSynced > 0 ? fromSynced : 100;
+        int synced = ClientMagicData.getSyncedMaxMana();
+        return synced > 0 ? synced : (int) io.redspace.ironsspellbooks.api.registry.AttributeRegistry.getMaxManaWithFallback(player);
     }
 
     private static int getBarX(Anchor anchor, int screenWidth) {
         if (anchor == Anchor.XP)
-            return screenWidth - XP_IMAGE_WIDTH - 16; // push to right side of the screen
-        if (anchor == Anchor.Hunger)
-            return screenWidth / 2 + HUNGER_BAR_RIGHT_OFFSET;
-        if (anchor == Anchor.Center)
-            return screenWidth / 2 - DEFAULT_IMAGE_WIDTH / 2;
+            return screenWidth / 2 - 91 - 3; //Vanilla's Pos - 3
+        if (anchor == Anchor.Hunger || anchor == Anchor.Center)
+            return screenWidth / 2 - DEFAULT_IMAGE_WIDTH / 2 + (anchor == Anchor.Center ? 0 : HUNGER_BAR_OFFSET);
         else if (anchor == Anchor.TopLeft || anchor == Anchor.BottomLeft)
             return SCREEN_BORDER_MARGIN;
         else return screenWidth - SCREEN_BORDER_MARGIN - DEFAULT_IMAGE_WIDTH;
 
     }
 
-    private static int getBarY(Anchor anchor, int screenHeight, Gui gui) {
+    private static int getBarY(Anchor anchor, int screenHeight, Player player) {
         if (anchor == Anchor.XP)
             return screenHeight - 32 + 3 - 7; //Vanilla's Pos - 7
         if (anchor == Anchor.Hunger)
-            return screenHeight - HOTBAR_HEIGHT - ICON_ROW_HEIGHT - IMAGE_HEIGHT / 2;
+            return screenHeight - (getRightHeight(player) - 2) - IMAGE_HEIGHT / 2;
         if (anchor == Anchor.Center)
-            return screenHeight - HOTBAR_HEIGHT - (int) (ICON_ROW_HEIGHT * 2.5f) - IMAGE_HEIGHT / 2;
+            return screenHeight - HOTBAR_HEIGHT - (int) (ICON_ROW_HEIGHT * 2.5f) - IMAGE_HEIGHT / 2 - (Math.max(getRightHeight(player), getLeftHeight(player)) - 49);
         if (anchor == Anchor.TopLeft || anchor == Anchor.TopRight)
             return SCREEN_BORDER_MARGIN;
         return screenHeight - SCREEN_BORDER_MARGIN - IMAGE_HEIGHT;
 
+    }
+
+    // Gui#rightHeight / #leftHeight were a NeoForge bookkeeping field; these rebuild what it held when the mana bar drew.
+    private static int getRightHeight(Player player) {
+        int height = 39 + 10; //food (or mount health) row
+        if (player.isEyeInFluid(FluidTags.WATER) || player.getAirSupply() < player.getMaxAirSupply()) {
+            height += 10; //air bubbles
+        }
+        return height;
+    }
+
+    private static int getLeftHeight(Player player) {
+        int healthRows = Mth.ceil((Mth.ceil(player.getMaxHealth()) + Mth.ceil(player.getAbsorptionAmount())) / 2f / 10f);
+        int rowHeight = Math.max(10 - (healthRows - 2), 3);
+        int height = 39 + healthRows * rowHeight;
+        if (rowHeight != 10) {
+            height += 10 - rowHeight;
+        }
+        if (player.getArmorValue() > 0) {
+            height += 10;
+        }
+        return height;
     }
 }

@@ -82,7 +82,13 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpell
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack itemStack, Item.TooltipContext context, @NotNull List<Component> lines, @NotNull TooltipFlag flag) {
+    public void appendHoverText(@NotNull ItemStack itemStack, @NotNull Item.TooltipContext context, @NotNull net.minecraft.world.item.component.TooltipDisplay display, @NotNull java.util.function.Consumer<Component> consumer, @NotNull TooltipFlag flag) {
+        var lines = new java.util.ArrayList<Component>();
+        appendHoverLines(itemStack, lines);
+        lines.forEach(consumer);
+    }
+
+    protected void appendHoverLines(ItemStack itemStack, List<Component> lines) {
         if (this.isUnique()) {
             lines.add(Component.translatable("tooltip.irons_spellbooks.spellbook_rarity", Component.translatable("tooltip.irons_spellbooks.spellbook_unique").withStyle(TooltipsUtils.UNIQUE_STYLE)).withStyle(ChatFormatting.GRAY));
         }
@@ -127,7 +133,7 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpell
     @NotNull
     @Override
     public ITrinket.SoundInfo getEquipSound(TrinketSlotContext TrinketSlotContext, ItemStack stack) {
-        return new ITrinket.SoundInfo(SoundRegistry.EQUIP_SPELL_BOOK.get(), 1.0f, 1.0f);
+        return new ITrinket.SoundInfo(SoundRegistry.EQUIP_SPELL_BOOK.value(), 1.0f, 1.0f);
     }
 
     @Override
@@ -149,12 +155,12 @@ public class SpellBook extends CurioBaseItem implements ISpellbook, IPresetSpell
             return spellbookData.getActiveSpells().stream().map(slot -> {
                 var color = slot.getSpell().getSchoolType().getDisplayName().getStyle().getColor().getValue();
                 color = RenderHelper.colorLerp(.6f, color, 0);
-                var titleStyle = Style.EMPTY.withColor(color).withUnderlined(true).withBold(true).withClickEvent(new ClickEvent(ClickEvent.Action.OPEN_URL, "https://www.patreon.com/iron431"));
+                var titleStyle = Style.EMPTY.withColor(color).withUnderlined(true).withBold(true).withClickEvent(new ClickEvent.OpenUrl(java.net.URI.create("https://www.patreon.com/iron431")));
                 boolean hideStats = false;
                 if (player != null) {
                     var scrollTooltip = TooltipsUtils.formatActiveSpellTooltip(null, slot.spellData(), CastSource.SPELLBOOK, (LocalPlayer) player);
                     scrollTooltip.remove(0); // this is a space for tooltip, which we don't want
-                    titleStyle = titleStyle.withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, scrollTooltip.stream().reduce((a, b) -> a.append("\n").append(b)).get()));
+                    titleStyle = titleStyle.withHoverEvent(new HoverEvent.ShowText(scrollTooltip.stream().reduce((a, b) -> a.append("\n").append(b)).get()));
                     if (slot.getSpell().obfuscateStats(player)) {
                         hideStats = true;
                     }

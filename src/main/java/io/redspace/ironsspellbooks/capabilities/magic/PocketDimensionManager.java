@@ -23,6 +23,7 @@ import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
+import net.minecraft.world.phys.Vec3;
 import net.neoforged.neoforge.common.util.INBTSerializable;
 import org.jetbrains.annotations.UnknownNullability;
 
@@ -105,14 +106,14 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
 
     public BlockPos findPortalForStructure(ServerLevel pocketDimension, BlockPos blockPos) {
         BlockPos defaultPos = blockPos.south(10).east(7).above(2);
-        if (pocketDimension.getBlockState(defaultPos).is(BlockRegistry.POCKET_PORTAL_FRAME)) {
+        if (pocketDimension.getBlockState(defaultPos).is(BlockRegistry.POCKET_PORTAL_FRAME.get())) {
             return defaultPos;
         } else {
             for (int x = 0; x < 16; x++) {
                 for (int z = 0; z < 16; z++) {
                     for (int y = 0; y < 32; y++) {
                         BlockPos pos = blockPos.south(x).east(z).above(y);
-                        if (pocketDimension.getBlockState(pos).is(BlockRegistry.POCKET_PORTAL_FRAME)) {
+                        if (pocketDimension.getBlockState(pos).is(BlockRegistry.POCKET_PORTAL_FRAME.get())) {
                             return pos;
                         }
                     }
@@ -128,7 +129,7 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
         var pocketLevel = serverLevel.getServer().getLevel(POCKET_DIMENSION);
         BlockState blockState = pocketLevel.getBlockState(structurePos);
         if (blockState.isAir() && !blockState.is(Blocks.BARRIER)) {
-            var structureTemplateManager = pocketLevel.getStructureManager();
+            var structureTemplateManager = pocketLevel.getStructureTemplateManager();
             var structureTemplate = structureTemplateManager.getOrCreate(POCKET_ROOM_STRUCTURE);
             var placementSettings = (new StructurePlaceSettings()).setMirror(Mirror.NONE).setRotation(Rotation.NONE).setIgnoreEntities(true).addProcessor(new ClearPortalFrameDataProcessor());
             structureTemplate.placeInWorld(pocketLevel, structurePos, structurePos, placementSettings, pocketLevel.getRandom(), 2);
@@ -155,7 +156,7 @@ public class PocketDimensionManager implements INBTSerializable<CompoundTag> {
                         var blockPos = structurePosForPlayer(player);
                         var portalPos = findPortalForStructure(serverLevel, blockPos);
                         player.resetFallDistance();
-                        player.moveTo(Vec3.atBottomCenterOf(portalPos));
+                        player.snapTo(Vec3.atBottomCenterOf(portalPos));
                     }
                 }
             });

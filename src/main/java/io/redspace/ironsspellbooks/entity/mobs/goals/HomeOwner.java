@@ -34,8 +34,7 @@ public interface HomeOwner {
 
     default void deserializeHome(HomeOwner self, CompoundTag tag) {
         if (tag.contains("HomePos")) {
-            var home = tag.getIntArray("HomePos");
-            self.setHome(new BlockPos(home[0], home[1], home[2]));
+            tag.getIntArray("HomePos").ifPresent(home -> self.setHome(new BlockPos(home[0], home[1], home[2])));
         }
     }
 }

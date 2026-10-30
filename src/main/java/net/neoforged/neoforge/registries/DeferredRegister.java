@@ -63,7 +63,6 @@ public class DeferredRegister<T> {
                 if (!registry.containsKey(id)) {
                     Registry.register(registry, id, value);
                 }
-                entry.bindKey(ResourceKey.create(registryKey, id));
             }
         }
     }

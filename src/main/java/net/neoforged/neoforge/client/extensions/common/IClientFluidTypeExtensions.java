@@ -19,52 +19,52 @@ public interface IClientFluidTypeExtensions {
         if (fluid == null) {
             return DEFAULT;
         }
-        if (fluid.isSame(FluidRegistry.BLOOD.value())) {
+        if (fluid.isSame(FluidRegistry.BLOOD.get())) {
             return new SimpleClientFluidType(IronsSpellbooks.id("block/blood"));
         }
-        if (fluid.isSame(FluidRegistry.TIMELESS_SLURRY_FLUID.value())) {
+        if (fluid.isSame(FluidRegistry.TIMELESS_SLURRY_FLUID.get())) {
             return new SimpleClientFluidType(IronsSpellbooks.id("block/timeless_slurry"));
         }
-        if (fluid.isSame(FluidRegistry.POTION_FLUID.value())) {
+        if (fluid.isSame(FluidRegistry.POTION_FLUID.get())) {
             return new PotionClientFluidType(Identifier.withDefaultNamespace("block/water_still"));
         }
-        if (fluid.isSame(FluidRegistry.COMMON_INK.value())) {
+        if (fluid.isSame(FluidRegistry.COMMON_INK.get())) {
             return new SimpleTintedClientFluidType(Identifier.withDefaultNamespace("block/water_still"), 0xFF222222);
         }
-        if (fluid.isSame(FluidRegistry.UNCOMMON_INK.value())) {
+        if (fluid.isSame(FluidRegistry.UNCOMMON_INK.get())) {
             return new SimpleTintedClientFluidType(Identifier.withDefaultNamespace("block/water_still"), 0xFF124300);
         }
-        if (fluid.isSame(FluidRegistry.RARE_INK.value())) {
+        if (fluid.isSame(FluidRegistry.RARE_INK.get())) {
             return new SimpleTintedClientFluidType(Identifier.withDefaultNamespace("block/water_still"), 0xFF0F3844);
         }
-        if (fluid.isSame(FluidRegistry.EPIC_INK.value())) {
+        if (fluid.isSame(FluidRegistry.EPIC_INK.get())) {
             return new SimpleTintedClientFluidType(Identifier.withDefaultNamespace("block/water_still"), 0xFFA52EA0);
         }
-        if (fluid.isSame(FluidRegistry.LEGENDARY_INK.value())) {
+        if (fluid.isSame(FluidRegistry.LEGENDARY_INK.get())) {
             return new SimpleTintedClientFluidType(Identifier.withDefaultNamespace("block/water_still"), 0xFFFCAC1C);
         }
-        if (fluid.isSame(FluidRegistry.OAKSKIN_ELIXIR_FLUID.value())) {
+        if (fluid.isSame(FluidRegistry.OAKSKIN_ELIXIR_FLUID.get())) {
             return new SimpleTintedClientFluidType(Identifier.withDefaultNamespace("block/water_still"), 0xFFFFEF95);
         }
-        if (fluid.isSame(FluidRegistry.GREATER_OAKSKIN_ELIXIR_FLUID.value())) {
+        if (fluid.isSame(FluidRegistry.GREATER_OAKSKIN_ELIXIR_FLUID.get())) {
             return new SimpleTintedClientFluidType(Identifier.withDefaultNamespace("block/water_still"), 0xFFFFEF95);
         }
-        if (fluid.isSame(FluidRegistry.EVASION_ELIXIR_FLUID.value())) {
+        if (fluid.isSame(FluidRegistry.EVASION_ELIXIR_FLUID.get())) {
             return new SimpleTintedClientFluidType(Identifier.withDefaultNamespace("block/water_still"), 0xFFF17BF4);
         }
-        if (fluid.isSame(FluidRegistry.GREATER_EVASION_ELIXIR_FLUID.value())) {
+        if (fluid.isSame(FluidRegistry.GREATER_EVASION_ELIXIR_FLUID.get())) {
             return new SimpleTintedClientFluidType(Identifier.withDefaultNamespace("block/water_still"), 0xFFF17BF4);
         }
-        if (fluid.isSame(FluidRegistry.INVISIBILITY_ELIXIR_FLUID.value())) {
+        if (fluid.isSame(FluidRegistry.INVISIBILITY_ELIXIR_FLUID.get())) {
             return new SimpleTintedClientFluidType(Identifier.withDefaultNamespace("block/water_still"), 0xFF7F83F2);
         }
-        if (fluid.isSame(FluidRegistry.GREATER_INVISIBILITY_ELIXIR_FLUID.value())) {
+        if (fluid.isSame(FluidRegistry.GREATER_INVISIBILITY_ELIXIR_FLUID.get())) {
             return new SimpleTintedClientFluidType(Identifier.withDefaultNamespace("block/water_still"), 0xFF7F83F2);
         }
-        if (fluid.isSame(FluidRegistry.GREATER_HEALING_ELIXIR_FLUID.value())) {
+        if (fluid.isSame(FluidRegistry.GREATER_HEALING_ELIXIR_FLUID.get())) {
             return new SimpleTintedClientFluidType(Identifier.withDefaultNamespace("block/water_still"), 0xFFF82423);
         }
-        if (fluid.isSame(FluidRegistry.ICE_VENOM_FLUID.value())) {
+        if (fluid.isSame(FluidRegistry.ICE_VENOM_FLUID.get())) {
             return new SimpleTintedClientFluidType(Identifier.withDefaultNamespace("block/water_still"), 0x73BABA);
         }
         return DEFAULT;

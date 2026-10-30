@@ -10,7 +10,7 @@
       ],
       "conditions": [
         {
-          "condition": "minecraft:random_chance",
+          "type": "minecraft:random_chance",
           "chance": 0.25
         }
       ]
@@ -24,8 +24,9 @@
           "name": "minecraft:wheat",
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 1,
                 "max": 4
               }

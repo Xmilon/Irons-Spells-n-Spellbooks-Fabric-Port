@@ -49,7 +49,7 @@ public class EchoingArrowProjectile extends MagicArrowProjectile implements NoKn
             this.stopEntityHoming();
             Vec3 trajectory = lastHomingPosition.subtract(this.position()).normalize();
             this.setDeltaMovement(trajectory.scale(2));
-            this.playSound(SoundRegistry.ECHOING_STRIKE.get(), 1.5f, Utils.random.nextIntBetweenInclusive(8, 12) * .1f);
+            this.playSound(SoundRegistry.ECHOING_STRIKE.value(), 1.5f, Utils.random.nextIntBetweenInclusive(8, 12) * .1f);
             for (int i = 0; i < 15; i++) {
                 Vec3 delta = Utils.getRandomVec3(0.05);
                 Vec3 speed = Utils.getRandomVec3(0.35).add(trajectory.scale(1 * Utils.random.nextFloat()));

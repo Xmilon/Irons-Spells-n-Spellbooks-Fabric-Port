@@ -26,9 +26,9 @@ public class NoAdditionSmithingTransformRecipe extends SimpleSmithingRecipe {
 
     final Ingredient base;
 
-    final ItemStack result;
+    final ItemStackTemplate result;
 
-    public NoAdditionSmithingTransformRecipe(Ingredient template, Ingredient base, ItemStack result) {
+    public NoAdditionSmithingTransformRecipe(Ingredient template, Ingredient base, ItemStackTemplate result) {
         super(new Recipe.CommonInfo(true));
         this.template = template;
         this.base = base;
@@ -37,8 +37,8 @@ public class NoAdditionSmithingTransformRecipe extends SimpleSmithingRecipe {
 
     @Override
     public ItemStack assemble(SmithingRecipeInput input) {
-        ItemStack itemstack = input.base().transmuteCopy(this.result.getItem(), this.result.getCount());
-        itemstack.applyComponents(this.result.getComponentsPatch());
+        ItemStack itemstack = input.base().transmuteCopy(this.result.item().value(), this.result.count());
+        itemstack.applyComponents(this.result.components());
         return itemstack;
     }
 
@@ -51,7 +51,7 @@ public class NoAdditionSmithingTransformRecipe extends SimpleSmithingRecipe {
     }
 
     public Ingredient getResult() {
-        return Ingredient.of(this.result.getItem());
+        return Ingredient.of(this.result.item().value());
     }
 
     @Override
@@ -82,7 +82,7 @@ public class NoAdditionSmithingTransformRecipe extends SimpleSmithingRecipe {
     @Override
     public List<RecipeDisplay> display() {
         return List.of(new SmithingRecipeDisplay(template.display(), base.display(), SlotDisplay.Empty.INSTANCE,
-                new SlotDisplay.ItemStackSlotDisplay(ItemStackTemplate.fromNonEmptyStack(result)),
+                new SlotDisplay.ItemStackSlotDisplay(result),
                 new SlotDisplay.ItemSlotDisplay(Items.SMITHING_TABLE)));
     }
 
@@ -93,7 +93,7 @@ public class NoAdditionSmithingTransformRecipe extends SimpleSmithingRecipe {
                 p_340782_ -> p_340782_.group(
                                 Ingredient.CODEC.fieldOf("template").forGetter(p_301310_ -> p_301310_.template),
                                 Ingredient.CODEC.fieldOf("base").forGetter(p_300938_ -> p_300938_.base),
-                                ItemStack.CODEC.validate(ItemStack::validateStrict).fieldOf("result").forGetter(p_300935_ -> p_300935_.result)
+                                ItemStackTemplate.CODEC.fieldOf("result").forGetter(p_300935_ -> p_300935_.result)
                         )
                         .apply(p_340782_, NoAdditionSmithingTransformRecipe::new)
         );
@@ -104,14 +104,14 @@ public class NoAdditionSmithingTransformRecipe extends SimpleSmithingRecipe {
         private static NoAdditionSmithingTransformRecipe fromNetwork(RegistryFriendlyByteBuf buffer) {
             Ingredient ingredient = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
             Ingredient ingredient1 = Ingredient.CONTENTS_STREAM_CODEC.decode(buffer);
-            ItemStack itemstack = ItemStack.STREAM_CODEC.decode(buffer);
+            ItemStackTemplate itemstack = ItemStackTemplate.STREAM_CODEC.decode(buffer);
             return new NoAdditionSmithingTransformRecipe(ingredient, ingredient1, itemstack);
         }
 
         private static void toNetwork(RegistryFriendlyByteBuf buffer, NoAdditionSmithingTransformRecipe recipe) {
             Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.template);
             Ingredient.CONTENTS_STREAM_CODEC.encode(buffer, recipe.base);
-            ItemStack.STREAM_CODEC.encode(buffer, recipe.result);
+            ItemStackTemplate.STREAM_CODEC.encode(buffer, recipe.result);
         }
     }
 }

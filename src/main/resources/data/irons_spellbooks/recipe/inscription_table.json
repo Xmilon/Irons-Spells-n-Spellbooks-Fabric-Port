@@ -6,15 +6,9 @@
     "L L"
   ],
   "key": {
-    "B": {
-      "item": "minecraft:book"
-    },
-    "T": {
-      "tag": "minecraft:wooden_slabs"
-    },
-    "L": {
-      "tag": "minecraft:wooden_fences"
-    }
+    "B": "minecraft:book",
+    "T": "#minecraft:wooden_slabs",
+    "L": "#minecraft:wooden_fences"
   },
   "result": {
     "id": "irons_spellbooks:inscription_table",

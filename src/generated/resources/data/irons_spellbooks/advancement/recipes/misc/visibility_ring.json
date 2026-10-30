@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "irons_spellbooks:visibility_ring"
+        "recipes": "irons_spellbooks:visibility_ring"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

@@ -108,7 +108,7 @@ public class IceSpikeEntity extends AoeEntity {
             if (!level().isClientSide()) {
                 float f = getSpikeSize();
                 if (!this.isSilent()) {
-                    level().playSound(null, this.blockPosition(), SoundRegistry.ICE_SPIKE_EMERGE.get(), SoundSource.NEUTRAL, 1.25f * getSpikeSize(), Mth.randomBetweenInclusive(Utils.random, 6, 12) * .1f);
+                    level().playSound(null, this.blockPosition(), SoundRegistry.ICE_SPIKE_EMERGE.value(), SoundSource.NEUTRAL, 1.25f * getSpikeSize(), Mth.randomBetweenInclusive(Utils.random, 6, 12) * .1f);
                 }
                 MagicManager.spawnParticles(level, ParticleHelper.SNOWFLAKE, getX(), level().clip(new ClipContext(position().add(0, 2, 0), position(), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty())).getLocation().y() + 0.1, getZ(), (int) (10 * f * f), 0.1 * f, 0.1 * f, 0.1f * f, 0.12 * f, false);
                 MagicManager.spawnParticles(level, ParticleHelper.SNOW_DUST, getX(), level().clip(new ClipContext(position().add(0, 2, 0), position(), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty())).getLocation().y() + 0.1, getZ(), (int) (15 * f * f), 0.1 * f, 0.1 * f, 0.1f * f, 0.08 * f, false);

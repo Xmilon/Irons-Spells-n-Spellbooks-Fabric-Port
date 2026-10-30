@@ -5,6 +5,7 @@ import net.minecraft.world.level.storage.ValueOutput;
 
 import net.minecraft.world.level.storage.ValueInput;
 
+import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.ISSDamageTypes;
@@ -88,7 +89,7 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
 
     private void createFireField() {
         FireField fireField = new FireField(this.level());
-        fireField.setOwner(level().getNearestEntity(FireBossEntity.class, TargetingConditions.forNonCombat().ignoreLineOfSight().ignoreInvisibilityTesting(), null, getX(), getY(), getZ(), this.getBoundingBox().inflate(32)));
+        fireField.setOwner(level().getEntitiesOfClass(FireBossEntity.class, this.getBoundingBox().inflate(32)).stream().min(java.util.Comparator.comparingDouble(boss -> boss.distanceToSqr(this))).orElse(null));
         fireField.setPos(Utils.moveToRelativeGroundLevel(level(), this.position(), 3));
         fireField.setRadius(this.explosionRadius + 1);
         fireField.setCircular();
@@ -102,7 +103,7 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
     @Override
     protected void onHitEntity(EntityHitResult entityHitResult) {
         super.onHitEntity(entityHitResult);
-        entityHitResult.getEntity().hurt(new DamageSource(level().damageSources().damageTypes.getHolderOrThrow(ISSDamageTypes.FIRE_MAGIC), this, getOwner()), getDamage());
+        DamageSources.applyDamage(entityHitResult.getEntity(), getDamage(), level().damageSources().source(ISSDamageTypes.FIRE_MAGIC, this, getOwner()));
         if (entityHitResult.getEntity() instanceof LivingEntity living) living.damageCooldownTime = 0;
         else entityHitResult.getEntity().setInvulnerableTime(0);
     }
@@ -118,7 +119,7 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
 
     public void createDaggerZone(Vec3 center) {
         MagicManager.spawnParticles(level(), new BlastwaveParticleOptions(new Vector3f(1, .6f, 0.3f), explosionRadius + 1), center.x, center.y + .15, center.z, 1, 0, 0, 0, 0, false);
-        playSound(SoundRegistry.FIRE_CAST.get(), 2f, Utils.random.nextIntBetweenInclusive(80, 110) * .01f);
+        playSound(SoundRegistry.FIRE_CAST.value(), 2f, Utils.random.nextIntBetweenInclusive(80, 110) * .01f);
 
         float spawnRadius = this.explosionRadius;
         float density = 1f;
@@ -170,10 +171,10 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
             if (age == delay) {
                 if (isGrounded) {
                     if (Utils.random.nextFloat() < 0.25f) {
-                        playSound(SoundRegistry.FIERY_DAGGER_THROW.get(), 0.75f, Utils.random.nextIntBetweenInclusive(90, 110) * .01f);
+                        playSound(SoundRegistry.FIERY_DAGGER_THROW.value(), 0.75f, Utils.random.nextIntBetweenInclusive(90, 110) * .01f);
                     }
                 } else {
-                    playSound(SoundRegistry.FIERY_DAGGER_THROW.get(), 2f, Utils.random.nextIntBetweenInclusive(90, 110) * .01f);
+                    playSound(SoundRegistry.FIERY_DAGGER_THROW.value(), 2f, Utils.random.nextIntBetweenInclusive(90, 110) * .01f);
                 }
                 // do an initial near-collision check since we cannot organically hit things if we originate inside their hitbox (such as if they are standing on a dagger)
                 var hits = level().getEntities(this, this.getBoundingBox().inflate(0.4f), this::canHitEntity);
@@ -253,7 +254,7 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
         super.addAdditionalSaveData(tag);
         tag.putInt("delay", delay);
         if (ownerTrack != null) {
-            tag.put("ownerTrack", NBT.writeVec3Pos(ownerTrack));
+            tag.store("ownerTrack", net.minecraft.nbt.CompoundTag.CODEC, NBT.writeVec3Pos(ownerTrack));
         }
         if (targetEntity != null) {
             tag.store("target", net.minecraft.core.UUIDUtil.CODEC, targetEntity);
@@ -327,10 +328,6 @@ public class FieryDaggerEntity extends AbstractMagicProjectile implements IEntit
 
     private final AnimatableInstanceCache cache = GeckoLibUtil.createInstanceCache(this);
 
-    @Override
-    public double getTick(Object object) {
-        return tickCount;
-    }
 }
 
 

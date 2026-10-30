@@ -6,12 +6,8 @@
     "FFF"
   ],
   "key": {
-    "F": {
-      "tag": "irons_spellbooks:lightning_focus"
-    },
-    "R": {
-      "item": "minecraft:copper_block"
-    }
+    "F": "#irons_spellbooks:lightning_focus",
+    "R": "minecraft:copper_block"
   },
   "result": {
     "id": "irons_spellbooks:energized_core",

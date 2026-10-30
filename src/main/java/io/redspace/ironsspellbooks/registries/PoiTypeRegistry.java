@@ -24,7 +24,7 @@ public class PoiTypeRegistry {
         POIS.register(eventBus);
         // NeoForge does this automatically; vanilla needs the block states mapped or POIs are never recorded
         PoiTypes.registerBlockStates(
-                BuiltInRegistries.POINT_OF_INTEREST_TYPE.getHolderOrThrow(ResourceKey.create(Registries.POINT_OF_INTEREST_TYPE, CINDEROUS_KEYSTONE_POI.getLocation())),
+                BuiltInRegistries.POINT_OF_INTEREST_TYPE.getOrThrow(ResourceKey.create(Registries.POINT_OF_INTEREST_TYPE, CINDEROUS_KEYSTONE_POI.getLocation())),
                 getBlockStates(BlockRegistry.CINDEROUS_KEYSTONE.get()));
     }
 

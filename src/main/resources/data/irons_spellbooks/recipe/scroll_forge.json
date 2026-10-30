@@ -6,12 +6,8 @@
     "OOO"
   ],
   "key": {
-    "D": {
-      "item": "minecraft:polished_deepslate"
-    },
-    "O": {
-      "item": "minecraft:crying_obsidian"
-    }
+    "D": "minecraft:polished_deepslate",
+    "O": "minecraft:crying_obsidian"
   },
   "result": {
     "id": "irons_spellbooks:scroll_forge",

@@ -67,12 +67,12 @@ public class SculkTentaclesSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.VOID_TENTACLES_START.get());
+        return Optional.of(SoundRegistry.VOID_TENTACLES_START.value());
     }
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.VOID_TENTACLES_FINISH.get());
+        return Optional.of(SoundRegistry.VOID_TENTACLES_FINISH.value());
     }
 
     @Override
@@ -95,7 +95,7 @@ public class SculkTentaclesSpell extends AbstractSpell {
             center = Utils.raycastForEntity(level, entity, 48, true, .15f).getLocation();
             center = Utils.moveToRelativeGroundLevel(level, center, 6);
         }
-        level.playSound(entity instanceof Player player ? player : null, center.x, center.y, center.z, SoundRegistry.VOID_TENTACLES_FINISH.get(), SoundSource.AMBIENT, 1, 1);
+        level.playSound(entity instanceof Player player ? player : null, center.x, center.y, center.z, SoundRegistry.VOID_TENTACLES_FINISH.value(), SoundSource.AMBIENT, 1, 1);
 
         for (int r = 0; r < rings; r++) {
             float tentacles = count + r * 2;

@@ -10,9 +10,7 @@
     },
     "id": "irons_spellbooks:potion"
   },
-  "input": {
-    "item": "minecraft:oak_log"
-  },
+  "input": "minecraft:oak_log",
   "results": [
     {
       "amount": 250,

@@ -120,7 +120,7 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
 
     @Override
     public Optional<SoundEvent> getAngerSound() {
-        return Optional.of(SoundRegistry.TRADER_NO.get());
+        return Optional.of(SoundRegistry.TRADER_NO.value());
     }
 
     /**
@@ -253,7 +253,9 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
         return this.offers;
     }
 
-    private static final List<VillagerTrades.ItemListing> fillerOffers = List.of(
+    // built on first use: item stacks cannot exist while the class loads during startup (components are not bound yet)
+    private static final class Fillers {
+        static final List<AdditionalWanderingTrades.TradeListing> OFFERS = List.of(
             new AdditionalWanderingTrades.SimpleBuy(16, new ItemCost(Items.CANDLE, 4), 1, 1),
             new AdditionalWanderingTrades.SimpleSell(8, new ItemStack(Items.CANDLE, 4), 10, 14),
             new AdditionalWanderingTrades.SimpleSell(8, new ItemStack(Items.FIRE_CHARGE, 3), 9, 13),
@@ -262,16 +264,17 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
             new AdditionalWanderingTrades.SimpleBuy(16, new ItemCost(Items.BLAZE_ROD, 3), 4, 6),
             new AdditionalWanderingTrades.SimpleSell(5, createFireworkStack(), 3, 4)
     );
+    }
 
     private Collection<MerchantOffer> createRandomOffers(int min, int max) {
         Set<Integer> set = Sets.newHashSet();
         int fillerTrades = random.nextIntBetweenInclusive(min, max);
         for (int i = 0; i < 10 && set.size() < fillerTrades; i++) {
-            set.add(random.nextInt(fillerOffers.size()));
+            set.add(random.nextInt(Fillers.OFFERS.size()));
         }
         Collection<MerchantOffer> offers = new ArrayList<>();
         for (Integer integer : set) {
-            offers.add(fillerOffers.get(integer).getOffer(this, this.random));
+            offers.add(Fillers.OFFERS.get(integer).getOffer(this, this.random));
         }
         return offers;
     }
@@ -297,12 +300,12 @@ public class PyromancerEntity extends NeutralWizard implements IMerchantWizard {
     }
 
     protected SoundEvent getTradeUpdatedSound(boolean pIsYesSound) {
-        return pIsYesSound ? SoundRegistry.TRADER_YES.get() : SoundRegistry.TRADER_NO.get();
+        return pIsYesSound ? SoundRegistry.TRADER_YES.value() : SoundRegistry.TRADER_NO.value();
     }
 
     @Override
     public SoundEvent getNotifyTradeSound() {
-        return SoundRegistry.TRADER_YES.get();
+        return SoundRegistry.TRADER_YES.value();
     }
 
     private static ItemStack createFireworkStack() {

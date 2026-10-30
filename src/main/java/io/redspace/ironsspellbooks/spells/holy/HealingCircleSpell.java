@@ -68,7 +68,7 @@ public class HealingCircleSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.CLOUD_OF_REGEN_LOOP.get());
+        return Optional.of(SoundRegistry.CLOUD_OF_REGEN_LOOP.value());
     }
 
     @Override

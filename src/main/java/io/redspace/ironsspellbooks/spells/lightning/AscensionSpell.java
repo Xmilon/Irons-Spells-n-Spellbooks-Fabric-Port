@@ -82,7 +82,7 @@ public class AscensionSpell extends AbstractSpell {
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
 
-        entity.addEffect(new MobEffectInstance(net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MobEffectRegistry.ASCENSION.get()), 80, 0, false, false, true));
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.ASCENSION, 80, 0, false, false, true));
 
         Vec3 vec = entity.position();
         for (int i = 0; i < 32; i++) {
@@ -108,7 +108,7 @@ public class AscensionSpell extends AbstractSpell {
                     creeper.thunderHit((ServerLevel) level, lightningBolt);
                 }
                 if (target instanceof LivingEntity livingEntity) {
-                    livingEntity.knockback(0.25f + finalDamage / 10f, entity.getX() - livingEntity.getX(), entity.getZ() - livingEntity.getZ());
+                    Utils.knockback(livingEntity, 0.25f + finalDamage / 10f, entity.getX() - livingEntity.getX(), entity.getZ() - livingEntity.getZ());
                 }
             }
         });

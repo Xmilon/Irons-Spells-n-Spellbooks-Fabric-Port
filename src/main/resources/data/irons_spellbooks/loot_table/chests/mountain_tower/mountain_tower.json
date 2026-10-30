@@ -10,8 +10,9 @@
           "name": "irons_spellbooks:arcane_essence",
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 1,
                 "max": 3
               }
@@ -24,8 +25,9 @@
           "name": "minecraft:paper",
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": {
+                "type": "minecraft:uniform",
                 "min": 1,
                 "max": 5
               }
@@ -57,7 +59,7 @@
           "name": "minecraft:goat_horn",
           "functions": [
             {
-              "function": "minecraft:set_instrument",
+              "type": "minecraft:set_instrument",
               "options": "#minecraft:goat_horns"
             }
           ]
@@ -66,6 +68,7 @@
     },
     {
       "rolls": {
+        "type": "minecraft:uniform",
         "min": 1,
         "max": 2
       },
@@ -76,7 +79,7 @@
           "name": "irons_spellbooks:scroll",
           "functions": [
             {
-              "function": "irons_spellbooks:randomize_spell",
+              "type": "irons_spellbooks:randomize_spell",
               "quality": {
                 "min": 0.1,
                 "max": 0.75,
@@ -98,7 +101,7 @@
           "name": "irons_spellbooks:furled_map",
           "functions": [
             {
-              "function": "irons_spellbooks:set_furled_map",
+              "type": "irons_spellbooks:set_furled_map",
               "destination": "irons_spellbooks:impaled_icebreaker",
               "description_translation": "item.irons_spellbooks.failed_arctic_voyage_map"
             }
@@ -107,7 +110,7 @@
       ],
       "conditions": [
         {
-          "condition": "minecraft:random_chance",
+          "type": "minecraft:random_chance",
           "chance": 0.3
         }
       ]
@@ -122,7 +125,7 @@
       ],
       "conditions": [
         {
-          "condition": "minecraft:random_chance",
+          "type": "minecraft:random_chance",
           "chance": 0.3
         }
       ]

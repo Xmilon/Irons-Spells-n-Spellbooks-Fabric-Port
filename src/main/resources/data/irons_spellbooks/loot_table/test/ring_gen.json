@@ -8,7 +8,7 @@
           "name": "irons_spellbooks:affinity_ring",
           "functions": [
             {
-              "function": "irons_spellbooks:randomize_ring_enhancement"
+              "type": "irons_spellbooks:randomize_ring_enhancement"
             }
           ]
         }

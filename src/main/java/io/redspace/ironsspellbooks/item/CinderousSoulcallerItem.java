@@ -40,7 +40,7 @@ public class CinderousSoulcallerItem extends Item {
     public InteractionResult use(Level level, Player player, InteractionHand hand) {
         ItemStack itemStack = player.getItemInHand(hand);
         if (level instanceof ServerLevel serverlevel && player instanceof ServerPlayer serverPlayer) {
-            player.getCooldowns().addCooldown(ItemRegistry.CINDEROUS_SOULCALLER.get(), 80);
+            player.getCooldowns().addCooldown(itemStack, 80);
             BlockPos playerBlockPos = player.blockPosition();
             PoiManager poimanager = serverlevel.getPoiManager();
             // arena radius is 23. slightly shorter distance means player must approach center/keystone
@@ -53,17 +53,17 @@ public class CinderousSoulcallerItem extends Item {
                     //success, consume and summon
                     if (!player.getAbilities().instabuild) {
                         Vec3 particlePos = player.getEyePosition().add(player.getForward().scale(0.6)).subtract(0, 0.3, 0);
-                        MagicManager.spawnParticles(serverlevel, new ItemParticleOption(ParticleTypes.ITEM, itemStack.copyWithCount(1)), particlePos.x, particlePos.y, particlePos.z, 9, .15, .15, .15, 0.08, false);
+                        MagicManager.spawnParticles(serverlevel, new ItemParticleOption(ParticleTypes.ITEM, net.minecraft.world.item.ItemStackTemplate.fromNonEmptyStack(itemStack.copyWithCount(1))), particlePos.x, particlePos.y, particlePos.z, 9, .15, .15, .15, 0.08, false);
                         itemStack.shrink(1);
                         player.setItemInHand(hand, itemStack);
                     }
                     Vec3 center = Vec3.atCenterOf(keystonePos).add(0, 0.6, 0);
                     float yRot = Utils.getAngle(center.x, center.z, player.getX(), player.getZ()) * Mth.RAD_TO_DEG;
-                    FireBossEntity fireBoss = EntityRegistry.FIRE_BOSS.get().create(serverlevel);
+                    FireBossEntity fireBoss = EntityRegistry.FIRE_BOSS.get().create(serverlevel, EntitySpawnReason.MOB_SUMMONED);
                     fireBoss.snapTo(center);
                     fireBoss.setYRot(yRot + 90);
                     fireBoss.triggerSpawnAnim();
-                    fireBoss.finalizeSpawn(serverlevel, level.getCurrentDifficultyAt(player.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
+                    fireBoss.finalizeSpawn(serverlevel, serverlevel.getCurrentDifficultyAt(player.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
                     level.addFreshEntity(fireBoss);
                     tollEffects(serverlevel, player.position(), true);
                 } else {
@@ -77,7 +77,7 @@ public class CinderousSoulcallerItem extends Item {
                 tollEffects(serverlevel, player.position(), false);
             }
         }
-        player.swing(hand);
+        player.swing(hand, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
         return InteractionResult.CONSUME;
     }
 

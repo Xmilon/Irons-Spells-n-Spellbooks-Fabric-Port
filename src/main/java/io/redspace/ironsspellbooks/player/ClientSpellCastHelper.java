@@ -51,7 +51,7 @@ public class ClientSpellCastHelper {
     }
 
     public static void openEldritchResearchScreen(InteractionHand hand) {
-        Minecraft.getInstance().setScreen(new EldritchResearchScreen(Component.empty(), hand));
+        Minecraft.getInstance().setScreenAndShow(new EldritchResearchScreen(Component.empty(), hand));
     }
 
     public static void handleCastErrorMessage(CastErrorPacket packet) {
@@ -59,10 +59,10 @@ public class ClientSpellCastHelper {
         if (packet.errorType == CastErrorPacket.ErrorType.COOLDOWN) {
             //ignore cooldown message if we are simply holding right click.
             if (ClientInputEvents.hasReleasedSinceCasting) {
-                Minecraft.getInstance().gui.setOverlayMessage(Component.translatable("ui.irons_spellbooks.cast_error_cooldown", spell.getDisplayName(Minecraft.getInstance().player)).withStyle(ChatFormatting.RED), false);
+                Minecraft.getInstance().gui.hud.setOverlayMessage(Component.translatable("ui.irons_spellbooks.cast_error_cooldown", spell.getDisplayName(Minecraft.getInstance().player)).withStyle(ChatFormatting.RED), false);
             }
         } else {
-            Minecraft.getInstance().gui.setOverlayMessage(Component.translatable("ui.irons_spellbooks.cast_error_mana", spell.getDisplayName(Minecraft.getInstance().player)).withStyle(ChatFormatting.RED), false);
+            Minecraft.getInstance().gui.hud.setOverlayMessage(Component.translatable("ui.irons_spellbooks.cast_error_mana", spell.getDisplayName(Minecraft.getInstance().player)).withStyle(ChatFormatting.RED), false);
         }
     }
 
@@ -133,7 +133,7 @@ public class ClientSpellCastHelper {
         if (player != null) {
             var level = Minecraft.getInstance().player.level();
             for (int j = 0; j < 15; ++j) {
-                level.addParticle(coloredMobEffect(MobEffectRegistry.FORTIFY.get().getColor()), pos.x + Utils.getRandomScaled(0.25D), pos.y + Utils.getRandomScaled(1), pos.z + Utils.getRandomScaled(0.25D), 0, 0, 0);
+                level.addParticle(coloredMobEffect(MobEffectRegistry.FORTIFY.value().getColor()), pos.x + Utils.getRandomScaled(0.25D), pos.y + Utils.getRandomScaled(1), pos.z + Utils.getRandomScaled(0.25D), 0, 0, 0);
             }
         }
     }
@@ -238,7 +238,7 @@ public class ClientSpellCastHelper {
                 Vec3 posOffset = Utils.getRandomVec3(1).scale(radius * .4f);
                 Vec3 motion = posOffset.normalize().scale(speed * .5f);
                 motion = motion.add(Utils.getRandomVec3(0.25));
-                level.addParticle(ParticleHelper.EMBERS, true, x + posOffset.x, y + posOffset.y, z + posOffset.z, motion.x, motion.y, motion.z);
+                level.addParticle(ParticleHelper.EMBERS, true, false, x + posOffset.x, y + posOffset.y, z + posOffset.z, motion.x, motion.y, motion.z);
                 level.addParticle(ParticleHelper.FIRE, x + posOffset.x * .5f, y + posOffset.y * .5f, z + posOffset.z * .5f, motion.x, motion.y, motion.z);
             }
             //Sparks
@@ -284,7 +284,7 @@ public class ClientSpellCastHelper {
         }
 
         if (cancelled && spell.stopSoundOnCancel()) {
-            spell.getCastStartSound().ifPresent((soundEvent) -> Minecraft.getInstance().getSoundManager().stop(soundEvent.getLocation(), null));
+            spell.getCastStartSound().ifPresent((soundEvent) -> Minecraft.getInstance().getSoundManager().stop(soundEvent.location(), null));
         }
 
         if (castingEntityId.equals(Minecraft.getInstance().player.getUUID()) && ClientInputEvents.isUseKeyDown()) {

@@ -74,12 +74,12 @@ public class TelekinesisSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.TELEKINESIS_CAST.get());
+        return Optional.of(SoundRegistry.TELEKINESIS_CAST.value());
     }
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.TELEKINESIS_LOOP.get());
+        return Optional.of(SoundRegistry.TELEKINESIS_LOOP.value());
     }
 
     @Override
@@ -129,8 +129,8 @@ public class TelekinesisSpell extends AbstractSpell {
                 }
                 if ((playerMagicData.getCastDurationRemaining()) % 10 == 0) {
                     int airborne = (int) (travel.x * travel.x + travel.z * travel.z) / 2;
-                    targetEntity.addEffect(new MobEffectInstance(net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MobEffectRegistry.AIRBORNE.get()), 31, airborne));
-                    targetEntity.addEffect(new MobEffectInstance(net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MobEffectRegistry.ANTIGRAVITY.get()), 11, 0));
+                    targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.AIRBORNE, 31, airborne));
+                    targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.ANTIGRAVITY, 11, 0));
                 }
                 var deltaMovement = targetEntity.getDeltaMovement();
                 var newMotion = force.subtract(deltaMovement).scale(0.25).add(deltaMovement);

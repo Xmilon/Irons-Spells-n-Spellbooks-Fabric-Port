@@ -44,6 +44,7 @@ public class ThrownSpear extends AbstractArrow {
     private static final EntityDataAccessor<Boolean> ID_CHANNELED = SynchedEntityData.defineId(ThrownSpear.class, EntityDataSerializers.BOOLEAN);
     private static final EntityDataAccessor<ItemStack> ID_ITEM = SynchedEntityData.defineId(ThrownSpear.class, EntityDataSerializers.ITEM_STACK);
     private boolean dealtDamage;
+    private double spearDamage;
     public int clientSideReturnTridentTickCount;
 
     public ThrownSpear(EntityType<? extends AbstractArrow> entityType, Level level) {
@@ -53,6 +54,7 @@ public class ThrownSpear extends AbstractArrow {
     public ThrownSpear(Level level, ItemStack spearitem, double damage) {
         this(EntityRegistry.THROWN_SPEAR.get(), level);
         this.setBaseDamage(damage);
+        this.spearDamage = damage;
         this.setWeaponItem(spearitem);
     }
 
@@ -151,7 +153,7 @@ public class ThrownSpear extends AbstractArrow {
     @Override
     protected void onHit(HitResult result) {
         if (isChanneled() && !level().isClientSide() && !dealtDamage) {
-            this.playSound(SoundRegistry.SPEAR_CHANNELING_STRIKE.get(), 6.0F, .9f + Utils.random.nextInt(20) * .01f);
+            this.playSound(SoundRegistry.SPEAR_CHANNELING_STRIKE.value(), 6.0F, .9f + Utils.random.nextInt(20) * .01f);
             MagicManager.spawnParticles(level(), ParticleHelper.ELECTRICITY, getX(), getY(), getZ(), 75, .1, .1, .1, 2, true);
             MagicManager.spawnParticles(level(), ParticleHelper.ELECTRICITY, getX(), getY(), getZ(), 75, .1, .1, .1, .5, false);
         }
@@ -167,7 +169,7 @@ public class ThrownSpear extends AbstractArrow {
     protected void onHitEntity(EntityHitResult result) {
         if (!(level() instanceof ServerLevel damageLevel)) return;
         Entity victim = result.getEntity();
-        float f = (float) getBaseDamage();
+        float f = (float) spearDamage;
         Entity owner = this.getOwner();
         boolean channeled = isChanneled();
         DamageSource damagesource = channeled ? this.damageSources().source(ISSDamageTypes.LIGHTNING_MAGIC, this, owner == null ? this : owner)
@@ -211,7 +213,7 @@ public class ThrownSpear extends AbstractArrow {
                 null,
                 vec3,
                 level().getBlockState(hitResult.getBlockPos()),
-                p_348680_ -> this.kill()
+                p_348680_ -> this.kill((ServerLevel) this.level())
         );
     }
 
@@ -220,9 +222,9 @@ public class ThrownSpear extends AbstractArrow {
         if (!this.isRemoved() && getOwner() != null && this.ownedBy(player)) {
             int loyalty = this.entityData.get(ID_LOYALTY);
             if ((player.hasInfiniteMaterials() && pickup == Pickup.CREATIVE_ONLY) || (!player.hasInfiniteMaterials() && pickup == Pickup.ALLOWED) || (pickup != Pickup.DISALLOWED && loyalty > 0)) {
-                player.getCooldowns().removeCooldown(this.getPickupItem().getItem());
+                player.getCooldowns().removeCooldown(player.getCooldowns().getCooldownGroup(this.getPickupItem()));
                 if (loyalty > 0) {
-                    playSound(SoundRegistry.SPEAR_RETURN.get());
+                    playSound(SoundRegistry.SPEAR_RETURN.value());
                 }
                 return true;
             }
@@ -257,15 +259,17 @@ public class ThrownSpear extends AbstractArrow {
     public void readAdditionalSaveData(ValueInput compound) {
         super.readAdditionalSaveData(compound);
         this.dealtDamage = compound.getBooleanOr("DealtDamage", false);
+        this.spearDamage = compound.getDoubleOr("SpearDamage", spearDamage);
     }
 
     @Override
     public void addAdditionalSaveData(ValueOutput compound) {
         super.addAdditionalSaveData(compound);
         compound.putBoolean("DealtDamage", this.dealtDamage);
-        compound.put("item", getWeaponItem().save(this.registryAccess()));
+        compound.store("item", ItemStack.CODEC, getWeaponItem());
+        compound.putDouble("SpearDamage", spearDamage);
         // fixme: abstractarrow firefromweapon has a really weird and hardcoded codepath... we opt to just ignore it but that likely causes issues with multishot enchantments due to on-projectile-shot enchantment hooks
-        compound.remove("weapon");
+        compound.discard("weapon");
     }
 
     private byte getLoyaltyFromItem(ItemStack stack) {

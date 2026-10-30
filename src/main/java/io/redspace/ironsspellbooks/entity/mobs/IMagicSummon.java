@@ -61,7 +61,7 @@ public interface IMagicSummon extends AntiMagicSusceptible {
             Level level = entity.level();
             var deathMessage = entity.getCombatTracker().getDeathMessage();
 
-            if (!level.isClientSide() && level.getGameRules().getBoolean(GameRules.RULE_SHOWDEATHMESSAGES) && getSummoner() instanceof ServerPlayer player) {
+            if (level instanceof net.minecraft.server.level.ServerLevel serverLevel && serverLevel.getGameRules().get(GameRules.SHOW_DEATH_MESSAGES) && getSummoner() instanceof ServerPlayer player) {
                 player.sendSystemMessage(deathMessage);
             }
         }
@@ -92,13 +92,13 @@ public interface IMagicSummon extends AntiMagicSusceptible {
      * Summons are no longer tracked via mobeffects, see {@link IMagicSummon#onRemovedHelper(Entity)}
      */
     @Deprecated(forRemoval = true)
-    default void onRemovedHelper(Entity entity, DeferredHolder<MobEffect, SummonTimer> holder) {
+    default void onRemovedHelper(Entity entity, net.minecraft.core.Holder<MobEffect> holder) {
         /*
         Decreases player's summon timer amplifier to keep track of how many of their summons remain.
         */
         var reason = entity.getRemovalReason();
         if (reason != null && getSummoner() instanceof ServerPlayer player && reason.shouldDestroy()) {
-            var effectHolder = BuiltInRegistries.MOB_EFFECT.wrapAsHolder(holder.get());
+            var effectHolder = holder;
             var effect = player.getEffect(effectHolder);
             if (effect != null) {
                 var decrement = new MobEffectInstance(effectHolder, effect.getDuration(), effect.getAmplifier() - 1, false, false, true);

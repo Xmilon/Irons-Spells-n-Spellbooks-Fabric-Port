@@ -10,10 +10,6 @@ public class StaffItem extends CastingItem {
         super(properties);
     }
 
-    @Override
-    public boolean isEnchantable(ItemStack pStack) {
-        return true;
-    }
 
 
     public int getEnchantmentValue(ItemStack stack) {

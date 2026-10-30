@@ -51,7 +51,7 @@ public class FieryDaggerZoneAbilityGoal extends AnimatedActionGoal<FireBossEntit
     protected void doAction() {
         var target = mob.getTarget();
         if (target != null) {
-            mob.playSound(SoundRegistry.FIERY_DAGGER_THROW.get(), 2f, Utils.random.nextIntBetweenInclusive(80, 110) * .01f);
+            mob.playSound(SoundRegistry.FIERY_DAGGER_THROW.value(), 2f, Utils.random.nextIntBetweenInclusive(80, 110) * .01f);
 
             Vec3 start = mob.getEyePosition();
             Vec3 targetPos = target.position();

@@ -128,7 +128,7 @@ public class RecastInstance implements ISerializable, INBTSerializable<CompoundT
         totalRecasts = compoundTag.getIntOr("totalRecasts", 0);
         ticksToLive = compoundTag.getIntOr("ticksToLive", 0);
         remainingTicks = compoundTag.getIntOr("ticksRemaining", 0);
-        castSource = CastSource.valueOf(compoundTag.getString("castSource"));
+        castSource = CastSource.valueOf(compoundTag.getStringOr("castSource", CastSource.COMMAND.name()));
 
         if (compoundTag.contains("cd")) {
             castData = SpellRegistry.getSpell(spellId).getEmptyCastData();

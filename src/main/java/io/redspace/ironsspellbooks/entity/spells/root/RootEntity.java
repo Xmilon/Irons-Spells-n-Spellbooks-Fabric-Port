@@ -43,11 +43,6 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
     @Nullable
     private LivingEntity owner;
 
-    @Override
-    public float getScale() {
-        return target == null ? 1 : target.getScale();
-    }
-
     @Nullable
     private UUID ownerUUID;
     private int duration;
@@ -145,7 +140,7 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
         //IronsSpellbooks.LOGGER.debug("RootEntity.tick {}, {}", getFirstPassenger(), this.level().isClientSide());
         if (playSound) {
             this.refreshDimensions();
-            playSound(SoundRegistry.ROOT_EMERGE.get(), 2f, 1);
+            playSound(SoundRegistry.ROOT_EMERGE.value(), 2f, 1);
             playSound = false;
         }
 
@@ -251,17 +246,17 @@ public class RootEntity extends LivingEntity implements GeoEntity, PreventDismou
     }
 
     @Override
-    public boolean isDamageSourceBlocked(DamageSource pDamageSource) {
-        return true;
-    }
-
-    @Override
     public boolean showVehicleHealth() {
         return false;
     }
 
     @Override
-    public void knockback(double pStrength, double pX, double pZ) {
+    public void knockback(double pStrength, double pX, double pZ, DamageSource source, float amount, boolean force) {
+
+    }
+
+    @Override
+    public void knockback(double pStrength, double pX, double pZ, DamageSource source, float amount) {
 
     }
 

@@ -47,7 +47,7 @@ public class DragonBreathPool extends AoeEntity {
 
     @Override
     public Optional<ParticleOptions> getParticle() {
-        return Optional.of(ParticleTypes.DRAGON_BREATH);
+        return Optional.of(net.minecraft.core.particles.PowerParticleOption.create(ParticleTypes.DRAGON_BREATH, 1f));
     }
 }
 

@@ -3,7 +3,7 @@
   "criteria": {
     "has_the_recipe": {
       "conditions": {
-        "recipe": "irons_spellbooks:ender_upgrade_orb"
+        "recipes": "irons_spellbooks:ender_upgrade_orb"
       },
       "trigger": "minecraft:recipe_unlocked"
     },

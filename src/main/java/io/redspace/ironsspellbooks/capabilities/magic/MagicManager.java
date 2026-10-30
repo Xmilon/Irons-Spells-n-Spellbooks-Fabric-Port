@@ -109,6 +109,9 @@ public class MagicManager implements IMagicManager {
                 }
 
                 if (doManaRegen) {
+                    if (level.getServer().getTickCount() % 200 == 0) {
+                        IronsSpellbooks.LOGGER.info("[mana] {} server mana={} max={} regen={}", serverPlayer.getGameProfile().name(), playerMagicData.getMana(), playerMaxMana, io.redspace.ironsspellbooks.api.registry.AttributeRegistry.getValueOrDefault(serverPlayer, MANA_REGEN, 1.0D));
+                    }
                     if (regenPlayerMana(serverPlayer, playerMagicData, playerMaxMana)) {
                         shouldSyncMana = true;
                     }
@@ -168,7 +171,7 @@ public class MagicManager implements IMagicManager {
     }
 
     public static void spawnParticles(Level level, ParticleOptions particle, double x, double y, double z, int count, double deltaX, double deltaY, double deltaZ, double speed, boolean force) {
-        level.getServer().getPlayerList().getPlayers().forEach(player -> ((ServerLevel) level).sendParticles(player, particle, force, x, y, z, count, deltaX, deltaY, deltaZ, speed));
+        level.getServer().getPlayerList().getPlayers().forEach(player -> ((ServerLevel) level).sendParticles(player, particle, force, false, x, y, z, count, deltaX, deltaY, deltaZ, speed));
     }
 
     private static int hashSpellList(ServerPlayer player) {

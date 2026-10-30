@@ -53,7 +53,10 @@ public class BossLootHandler {
     public void prepareDrops(Mob mob, ServerLevel serverLevel, DamageSource damageSource, boolean attackedRecently, boolean ominous, @Nullable ServerPlayer lastDamagePlayer) {
         preparedDrops.clear();
 
-        ResourceKey<LootTable> rootLootTable = mob.getLootTable();
+        ResourceKey<LootTable> rootLootTable = mob.getLootTable().orElse(null);
+        if (rootLootTable == null) {
+            return;
+        }
         ResourceKey<LootTable> perPlayerLootTable = ResourceKey.create(Registries.LOOT_TABLE, rootLootTable.identifier().withSuffix("_per_player"));
         ResourceKey<LootTable> ominousLootTable = ResourceKey.create(Registries.LOOT_TABLE, rootLootTable.identifier().withSuffix("_ominous"));
         ResourceKey<LootTable> perPlayerOminousLootTable = ResourceKey.create(Registries.LOOT_TABLE, rootLootTable.identifier().withSuffix("_per_player_ominous"));
@@ -151,7 +154,7 @@ public class BossLootHandler {
         ListTag preparedDropTags = new ListTag();
         for (PreparedDrop preparedDrop : preparedDrops) {
             CompoundTag dropTag = new CompoundTag();
-            dropTag.put(PREPARED_DROP_ITEM_TAG, preparedDrop.itemStack.save(registries));
+            dropTag.store(PREPARED_DROP_ITEM_TAG, net.minecraft.world.item.ItemStack.OPTIONAL_CODEC, preparedDrop.itemStack);
             if (preparedDrop.targetPlayer != null) {
                 dropTag.store(PREPARED_DROP_TARGET_TAG, net.minecraft.core.UUIDUtil.CODEC, preparedDrop.targetPlayer);
             }
@@ -174,7 +177,7 @@ public class BossLootHandler {
         ListTag preparedDropTags = tag.getListOrEmpty(PREPARED_DROPS_TAG);
         for (Tag dropTagRaw : preparedDropTags) {
             CompoundTag dropTag = (CompoundTag) dropTagRaw;
-            ItemStack stack = ItemStack.parseOptional(registries, dropTag.getCompound(PREPARED_DROP_ITEM_TAG));
+            ItemStack stack = dropTag.read(PREPARED_DROP_ITEM_TAG, ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
             if (stack.isEmpty()) {
                 continue;
             }

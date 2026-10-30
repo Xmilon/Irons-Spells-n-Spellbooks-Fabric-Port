@@ -48,7 +48,7 @@ public class StaffOfTheNines extends Item {
                 MagicManager.spawnParticles(level, ParticleHelper.BLOOD, loc.x, loc.y, loc.z, 25, .1, .1, .1, 0.25, true);
             }
             CameraShakeManager.addCameraShake(new CameraShakeData(level, 10, player.position(), 5));
-            ((ServerPlayer) player).teleportTo((ServerLevel) level, player.getX(), player.getY(), player.getZ(), player.getYRot(), player.getXRot() - Utils.random.nextIntBetweenInclusive(6, 9));
+            ((ServerPlayer) player).teleportTo((ServerLevel) level, player.getX(), player.getY(), player.getZ(), java.util.Set.of(), player.getYRot(), player.getXRot() - Utils.random.nextIntBetweenInclusive(6, 9), false);
         }
         return super.use(level, player, pUsedHand);
     }

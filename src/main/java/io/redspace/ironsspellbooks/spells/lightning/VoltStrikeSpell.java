@@ -91,7 +91,7 @@ public class VoltStrikeSpell extends AbstractSpell {
         ));
         entity.syncVelocity = true;
 
-        entity.addEffect(new MobEffectInstance(net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MobEffectRegistry.VOLT_STRIKE.get()), 10, getDamage(spellLevel, entity), false, false, false));
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.VOLT_STRIKE, 10, getDamage(spellLevel, entity), false, false, false));
         entity.damageCooldownTime = 20;
         playerMagicData.getSyncedData().setSpinAttackType(SpinAttackType.LIGHTNING);
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);

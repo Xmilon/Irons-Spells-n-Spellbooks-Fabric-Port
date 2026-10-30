@@ -214,7 +214,7 @@ public class ScapegoatEntity extends PathfinderMob implements AntiMagicSusceptib
             compound.store("Owner", net.minecraft.core.UUIDUtil.CODEC, this.ownerUUID);
         }
         if (this.targetPos != null) {
-            compound.put("scapegoat_target", NbtUtils.writeBlockPos(this.targetPos));
+            compound.store("scapegoat_target", net.minecraft.core.BlockPos.CODEC, this.targetPos);
         }
         if (durationRemaining > 0) {
             compound.putInt("duration_remaining", durationRemaining);
@@ -228,7 +228,7 @@ public class ScapegoatEntity extends PathfinderMob implements AntiMagicSusceptib
             this.ownerUUID = compound.read("Owner", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
             this.cachedOwner = null;
         }
-        NbtUtils.readBlockPos(compound, "scapegoat_target").ifPresent(p_325838_ -> this.targetPos = p_325838_);
+        compound.read("scapegoat_target", net.minecraft.core.BlockPos.CODEC).ifPresent(p_325838_ -> this.targetPos = p_325838_);
         this.durationRemaining = compound.getIntOr("duration_remaining", 0);
     }
 

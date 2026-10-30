@@ -68,7 +68,7 @@ public class DragonBreathSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.FIRE_BREATH_LOOP.get());
+        return Optional.of(SoundRegistry.FIRE_BREATH_LOOP.value());
     }
 
     @Override

@@ -1,6 +1,7 @@
 package io.redspace.ironsspellbooks.render;
 
 import com.geckolib.animatable.GeoAnimatable;
+import com.geckolib.constant.DataTickets;
 import com.geckolib.constant.dataticket.DataTicket;
 import com.geckolib.model.GeoModel;
 import com.geckolib.renderer.GeoEntityRenderer;
@@ -37,6 +38,9 @@ public class IronsGeoEntityRenderer<T extends Entity & GeoAnimatable> extends Ge
         super.addRenderData(animatable, relatedObject, renderState, partialTick);
         renderState.addGeckolibData(ENTITY, animatable);
         renderState.addGeckolibData(PARTIAL_TICK, partialTick);
+        if (animatable instanceof net.minecraft.world.entity.LivingEntity living) {
+            LivingEffectsRenderState.capture(living, renderState, partialTick, getGeoModel().getTextureResource(renderState));
+        }
     }
 
     /**
@@ -45,6 +49,23 @@ public class IronsGeoEntityRenderer<T extends Entity & GeoAnimatable> extends Ge
     @SuppressWarnings("unchecked")
     public static <E extends Entity> E entityOf(GeoRenderState state) {
         return (E) state.getGeckolibData(ENTITY);
+    }
+
+    /**
+     * Submits {@code pass} with another colour and light than the main pass.
+     * GeckoLib reads both from the render state when a pass is submitted, so they are restored right after.
+     */
+    public static void withTint(EntityRenderState state, int color, int light, Runnable pass) {
+        int oldColor = state.getOrDefaultGeckolibData(DataTickets.RENDER_COLOR, 0xFFFFFFFF);
+        int oldLight = state.lightCoords;
+        state.addGeckolibData(DataTickets.RENDER_COLOR, color);
+        state.lightCoords = light;
+        try {
+            pass.run();
+        } finally {
+            state.addGeckolibData(DataTickets.RENDER_COLOR, oldColor);
+            state.lightCoords = oldLight;
+        }
     }
 
     public static float partialTickOf(GeoRenderState state) {
@@ -64,7 +85,9 @@ public class IronsGeoEntityRenderer<T extends Entity & GeoAnimatable> extends Ge
     @Override
     public void adjustModelBonesForRender(RenderPassInfo<EntityRenderState> info, BoneSnapshots snapshots) {
         super.adjustModelBonesForRender(info, snapshots);
-        if (getGeoModel() instanceof ProceduralBoneAnimation<?> animation) {
+        if (getGeoModel() instanceof ExtractedProceduralBoneAnimation animation) {
+            animation.animateBones(info.renderState(), new TransformStack(snapshots, info));
+        } else if (getGeoModel() instanceof ProceduralBoneAnimation<?> animation) {
             ((ProceduralBoneAnimation<T>) animation).animateBones(entity(info), info.renderState().getGeckolibData(PARTIAL_TICK), new TransformStack(snapshots, info));
         }
     }

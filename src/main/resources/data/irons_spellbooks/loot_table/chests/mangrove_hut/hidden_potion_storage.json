@@ -9,7 +9,7 @@
           "name": "minecraft:emerald",
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": 2
             }
           ]
@@ -19,7 +19,7 @@
           "name": "irons_spellbooks:arcane_essence",
           "functions": [
             {
-              "function": "minecraft:set_count",
+              "type": "minecraft:set_count",
               "count": 2
             }
           ]
@@ -28,6 +28,7 @@
     },
     {
       "rolls": {
+        "type": "minecraft:uniform",
         "min": 3,
         "max": 5
       },
@@ -40,6 +41,7 @@
     },
     {
       "rolls": {
+        "type": "minecraft:uniform",
         "min": 2,
         "max": 5
       },

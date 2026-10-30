@@ -2,12 +2,8 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "M": {
-      "item": "minecraft:spyglass"
-    },
-    "X": {
-      "item": "irons_spellbooks:mithril_scrap"
-    }
+    "M": "minecraft:spyglass",
+    "X": "irons_spellbooks:mithril_scrap"
   },
   "pattern": [
     "M ",

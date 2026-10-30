@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shaped",
   "category": "misc",
   "key": {
-    "M": {
-      "item": "minecraft:chain"
-    },
-    "S": {
-      "item": "minecraft:chain"
-    },
-    "X": {
-      "item": "irons_spellbooks:mithril_scrap"
-    }
+    "M": "minecraft:iron_chain",
+    "S": "minecraft:iron_chain",
+    "X": "irons_spellbooks:mithril_scrap"
   },
   "pattern": [
     " S ",

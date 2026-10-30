@@ -75,7 +75,7 @@ public class EldritchBlastSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.ELDRITCH_BLAST.get());
+        return Optional.of(SoundRegistry.ELDRITCH_BLAST.value());
     }
 
     @Override

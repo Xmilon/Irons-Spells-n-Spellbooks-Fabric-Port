@@ -449,18 +449,18 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
 
     @Override
     protected SoundEvent getHurtSound(DamageSource damageSource) {
-        return SoundRegistry.ICE_SPIDER_HURT.get();
+        return SoundRegistry.ICE_SPIDER_HURT.value();
     }
 
     @Override
     protected SoundEvent getDeathSound() {
-        return SoundRegistry.ICE_SPIDER_DEATH.get();
+        return SoundRegistry.ICE_SPIDER_DEATH.value();
     }
 
     @org.jetbrains.annotations.Nullable
     @Override
     protected SoundEvent getAmbientSound() {
-        return SoundRegistry.ICE_SPIDER_AMBIENT.get();
+        return SoundRegistry.ICE_SPIDER_AMBIENT.value();
     }
 
     @Override
@@ -720,7 +720,7 @@ public class IceSpiderEntity extends AbstractSpellCastingMob implements Enemy, I
         iceTombEntity.setLifetime(20 * 5);
         level.addFreshEntity(iceTombEntity);
         entity.startRiding(iceTombEntity, true, true);
-        playSound(SoundRegistry.ICE_SPIDER_GRAPPLE_SPIT.get());
+        playSound(SoundRegistry.ICE_SPIDER_GRAPPLE_SPIT.value());
         return iceTombEntity;
     }
 

@@ -80,12 +80,12 @@ public class VoidTentacle extends LivingEntity implements GeoEntity, AntiMagicSu
                 if (age < 280 && (age) % 20 == 0) {
                     level().getEntitiesOfClass(LivingEntity.class, this.getBoundingBox().inflate(0.5)).forEach(this::dealDamage);
                     if (Utils.random.nextFloat() < .15f) {
-                        playSound(SoundRegistry.VOID_TENTACLES_AMBIENT.get(), 1.5f, .5f + Utils.random.nextFloat() * .65f);
+                        playSound(SoundRegistry.VOID_TENTACLES_AMBIENT.value(), 1.5f, .5f + Utils.random.nextFloat() * .65f);
                     }
                 }
             }
             if (age == 260 && Utils.random.nextFloat() < .3f) {
-                playSound(SoundRegistry.VOID_TENTACLES_LEAVE.get(), 2, 1);
+                playSound(SoundRegistry.VOID_TENTACLES_LEAVE.value(), 2, 1);
             }
         } else {
             if (age < 280) {

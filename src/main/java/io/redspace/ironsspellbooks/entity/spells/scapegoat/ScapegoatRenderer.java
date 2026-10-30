@@ -7,6 +7,7 @@ import net.minecraft.util.LightCoordsUtil;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.EntityRenderState;
 
 public class ScapegoatRenderer extends GeoLivingEntityRenderer<ScapegoatEntity> {
     public ScapegoatRenderer(EntityRendererProvider.Context context) {
@@ -16,7 +17,8 @@ public class ScapegoatRenderer extends GeoLivingEntityRenderer<ScapegoatEntity> 
     }
 
     @Override
-    public void render(ScapegoatEntity entity, float entityYaw, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight) {
-        super.render(entity, entityYaw, partialTick, poseStack, bufferSource, LightCoordsUtil.FULL_BRIGHT);
+    public void extractRenderState(ScapegoatEntity entity, EntityRenderState state, float partialTick) {
+        super.extractRenderState(entity, state, partialTick);
+        state.lightCoords = LightCoordsUtil.FULL_BRIGHT;
     }
 }

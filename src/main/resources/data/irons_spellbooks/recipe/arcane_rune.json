@@ -6,12 +6,8 @@
     "FFF"
   ],
   "key": {
-    "F": {
-      "item": "irons_spellbooks:arcane_essence"
-    },
-    "R": {
-      "item": "irons_spellbooks:blank_rune"
-    }
+    "F": "irons_spellbooks:arcane_essence",
+    "R": "irons_spellbooks:blank_rune"
   },
   "result": {
     "id": "irons_spellbooks:arcane_rune",

@@ -6,18 +6,10 @@
     " D "
   ],
   "key": {
-    "A": {
-      "item": "irons_spellbooks:archevoker_boots"
-    },
-    "W": {
-      "item": "irons_spellbooks:mithril_weave"
-    },
-    "F": {
-      "item": "minecraft:feather"
-    },
-    "D": {
-      "item": "irons_spellbooks:divine_soulshard"
-    }
+    "A": "irons_spellbooks:archevoker_boots",
+    "W": "irons_spellbooks:mithril_weave",
+    "F": "minecraft:feather",
+    "D": "irons_spellbooks:divine_soulshard"
   },
   "result": {
     "id": "irons_spellbooks:speed_boots",

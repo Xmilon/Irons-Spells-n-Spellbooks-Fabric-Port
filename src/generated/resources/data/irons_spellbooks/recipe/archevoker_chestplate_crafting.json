@@ -2,15 +2,9 @@
   "type": "minecraft:crafting_shapeless",
   "category": "misc",
   "ingredients": [
-    {
-      "tag": "irons_spellbooks:wizard_base_chestplate"
-    },
-    {
-      "item": "irons_spellbooks:evocation_rune"
-    },
-    {
-      "item": "irons_spellbooks:arcane_essence"
-    }
+    "#irons_spellbooks:wizard_base_chestplate",
+    "irons_spellbooks:evocation_rune",
+    "irons_spellbooks:arcane_essence"
   ],
   "result": {
     "components": {

@@ -66,7 +66,7 @@ public class IceTombSpell extends AbstractSpell {
         iceTombEntity.setHealing(getHealing(spellLevel, entity));
         iceTombEntity.setLifetime((int) getDuration(spellLevel, entity));
         world.addFreshEntity(iceTombEntity);
-        entity.startRiding(iceTombEntity, true);
+        entity.startRiding(iceTombEntity, true, false);
 
         super.onCast(world, spellLevel, entity, castSource, playerMagicData);
     }

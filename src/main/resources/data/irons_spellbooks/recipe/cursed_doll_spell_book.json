@@ -6,15 +6,9 @@
     " BI"
   ],
   "key": {
-    "R": {
-      "item": "irons_spellbooks:ruined_book"
-    },
-    "B": {
-      "item": "irons_spellbooks:bloody_vellum"
-    },
-    "I": {
-      "item": "irons_spellbooks:arcane_ingot"
-    }
+    "R": "irons_spellbooks:ruined_book",
+    "B": "irons_spellbooks:bloody_vellum",
+    "I": "irons_spellbooks:arcane_ingot"
   },
   "result": {
     "id": "irons_spellbooks:cursed_doll_spell_book",

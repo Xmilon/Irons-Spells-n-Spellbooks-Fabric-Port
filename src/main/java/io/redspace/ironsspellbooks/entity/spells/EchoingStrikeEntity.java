@@ -49,7 +49,7 @@ public class EchoingStrikeEntity extends AoeEntity {
         if (toTrack != null && tickCount < waitTime / 2) {
             this.setPos(toTrack.position());
         } else if (tickCount == waitTime) {
-            this.playSound(SoundRegistry.ECHOING_STRIKE.get(), 1, Utils.random.nextIntBetweenInclusive(8, 12) * .1f);
+            this.playSound(SoundRegistry.ECHOING_STRIKE.value(), 1, Utils.random.nextIntBetweenInclusive(8, 12) * .1f);
             if (!level().isClientSide()) {
                 var center = this.getBoundingBox().getCenter();
                 MagicManager.spawnParticles(level(), ParticleHelper.UNSTABLE_ENDER, center.x, center.y, center.z, 25, 0, 0, 0, .18, false);

@@ -64,7 +64,7 @@ public class BlizzardAoe extends AoeEntity {
         }
         this.move(MoverType.SELF, getDeltaMovement());
         if ((tickCount - 1) % 10 == 0) {
-            playSound(SoundRegistry.CONE_OF_COLD_LOOP.get(), 2, random.nextIntBetweenInclusive(15, 20) * .1f);
+            playSound(SoundRegistry.CONE_OF_COLD_LOOP.value(), 2, random.nextIntBetweenInclusive(15, 20) * .1f);
         }
         if (tickCount % 20 == 0) {
             if (level.collidesWithSuffocatingBlock(this, AABB.ofSize(this.position().add(0, 0.5, 0), 1.5, 0.5, 1.5))) {
@@ -104,6 +104,6 @@ public class BlizzardAoe extends AoeEntity {
         Vec3 up = new Vec3(0, 1, 0).add(Utils.getRandomVec3(0.25)).normalize();
         level.addParticle(new SwirlingParticleOptions(
                 particle, up, new Vec3(0, 0, 1), new Vec3(diameter, diameter, angularSpeed), new Vec3(0, 0, 0)
-        ), true, center.x, center.y, center.z, speed.x, speed.y, speed.z);
+        ), true, false, center.x, center.y, center.z, speed.x, speed.y, speed.z);
     }
 }

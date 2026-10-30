@@ -151,13 +151,13 @@ public class WispEntity extends PathfinderMob implements GeoEntity {
         };
         flyingpathnavigation.setCanOpenDoors(false);
         flyingpathnavigation.setCanFloat(true);
-        flyingpathnavigation.setCanPassDoors(true);
+        flyingpathnavigation.getNodeEvaluator().setCanPassDoors(true);
         return flyingpathnavigation;
     }
 
     @Override
     public void travel(Vec3 pTravelVector) {
-        if (this.isEffectiveAi() || this.isControlledByLocalInstance()) {
+        if (this.isEffectiveAi() || this.isLocalInstanceAuthoritative()) {
             if (this.isInWater()) {
                 this.moveRelative(0.02F, pTravelVector);
                 this.move(MoverType.SELF, this.getDeltaMovement());

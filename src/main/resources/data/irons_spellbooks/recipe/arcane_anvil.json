@@ -6,18 +6,10 @@
     "SVS"
   ],
   "key": {
-    "D": {
-      "tag": "c:gems/diamond"
-    },
-    "V": {
-      "item": "minecraft:anvil"
-    },
-    "S": {
-      "item": "minecraft:polished_deepslate"
-    },
-    "A": {
-      "item": "minecraft:amethyst_block"
-    }
+    "D": "#c:gems/diamond",
+    "V": "minecraft:anvil",
+    "S": "minecraft:polished_deepslate",
+    "A": "minecraft:amethyst_block"
   },
   "result": {
     "id": "irons_spellbooks:arcane_anvil",

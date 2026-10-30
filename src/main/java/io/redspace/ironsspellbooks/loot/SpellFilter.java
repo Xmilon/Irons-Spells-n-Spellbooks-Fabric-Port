@@ -52,7 +52,7 @@ public class SpellFilter {
                     Codec.BOOL.optionalFieldOf("force", false).forGetter(f -> f.force),
                     Codec.list(SpellRegistry.REGISTRY.byNameCodec()).fieldOf("spells").forGetter(f -> f.spells)).apply(builder, SpellFilter::new));
 
-    private static final Codec<SpellFilter> NO_FILTER_CODEC = Codec.unit(new SpellFilter());
+    private static final Codec<SpellFilter> NO_FILTER_CODEC = com.mojang.serialization.MapCodec.unit(new SpellFilter()).codec();
     public static final Codec<SpellFilter> CODEC = Codec.withAlternative(SCHOOL_CODEC, SPELLS_CODEC);
 
     private boolean isSpellAllowed(AbstractSpell spell) {

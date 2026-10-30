@@ -119,7 +119,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
         this.targetSelector.addGoal(4, new NearestAttackableTargetGoal<>(this, Mob.class, 5, false, false, (mob, serverLevel) -> mob instanceof Enemy && !(mob instanceof Creeper)));
         this.targetSelector.addGoal(5, new ResetUniversalAngerTargetGoal<>(this, false));
 
-        this.supportTargetSelector = new GoalSelector(this.level().getProfilerSupplier());
+        this.supportTargetSelector = new GoalSelector();
         this.supportTargetSelector.addGoal(0, new FindSupportableTargetGoal<>(this, LivingEntity.class, true,
                 (mob, serverLevel) -> !isAngryAt(mob, serverLevel) && mob.getHealth() * 1.25f < mob.getMaxHealth() && (mob.typeHolder().is(ModTags.VILLAGE_ALLIES) || mob instanceof Player))
         );
@@ -199,14 +199,27 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
     @Override
     protected void defineSynchedData(SynchedEntityData.Builder pBuilder) {
         super.defineSynchedData(pBuilder);
-        pBuilder.define(DATA_VILLAGER_DATA, new VillagerData(VillagerType.PLAINS, VillagerProfession.NONE, 1));
+        var villagerTypes = level().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.VILLAGER_TYPE);
+        var villagerProfessions = level().registryAccess().lookupOrThrow(net.minecraft.core.registries.Registries.VILLAGER_PROFESSION);
+        pBuilder.define(DATA_VILLAGER_DATA, new VillagerData(villagerTypes.getOrThrow(VillagerType.PLAINS), villagerProfessions.getOrThrow(VillagerProfession.NONE), 1));
         pBuilder.define(DATA_VILLAGER_UNHAPPY, false);
     }
 
     public void setVillagerData(VillagerData villagerdata) {
         //VillagerData villagerdata = this.getVillagerData();
-        villagerdata.setProfession(VillagerProfession.NONE);
-        this.entityData.set(DATA_VILLAGER_DATA, villagerdata);
+        this.entityData.set(DATA_VILLAGER_DATA, villagerdata.withProfession(level().registryAccess(), VillagerProfession.NONE));
+    }
+
+    private boolean villagerDataFinalized;
+
+    @Override
+    public boolean getVillagerDataFinalized() {
+        return villagerDataFinalized;
+    }
+
+    @Override
+    public void setVillagerDataFinalized(boolean finalized) {
+        this.villagerDataFinalized = finalized;
     }
 
     public boolean isUnhappy() {
@@ -284,7 +297,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
 
     public void setUnhappy() {
         if (!level().isClientSide()) {
-            this.playSound(SoundRegistry.TRADER_NO.get(), this.getSoundVolume(), this.getVoicePitch());
+            this.playSound(SoundRegistry.TRADER_NO.value(), this.getSoundVolume(), this.getVoicePitch());
             unhappyTimer = 20;
             this.entityData.set(DATA_VILLAGER_UNHAPPY, true);
         }
@@ -306,7 +319,7 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
 
     @Override
     public Optional<SoundEvent> getAngerSound() {
-        return Optional.of(SoundRegistry.TRADER_NO.get());
+        return Optional.of(SoundRegistry.TRADER_NO.value());
     }
 
     /*
@@ -410,16 +423,16 @@ public class PriestEntity extends NeutralWizard implements VillagerDataHolder, S
 
     @Override
     public SoundEvent getNotifyTradeSound() {
-        return SoundRegistry.TRADER_YES.get();
+        return SoundRegistry.TRADER_YES.value();
     }
 
     protected SoundEvent getTradeUpdatedSound(boolean pIsYesSound) {
-        return pIsYesSound ? SoundRegistry.TRADER_YES.get() : SoundRegistry.TRADER_NO.get();
+        return pIsYesSound ? SoundRegistry.TRADER_YES.value() : SoundRegistry.TRADER_NO.value();
     }
 
     private void startTrading(Player pPlayer) {
         this.setTradingPlayer(pPlayer);
-        this.openTradingScreen(pPlayer, this.getDisplayName(), this.getVillagerData().getLevel());
+        this.openTradingScreen(pPlayer, this.getDisplayName(), this.getVillagerData().level());
     }
 
     @Override

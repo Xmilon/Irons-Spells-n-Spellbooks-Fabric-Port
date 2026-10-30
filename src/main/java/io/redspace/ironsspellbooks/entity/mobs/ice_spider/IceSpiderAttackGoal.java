@@ -29,16 +29,16 @@ public class IceSpiderAttackGoal extends GenericAnimatedWarlockAttackGoal<IceSpi
     public void playSwingSound() {
         if (currentAttack != null) {
             if (currentAttack.animationId.contains("bite")) {
-                mob.playSound(SoundRegistry.ICE_SPIDER_BITE.get());
+                mob.playSound(SoundRegistry.ICE_SPIDER_BITE.value());
             }
         }
-        mob.playSound(SoundRegistry.ICE_SPIDER_SWING.get(), 1, Utils.random.nextIntBetweenInclusive(9, 11) * .1f);
+        mob.playSound(SoundRegistry.ICE_SPIDER_SWING.value(), 1, Utils.random.nextIntBetweenInclusive(9, 11) * .1f);
     }
 
     @Override
     public void playImpactSound() {
         //todo: custom sound
-//        mob.playSound(SoundRegistry.KEEPER_SWORD_IMPACT.get(), 1, Mth.randomBetweenInclusive(mob.getRandom(), 9, 13) * .1f);
+//        mob.playSound(SoundRegistry.KEEPER_SWORD_IMPACT.value(), 1, Mth.randomBetweenInclusive(mob.getRandom(), 9, 13) * .1f);
     }
 
     public void setTarget(LivingEntity target) {

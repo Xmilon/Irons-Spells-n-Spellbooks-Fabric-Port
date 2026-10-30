@@ -28,7 +28,7 @@ public abstract class ServerEntityMixin {
     private void irons_spellbooks$sendComplexSpawnData(ServerPlayer player, Consumer<Packet<ClientGamePacketListener>> consumer, CallbackInfo ci) {
         if (this.entity instanceof IEntityWithComplexSpawn) {
             var payload = ComplexSpawnDataPacket.create(this.entity, player.registryAccess());
-            consumer.accept((Packet) ServerPlayNetworking.createS2CPacket(payload));
+            consumer.accept((Packet) new net.minecraft.network.protocol.common.ClientboundCustomPayloadPacket(payload));
         }
     }
 }

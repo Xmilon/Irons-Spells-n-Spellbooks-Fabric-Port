@@ -92,6 +92,8 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
 
     }
 
+    public int swingTime;
+
     @Override
     public void tick() {
         super.tick();
@@ -101,8 +103,9 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
     }
 
     @Override
-    public void swing(InteractionHand pHand) {
+    public boolean swing(InteractionHand pHand, net.minecraft.world.item.component.SwingAnimation animation, boolean sendToSwingingEntity) {
         swingTime = 10;
+        return true;
     }
 
     @Override
@@ -284,7 +287,9 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
         return this.offers;
     }
 
-    private static final List<MerchantOffer> fillerOffers = List.of(new MerchantOffer(
+    // built on first use: item stacks cannot exist while the class loads during startup (components are not bound yet)
+    private static final class Fillers {
+        static final List<MerchantOffer> OFFERS = List.of(new MerchantOffer(
             new ItemCost(Items.EMERALD, 4),
             Optional.empty(),
             new ItemStack(Items.MAGMA_CREAM, 1),
@@ -429,16 +434,17 @@ public class ApothecaristEntity extends NeutralWizard implements IMerchantWizard
             5,
             0.01f
     ));
+    }
 
     private Collection<MerchantOffer> createRandomOffers(int min, int max) {
         Set<Integer> set = Sets.newHashSet();
         int fillerTrades = random.nextIntBetweenInclusive(min, max);
         for (int i = 0; i < 10 && set.size() < fillerTrades; i++) {
-            set.add(random.nextInt(fillerOffers.size()));
+            set.add(random.nextInt(Fillers.OFFERS.size()));
         }
         Collection<MerchantOffer> offers = new ArrayList<>();
         for (Integer integer : set) {
-            offers.add(fillerOffers.get(integer));
+            offers.add(Fillers.OFFERS.get(integer));
         }
         return offers;
     }

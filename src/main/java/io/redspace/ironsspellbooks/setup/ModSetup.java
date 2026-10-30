@@ -53,8 +53,8 @@ public class ModSetup {
             if (world.isClientSide()) {
                 return;
             }
-            boolean doMobSpawning = world.getGameRules().getBoolean(GameRules.RULE_DOMOBSPAWNING);
-            ICE_SPIDER_PATROL_SPAWNER.tick(world, doMobSpawning, doMobSpawning);
+            boolean doMobSpawning = world.getGameRules().get(GameRules.SPAWN_MOBS);
+            ICE_SPIDER_PATROL_SPAWNER.tick(world, doMobSpawning);
         });
 
         // Sync player-side spell/mana state and spell config when a player joins.

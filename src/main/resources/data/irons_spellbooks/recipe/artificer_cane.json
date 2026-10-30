@@ -6,15 +6,9 @@
     "CG "
   ],
   "key": {
-    "C": {
-      "item": "minecraft:crimson_planks"
-    },
-    "G": {
-      "tag": "c:ingots/gold"
-    },
-    "A": {
-      "tag": "c:gems/amethyst"
-    }
+    "C": "minecraft:crimson_planks",
+    "G": "#c:ingots/gold",
+    "A": "#c:gems/amethyst"
   },
   "result": {
     "id": "irons_spellbooks:artificer_cane",

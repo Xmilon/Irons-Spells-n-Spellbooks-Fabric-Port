@@ -47,8 +47,8 @@ public class OminousThrowFireOrbGoal extends AnimatedActionGoal<FireBossEntity> 
     protected void doAction() {
         var target = mob.getTarget();
         if (target != null) {
-            mob.playSound(SoundRegistry.FIRE_BOSS_FIREBALL.get(), 3f, Utils.random.nextIntBetweenInclusive(80, 110) * .01f);
-            mob.playSound(SoundRegistry.SOULCALLER_TOLL_SUCCESS.get(), 3f, .75f);
+            mob.playSound(SoundRegistry.FIRE_BOSS_FIREBALL.value(), 3f, Utils.random.nextIntBetweenInclusive(80, 110) * .01f);
+            mob.playSound(SoundRegistry.SOULCALLER_TOLL_SUCCESS.value(), 3f, .75f);
             MagicManager.spawnParticles(mob.level(), new BlastwaveParticleOptions(1, .6f, 0.3f, 8), mob.getX(), mob.getBoundingBox().getCenter().y, mob.getZ(), 0, 0, 0, 0, 0, true);
 
             Vec3 delta = this.mob.position().subtract(target.position()).normalize();

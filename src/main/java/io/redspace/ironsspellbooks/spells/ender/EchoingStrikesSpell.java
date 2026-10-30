@@ -77,7 +77,7 @@ public class EchoingStrikesSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.ECHOING_STRIKES_CAST.get());
+        return Optional.of(SoundRegistry.ECHOING_STRIKES_CAST.value());
     }
 
     @Override

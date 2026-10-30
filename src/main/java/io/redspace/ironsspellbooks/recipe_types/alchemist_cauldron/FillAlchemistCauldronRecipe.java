@@ -28,7 +28,8 @@ import org.jetbrains.annotations.Nullable;
 /**
  * Recipe Type for putting liquids into the cauldron (filling cauldron)
  */
-public record FillAlchemistCauldronRecipe(Ingredient input, ItemStack returned,
+// the returned stack is a template: recipes load before item components are bound
+public record FillAlchemistCauldronRecipe(Ingredient input, net.minecraft.world.item.ItemStackTemplate returnedItem,
                                           FluidStack result, boolean mustFitAll,
                                           Holder<SoundEvent> fillSound) implements Recipe<SingleRecipeInput> {
 
@@ -38,7 +39,7 @@ public record FillAlchemistCauldronRecipe(Ingredient input, ItemStack returned,
     }
 
     public ItemStack returned() {
-        return returned.copy();
+        return returnedItem.create();
     }
 
     @Override
@@ -48,7 +49,7 @@ public record FillAlchemistCauldronRecipe(Ingredient input, ItemStack returned,
 
     @Override
     public ItemStack assemble(SingleRecipeInput input) {
-        return returned.copy();
+        return returnedItem.create();
     }
 
     @Override
@@ -91,14 +92,14 @@ public record FillAlchemistCauldronRecipe(Ingredient input, ItemStack returned,
 
         public static final MapCodec<FillAlchemistCauldronRecipe> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
                 Ingredient.CODEC.fieldOf("input").forGetter(FillAlchemistCauldronRecipe::input),
-                ItemStack.CODEC.fieldOf("result").forGetter(FillAlchemistCauldronRecipe::returned),
+                net.minecraft.world.item.ItemStackTemplate.CODEC.fieldOf("result").forGetter(FillAlchemistCauldronRecipe::returnedItem),
                 FluidStack.CODEC.fieldOf("fluid").forGetter(FillAlchemistCauldronRecipe::result),
                 Codec.BOOL.optionalFieldOf("mustFitAll", true).forGetter(FillAlchemistCauldronRecipe::mustFitAll),
                 BuiltInRegistries.SOUND_EVENT.holderByNameCodec().optionalFieldOf("sound", BuiltInRegistries.SOUND_EVENT.wrapAsHolder(SoundEvents.BOTTLE_EMPTY)).forGetter(FillAlchemistCauldronRecipe::fillSound)
         ).apply(builder, FillAlchemistCauldronRecipe::new));
         public static final StreamCodec<RegistryFriendlyByteBuf, FillAlchemistCauldronRecipe> STREAM_CODEC = StreamCodec.composite(
                 Ingredient.CONTENTS_STREAM_CODEC, FillAlchemistCauldronRecipe::input,
-                ItemStack.STREAM_CODEC, FillAlchemistCauldronRecipe::returned,
+                net.minecraft.world.item.ItemStackTemplate.STREAM_CODEC, FillAlchemistCauldronRecipe::returnedItem,
                 FluidStack.STREAM_CODEC, FillAlchemistCauldronRecipe::result,
                 ByteBufCodecs.BOOL, FillAlchemistCauldronRecipe::mustFitAll,
                 ByteBufCodecs.holderRegistry(Registries.SOUND_EVENT), FillAlchemistCauldronRecipe::fillSound,
@@ -166,7 +167,7 @@ public record FillAlchemistCauldronRecipe(Ingredient input, ItemStack returned,
 
         @Override
         public void save(RecipeOutput recipeOutput, ResourceKey<Recipe<?>> id) {
-            recipeOutput.accept(id, new FillAlchemistCauldronRecipe(input, returned, fluid, mustFitAll, BuiltInRegistries.SOUND_EVENT.wrapAsHolder(soundEvent)), null);
+            recipeOutput.accept(id, new FillAlchemistCauldronRecipe(input, net.minecraft.world.item.ItemStackTemplate.fromNonEmptyStack(returned), fluid, mustFitAll, BuiltInRegistries.SOUND_EVENT.wrapAsHolder(soundEvent)), null);
         }
     }
 }

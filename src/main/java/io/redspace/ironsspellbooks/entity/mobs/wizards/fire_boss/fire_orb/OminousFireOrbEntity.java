@@ -165,10 +165,10 @@ public class OminousFireOrbEntity extends Entity implements AntiMagicSusceptible
             int fuseProgress = getFuseProgressTicks();
             if (isPastChargePhase() && tickCount % 8 == 0) {
                 float pitch = Mth.lerp(fuseProgress / (float) fuse, 0.5f, 2f);
-                this.playSound(SoundRegistry.SCORCH_PREPARE.get(), 2 + pitch, pitch);
+                this.playSound(SoundRegistry.SCORCH_PREPARE.value(), 2 + pitch, pitch);
             }
             if (fuseProgress == fuse - 20) {
-                this.playSound(SoundRegistry.HEAT_SURGE_PREPARE.get(), 4, 1);
+                this.playSound(SoundRegistry.HEAT_SURGE_PREPARE.value(), 4, 1);
             }
             if (!level().isClientSide() && fuseProgress >= fuse) {
                 doExplosion();
@@ -178,7 +178,7 @@ public class OminousFireOrbEntity extends Entity implements AntiMagicSusceptible
 
     private void doExplosion() {
         Entity owner = getOwner();
-        var source = new DamageSource(level().damageSources().damageTypes.getHolderOrThrow(ISSDamageTypes.FIRE_MAGIC), owner);
+        var source = level().damageSources().source(ISSDamageTypes.FIRE_MAGIC, owner);
         var explosionRadiusSqr = radius * radius;
         var entities = level().getEntities(this, this.getBoundingBox().inflate(radius));
         Vec3 losPoint = Utils.raycastForBlock(level(), this.position(), this.position().add(0, 1, 0), ClipContext.Fluid.NONE).getLocation();
@@ -188,7 +188,7 @@ public class OminousFireOrbEntity extends Entity implements AntiMagicSusceptible
             if (!(entity instanceof OminousFireOrbEntity) && distanceSqr < explosionRadiusSqr && entity.canBeHitByProjectile() && !DamageSources.isFriendlyFireBetween(owner, entity) && Utils.hasLineOfSight(level(), losPoint, entity.getBoundingBox().getCenter(), true)) {
                 double p = (1 - distanceSqr / explosionRadiusSqr);
                 float damage = (float) (baseDamage * p);
-                if (entity.hurt(source, damage) && entity instanceof LivingEntity livingVictim) {
+                if (DamageSources.applyDamage(entity, damage, source) && entity instanceof LivingEntity livingVictim) {
                     ImmolateEffect.addImmolateStack(livingVictim, owner);
                 }
             }
@@ -233,7 +233,7 @@ public class OminousFireOrbEntity extends Entity implements AntiMagicSusceptible
             this.markHurt();
             this.health -= amount;
             MagicManager.spawnParticles(level(), ParticleHelper.SOULFIRE_SPARKS, this.getX(), this.getY() + 2, this.getZ(), (int) amount, 0.1, 0.1, 0.1, 0.5, false);
-            playSound(SoundRegistry.KEEPER_HURT.get(), 1.5f, 1.7f);
+            playSound(SoundRegistry.KEEPER_HURT.value(), 1.5f, 1.7f);
             if (health <= 0) {
                 //todo:death sound
                 discard();

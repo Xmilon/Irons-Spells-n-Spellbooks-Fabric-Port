@@ -6,18 +6,10 @@
     "CCC"
   ],
   "key": {
-    "M": {
-      "item": "irons_spellbooks:mithril_scrap"
-    },
-    "R": {
-      "item": "irons_spellbooks:ruined_book"
-    },
-    "C": {
-      "item": "irons_spellbooks:magic_cloth"
-    },
-    "V": {
-      "item": "irons_spellbooks:ice_venom_vial"
-    }
+    "M": "irons_spellbooks:mithril_scrap",
+    "R": "irons_spellbooks:ruined_book",
+    "C": "irons_spellbooks:magic_cloth",
+    "V": "irons_spellbooks:ice_venom_vial"
   },
   "result": {
     "id": "irons_spellbooks:ice_spell_book",

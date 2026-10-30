@@ -70,7 +70,7 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
     protected void onHitFrame(AttackKeyframe attackKeyframe, float meleeRange) {
         if (attackKeyframe instanceof InvokeDaggerKeyframe kf) {
             this.mob.procSpectralDagger(kf.duration);
-            this.mob.playSound(SoundRegistry.FIRE_BOSS_ACCENT.get(), 3, 1f);
+            this.mob.playSound(SoundRegistry.FIRE_BOSS_ACCENT.value(), 3, 1f);
         } else {
             super.onHitFrame(attackKeyframe, meleeRange);
             if (attackKeyframe instanceof FireBossAttackKeyframe fireKeyframe) {
@@ -164,7 +164,7 @@ public class FireBossAttackGoal extends GenericAnimatedWarlockAttackGoal<FireBos
 
     @Override
     public void playSwingSound() {
-        mob.playSound(SoundRegistry.HELLRAZOR_SWING.get(), 1, Mth.randomBetweenInclusive(mob.getRandom(), 9, 11) * .1f);
+        mob.playSound(SoundRegistry.HELLRAZOR_SWING.value(), 1, Mth.randomBetweenInclusive(mob.getRandom(), 9, 11) * .1f);
     }
 
     @Override

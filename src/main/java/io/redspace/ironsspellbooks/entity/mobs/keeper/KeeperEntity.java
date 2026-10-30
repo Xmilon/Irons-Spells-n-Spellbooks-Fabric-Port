@@ -146,8 +146,8 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
     }
 
     @Override
-    protected boolean shouldDropLoot() {
-        return super.shouldDropLoot() && !isSummoned();
+    protected boolean shouldDropLoot(ServerLevel serverLevel) {
+        return super.shouldDropLoot(serverLevel) && !isSummoned();
     }
 
     @Override
@@ -201,7 +201,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
         return new LookControl(this) {
             //This allows us to more rapidly turn towards our target. Helps to make sure his targets are aligned with his swing animations
             @Override
-            protected float rotateTowards(float pFrom, float pTo, float pMaxDelta) {
+            public float rotateTowards(float pFrom, float pTo, float pMaxDelta) {
                 return super.rotateTowards(pFrom, pTo, pMaxDelta * 2.5f);
             }
         };
@@ -225,7 +225,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
     }
 
     protected SoundEvent getAmbientSound() {
-        return SoundRegistry.KEEPER_IDLE.get();
+        return SoundRegistry.KEEPER_IDLE.value();
     }
 
     @Override
@@ -234,11 +234,11 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
     }
 
     protected SoundEvent getHurtSound(DamageSource pDamageSource) {
-        return SoundRegistry.KEEPER_HURT.get();
+        return SoundRegistry.KEEPER_HURT.value();
     }
 
     protected SoundEvent getDeathSound() {
-        return SoundRegistry.KEEPER_DEATH.get();
+        return SoundRegistry.KEEPER_DEATH.value();
     }
 
     @Override
@@ -250,7 +250,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
 
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource pRandom, DifficultyInstance pDifficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(isRestored() ? ItemRegistry.LEGIONNAIRE_FLAMBERGE : ItemRegistry.KEEPER_FLAMBERGE));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(isRestored() ? ItemRegistry.LEGIONNAIRE_FLAMBERGE.get() : ItemRegistry.KEEPER_FLAMBERGE.get()));
     }
 
     public static AttributeSupplier.Builder prepareAttributes() {
@@ -284,7 +284,7 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
 
     @Override
     protected void playStepSound(BlockPos pPos, BlockState pState) {
-        this.playSound(SoundRegistry.KEEPER_STEP.get(), .25f, 1f);
+        this.playSound(SoundRegistry.KEEPER_STEP.value(), .25f, 1f);
     }
 
     @Override
@@ -293,8 +293,8 @@ public class KeeperEntity extends AbstractSpellCastingMob implements Enemy, IAni
     }
 
     @Override
-    public boolean isInvulnerableTo(DamageSource pSource) {
-        return super.isInvulnerableTo(pSource) || pSource.is(DamageTypeTags.IS_FALL);
+    public boolean isInvulnerableTo(ServerLevel serverLevel, DamageSource pSource) {
+        return super.isInvulnerableTo(serverLevel, pSource) || pSource.is(DamageTypeTags.IS_FALL);
     }
 
     private final AnimationController<KeeperEntity> meleeController = new AnimationController<>("keeper_animations", 0, this::predicate);

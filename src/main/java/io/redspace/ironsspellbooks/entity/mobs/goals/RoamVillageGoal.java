@@ -42,7 +42,7 @@ public class RoamVillageGoal extends PatrolNearLocationGoal {
         }
         //TODO: distance check too?
 
-        var canUse = (this.mob.level().isDay() || isDuringRaid()) && villagePoi != null && super.canUse();
+        var canUse = (this.mob.level().isBrightOutside() || isDuringRaid()) && villagePoi != null && super.canUse();
         //IronsSpellbooks.LOGGER.debug("RoamVillageGoal.canuse: {}", canUse);
 
         return canUse;

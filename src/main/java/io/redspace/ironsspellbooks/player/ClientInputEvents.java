@@ -20,7 +20,6 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.event.ClientTickEvent;
 import net.neoforged.neoforge.client.event.InputEvent;
 import net.neoforged.neoforge.network.PacketDistributor;
-import org.lwjgl.glfw.GLFW;
 
 import java.util.List;
 
@@ -146,8 +145,8 @@ public final class ClientInputEvents {
         if (SPELLBAR_SCROLL_MODIFIER_KEYMAP.isDown()) {
             return true;
         }
-        return isKeyboardMouseInputDown(InputConstants.getKey(GLFW.GLFW_KEY_LEFT_ALT, 0))
-                || isKeyboardMouseInputDown(InputConstants.getKey(GLFW.GLFW_KEY_RIGHT_ALT, 0));
+        return isKeyboardMouseInputDown(InputConstants.Type.KEYBOARD.getOrCreate(InputConstants.KEY_LALT))
+                || isKeyboardMouseInputDown(InputConstants.Type.KEYBOARD.getOrCreate(InputConstants.KEY_RALT));
     }
 
     /// Called in every client tick event to update [#showExpandedTooltip].
@@ -199,12 +198,16 @@ public final class ClientInputEvents {
     /// @see InputConstants
     private static boolean isKeyboardMouseInputDown(InputConstants.Key key) {
         final int keyValue = key.getValue();
-        final long windowPointer = Minecraft.getInstance().getWindow().getWindow();
-
-        if (key.getType() == InputConstants.Type.KEYSYM) {
-            return GLFW.glfwGetKey(windowPointer, keyValue) > 0;
+        if (key.getType() == InputConstants.Type.KEYBOARD) {
+            return InputConstants.isKeyDown(keyValue);
         } else if (key.getType() == InputConstants.Type.MOUSE) {
-            return GLFW.glfwGetMouseButton(windowPointer, keyValue) > 0;
+            var mouse = Minecraft.getInstance().mouseHandler;
+            return switch (keyValue) {
+                case 0 -> mouse.isLeftPressed();
+                case 1 -> mouse.isRightPressed();
+                case 2 -> mouse.isMiddlePressed();
+                default -> false;
+            };
         }
         return false;
     }

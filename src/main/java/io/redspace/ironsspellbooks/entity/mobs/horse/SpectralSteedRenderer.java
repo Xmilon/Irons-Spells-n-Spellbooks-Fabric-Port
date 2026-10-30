@@ -6,26 +6,23 @@ import net.minecraft.client.model.animal.equine.HorseModel;
 import net.minecraft.client.model.geom.ModelLayers;
 import net.minecraft.client.renderer.entity.AbstractHorseRenderer;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
+import net.minecraft.client.renderer.entity.state.HorseRenderState;
 import net.minecraft.resources.Identifier;
 
-public class SpectralSteedRenderer extends AbstractHorseRenderer<SummonedHorse, HorseModel<SummonedHorse>> {
-    public SpectralSteedRenderer(EntityRendererProvider.Context p_174167_) {
-        super(p_174167_, new HorseModel<>(p_174167_.bakeLayer(ModelLayers.HORSE)), 1.1F);
-        //.addLayer(new HorseMarkingLayer(this));
-        //this.addLayer(new HorseArmorLayer(this, p_174167_.getModelSet()));
-    }
-//    public MagicHorseRenderer(EntityRendererProvider.Context pContext, HorseModel pModel, float pScale) {
-//        super(pContext, pModel, pScale);
-//    }
+public class SpectralSteedRenderer extends AbstractHorseRenderer<SummonedHorse, HorseRenderState, HorseModel> {
+    private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/horse/spectral_steed.png");
 
-//    @Nullable
-//    @Override
-//    protected RenderType getRenderType(SpectralSteed pLivingEntity, boolean pBodyVisible, boolean pTranslucent, boolean pGlowing) {
-//        return super.getRenderType(pLivingEntity, pBodyVisible, true, pGlowing);
-//    }
+    public SpectralSteedRenderer(EntityRendererProvider.Context context) {
+        super(context, new HorseModel(context.bakeLayer(ModelLayers.HORSE)), new HorseModel(context.bakeLayer(ModelLayers.HORSE_BABY)));
+    }
 
     @Override
-    public Identifier getTextureLocation(SummonedHorse pEntity) {
-        return Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/horse/spectral_steed.png");
+    public HorseRenderState createRenderState() {
+        return new HorseRenderState();
+    }
+
+    @Override
+    public Identifier getTextureLocation(HorseRenderState state) {
+        return TEXTURE;
     }
 }

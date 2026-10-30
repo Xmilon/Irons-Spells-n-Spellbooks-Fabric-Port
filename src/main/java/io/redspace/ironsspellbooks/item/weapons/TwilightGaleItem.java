@@ -31,7 +31,7 @@ public class TwilightGaleItem extends MagicSwordItem {
 
     @Override
     public ItemUseAnimation getUseAnimation(ItemStack stack) {
-        return ItemUseAnimation.SPEAR;
+        return ItemUseAnimation.TRIDENT;
     }
 
     @Override
@@ -59,7 +59,7 @@ public class TwilightGaleItem extends MagicSwordItem {
      * Called when the player stops using an Item (stops holding the right mouse button).
      */
     @Override
-    public void releaseUsing(ItemStack stack, Level level, LivingEntity entityLiving, int timeLeft) {
+    public boolean releaseUsing(ItemStack stack, Level level, LivingEntity entityLiving, int timeLeft) {
         if (entityLiving instanceof Player player) {
             int i = this.getUseDuration(stack, entityLiving) - timeLeft;
             if (i >= 8) {
@@ -81,14 +81,16 @@ public class TwilightGaleItem extends MagicSwordItem {
                         }
                         level.addFreshEntity(throwntrident);
                         if (!player.hasInfiniteMaterials()) {
-                            player.getCooldowns().addCooldown(stack.getItem(), 20 * 10);
+                            player.getCooldowns().addCooldown(stack, 20 * 10);
                         }
                         level.playSound(null, throwntrident, holder.value(), SoundSource.PLAYERS, 1.0F, 1.0F);
                     }
                     player.awardStat(Stats.ITEM_USED.get(this));
+                    return true;
                 }
             }
         }
+        return false;
     }
 
     private static boolean isTooDamagedToUse(ItemStack stack) {

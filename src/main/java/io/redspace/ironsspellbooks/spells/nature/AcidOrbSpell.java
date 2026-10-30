@@ -64,12 +64,12 @@ public class AcidOrbSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.ACID_ORB_CHARGE.get());
+        return Optional.of(SoundRegistry.ACID_ORB_CHARGE.value());
     }
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.ACID_ORB_CAST.get());
+        return Optional.of(SoundRegistry.ACID_ORB_CAST.value());
     }
 
     @Override

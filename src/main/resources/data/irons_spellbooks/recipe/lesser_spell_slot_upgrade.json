@@ -6,12 +6,8 @@
     "HCH"
   ],
   "key": {
-    "C": {
-      "item": "irons_spellbooks:magic_cloth"
-    },
-    "H": {
-      "item": "irons_spellbooks:hogskin"
-    }
+    "C": "irons_spellbooks:magic_cloth",
+    "H": "irons_spellbooks:hogskin"
   },
   "result": {
     "id": "irons_spellbooks:lesser_spell_slot_upgrade",

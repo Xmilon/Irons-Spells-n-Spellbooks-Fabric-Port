@@ -6,12 +6,8 @@
     "MCM"
   ],
   "key": {
-    "M": {
-      "tag": "c:ingots/mithril"
-    },
-    "C": {
-      "item": "minecraft:chain"
-    }
+    "M": "#c:ingots/mithril",
+    "C": "minecraft:iron_chain"
   },
   "result": {
     "id": "irons_spellbooks:mithril_weave",

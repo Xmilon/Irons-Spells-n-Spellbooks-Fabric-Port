@@ -205,6 +205,8 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     public FireBossEntity(EntityType<? extends AbstractSpellCastingMob> pEntityType, Level pLevel) {
         super(pEntityType, pLevel);
+        // the default SCALE attribute (1.75) is not applied to the cached hitbox until something refreshes it
+        refreshDimensions();
         xpReward = 25;
         this.lookControl = createLookControl();
         this.moveControl = createMoveControl();
@@ -392,7 +394,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.attackGoal.fireballcooldown = 200; // prevent double fireball by putting our other fireball ability on cooldown
         this.serverTriggerEvent(PROC_HALF_HEALTH_TIMER);
         this.serverTriggerAnimation("fire_boss_half_health_attack");
-        this.playSound(SoundRegistry.BOSS_STANCE_BREAK.get(), 5, 2);
+        this.playSound(SoundRegistry.BOSS_STANCE_BREAK.value(), 5, 2);
     }
 
     public void stopHalfHealthAttack() {
@@ -416,13 +418,13 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.attackGoal.stopMeleeAction(); // interrupt melee action
         this.stopHalfHealthAttack(); // interrupt half health ability
         this.serverTriggerAnimation("fire_boss_break_stance");
-        this.playSound(SoundRegistry.BOSS_STANCE_BREAK.get(), 3, 1);
+        this.playSound(SoundRegistry.BOSS_STANCE_BREAK.value(), 3, 1);
         Vec3 vec3 = this.getBoundingBox().getCenter();
         MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE, vec3.x, vec3.y, vec3.z, 25, 0.2, 0.2, 0.2, 0.12, false);
     }
 
     protected SoundEvent getHurtSound(DamageSource pDamageSource) {
-        return SoundRegistry.FIRE_BOSS_HURT.get();
+        return SoundRegistry.FIRE_BOSS_HURT.value();
     }
 
     public boolean isStanceBroken() {
@@ -462,9 +464,9 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         this.bossLoot.setParticipantsFromPlayers(nearbyPlayers);
         int extraPlayers = Math.max(0, playerScale - 1);
         double extraHealthPercent = extraPlayers * 0.40 + extraPlayers * extraPlayers * 0.10;
-        double extraHealth = ServerConfigs.TYROS_ADDITIONAL_HEALTH.get();
-        double extraDamage = ServerConfigs.TYROS_ADDITIONAL_ATTACK_DAMAGE.get();
-        double extraPower = ServerConfigs.TYROS_ADDITIONAL_SPELL_POWER.get();
+        double extraHealth = ServerConfigs.safeGet(ServerConfigs.TYROS_ADDITIONAL_HEALTH);
+        double extraDamage = ServerConfigs.safeGet(ServerConfigs.TYROS_ADDITIONAL_ATTACK_DAMAGE);
+        double extraPower = ServerConfigs.safeGet(ServerConfigs.TYROS_ADDITIONAL_SPELL_POWER);
         if (extraHealth != 0) {
             this.getAttribute(Attributes.MAX_HEALTH).addPermanentModifier(new AttributeModifier(IronsSpellbooks.id("config"), extraHealth, AttributeModifier.Operation.ADD_VALUE));
         }
@@ -483,7 +485,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     @Override
     protected void populateDefaultEquipmentSlots(RandomSource pRandom, DifficultyInstance pDifficulty) {
-        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(isSoulMode() ? ItemRegistry.HELLRAZOR : ItemRegistry.DECREPIT_SCYTHE));
+        this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(isSoulMode() ? ItemRegistry.HELLRAZOR.get() : ItemRegistry.DECREPIT_SCYTHE.get()));
         this.setDropChance(EquipmentSlot.MAINHAND, 0);
     }
 
@@ -591,7 +593,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             }
             if (despawnAggroDelay++ > PROC_DESPAWN_SECONDS * 20) {
                 setDespawning(true);
-                level.playSound(null, this.blockPosition(), SoundRegistry.FIRE_BOSS_ACCENT.get(), SoundSource.HOSTILE, 4, 0.75f);
+                level.playSound(null, this.blockPosition(), SoundRegistry.FIRE_BOSS_ACCENT.value(), SoundSource.HOSTILE, 4, 0.75f);
             }
         }
         if (this.isAggressive() && this.tickCount % (12 * 20) == 0) {
@@ -656,7 +658,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             // sounds
             if (tick % 10 == 0) {
                 float pitch = Mth.lerp(tick / (float) HALF_HEALTH_ANIM_DURATION, 0.5f, 1.8f);
-                this.playSound(SoundRegistry.SCORCH_PREPARE.get(), 2 + pitch, pitch);
+                this.playSound(SoundRegistry.SCORCH_PREPARE.value(), 2 + pitch, pitch);
             }
         } else if (tick == HALF_HEALTH_CAST_TIMESTAMP) {
             this.setNoGravity(false);
@@ -670,7 +672,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             fireball.setPos(origin);
             fireball.shoot(trajectory);
             level.addFreshEntity(fireball);
-            this.playSound(SoundRegistry.FIRE_BOSS_FIREBALL.get(), 4, 1f);
+            this.playSound(SoundRegistry.FIRE_BOSS_FIREBALL.value(), 4, 1f);
         }
     }
 
@@ -688,7 +690,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 var scale = this.getAttribute(Attributes.SCALE);
                 scale.removeModifier(SOUL_SCALE_MODIFIER);
                 scale.addPermanentModifier(SOUL_SCALE_MODIFIER);
-                this.playSound(SoundRegistry.FIRE_BOSS_TRANSITION_SOUL.get(), 3, 1);
+                this.playSound(SoundRegistry.FIRE_BOSS_TRANSITION_SOUL.value(), 3, 1);
                 upgradeScythe();
             } else if (tick < 80) {
                 var f = Mth.lerp(tick / 80f, 0.2, 0.4);
@@ -699,20 +701,20 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
         if (tick >= STANCE_BREAK_BEGIN_SLAMS_TIMESTAMP) {
             if (tick == STANCE_BREAK_BEGIN_SLAMS_TIMESTAMP) {
                 createEruptionEntity(8, (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE));
-                playSound(SoundRegistry.FIRE_ERUPTION_SLAM.get(), 2, 1.2f);
+                playSound(SoundRegistry.FIRE_ERUPTION_SLAM.value(), 2, 1.2f);
             } else if (tick == STANCE_BREAK_BEGIN_SLAMS_TIMESTAMP + 25) {
                 createEruptionEntity(11, (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 2);
-                playSound(SoundRegistry.FIRE_ERUPTION_SLAM.get(), 3, 1f);
+                playSound(SoundRegistry.FIRE_ERUPTION_SLAM.value(), 3, 1f);
             } else if (tick == STANCE_BREAK_BEGIN_SLAMS_TIMESTAMP + 50) {
                 createEruptionEntity(15, (float) this.getAttributeValue(Attributes.ATTACK_DAMAGE) * 3);
-                playSound(SoundRegistry.FIRE_ERUPTION_SLAM.get(), 4, 0.9f);
+                playSound(SoundRegistry.FIRE_ERUPTION_SLAM.value(), 4, 0.9f);
             }
         }
     }
 
     private void upgradeScythe() {
-        if (this.getItemBySlot(EquipmentSlot.MAINHAND).is(ItemRegistry.DECREPIT_SCYTHE)) {
-            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ItemRegistry.HELLRAZOR, 1, this.getItemBySlot(EquipmentSlot.MAINHAND).getComponentsPatch()));
+        if (this.getItemBySlot(EquipmentSlot.MAINHAND).is(ItemRegistry.DECREPIT_SCYTHE.get())) {
+            this.setItemSlot(EquipmentSlot.MAINHAND, new ItemStack(ItemRegistry.HELLRAZOR.holder(), 1, this.getItemBySlot(EquipmentSlot.MAINHAND).getComponentsPatch()));
         }
     }
 
@@ -760,7 +762,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     private void doForcedDespawned() {
         // discard
-        this.playSound(SoundRegistry.FIRE_BOSS_ACCENT.get(), 5, 1);
+        this.playSound(SoundRegistry.FIRE_BOSS_ACCENT.value(), 5, 1);
         Vec3 vec3 = this.getBoundingBox().getCenter();
         MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE, vec3.x, vec3.y, vec3.z, 25, 0.2, 0.2, 0.2, 0.12, false);
         killNearbySummonedKnights();
@@ -787,7 +789,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             }
             knight.finalizeSpawn(serverLevel, serverLevel.getCurrentDifficultyAt(this.blockPosition()), EntitySpawnReason.MOB_SUMMONED, null);
             level.addFreshEntity(knight);
-            level.playSound(null, spawn.x, spawn.y, spawn.z, SoundRegistry.FIRE_BOSS_ACCENT.get(), this.getSoundSource(), 2, .9f);
+            level.playSound(null, spawn.x, spawn.y, spawn.z, SoundRegistry.FIRE_BOSS_ACCENT.value(), this.getSoundSource(), 2, .9f);
         }
     }
 
@@ -826,7 +828,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             this.attackGoal.stop();
             this.serverTriggerAnimation("fire_boss_death");
             this.serverTriggerEvent(STOP_MUSIC);
-            this.playSound(SoundRegistry.FIRE_BOSS_DEATH.get(), 5, 1);
+            this.playSound(SoundRegistry.FIRE_BOSS_DEATH.value(), 5, 1);
             Vec3 vec3 = this.getBoundingBox().getCenter();
             MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE, vec3.x, vec3.y, vec3.z, 25, 0.2, 0.2, 0.2, 0.12, false);
             killNearbySummonedKnights();
@@ -863,7 +865,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
                 this.bossLoot.spawnPreparedDrops(this);
                 this.remove(Entity.RemovalReason.KILLED);
                 MagicManager.spawnParticles(level, ParticleRegistry.EMBEROUS_ASH_PARTICLE, vec3.x, vec3.y + 1, vec3.z, 50, 0.3, 0.3, 0.3, 0.2 * scale, true);
-                this.playSound(SoundRegistry.FIRE_BOSS_ACCENT.get(), 4, .9f);
+                this.playSound(SoundRegistry.FIRE_BOSS_ACCENT.value(), 4, .9f);
             }
         }
     }
@@ -896,7 +898,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     @Override
     protected void playStepSound(BlockPos pPos, BlockState pState) {
-        this.playSound(SoundRegistry.KEEPER_STEP.get(), .25f, .9f);
+        this.playSound(SoundRegistry.KEEPER_STEP.value(), .25f, .9f);
     }
 
     @Override
@@ -1008,7 +1010,7 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
             serverTriggerAnimation("offhand_parry");
             procSpectralDagger();
             this.parryCooldown = 100;
-            this.playSound(SoundRegistry.FIRE_DAGGER_PARRY.get());
+            this.playSound(SoundRegistry.FIRE_DAGGER_PARRY.value());
             return false;
         }
         if (isStanceBroken()) {
@@ -1185,6 +1187,6 @@ public class FireBossEntity extends AbstractSpellCastingMob implements Enemy, IA
 
     @Override
     public boolean canTriggerOminous() {
-        return ServerConfigs.TYROS_OMINOUS_FIGHT.get();
+        return ServerConfigs.safeGet(ServerConfigs.TYROS_OMINOUS_FIGHT);
     }
 }

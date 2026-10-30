@@ -6,18 +6,10 @@
     "EFE"
   ],
   "key": {
-    "I": {
-      "tag": "c:ingots/iron"
-    },
-    "E": {
-      "item": "irons_spellbooks:arcane_essence"
-    },
-    "F": {
-      "item": "irons_spellbooks:cinder_essence"
-    },
-    "C": {
-      "item": "minecraft:cauldron"
-    }
+    "I": "#c:ingots/iron",
+    "E": "irons_spellbooks:arcane_essence",
+    "F": "irons_spellbooks:cinder_essence",
+    "C": "minecraft:cauldron"
   },
   "result": {
     "id": "irons_spellbooks:alchemist_cauldron",

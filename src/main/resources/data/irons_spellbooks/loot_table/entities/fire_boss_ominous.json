@@ -9,7 +9,7 @@
           "name": "irons_spellbooks:blank_rune",
           "conditions": [
             {
-              "condition": "minecraft:killed_by_player"
+              "type": "minecraft:killed_by_player"
             }
           ]
         }

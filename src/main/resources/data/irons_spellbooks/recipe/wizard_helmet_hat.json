@@ -6,9 +6,7 @@
     "CCC"
   ],
   "key": {
-    "C": {
-      "item": "irons_spellbooks:magic_cloth"
-    }
+    "C": "irons_spellbooks:magic_cloth"
   },
   "result": {
     "id": "irons_spellbooks:wizard_hat",

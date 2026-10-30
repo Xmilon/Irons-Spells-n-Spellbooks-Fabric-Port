@@ -98,7 +98,7 @@ public class UndeadRiftEntity extends Entity implements IMagicSummon {
         equip(undead, generateEquipment());
         undead.snapTo(this.position().add(0, 0.1, 0));
         undead.setYRot(this.getYRot());
-        undead.finalizeSpawn((ServerLevel) level(), level().getCurrentDifficultyAt(undead.getOnPos()), EntitySpawnReason.MOB_SUMMONED, null);
+        undead.finalizeSpawn((ServerLevel) level(), ((ServerLevel) level()).getCurrentDifficultyAt(undead.getOnPos()), EntitySpawnReason.MOB_SUMMONED, null);
         SummonManager.setDuration(undead, 5 * 60 * 20);
         var owner = getSummoner();
         if (owner != null) {

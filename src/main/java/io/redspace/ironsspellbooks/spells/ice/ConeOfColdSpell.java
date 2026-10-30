@@ -69,7 +69,7 @@ public class ConeOfColdSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.CONE_OF_COLD_LOOP.get());
+        return Optional.of(SoundRegistry.CONE_OF_COLD_LOOP.value());
     }
 
     @Override

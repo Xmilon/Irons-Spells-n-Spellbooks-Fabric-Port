@@ -6,12 +6,8 @@
     "IB "
   ],
   "key": {
-    "B": {
-      "item": "irons_spellbooks:frozen_bone"
-    },
-    "I": {
-      "item": "irons_spellbooks:arcane_ingot"
-    }
+    "B": "irons_spellbooks:frozen_bone",
+    "I": "irons_spellbooks:arcane_ingot"
   },
   "result": {
     "id": "irons_spellbooks:frosted_helve",

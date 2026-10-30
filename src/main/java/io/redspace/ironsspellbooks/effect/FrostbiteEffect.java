@@ -33,7 +33,7 @@ public class FrostbiteEffect extends MagicMobEffect {
                 iceClone.setDeathTimer(20 * 5);
                 entity.level().addFreshEntity(iceClone);
                 entity.deathTime = 1000;
-                iceClone.playSound(SoundRegistry.FROSTBITE_FREEZE.get(), 2, Utils.random.nextInt(9, 11) * .1f);
+                iceClone.playSound(SoundRegistry.FROSTBITE_FREEZE.value(), 2, Utils.random.nextInt(9, 11) * .1f);
             }
         }
     }

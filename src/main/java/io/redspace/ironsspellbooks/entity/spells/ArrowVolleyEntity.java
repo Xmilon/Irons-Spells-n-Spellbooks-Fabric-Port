@@ -54,7 +54,7 @@ public class ArrowVolleyEntity extends AbstractMagicProjectile {
                     MagicManager.spawnParticles(level(), ParticleTypes.FIREWORK, spawn.x, spawn.y, spawn.z, 2, .1, .1, .1, .05, false);
                 }
                 level().playSound(null, position().x, position().y, position().z, SoundEvents.FIREWORK_ROCKET_LAUNCH, SoundSource.NEUTRAL, 3.0f, 1.1f + Utils.random.nextFloat() * .3f);
-                level().playSound(null, position().x, position().y, position().z, SoundRegistry.BOW_SHOOT.get(), SoundSource.NEUTRAL, 2, Utils.random.nextIntBetweenInclusive(16, 20) * .1f);
+                level().playSound(null, position().x, position().y, position().z, SoundRegistry.BOW_SHOOT.value(), SoundSource.NEUTRAL, 2, Utils.random.nextIntBetweenInclusive(16, 20) * .1f);
             } else if (tickCount > rows * delay) {
                 discard();
             }

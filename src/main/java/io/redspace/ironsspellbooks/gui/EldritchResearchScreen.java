@@ -142,12 +142,12 @@ public class EldritchResearchScreen extends Screen {
                 if (heldSpellTime > TIME_TO_HOLD) {
                     heldSpellTime = -1;
                     PacketDistributor.sendToServer(new LearnSpellPacket(this.activeHand, nodes.get(heldSpellIndex).spell.getSpellId()));
-                    playUiSound(SoundRegistry.LEARN_ELDRITCH_SPELL.get(), 1f, Utils.random.nextIntBetweenInclusive(9, 11) * .1f);
+                    playUiSound(SoundRegistry.LEARN_ELDRITCH_SPELL.value(), 1f, Utils.random.nextIntBetweenInclusive(9, 11) * .1f);
                 }
                 heldSpellTime++;
                 if (lastPlayerTick % 2 == 0) {
                     playUiSound(SoundEvents.SOUL_ESCAPE.value(), 1f, Mth.lerp(heldSpellTime / (float) TIME_TO_HOLD, .5f, 1.5f));
-                    playUiSound(SoundRegistry.UI_TICK.get(), 1f, Mth.lerp(heldSpellTime / (float) TIME_TO_HOLD, .5f, 1.5f));
+                    playUiSound(SoundRegistry.UI_TICK.value(), 1f, Mth.lerp(heldSpellTime / (float) TIME_TO_HOLD, .5f, 1.5f));
                 }
             } else if (heldSpellTime >= 0) {
                 heldSpellTime = Math.max(heldSpellTime - 3, -1);

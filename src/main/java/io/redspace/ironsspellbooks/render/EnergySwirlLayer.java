@@ -3,11 +3,13 @@ package io.redspace.ironsspellbooks.render;
 import com.geckolib.renderer.base.GeoRenderer;
 import net.minecraft.client.renderer.rendertype.RenderTypes;
 import com.geckolib.renderer.base.RenderPassInfo;
+import net.minecraft.client.renderer.entity.state.AvatarRenderState;
 import net.minecraft.client.renderer.entity.state.EntityRenderState;
+import net.minecraft.client.renderer.entity.state.HumanoidRenderState;
+import net.minecraft.client.model.player.PlayerModel;
 import net.minecraft.client.renderer.SubmitNodeCollector;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.entity.mobs.abstract_spell_casting_mob.AbstractSpellCastingMob;
 import io.redspace.ironsspellbooks.player.ClientMagicData;
@@ -37,39 +39,27 @@ public class EnergySwirlLayer {
     public static final Identifier CHARGE_TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/charged.png");
     private static final int COLOR = RenderHelper.colorf(.8f, .8f, .8f);
 
-    public static class Vanilla extends RenderLayer<Player, HumanoidModel<Player>> {
+    public static class Vanilla extends RenderLayer<AvatarRenderState, PlayerModel> {
         public static ModelLayerLocation ENERGY_LAYER = new ModelLayerLocation(Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "energy_layer"), "main");
-        private final HumanoidModel<Player> model;
-        private final Identifier TEXTURE;
-        private final Predicate<LivingEntity> shouldRender;
+        private final HumanoidModel<HumanoidRenderState> model;
+        private final Identifier texture;
+        private final Holder<MobEffect> shouldRenderFlag;
 
-        public Vanilla(RenderLayerParent pRenderer, Identifier texture, Predicate<LivingEntity> shouldRender) {
-            super(pRenderer);
+        public Vanilla(RenderLayerParent<AvatarRenderState, PlayerModel> renderer, Identifier texture, Holder<MobEffect> shouldRenderFlag) {
+            super(renderer);
             this.model = new HumanoidModel<>(Minecraft.getInstance().getEntityModels().bakeLayer(ENERGY_LAYER));
-            this.TEXTURE = texture;
-            this.shouldRender = shouldRender;
+            this.texture = texture;
+            this.shouldRenderFlag = shouldRenderFlag;
         }
 
-        public Vanilla(RenderLayerParent pRenderer, Identifier texture, Holder<MobEffect> shouldRenderFlag) {
-            this(pRenderer, texture, living -> living.hasEffect(shouldRenderFlag));
-        }
-
-        public void render(PoseStack pMatrixStack, MultiBufferSource pBuffer, int pPackedLight, Player pLivingEntity, float pLimbSwing, float pLimbSwingAmount, float pPartialTicks, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
-            if (EnergySwirlLayer.shouldRender(pLivingEntity, shouldRender)) {
-                float f = (float) pLivingEntity.tickCount + pPartialTicks;
-                HumanoidModel<Player> entitymodel = this.model();
-                VertexConsumer vertexconsumer = pBuffer.getBuffer(EnergySwirlLayer.getRenderType(TEXTURE, f));
-                this.getParentModel().copyPropertiesTo(entitymodel);
-                entitymodel.renderToBuffer(pMatrixStack, vertexconsumer, pPackedLight, OverlayTexture.NO_OVERLAY, COLOR);
+        @Override
+        public void submit(PoseStack poseStack, SubmitNodeCollector collector, int packedLight, AvatarRenderState state, float yRot, float xRot) {
+            var effects = LivingEffectsRenderState.get(state);
+            if (effects == null || effects.hideAll() || !effects.effects().contains(shouldRenderFlag)) {
+                return;
             }
-        }
-
-        protected HumanoidModel<Player> model() {
-            return model;
-        }
-
-        protected boolean shouldRender(Player entity) {
-            return true;
+            // submitModel poses the layer model from the state, replacing the old copyPropertiesTo
+            collector.submitModel(model, state, poseStack, EnergySwirlLayer.getRenderType(texture, effects.age()), packedLight, OverlayTexture.NO_OVERLAY, COLOR, null, state.outlineColor);
         }
     }
 

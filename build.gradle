@@ -17,6 +17,9 @@ repositories {
 	// See https://docs.gradle.org/current/userguide/declaring_repositories.html
 	// for more information about repositories.
 	maven { url = "https://api.modrinth.com/maven" }
+	// Pinned, checksum-verified jars (see verifyBundledDependencies). A flat directory gives them module
+	// coordinates, which Loom requires to nest them with `include`.
+	flatDir { dirs 'libs/26.3' }
 }
 
 loom {
@@ -24,6 +27,12 @@ loom {
 	runs {
 		client {
 			runDir = "run/client"
+			// dev account name; run/server/ops.json ops this name on the local dev server
+			programArgs "--username", "Xmilon"
+			// ./gradlew :runClient -PjoinServer=localhost:25565 joins that server on launch
+			if (project.hasProperty("joinServer")) {
+				programArgs "--quickPlayMultiplayer", project.property("joinServer")
+			}
 		}
 		server {
 			runDir = "run/server"
@@ -48,8 +57,10 @@ dependencies {
 	implementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_api_version}"
 	implementation "maven.modrinth:geckolib:${project.geckolib_version}"
 	implementation "maven.modrinth:player-animation-library:${project.player_animation_version}"
-	implementation files("libs/26.3/accessories-fabric-1.4.3-beta+26.3.jar", "libs/26.3/owo-lib-0.13.1+26.3.jar")
-	include files("libs/26.3/accessories-fabric-1.4.3-beta+26.3.jar", "libs/26.3/owo-lib-0.13.1+26.3.jar")
+	implementation "local:accessories-fabric:1.4.3-beta+26.3"
+	include "local:accessories-fabric:1.4.3-beta+26.3"
+	implementation "local:owo-lib:0.13.1+26.3"
+	include "local:owo-lib:0.13.1+26.3"
 	compileOnly files(zipTree('libs/26.3/owo-lib-0.13.1+26.3.jar').matching { include 'META-INF/jars/*.jar' })
 	compileOnly "com.google.code.findbugs:jsr305:3.0.2"
 	compileOnly "com.google.j2objc:j2objc-annotations:2.8"
@@ -103,6 +114,11 @@ sourceSets {
 			srcDir "src/generated/resources"
 		}
 	}
+}
+
+dependencies {
+	// owo-lib's nested jars (endec, jankson...) are on the game classpath only through Loom; plain JavaExec checks need them directly
+	portTestRuntimeOnly files(zipTree('libs/26.3/owo-lib-0.13.1+26.3.jar').matching { include 'META-INF/jars/*.jar' })
 }
 
 jar {

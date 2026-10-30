@@ -6,15 +6,9 @@
     " WS"
   ],
   "key": {
-    "S": {
-      "item": "irons_spellbooks:frozen_bone"
-    },
-    "W": {
-      "item": "minecraft:cobweb"
-    },
-    "C": {
-      "item": "irons_spellbooks:magic_cloth"
-    }
+    "S": "irons_spellbooks:frozen_bone",
+    "W": "minecraft:cobweb",
+    "C": "irons_spellbooks:magic_cloth"
   },
   "result": {
     "id": "irons_spellbooks:furled_map_ice_spider_den"

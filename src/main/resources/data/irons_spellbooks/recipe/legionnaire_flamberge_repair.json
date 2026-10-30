@@ -1,16 +1,10 @@
 {
   "type": "minecraft:smithing_transform",
-  "addition": {
-    "tag": "c:ingots/pyrium"
-  },
-  "base": {
-    "item": "irons_spellbooks:keeper_flamberge"
-  },
+  "addition": "#c:ingots/pyrium",
+  "base": "irons_spellbooks:keeper_flamberge",
   "result": {
     "count": 1,
     "id": "irons_spellbooks:legionnaire_flamberge"
   },
-  "template": {
-    "item": "irons_spellbooks:timeless_slurry"
-  }
+  "template": "irons_spellbooks:timeless_slurry"
 }

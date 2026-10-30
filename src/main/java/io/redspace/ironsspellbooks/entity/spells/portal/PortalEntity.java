@@ -44,11 +44,11 @@ import java.util.UUID;
 
 public class PortalEntity extends Entity implements AntiMagicSusceptible {
     static {
-        DATA_ID_OWNER_UUID = SynchedEntityData.defineId(PortalEntity.class, EntityDataSerializers.OPTIONAL_UUID);
+        DATA_ID_OWNER_UUID = SynchedEntityData.defineId(PortalEntity.class, EntityDataSerializers.OPTIONAL_LIVING_ENTITY_REFERENCE);
         DATA_PORTAL_CONNECTED = SynchedEntityData.defineId(PortalEntity.class, EntityDataSerializers.BOOLEAN);
     }
 
-    private static final EntityDataAccessor<Optional<UUID>> DATA_ID_OWNER_UUID;
+    private static final EntityDataAccessor<Optional<net.minecraft.world.entity.EntityReference<net.minecraft.world.entity.LivingEntity>>> DATA_ID_OWNER_UUID;
     private static final EntityDataAccessor<Boolean> DATA_PORTAL_CONNECTED;
 
     //Loop tracking
@@ -187,13 +187,14 @@ public class PortalEntity extends Entity implements AntiMagicSusceptible {
     }
 
     public void setOwnerUUID(@Nullable UUID uuid) {
-        this.entityData.set(DATA_ID_OWNER_UUID, Optional.ofNullable(uuid));
+        this.entityData.set(DATA_ID_OWNER_UUID, Optional.ofNullable(uuid).map(net.minecraft.world.entity.EntityReference::<net.minecraft.world.entity.LivingEntity>of));
     }
 
     public UUID getOwnerUUID() {
         return this.entityData
                 .get(DATA_ID_OWNER_UUID)
-                .orElseGet(() -> this.entityData.get(DATA_ID_OWNER_UUID).orElse(null));
+                .map(net.minecraft.world.entity.EntityReference::getUUID)
+                .orElse(null);
     }
 
     public void setPortalConnected() {

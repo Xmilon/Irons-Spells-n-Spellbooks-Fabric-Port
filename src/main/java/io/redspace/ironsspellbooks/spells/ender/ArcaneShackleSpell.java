@@ -63,7 +63,7 @@ public class ArcaneShackleSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.CHARGE_CHAINS.get());
+        return Optional.of(SoundRegistry.CHARGE_CHAINS.value());
     }
 
     @Override
@@ -81,7 +81,7 @@ public class ArcaneShackleSpell extends AbstractSpell {
         projectile.setLashRadius(getLashRadius(spellLevel, entity));
         projectile.setRestraintStrength(0.015f);
         level.addFreshEntity(projectile);
-        level.playSound(null, entity.blockPosition(), SoundRegistry.THROW_DAGGER.get(),entity.getSoundSource(), 1f, 0.7f + entity.getRandom().nextFloat() * .1f);
+        level.playSound(null, entity.blockPosition(), SoundRegistry.THROW_DAGGER.value(),entity.getSoundSource(), 1f, 0.7f + entity.getRandom().nextFloat() * .1f);
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }
 

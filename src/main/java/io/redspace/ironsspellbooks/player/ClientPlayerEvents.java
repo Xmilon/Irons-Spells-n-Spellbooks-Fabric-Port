@@ -70,18 +70,17 @@ import java.util.stream.Collectors;
 @EventBusSubscriber(Dist.CLIENT)
 public class ClientPlayerEvents {
 
-    @SubscribeEvent
-    public static void onCalculatePlayerSpeed(MovementInputUpdateEvent event) {
+    /** @return factor applied to the player's movement input while casting; 1 when not casting */
+    public static float castingMovementMultiplier(LocalPlayer player) {
         if (ClientMagicData.isCasting()) {
             float baseCastingSpeed = 0.2f;
             //due to the way attribute modifiers work, using 0.2 as the base for the attribute means you need +500% movespeed to reach 1.0x movespeed.
             //thus, we abstract the formula to make the values make sense to the player
             //it takes +80% Casting Movespeed to reach maximum speed (zero penalty)
-        float castingSpeedModifier = (float) AttributeRegistry.getValueOrDefault(event.getEntity(), AttributeRegistry.CASTING_MOVESPEED, 1.0D);
-            float speed = baseCastingSpeed + castingSpeedModifier - 1;
-            event.getInput().forwardImpulse *= speed;
-            event.getInput().leftImpulse *= speed;
+        float castingSpeedModifier = (float) AttributeRegistry.getValueOrDefault(player, AttributeRegistry.CASTING_MOVESPEED, 1.0D);
+            return baseCastingSpeed + castingSpeedModifier - 1;
         }
+        return 1f;
     }
 
     @SubscribeEvent
@@ -168,29 +167,6 @@ public class ClientPlayerEvents {
     public static void onPlayerLogin(PlayerEvent.PlayerLoggedInEvent event) {
         if (event.getEntity() instanceof LocalPlayer player) {
             ClientMagicData.spellSelectionManager = new SpellSelectionManager(player);
-        }
-    }
-
-    @SubscribeEvent
-    public static void beforeLivingRender(RenderLivingEvent.Pre<? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>> event) {
-        var player = Minecraft.getInstance().player;
-        if (player == null)
-            return;
-
-        var livingEntity = event.getEntity();
-        if (livingEntity.hasEffect(MobEffectRegistry.TRUE_INVISIBILITY) && livingEntity.isInvisibleTo(player)) {
-            event.setCanceled(true);
-        }
-    }
-
-    @SubscribeEvent
-    public static void afterLivingRender(RenderLivingEvent.Post<? extends LivingEntity, ? extends EntityModel<? extends LivingEntity>> event) {
-        var livingEntity = event.getEntity();
-        if (livingEntity instanceof Player) {
-            var syncedData = ClientMagicData.getSyncedSpellData(livingEntity);
-            if (syncedData.isCasting()) {
-                SpellRenderingHelper.renderSpellHelper(syncedData, livingEntity, event.getPoseStack(), event.getMultiBufferSource(), event.getPartialTick());
-            }
         }
     }
 
@@ -341,11 +317,11 @@ public class ClientPlayerEvents {
     private static void handleUpgradeOrbTooltip(ItemStack stack, LocalPlayer player, List<Component> lines, boolean advanced) {
         var upgradeKey = stack.get(ComponentRegistry.UPGRADE_ORB_TYPE);
         if (upgradeKey != null) {
-            var registry = player.registryAccess().registry(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY);
+            var registry = player.registryAccess().lookup(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY);
             if (registry.isEmpty()) {
                 return;
             }
-            var upgrade = registry.get().get(upgradeKey.identifier());
+            var upgrade = registry.get().getValue(upgradeKey.identifier());
             if (upgrade == null) {
                 return;
             }
@@ -382,7 +358,7 @@ public class ClientPlayerEvents {
     @SubscribeEvent
     public static void changeFogColor(ViewportEvent.ComputeFogColor event) {
         if (Minecraft.getInstance().player != null && Minecraft.getInstance().player.hasEffect(MobEffectRegistry.PLANAR_SIGHT)) {
-            var color = MobEffectRegistry.PLANAR_SIGHT.get().getColor();
+            var color = MobEffectRegistry.PLANAR_SIGHT.value().getColor();
             float f = 0.0F;
             float f1 = 0.0F;
             float f2 = 0.0F;

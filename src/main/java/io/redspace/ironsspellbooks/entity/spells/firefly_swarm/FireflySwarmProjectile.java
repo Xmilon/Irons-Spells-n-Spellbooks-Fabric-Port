@@ -99,7 +99,7 @@ public class FireflySwarmProjectile extends PathfinderMob implements AntiMagicSu
         }
         if ((this.tickCount % 7) == 0) {
             float fade = 1 - Mth.clamp((tickCount - maxLife + 40) / (float) (maxLife), 0, 1f);
-            this.playSound(SoundRegistry.FIREFLY_SWARM_IDLE.get(), .25f * fade, .95f + Utils.random.nextFloat() * .1f);
+            this.playSound(SoundRegistry.FIREFLY_SWARM_IDLE.value(), .25f * fade, .95f + Utils.random.nextFloat() * .1f);
         }
         if (this.tickCount % 15 == 0) {
             //Damage tick
@@ -109,7 +109,7 @@ public class FireflySwarmProjectile extends PathfinderMob implements AntiMagicSu
                         if (canHitEntity(entity)) {
                             boolean hit = DamageSources.applyDamage(entity, damage, SpellRegistry.FIREFLY_SWARM_SPELL.get().getDamageSource(this, getOwner()));
                             if (hit) {
-                                this.playSound(SoundRegistry.FIREFLY_SWARM_ATTACK.get(), .75f, .9f + Utils.random.nextFloat() * .2f);
+                                this.playSound(SoundRegistry.FIREFLY_SWARM_ATTACK.value(), .75f, .9f + Utils.random.nextFloat() * .2f);
                                 if (target == null) {
                                     setTarget(entity);
                                 } else if (target != entity) {

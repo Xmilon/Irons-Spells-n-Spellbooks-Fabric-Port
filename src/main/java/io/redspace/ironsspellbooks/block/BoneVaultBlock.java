@@ -34,7 +34,7 @@ public class BoneVaultBlock extends VaultBlock {
                 ResourceKey.create(Registries.LOOT_TABLE, IronsSpellbooks.id("chests/catacombs/dead_king_vault")),
                 4.0,
                 4.5,
-                new ItemStack(ItemRegistry.BONE_KEY),
+                new ItemStack(ItemRegistry.BONE_KEY.get()),
                 Optional.empty(),
                 PlayerDetector.INCLUDING_CREATIVE_PLAYERS,
                 PlayerDetector.EntitySelector.SELECT_FROM_LEVEL

@@ -31,7 +31,7 @@ public class EnergizedCoreItem extends Item {
     public InteractionResult useOn(UseOnContext pContext) {
         var level = pContext.getLevel();
         var blockPos = pContext.getClickedPos();
-        if (pContext.getPlayer() != null && level.getBlockState(blockPos).is(Blocks.LIGHTNING_ROD)) {
+        if (pContext.getPlayer() != null && level.getBlockState(blockPos).is(net.minecraft.tags.BlockTags.LIGHTNING_RODS)) {
             if (level.isThundering()) {
                 if (!level.isClientSide()) {
                     if (level.setBlockAndUpdate(blockPos, Blocks.AIR.defaultBlockState())) {

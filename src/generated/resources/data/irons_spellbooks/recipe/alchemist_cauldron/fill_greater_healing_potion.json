@@ -4,9 +4,7 @@
     "amount": 250,
     "id": "irons_spellbooks:greater_healing_elixir"
   },
-  "input": {
-    "item": "irons_spellbooks:greater_healing_potion"
-  },
+  "input": "irons_spellbooks:greater_healing_potion",
   "result": {
     "count": 1,
     "id": "minecraft:glass_bottle"

@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.item;
 
-import io.redspace.ironsspellbooks.registries.ItemRegistry;
+import io.redspace.ironsspellbooks.util.ItemPropertiesHelper;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.world.item.Item;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -13,13 +13,10 @@ public class FurledMapCraftableItem extends FurledMapItem {
     final FurledMapData mapData;
 
     public FurledMapCraftableItem(boolean ancient, FurledMapData mapData) {
+        // description id is final on Item, so share the base map's translation key through the properties
+        super(ItemPropertiesHelper.material().stacksTo(1).overrideDescription(ancient ? "item.irons_spellbooks.furled_map_ancient" : "item.irons_spellbooks.furled_map"));
         this.ancient = ancient;
         this.mapData = mapData;
-    }
-
-    @Override
-    public String getDescriptionId() {
-        return ancient ? ItemRegistry.ANCIENT_FURLED_MAP.get().getDescriptionId() : ItemRegistry.FURLED_MAP.get().getDescriptionId();
     }
 
 

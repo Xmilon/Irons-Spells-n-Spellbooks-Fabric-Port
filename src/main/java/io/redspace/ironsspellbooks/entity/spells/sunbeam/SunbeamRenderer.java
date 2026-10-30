@@ -39,8 +39,8 @@ public class SunbeamRenderer extends EntityBackedRenderer<SunbeamEntity> {
         float deltaUV = -deltaTicks % 10;
         float max = Mth.frac(deltaUV * 0.2F - (float) Mth.floor(deltaUV * 0.1F));
         float min = -1.0F + max;
-        float f = deltaTicks / SunbeamEntity.WARMUP_TIME;
-        f *= f;
+        final float warmup = deltaTicks / SunbeamEntity.WARMUP_TIME;
+        final float f = warmup * warmup;
         float radius = Mth.clampedLerp(maxRadius, minRadius, f);
         float halfRadius = radius * .5f;
         float quarterRadius = halfRadius * .5f;

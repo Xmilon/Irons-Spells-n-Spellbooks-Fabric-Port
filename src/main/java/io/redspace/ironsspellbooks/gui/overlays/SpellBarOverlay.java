@@ -89,9 +89,8 @@ public class SpellBarOverlay implements HudElement {
         int configOffsetX = ClientConfigs.safeGet(ClientConfigs.SPELL_BAR_X_OFFSET);
         Anchor anchor = ClientConfigs.safeGet(ClientConfigs.SPELL_BAR_ANCHOR);
         if (anchor == Anchor.Hotbar) {
-            // Align from the first hotbar slot and shift right to stay clear of chat.
-            centerX = (screenWidth / 2 - 91) - 120;
-            centerY = screenHeight - 78;
+            centerX = screenWidth / 2 - Math.max(110, screenWidth / 4);
+            centerY = screenHeight - Math.max(55, screenHeight / 8);
         } else {
             centerX = screenWidth * anchor.m1;
             centerY = screenHeight * anchor.m2;
@@ -104,6 +103,9 @@ public class SpellBarOverlay implements HudElement {
         //
         List<SpellData> spells = ssm.getAllSpells().stream().map((slot) -> slot.spellData).toList();
         var locations = ClientRenderCache.relativeSpellBarSlotLocations;
+        int approximateWidth = locations.size() / 3;
+        //Move spellbar away from hotbar as it gets bigger
+        centerX -= approximateWidth * 5;
         //var spellSelection = ClientMagicData.getSyncedSpellData(player).getSpellSelection();
         int selectedSpellIndex = ssm.getGlobalSelectionIndex();
 

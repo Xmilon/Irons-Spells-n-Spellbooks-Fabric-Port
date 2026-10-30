@@ -4,9 +4,7 @@
     "amount": 1000,
     "id": "irons_spellbooks:common_ink"
   },
-  "input": {
-    "tag": "c:ingots/copper"
-  },
+  "input": "#c:ingots/copper",
   "results": [
     {
       "amount": 250,

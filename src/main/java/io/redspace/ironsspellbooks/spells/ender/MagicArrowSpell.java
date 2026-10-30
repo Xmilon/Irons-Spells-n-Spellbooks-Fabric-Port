@@ -59,12 +59,12 @@ public class MagicArrowSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.MAGIC_ARROW_CHARGE.get());
+        return Optional.of(SoundRegistry.MAGIC_ARROW_CHARGE.value());
     }
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.MAGIC_ARROW_RELEASE.get());
+        return Optional.of(SoundRegistry.MAGIC_ARROW_RELEASE.value());
     }
 
     @Override

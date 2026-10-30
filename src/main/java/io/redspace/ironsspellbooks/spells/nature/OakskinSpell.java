@@ -73,12 +73,12 @@ public class OakskinSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.OAKSKIN_CAST.get());
+        return Optional.of(SoundRegistry.OAKSKIN_CAST.value());
     }
 
     @Override
     public void onCast(Level level, int spellLevel, LivingEntity entity, CastSource castSource, MagicData playerMagicData) {
-        entity.addEffect(new MobEffectInstance(net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MobEffectRegistry.OAKSKIN.get()), (int) (getSpellPower(spellLevel, entity) * 20), spellLevel - 1, false, false, true));
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.OAKSKIN, (int) (getSpellPower(spellLevel, entity) * 20), spellLevel - 1, false, false, true));
         PacketDistributor.sendToPlayersTrackingEntityAndSelf(entity, new OakskinParticlesPacket((entity.position())));
         super.onCast(level, spellLevel, entity, castSource, playerMagicData);
     }

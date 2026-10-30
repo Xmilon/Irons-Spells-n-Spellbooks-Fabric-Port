@@ -40,6 +40,7 @@ import net.minecraft.client.renderer.entity.NoopRenderer;
 import io.redspace.ironsspellbooks.gui.arcane_anvil.ArcaneAnvilScreen;
 import io.redspace.ironsspellbooks.gui.inscription_table.InscriptionTableScreen;
 import io.redspace.ironsspellbooks.gui.overlays.ActiveSpellOverlay;
+import io.redspace.ironsspellbooks.gui.overlays.CastBarOverlay;
 import io.redspace.ironsspellbooks.gui.overlays.ManaBarOverlay;
 import io.redspace.ironsspellbooks.gui.overlays.RecastOverlay;
 import io.redspace.ironsspellbooks.gui.overlays.ScreenEffectsOverlay;
@@ -57,13 +58,13 @@ import io.redspace.ironsspellbooks.registries.EntityRegistry;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import io.redspace.ironsspellbooks.registries.MenuRegistry;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
+import io.redspace.ironsspellbooks.config.ClientConfigs;
 import io.redspace.ironsspellbooks.registries.ParticleRegistry;
 import io.redspace.ironsspellbooks.network.CauldronVisualSyncPacket;
 import io.redspace.ironsspellbooks.render.animation.AnimationHelper;
 import io.redspace.ironsspellbooks.setup.ClientMessages;
 import io.redspace.ironsspellbooks.util.MinecraftInstanceHelper;
 import net.fabricmc.api.ClientModInitializer;
-import net.fabricmc.fabric.api.blockrenderlayer.v1.BlockRenderLayerMap;
 import net.fabricmc.fabric.api.client.item.v1.ItemTooltipCallback;
 import net.fabricmc.fabric.api.client.event.lifecycle.v1.ClientTickEvents;
 import net.fabricmc.fabric.api.client.keymapping.v1.KeyMappingHelper;
@@ -123,7 +124,6 @@ public class IronsSpellbooksClient implements ClientModInitializer {
         registerPlayerRenderLayers();
         registerFallbackEntityRenderers();
         registerBlockEntityRenderers();
-        registerBlockRenderLayers();
         io.redspace.ironsspellbooks.particle.ParticleProviders.register();
         MenuScreens.register(MenuRegistry.INSCRIPTION_TABLE_MENU.get(), InscriptionTableScreen::new);
         MenuScreens.register(MenuRegistry.SCROLL_FORGE_MENU.get(), ScrollForgeScreen::new);
@@ -170,13 +170,14 @@ public class IronsSpellbooksClient implements ClientModInitializer {
     }
 
     private static void registerHudOverlays() {
-        HudElementRegistry.addFirst(IronsSpellbooks.id("screen_effects"), ScreenEffectsOverlay.instance);
-        HudElementRegistry.addFirst(IronsSpellbooks.id("spell_bar"), SpellBarOverlay.instance);
-        HudElementRegistry.addLast(IronsSpellbooks.id("mana_bar"), ManaBarOverlay.instance);
+        // same layer order as the original: cast bar under the crosshair, mana after air, spell/recast bars after the xp bar
+        HudElementRegistry.attachElementBefore(VanillaHudElements.CROSSHAIR, IronsSpellbooks.id("cast_bar"), CastBarOverlay.instance);
+        HudElementRegistry.attachElementAfter(VanillaHudElements.AIR_BAR, IronsSpellbooks.id("mana_bar"), ManaBarOverlay.instance);
+        HudElementRegistry.attachElementAfter(VanillaHudElements.INFO_BAR, IronsSpellbooks.id("spell_bar"), SpellBarOverlay.instance);
+        HudElementRegistry.attachElementAfter(VanillaHudElements.INFO_BAR, IronsSpellbooks.id("recast"), RecastOverlay.instance);
         HudElementRegistry.addLast(IronsSpellbooks.id("active_spell"), ActiveSpellOverlay.instance);
-        // after the vanilla boss bar, so the recast bar can stack below it
-        HudElementRegistry.addLast(IronsSpellbooks.id("recast"), RecastOverlay.instance);
         HudElementRegistry.addLast(IronsSpellbooks.id("spell_wheel"), SpellWheelOverlay.instance);
+        HudElementRegistry.addLast(IronsSpellbooks.id("screen_effects"), ScreenEffectsOverlay.instance);
         HudElementRegistry.addLast(IronsSpellbooks.id("screen_tooltip"), ScreenTooltipOverlay.instance);
         // the mana bar takes the experience bar's place when anchored to it
         for (var vanilla : new Identifier[]{VanillaHudElements.INFO_BAR, VanillaHudElements.EXPERIENCE_LEVEL}) {
@@ -305,10 +306,19 @@ public class IronsSpellbooksClient implements ClientModInitializer {
         registerEntityRenderer(EntityRegistry.SCAPEGOAT.get(), ScapegoatRenderer::new);
     }
 
+    @SuppressWarnings({"rawtypes", "unchecked"})
     private static void registerPlayerRenderLayers() {
         net.fabricmc.fabric.api.client.rendering.v1.LivingEntityRenderLayerRegistrationCallback.EVENT.register((entityType, entityRenderer, registrationHelper, context) -> {
-            if (entityRenderer instanceof AvatarRenderer<?> playerRenderer) {
+            registrationHelper.register(new io.redspace.ironsspellbooks.render.SpellTargetingLayer.Vanilla(entityRenderer));
+            if (entityRenderer.getModel() instanceof net.minecraft.client.model.HumanoidModel) {
+                registrationHelper.register(new io.redspace.ironsspellbooks.render.ArmorCapeLayer(entityRenderer));
+                registrationHelper.register(new io.redspace.ironsspellbooks.render.GlowingEyesLayer.Vanilla(entityRenderer));
+            }
+            if (entityRenderer instanceof AvatarRenderer playerRenderer) {
                 registrationHelper.register(new io.redspace.ironsspellbooks.render.EnergySwirlLayer.Vanilla(playerRenderer, io.redspace.ironsspellbooks.render.EnergySwirlLayer.CHARGE_TEXTURE, MobEffectRegistry.CHARGED));
+                registrationHelper.register(new io.redspace.ironsspellbooks.render.EnergySwirlLayer.Vanilla(playerRenderer, io.redspace.ironsspellbooks.render.EnergySwirlLayer.EVASION_TEXTURE, MobEffectRegistry.EVASION));
+                registrationHelper.register(new io.redspace.ironsspellbooks.render.EchoingStrikesHologramLayer.Vanilla(playerRenderer));
+                registrationHelper.register(new io.redspace.ironsspellbooks.render.ChargeSpellLayer.Vanilla(playerRenderer));
             }
         });
     }
@@ -349,17 +359,6 @@ public class IronsSpellbooksClient implements ClientModInitializer {
         BlockEntityRendererRegistry.register(BlockRegistry.PORTAL_FRAME_BLOCK_ENTITY.get(), io.redspace.ironsspellbooks.block.portal_frame.PortalFrameRenderer::new);
     }
 
-    private static void registerBlockRenderLayers() {
-        BlockRenderLayerMap.INSTANCE.putBlocks(RenderType.cutout(),
-                BlockRegistry.INSCRIPTION_TABLE_BLOCK.get(),
-                BlockRegistry.ARMOR_PILE_BLOCK.get(),
-                BlockRegistry.BRAZIER_FIRE.get(),
-                BlockRegistry.BRAZIER_SOUL.get(),
-                BlockRegistry.FIREFLY_JAR.get(),
-                BlockRegistry.VOIDSTONE.get(),
-                BlockRegistry.PORTAL_FRAME.get(),
-                BlockRegistry.POCKET_PORTAL_FRAME.get());
-    }
 
 
     @SuppressWarnings({"rawtypes", "unchecked"})

@@ -77,7 +77,7 @@ public class RecallSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.RECALL_PREPARE.get());
+        return Optional.of(SoundRegistry.RECALL_PREPARE.value());
     }
 
     @Override

@@ -66,12 +66,12 @@ public class EarthquakeSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.EARTHQUAKE_LOOP.get());
+        return Optional.of(SoundRegistry.EARTHQUAKE_LOOP.value());
     }
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.EARTHQUAKE_CAST.get());
+        return Optional.of(SoundRegistry.EARTHQUAKE_CAST.value());
     }
 
     @Override

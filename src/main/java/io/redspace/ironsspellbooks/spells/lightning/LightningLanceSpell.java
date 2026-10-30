@@ -59,12 +59,12 @@ public class LightningLanceSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.LIGHTNING_LANCE_CAST.get());
+        return Optional.of(SoundRegistry.LIGHTNING_LANCE_CAST.value());
     }
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.LIGHTNING_WOOSH_01.get());
+        return Optional.of(SoundRegistry.LIGHTNING_WOOSH_01.value());
     }
 
     @Override

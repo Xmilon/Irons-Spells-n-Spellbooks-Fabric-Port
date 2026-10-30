@@ -75,12 +75,12 @@ public class SummonSwordsSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.SUMMONED_SWORDS_CHARGE.get());
+        return Optional.of(SoundRegistry.SUMMONED_SWORDS_CHARGE.value());
     }
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.SUMMONED_SWORDS_CAST.get());
+        return Optional.of(SoundRegistry.SUMMONED_SWORDS_CAST.value());
     }
 
     public double getHealthBonus(int spellLevel, LivingEntity caster) {

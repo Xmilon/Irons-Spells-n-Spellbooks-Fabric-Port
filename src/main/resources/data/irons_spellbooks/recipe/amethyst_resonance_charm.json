@@ -6,12 +6,8 @@
     "AL "
   ],
   "key": {
-    "L": {
-      "tag": "c:leathers"
-    },
-    "A": {
-      "tag": "c:gems/amethyst"
-    }
+    "L": "#c:leathers",
+    "A": "#c:gems/amethyst"
   },
   "result": {
     "id": "irons_spellbooks:amethyst_resonance_charm",

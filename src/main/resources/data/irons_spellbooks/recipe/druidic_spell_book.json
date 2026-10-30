@@ -6,24 +6,12 @@
     "CG "
   ],
   "key": {
-    "R": {
-      "item": "irons_spellbooks:rotten_spell_book"
-    },
-    "A": {
-      "item": "minecraft:amethyst_cluster"
-    },
-    "H": {
-      "item": "minecraft:honey_bottle"
-    },
-    "S": {
-      "item": "minecraft:spore_blossom"
-    },
-    "G": {
-      "item": "minecraft:glow_ink_sac"
-    },
-    "C": {
-      "item": "irons_spellbooks:magic_cloth"
-    }
+    "R": "irons_spellbooks:rotten_spell_book",
+    "A": "minecraft:amethyst_cluster",
+    "H": "minecraft:honey_bottle",
+    "S": "minecraft:spore_blossom",
+    "G": "minecraft:glow_ink_sac",
+    "C": "irons_spellbooks:magic_cloth"
   },
   "result": {
     "id": "irons_spellbooks:druidic_spell_book",

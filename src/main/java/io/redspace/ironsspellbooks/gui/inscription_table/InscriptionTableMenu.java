@@ -307,7 +307,7 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
             super.removed(pPlayer);
             ItemStack scrollStack = this.scrollContainer.removeItemNoUpdate(0);
             if (!scrollStack.isEmpty()) {
-                serverPlayer.getInventory().placeItemBackInInventory(scrollStack);
+                serverPlayer.getInventory().placeItemBackInInventory(scrollStack, net.minecraft.util.Prediction.SERVER_ONLY);
             }
             if (fromCurioSlot) {
                 // Sync exactly once; avoid spellBookSlot#set, which would trigger a second sync with EMPTY.
@@ -316,7 +316,7 @@ public class InscriptionTableMenu extends AbstractContainerMenu {
             } else {
                 ItemStack spellbookStack = this.spellbookContainer.removeItemNoUpdate(0);
                 if (!spellbookStack.isEmpty()) {
-                    serverPlayer.getInventory().placeItemBackInInventory(spellbookStack);
+                    serverPlayer.getInventory().placeItemBackInInventory(spellbookStack, net.minecraft.util.Prediction.SERVER_ONLY);
                 }
             }
         }

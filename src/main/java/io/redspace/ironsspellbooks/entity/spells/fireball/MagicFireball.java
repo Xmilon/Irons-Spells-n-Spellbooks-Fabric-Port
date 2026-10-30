@@ -51,7 +51,7 @@ public class MagicFireball extends AbstractMagicProjectile {
             var x = Mth.lerp(f, d0, this.getX() + vec3.x);
             var y = Mth.lerp(f, d1, this.getY() + vec3.y);
             var z = Mth.lerp(f, d2, this.getZ() + vec3.z);
-            this.level().addParticle(ParticleHelper.FIERY_SMOKE, true,x - random.x, y + getBbHeight() * .5f - random.y, z - random.z, 0,0,0/*motion.x * .5f, motion.y * .5f, motion.z * .5f*/);
+            this.level().addParticle(ParticleHelper.FIERY_SMOKE, true, false,x - random.x, y + getBbHeight() * .5f - random.y, z - random.z, 0,0,0/*motion.x * .5f, motion.y * .5f, motion.z * .5f*/);
         }
     }
 
@@ -87,20 +87,7 @@ public class MagicFireball extends AbstractMagicProjectile {
                 }
             }
             if (ServerConfigs.safeGet(ServerConfigs.SPELL_GREIFING)) {
-                Explosion explosion = new Explosion(
-                        level(),
-                        null,
-                        SpellRegistry.FIREBALL_SPELL.get().getDamageSource(this, getOwner()),
-                        null,
-                        this.getX(), this.getY(), this.getZ(),
-                        this.getExplosionRadius() / 2,
-                        true,
-                        Explosion.BlockInteraction.DESTROY,
-                        ParticleTypes.EXPLOSION,
-                        ParticleTypes.EXPLOSION_EMITTER,
-                        SoundEvents.GENERIC_EXPLODE);
-                explosion.explode();
-                explosion.finalizeExplosion(false);
+                level().explode(this, SpellRegistry.FIREBALL_SPELL.get().getDamageSource(this, getOwner()), null, this.getX(), this.getY(), this.getZ(), this.getExplosionRadius() / 2, true, Level.ExplosionInteraction.BLOCK);
             }
             PacketDistributor.sendToPlayersTrackingEntity(this, new FieryExplosionParticlesPacket(hitResult.getLocation().subtract(getDeltaMovement().scale(0.5)), getExplosionRadius()));
             playSound(SoundEvents.GENERIC_EXPLODE.value(), 4.0F, (1.0F + (this.level().getRandom().nextFloat() - this.level().getRandom().nextFloat()) * 0.2F) * 0.7F);

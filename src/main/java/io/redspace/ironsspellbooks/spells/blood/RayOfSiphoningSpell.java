@@ -73,7 +73,7 @@ public class RayOfSiphoningSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.RAY_OF_SIPHONING.get());
+        return Optional.of(SoundRegistry.RAY_OF_SIPHONING.value());
     }
 
     @Override

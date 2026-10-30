@@ -114,7 +114,7 @@ public class MagicArrowProjectile extends AbstractMagicProjectile {
             if (result.getType() == HitResult.Type.BLOCK && !blockPos.equals(lastHitBlock)) {
                 lastHitBlock = blockPos;
             } else if (result.getType() == HitResult.Type.ENTITY) {
-                level().playSound(null, BlockPos.containing(position()), SoundRegistry.FORCE_IMPACT.get(), SoundSource.NEUTRAL, 2, .65f);
+                level().playSound(null, BlockPos.containing(position()), SoundRegistry.FORCE_IMPACT.value(), SoundSource.NEUTRAL, 2, .65f);
             }
         }
         super.onHit(result);

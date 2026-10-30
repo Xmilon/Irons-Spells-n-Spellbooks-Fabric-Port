@@ -57,7 +57,7 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
                     Vec3 lunge = target.position().subtract(mob.position()).normalize().scale(.55f)/*.add(0, 0.2, 0)*/;
                     mob.push(lunge.x, lunge.y, lunge.z);
                     if (distance <= meleeRange && Utils.hasLineOfSight(mob.level(), mob, target, true)) {
-                        boolean flag = this.mob.doHurtTarget(target);
+                        boolean flag = this.mob.doHurtTarget((net.minecraft.server.level.ServerLevel) this.mob.level(), target);
                         target.damageCooldownTime = 0;
                         if (flag) {
                             playImpactSound();
@@ -77,11 +77,11 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
                         playSwingSound();
                     }
                     if (!hasHitLunge && distance <= meleeRange * .45f) {
-                        if (this.mob.doHurtTarget(target)) {
+                        if (this.mob.doHurtTarget((net.minecraft.server.level.ServerLevel) this.mob.level(), target)) {
                             playImpactSound();
                         }
                         Vec3 knockback = oldLungePos.subtract(target.position());
-                        target.knockback(1, knockback.x, knockback.z);
+                        Utils.knockback(target, 1, knockback.x, knockback.z);
                         hasHitLunge = true;
                     }
                 }
@@ -142,7 +142,7 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
         //anim duration
         currentAttack = nextAttack;
         if (currentAttack != null) {
-            this.mob.swing(InteractionHand.MAIN_HAND);
+            this.mob.swingForAttack(InteractionHand.MAIN_HAND);
             meleeAnimTimer = currentAttack.data.lengthInTicks;
             hasLunged = false;
             hasHitLunge = false;
@@ -173,11 +173,11 @@ public class KeeperAnimatedWarlockAttackGoal extends WarlockAttackGoal {
     }
 
     public void playSwingSound() {
-        mob.playSound(SoundRegistry.KEEPER_SWING.get(), 1, Mth.randomBetweenInclusive(mob.getRandom(), 9, 13) * .1f);
+        mob.playSound(SoundRegistry.KEEPER_SWING.value(), 1, Mth.randomBetweenInclusive(mob.getRandom(), 9, 13) * .1f);
     }
 
     public void playImpactSound() {
-        mob.playSound(SoundRegistry.KEEPER_SWORD_IMPACT.get(), 1, Mth.randomBetweenInclusive(mob.getRandom(), 9, 13) * .1f);
+        mob.playSound(SoundRegistry.KEEPER_SWORD_IMPACT.value(), 1, Mth.randomBetweenInclusive(mob.getRandom(), 9, 13) * .1f);
     }
 }
 

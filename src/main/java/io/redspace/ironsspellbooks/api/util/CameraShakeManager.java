@@ -78,7 +78,7 @@ public class CameraShakeManager {
             return;
         }
 
-        var player = event.getCamera().getEntity();
+        var player = event.getCamera().entity();
         List<CameraShakeData> sortedActiveCameraShakes = clientCameraShakeData.stream()
                 .filter(data -> data.dimension.equals(player.level().dimension()))
                 .sorted(Comparator.comparingDouble(o -> o.origin.distanceToSqr(player.position())))
@@ -107,7 +107,7 @@ public class CameraShakeManager {
     @SubscribeEvent
     @OnlyIn(Dist.CLIENT)
     public static void handleCameraShake(ClientTickEvent.Post event) {
-        if (Minecraft.getInstance().isSingleplayer() && Minecraft.getInstance().isPaused()) {
+        if (Minecraft.getInstance().isLocalServer() && Minecraft.getInstance().isPaused()) {
             return;
         }
         ArrayList<CameraShakeData> toRemove = new ArrayList<>();

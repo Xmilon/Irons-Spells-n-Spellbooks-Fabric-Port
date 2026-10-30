@@ -22,11 +22,6 @@ public class SpectralHammerRenderer extends GeoLivingEntityRenderer<SpectralHamm
     }
 
     @Override
-    public Identifier getTextureLocation(SpectralHammer animatable) {
-        return SpectralHammerModel.textureResource;
-    }
-
-    @Override
     public void adjustRenderPose(RenderPassInfo<EntityRenderState> info) {
         var animatable = entity(info);
         var poseStack = info.poseStack();

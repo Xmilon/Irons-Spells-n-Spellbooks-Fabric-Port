@@ -6,18 +6,10 @@
     " B "
   ],
   "key": {
-    "H": {
-      "item": "minecraft:honey_bottle"
-    },
-    "E": {
-      "item": "irons_spellbooks:ice_spider_egg"
-    },
-    "S": {
-      "item": "minecraft:sweet_berries"
-    },
-    "B": {
-      "item": "minecraft:bowl"
-    }
+    "H": "minecraft:honey_bottle",
+    "E": "irons_spellbooks:ice_spider_egg",
+    "S": "minecraft:sweet_berries",
+    "B": "minecraft:bowl"
   },
   "result": {
     "id": "irons_spellbooks:prepared_ice_spider_egg",

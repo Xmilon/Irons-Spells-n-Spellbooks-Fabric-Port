@@ -361,7 +361,7 @@ public class ServerPlayerEvents {
         if (event.getEntity() instanceof ServerPlayer newServerPlayer && event.isWasDeath()) {
             event.getOriginal().getActiveEffects().forEach((effect -> {
                 //IronsSpellbooks.LOGGER.debug("{}", effect.getEffect().getDisplayName().getString());
-                if (effect.getEffect() instanceof SummonTimer) {
+                if (effect.getEffect().value() instanceof SummonTimer) {
                     newServerPlayer.addEffect(effect, newServerPlayer);
                 }
             }));
@@ -399,13 +399,13 @@ public class ServerPlayerEvents {
 
             //Sync effects
             serverPlayer.getActiveEffects().forEach((effect -> {
-                if (effect.getEffect() instanceof SummonTimer) {
-                    serverPlayer.server.getPlayerList().sendActivePlayerEffects(serverPlayer);
+                if (effect.getEffect().value() instanceof SummonTimer) {
+                    serverPlayer.level().getServer().getPlayerList().sendActivePlayerEffects(serverPlayer);
                 }
             }));
 
             //Set respawn mana
-            MagicData.getPlayerMagicData(serverPlayer).setMana((int) (serverPlayer.getAttributeValue(AttributeRegistry.MAX_MANA) * ServerConfigs.MANA_SPAWN_PERCENT.get()));
+            MagicData.getPlayerMagicData(serverPlayer).setMana((int) (serverPlayer.getAttributeValue(AttributeRegistry.MAX_MANA) * ServerConfigs.safeGet(ServerConfigs.MANA_SPAWN_PERCENT)));
         }
     }
 
@@ -472,7 +472,7 @@ public class ServerPlayerEvents {
                 }
             }
         }
-        if (ServerConfigs.BETTER_CREEPER_THUNDERHIT.get() && source.is(DamageTypeTags.IS_FIRE) && livingEntity instanceof Creeper creeper && creeper.isPowered()) {
+        if (ServerConfigs.safeGet(ServerConfigs.BETTER_CREEPER_THUNDERHIT) && source.is(DamageTypeTags.IS_FIRE) && livingEntity instanceof Creeper creeper && creeper.isPowered()) {
             return false;
         }
         return true;
@@ -487,7 +487,7 @@ public class ServerPlayerEvents {
             }
         }
         if (source.is(ISSDamageTypes.FIRE_MAGIC) && source.getEntity() instanceof LivingEntity livingAttacker) {
-            if (livingAttacker.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.INFERNAL_SORCERER_CHESTPLATE) && (!(livingAttacker instanceof Player player) || !player.getCooldowns().isOnCooldown(livingAttacker.getItemBySlot(EquipmentSlot.CHEST)))) {
+            if (livingAttacker.getItemBySlot(EquipmentSlot.CHEST).is(ItemRegistry.INFERNAL_SORCERER_CHESTPLATE.get()) && (!(livingAttacker instanceof Player player) || !player.getCooldowns().isOnCooldown(livingAttacker.getItemBySlot(EquipmentSlot.CHEST)))) {
                 ImmolateEffect.addImmolateStack(livingEntity, livingAttacker);
 //                if (livingAttacker instanceof Player player) {
 //                    player.getCooldowns().addCooldown(ItemRegistry.INFERNAL_SORCERER_CHESTPLATE.get(), Utils.applyCooldownReduction(InfernalSorcererArmorItem.COOLDOWN_TICKS, player));
@@ -559,9 +559,9 @@ public class ServerPlayerEvents {
             if (useItem.is(Items.GLASS_BOTTLE) && creeper.isPowered()) {
                 creeper.hurt(creeper.damageSources().generic(), 5);
                 player.level().playSound((Player) null, player.getX(), player.getY(), player.getZ(), SoundEvents.BOTTLE_FILL_DRAGONBREATH, SoundSource.NEUTRAL, 1.0F, 1.0F);
-                player.swing(hand);
+                player.swing(hand, net.minecraft.world.item.component.SwingAnimation.DEFAULT, true);
                 player.setItemInHand(hand, ItemUtils.createFilledResult(useItem, player, new ItemStack(ItemRegistry.LIGHTNING_BOTTLE.get())));
-                event.setCancellationResult(InteractionResult.CONSUME.getResult());
+                event.setCancellationResult(InteractionResult.CONSUME);
                 event.setCanceled(true);
             }
         }
@@ -638,8 +638,8 @@ public class ServerPlayerEvents {
 
     @SubscribeEvent
     public static void onBlockBreak(BlockEvent.BreakEvent event) {
-        if (ServerConfigs.PORTAL_FRAME_RESTRICT_BREAKING.get()) {
-            if (event.getState().is(BlockRegistry.PORTAL_FRAME)) {
+        if (ServerConfigs.safeGet(ServerConfigs.PORTAL_FRAME_RESTRICT_BREAKING)) {
+            if (event.getState().is(BlockRegistry.PORTAL_FRAME.get())) {
                 var player = event.getPlayer();
                 if (event.getLevel().getBlockEntity(event.getPos()) instanceof PortalFrameBlockEntity portalFrameBlockEntity && portalFrameBlockEntity.getOwnerUUID() != null && !player.getUUID().equals(portalFrameBlockEntity.getOwnerUUID())) {
                     if (player instanceof ServerPlayer serverPlayer) {
@@ -735,14 +735,4 @@ public class ServerPlayerEvents {
         }
     }
 
-    @SubscribeEvent
-    public static void onDataLoaded(OnDatapackSyncEvent event) {
-        // tags only bound on data loaded, so we must wait until now to (dynamically) resolve cauldron interactions
-        var map = CauldronInteraction.WATER.map();
-        for (var item : ItemRegistry.getIronsItems()) {
-            if (item.is(ItemTags.DYEABLE)) {
-                map.put(item.get(), CauldronInteraction.DYED_ITEM);
-            }
-        }
-    }
 }

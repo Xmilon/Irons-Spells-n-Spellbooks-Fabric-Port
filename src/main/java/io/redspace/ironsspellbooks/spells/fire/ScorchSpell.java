@@ -75,7 +75,7 @@ public class ScorchSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.SCORCH_PREPARE.get());
+        return Optional.of(SoundRegistry.SCORCH_PREPARE.value());
     }
 
     @Override
@@ -94,7 +94,7 @@ public class ScorchSpell extends AbstractSpell {
             Vec3 targetArea = castData.getCenter();
             MagicManager.spawnParticles(level, ParticleTypes.LAVA, targetArea.x, targetArea.y, targetArea.z, 25, 1, 1, 1, 1, true);
             MagicManager.spawnParticles(level, ParticleTypes.LAVA, targetArea.x, targetArea.y + 1, targetArea.z, 25, .25, 1.5, .25, 1, false);
-            level.playSound(null, targetArea.x, targetArea.y, targetArea.z, SoundRegistry.FIERY_EXPLOSION.get(), SoundSource.PLAYERS, 2, Utils.random.nextIntBetweenInclusive(8, 12) * .1f);
+            level.playSound(null, targetArea.x, targetArea.y, targetArea.z, SoundRegistry.FIERY_EXPLOSION.value(), SoundSource.PLAYERS, 2, Utils.random.nextIntBetweenInclusive(8, 12) * .1f);
             var radius = castData.getCastingEntity().getRadius();
             var radiusSqr = radius * radius;
             var damage = getDamage(spellLevel, entity);

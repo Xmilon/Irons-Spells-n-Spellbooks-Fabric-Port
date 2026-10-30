@@ -134,7 +134,7 @@ public class RaiseDeadSpell extends AbstractSpell {
                     zombie.triggerRiseAnimation();
                     undead = zombie;
                 }
-                undead.finalizeSpawn((ServerLevel) world, world.getCurrentDifficultyAt(undead.getOnPos()), EntitySpawnReason.MOB_SUMMONED, null);
+                undead.finalizeSpawn((ServerLevel) world, ((ServerLevel) world).getCurrentDifficultyAt(undead.getOnPos()), EntitySpawnReason.MOB_SUMMONED, null);
                 equip(undead, equipment);
                 var yrot = 6.281f / count * i + entity.getYRot() * Mth.DEG_TO_RAD;
                 Vec3 spawn = Utils.moveToRelativeGroundLevel(world, Utils.getSpellCastStart(entity).add(new Vec3(radius * Mth.cos(yrot), 0, radius * Mth.sin(yrot))), 10);
@@ -152,7 +152,7 @@ public class RaiseDeadSpell extends AbstractSpell {
 
             RecastInstance recastInstance = new RecastInstance(this.getSpellId(), spellLevel, getRecastCount(spellLevel, entity), summonTime, castSource, summonedEntitiesCastData);
             recasts.addRecast(recastInstance, playerMagicData);
-            world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundRegistry.RAISE_DEAD_FINISH.get(), entity.getSoundSource(), 2.0f, .9f + Utils.random.nextFloat() * .2f);
+            world.playSound(null, entity.getX(), entity.getY(), entity.getZ(), SoundRegistry.RAISE_DEAD_FINISH.value(), entity.getSoundSource(), 2.0f, .9f + Utils.random.nextFloat() * .2f);
         } else {
 //todo: sound?
         }

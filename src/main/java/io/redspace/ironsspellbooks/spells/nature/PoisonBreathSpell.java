@@ -66,7 +66,7 @@ public class PoisonBreathSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.POISON_BREATH_LOOP.get());
+        return Optional.of(SoundRegistry.POISON_BREATH_LOOP.value());
     }
 
     @Override

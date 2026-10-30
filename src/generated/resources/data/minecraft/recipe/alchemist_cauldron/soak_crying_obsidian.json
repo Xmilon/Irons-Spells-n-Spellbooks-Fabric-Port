@@ -7,8 +7,6 @@
   "byproduct": {
     "id": "minecraft:crying_obsidian"
   },
-  "input": {
-    "item": "minecraft:obsidian"
-  },
+  "input": "minecraft:obsidian",
   "results": []
 }

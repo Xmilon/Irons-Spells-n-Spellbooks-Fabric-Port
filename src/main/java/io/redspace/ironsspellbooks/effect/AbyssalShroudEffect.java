@@ -63,7 +63,7 @@ public class AbyssalShroudEffect extends MagicMobEffect implements ISyncedMobEff
         if (damageSource.getEntity() != null) {
             livingEntity.lookAt(EntityAnchorArgument.Anchor.EYES, damageSource.getEntity().getEyePosition().subtract(0, .15, 0));
         }
-        level.playSound(null, livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(), SoundRegistry.ABYSSAL_TELEPORT.get(), SoundSource.AMBIENT, 1.0F, .9F + random.nextFloat() * .2f);
+        level.playSound(null, livingEntity.getX(), livingEntity.getY(), livingEntity.getZ(), SoundRegistry.ABYSSAL_TELEPORT.value(), SoundSource.AMBIENT, 1.0F, .9F + random.nextFloat() * .2f);
         return true;
     }
 

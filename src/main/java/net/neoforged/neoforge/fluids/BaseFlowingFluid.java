@@ -24,7 +24,7 @@ public abstract class BaseFlowingFluid extends FlowingFluid {
     public Fluid getSource() { return this; }
 
     @Override
-    protected boolean canConvertToSource(Level level) { return false; }
+    protected boolean canConvertToSource(net.minecraft.server.level.ServerLevel level) { return false; }
 
     @Override
     protected void beforeDestroyingBlock(LevelAccessor levelAccessor, BlockPos blockPos, BlockState blockState) {

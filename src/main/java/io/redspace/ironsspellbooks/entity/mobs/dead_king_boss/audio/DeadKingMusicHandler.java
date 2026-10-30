@@ -35,11 +35,11 @@ public class DeadKingMusicHandler implements IMusicHandler {
         this.entityid = boss.getId();
         this.soundManager = Minecraft.getInstance().getSoundManager();
         stage = DeadKingBoss.Phases.values()[boss.getPhase()];
-        beginSound = new FadeableSoundInstance(SoundRegistry.DEAD_KING_MUSIC_INTRO.get(), SOUND_SOURCE, false);
-        firstPhaseMelody = new FadeableSoundInstance(SoundRegistry.DEAD_KING_FIRST_PHASE_MELODY.get(), SOUND_SOURCE, true);
-        firstPhaseAccent = new FadeableSoundInstance(SoundRegistry.DEAD_KING_FIRST_PHASE_ACCENT_01.get(), SOUND_SOURCE, false);
-        secondPhaseMelody = new FadeableSoundInstance(SoundRegistry.DEAD_KING_SECOND_PHASE_MELODY_ALT.get(), SOUND_SOURCE, true);
-        transitionMusic = new FadeableSoundInstance(SoundRegistry.DEAD_KING_SUSPENSE.get(), SOUND_SOURCE, false);
+        beginSound = new FadeableSoundInstance(SoundRegistry.DEAD_KING_MUSIC_INTRO.value(), SOUND_SOURCE, false);
+        firstPhaseMelody = new FadeableSoundInstance(SoundRegistry.DEAD_KING_FIRST_PHASE_MELODY.value(), SOUND_SOURCE, true);
+        firstPhaseAccent = new FadeableSoundInstance(SoundRegistry.DEAD_KING_FIRST_PHASE_ACCENT_01.value(), SOUND_SOURCE, false);
+        secondPhaseMelody = new FadeableSoundInstance(SoundRegistry.DEAD_KING_SECOND_PHASE_MELODY_ALT.value(), SOUND_SOURCE, true);
+        transitionMusic = new FadeableSoundInstance(SoundRegistry.DEAD_KING_SUSPENSE.value(), SOUND_SOURCE, false);
     }
 
     @Override

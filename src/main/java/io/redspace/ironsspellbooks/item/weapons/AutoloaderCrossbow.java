@@ -48,7 +48,7 @@ public class AutoloaderCrossbow extends CrossbowItem {
             if (!player.getProjectile(itemstack).isEmpty()) {
                 startLoading(player, itemstack);
             } else {
-                player.playSound(SoundEvents.ITEM_BREAK, 0.75f, 1.5f);
+                player.playSound(SoundEvents.ITEM_BREAK.value(), 0.75f, 1.5f);
             }
             return InteractionResult.CONSUME;
         } else if (isLoading(itemstack)) {
@@ -72,9 +72,9 @@ public class AutoloaderCrossbow extends CrossbowItem {
     }
 
     @Override
-    public void inventoryTick(@NotNull ItemStack itemstack, @NotNull Level pLevel, @NotNull Entity pEntity, int pSlotId, boolean pIsSelected) {
+    public void inventoryTick(@NotNull ItemStack itemstack, @NotNull net.minecraft.server.level.ServerLevel pLevel, @NotNull Entity pEntity, @org.jetbrains.annotations.Nullable net.minecraft.world.entity.EquipmentSlot pSlot) {
         handleTicking(itemstack, pLevel, pEntity);
-        super.inventoryTick(itemstack, pLevel, pEntity, pSlotId, pIsSelected);
+        super.inventoryTick(itemstack, pLevel, pEntity, pSlot);
     }
 
     public boolean onEntityItemUpdate(@NotNull ItemStack stack, @NotNull ItemEntity entity) {
@@ -115,7 +115,7 @@ public class AutoloaderCrossbow extends CrossbowItem {
         if (projectiles.isEmpty()) {
             return false;
         }
-        itemStack.set(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.of(projectiles));
+        itemStack.set(DataComponents.CHARGED_PROJECTILES, ChargedProjectiles.ofNonEmpty(projectiles));
         return true;
     }
 

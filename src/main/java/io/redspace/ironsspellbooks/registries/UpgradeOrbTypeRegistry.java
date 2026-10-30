@@ -51,27 +51,27 @@ public class UpgradeOrbTypeRegistry {
 
     public static void bootstrap(BootstrapContext<UpgradeOrbType> bootstrap) {
         bootstrap.register(FIRE_SPELL_POWER,
-                new UpgradeOrbType(AttributeRegistry.FIRE_SPELL_POWER, 0.05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, ItemRegistry.FIRE_UPGRADE_ORB));
+                new UpgradeOrbType(AttributeRegistry.FIRE_SPELL_POWER, 0.05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, ItemRegistry.FIRE_UPGRADE_ORB.holder()));
         bootstrap.register(ICE_SPELL_POWER,
-                new UpgradeOrbType(AttributeRegistry.ICE_SPELL_POWER, .05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, ItemRegistry.ICE_UPGRADE_ORB));
+                new UpgradeOrbType(AttributeRegistry.ICE_SPELL_POWER, .05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, ItemRegistry.ICE_UPGRADE_ORB.holder()));
         bootstrap.register(LIGHTNING_SPELL_POWER,
-                new UpgradeOrbType(AttributeRegistry.LIGHTNING_SPELL_POWER, .05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, ItemRegistry.LIGHTNING_UPGRADE_ORB));
+                new UpgradeOrbType(AttributeRegistry.LIGHTNING_SPELL_POWER, .05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, ItemRegistry.LIGHTNING_UPGRADE_ORB.holder()));
         bootstrap.register(HOLY_SPELL_POWER,
-                new UpgradeOrbType(AttributeRegistry.HOLY_SPELL_POWER, .05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, ItemRegistry.HOLY_UPGRADE_ORB));
+                new UpgradeOrbType(AttributeRegistry.HOLY_SPELL_POWER, .05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, ItemRegistry.HOLY_UPGRADE_ORB.holder()));
         bootstrap.register(ENDER_SPELL_POWER,
-                new UpgradeOrbType(AttributeRegistry.ENDER_SPELL_POWER, .05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, ItemRegistry.ENDER_UPGRADE_ORB));
+                new UpgradeOrbType(AttributeRegistry.ENDER_SPELL_POWER, .05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, ItemRegistry.ENDER_UPGRADE_ORB.holder()));
         bootstrap.register(BLOOD_SPELL_POWER,
-                new UpgradeOrbType(AttributeRegistry.BLOOD_SPELL_POWER, .05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, ItemRegistry.BLOOD_UPGRADE_ORB));
+                new UpgradeOrbType(AttributeRegistry.BLOOD_SPELL_POWER, .05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, ItemRegistry.BLOOD_UPGRADE_ORB.holder()));
         bootstrap.register(EVOCATION_SPELL_POWER,
-                new UpgradeOrbType(AttributeRegistry.EVOCATION_SPELL_POWER, .05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, ItemRegistry.EVOCATION_UPGRADE_ORB));
+                new UpgradeOrbType(AttributeRegistry.EVOCATION_SPELL_POWER, .05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, ItemRegistry.EVOCATION_UPGRADE_ORB.holder()));
         bootstrap.register(NATURE_SPELL_POWER,
-                new UpgradeOrbType(AttributeRegistry.NATURE_SPELL_POWER, .05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, ItemRegistry.NATURE_UPGRADE_ORB));
+                new UpgradeOrbType(AttributeRegistry.NATURE_SPELL_POWER, .05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, ItemRegistry.NATURE_UPGRADE_ORB.holder()));
         bootstrap.register(COOLDOWN,
-                new UpgradeOrbType(AttributeRegistry.COOLDOWN_REDUCTION, .05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, ItemRegistry.COOLDOWN_UPGRADE_ORB));
+                new UpgradeOrbType(AttributeRegistry.COOLDOWN_REDUCTION, .05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, ItemRegistry.COOLDOWN_UPGRADE_ORB.holder()));
         bootstrap.register(SPELL_RESISTANCE,
-                new UpgradeOrbType(AttributeRegistry.SPELL_RESIST, .05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, ItemRegistry.PROTECTION_UPGRADE_ORB));
+                new UpgradeOrbType(AttributeRegistry.SPELL_RESIST, .05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, ItemRegistry.PROTECTION_UPGRADE_ORB.holder()));
         bootstrap.register(MANA,
-                new UpgradeOrbType(AttributeRegistry.MAX_MANA, 50, AttributeModifier.Operation.ADD_VALUE, ItemRegistry.MANA_UPGRADE_ORB));
+                new UpgradeOrbType(AttributeRegistry.MAX_MANA, 50, AttributeModifier.Operation.ADD_VALUE, ItemRegistry.MANA_UPGRADE_ORB.holder()));
         bootstrap.register(ATTACK_DAMAGE,
                 new UpgradeOrbType(Attributes.ATTACK_DAMAGE, .05, AttributeModifier.Operation.ADD_MULTIPLIED_BASE, Optional.empty()));
         bootstrap.register(ATTACK_SPEED,

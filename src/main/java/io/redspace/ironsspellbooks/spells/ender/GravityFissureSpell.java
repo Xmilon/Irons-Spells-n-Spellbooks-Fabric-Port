@@ -64,12 +64,12 @@ public class GravityFissureSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.GRAVITY_FISSURE_CHARGE.get());
+        return Optional.of(SoundRegistry.GRAVITY_FISSURE_CHARGE.value());
     }
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.BLACK_HOLE_CAST.get());
+        return Optional.of(SoundRegistry.BLACK_HOLE_CAST.value());
     }
 
     @Override
@@ -77,7 +77,7 @@ public class GravityFissureSpell extends AbstractSpell {
         float radius = getRadius(spellLevel, entity);
         Vec3 spawn = entity.getEyePosition().add(entity.getForward().scale(2)).subtract(0, radius, 0);
 
-        level.playSound(null, spawn.x, spawn.y, spawn.z, SoundRegistry.BLACK_HOLE_CAST.get(), SoundSource.AMBIENT, 4, 1);
+        level.playSound(null, spawn.x, spawn.y, spawn.z, SoundRegistry.BLACK_HOLE_CAST.value(), SoundSource.AMBIENT, 4, 1);
 
         BlackHole blackHole = new BlackHole(level, entity);
         blackHole.setRadius(radius);

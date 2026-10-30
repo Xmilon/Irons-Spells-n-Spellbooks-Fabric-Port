@@ -6,21 +6,11 @@
     "TLT"
   ],
   "key": {
-    "N": {
-      "tag": "c:ingots/netherite"
-    },
-    "R": {
-      "item": "irons_spellbooks:ruined_book"
-    },
-    "T": {
-      "item": "irons_spellbooks:magic_cloth"
-    },
-    "B": {
-      "item": "irons_spellbooks:blood_vial"
-    },
-    "L": {
-      "item": "irons_spellbooks:lightning_bottle"
-    }
+    "N": "#c:ingots/netherite",
+    "R": "irons_spellbooks:ruined_book",
+    "T": "irons_spellbooks:magic_cloth",
+    "B": "irons_spellbooks:blood_vial",
+    "L": "irons_spellbooks:lightning_bottle"
   },
   "result": {
     "id": "irons_spellbooks:netherite_spell_book",

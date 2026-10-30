@@ -31,74 +31,54 @@ public class SpellRenderingHelper {
     public static final Identifier STRAIGHT_GLOW = IronsSpellbooks.id("textures/entity/ray/ribbon_glow.png");
     public static final Identifier TWISTING_GLOW = IronsSpellbooks.id("textures/entity/ray/twisting_glow.png");
 
-    public static void renderSpellHelper(SyncedSpellData spellData, LivingEntity castingMob, PoseStack poseStack, SubmitNodeCollector collector, float partialTicks) {
-        if (SpellRegistry.RAY_OF_SIPHONING_SPELL.get().getSpellId().equals(spellData.getCastingSpellId())) {
-            renderRayOfSiphoning(castingMob, poseStack, collector, partialTicks);
+    public record RayState(float eyeHeight, float distance, Vec3 direction, float age) {}
+
+    public static RayState extractRay(LivingEntity entity, String spellId, float partialTick) {
+        if (!SpellRegistry.RAY_OF_SIPHONING_SPELL.get().getSpellId().equals(spellId)) return null;
+        Vec3 end;
+        if (entity instanceof Mob mob && MagicData.getPlayerMagicData(mob).getAdditionalCastData() instanceof CastingMobAimingData aiming) {
+            end = aiming.getAimPosition(partialTick);
+        } else {
+            end = Utils.raycastForEntity(entity.level(), entity, RayOfSiphoningSpell.getRange(0), true).getLocation();
         }
+        return new RayState(entity.getEyeHeight() * .8f, (float) entity.getEyePosition().distanceTo(end),
+                entity.getLookAngle().normalize(), entity.tickCount + partialTick);
     }
 
-    public static void renderRayOfSiphoning(LivingEntity entity, PoseStack poseStack, SubmitNodeCollector collector, float partialTicks) {
-
+    public static void submitRay(RayState state, PoseStack poseStack, SubmitNodeCollector collector) {
+        if (state == null) return;
         poseStack.pushPose();
-        poseStack.translate(0, entity.getEyeHeight() * .8f, 0);
-
-        var pose = poseStack.last();
-        Vec3 start = Vec3.ZERO;//caster.getEyePosition(partialTicks);
-        Vec3 end;
-        Vec3 rayEndPos;
-        if (entity instanceof Mob mob && MagicData.getPlayerMagicData(mob).getAdditionalCastData() instanceof CastingMobAimingData aimingData) {
-            rayEndPos = aimingData.getAimPosition(partialTicks);
-        } else {
-            rayEndPos = Utils.raycastForEntity(entity.level(), entity, RayOfSiphoningSpell.getRange(0), true).getLocation();
-        }
-        float distance = (float) entity.getEyePosition().distanceTo(rayEndPos);
-        float radius = .12f;
-        int r = (int) (255 * .7f);
-        int g = (int) (255 * 0f);
-        int b = (int) (255 * 0f);
-        int a = (int) (255 * 1f);
-
-        float deltaTicks = entity.tickCount + partialTicks;
-        float deltaUV = -deltaTicks % 10;
-        float max = Mth.frac(deltaUV * 0.2F - (float) Mth.floor(deltaUV * 0.1F));
-        float min = -1.0F + max;
-
-        var dir = entity.getLookAngle().normalize();
-
-        //y rotation is a triangle of x and z axis
-        float dx = (float) dir.x;
-        float dz = (float) dir.z;
-        //angle = atan o/a
-        float yRot = (float) Mth.atan2(dz, dx) - 1.5707f; // for some reason, we are rotated 90 degrees the wrong way. subtracting 2 pi here.
-        //IronsSpellbooks.LOGGER.debug("yRot: {}", yRot);
-        //x rotation is a triangle of xz and y axis
-        float dxz = Mth.sqrt(dx * dx + dz * dz);
-        float dy = (float) dir.y;
-        //angle = atan o/a
-        float xRot = (float) Mth.atan2(dy, dxz);
-        //IronsSpellbooks.LOGGER.debug("xRot: {}", xRot);
+        poseStack.translate(0, state.eyeHeight(), 0);
+        Vec3 direction = state.direction();
+        float yRot = (float) Mth.atan2(direction.z, direction.x) - 1.5707f;
+        float xRot = (float) Mth.atan2(direction.y, Math.sqrt(direction.x * direction.x + direction.z * direction.z));
         poseStack.rotate(Axis.YP, -yRot);
         poseStack.rotate(Axis.XP, -xRot);
-        for (float j = 1; j <= distance; j += .5f) {
-            Vec3 wiggle = new Vec3(
-                    Mth.sin(deltaTicks * .8f) * .02f,
-                    Mth.sin(deltaTicks * .8f + 100) * .02f,
-                    Mth.cos(deltaTicks * .8f) * .02f
-            );
-            //end = dir.scale(Math.min(j, distance)).add(wiggle);
-            end = new Vec3(0, 0, Math.min(j, distance)).add(wiggle);
-            VertexConsumer inner = bufferSource.getBuffer(RenderType.entityTranslucent(BEACON, true));
-            drawHull(start, end, radius, radius, pose, inner, r, g, b, a, min, max);
-            //drawHull(start, end, .25f, .25f, pose, outer, r / 2, g / 2, b / 2, a / 2);
-            VertexConsumer outer = bufferSource.getBuffer(RenderType.entityTranslucent(TWISTING_GLOW));
-            drawQuad(start, end, radius * 4f, 0, pose, outer, r, g, b, a, min, max);
-            drawQuad(start, end, 0, radius * 4f, pose, outer, r, g, b, a, min, max);
-            start = end;
-
-        }
+        collector.submitCustomGeometry(poseStack, RenderTypes.entityTranslucent(BEACON, true), (pose, vertices) ->
+                drawRay(state, pose, vertices, true));
+        collector.submitCustomGeometry(poseStack, RenderTypes.entityTranslucent(TWISTING_GLOW), (pose, vertices) ->
+                drawRay(state, pose, vertices, false));
         poseStack.popPose();
     }
 
+    private static void drawRay(RayState state, PoseStack.Pose pose, VertexConsumer vertices, boolean inner) {
+        float deltaUV = -state.age() % 10;
+        float max = Mth.frac(deltaUV * .2f - (float) Mth.floor(deltaUV * .1f));
+        float min = -1 + max;
+        Vec3 start = Vec3.ZERO;
+        for (float length = 1; length <= state.distance(); length += .5f) {
+            Vec3 wiggle = new Vec3(Mth.sin(state.age() * .8f) * .02f,
+                    Mth.sin(state.age() * .8f + 100) * .02f, Mth.cos(state.age() * .8f) * .02f);
+            Vec3 end = new Vec3(0, 0, Math.min(length, state.distance())).add(wiggle);
+            if (inner) {
+                drawHull(start, end, .12f, .12f, pose, vertices, 178, 0, 0, 255, min, max);
+            } else {
+                drawQuad(start, end, .48f, 0, pose, vertices, 178, 0, 0, 255, min, max);
+                drawQuad(start, end, 0, .48f, pose, vertices, 178, 0, 0, 255, min, max);
+            }
+            start = end;
+        }
+    }
     public static void drawHull(Vec3 from, Vec3 to, float width, float height, PoseStack.Pose pose, VertexConsumer consumer, int r, int g, int b, int a, float uvMin, float uvMax) {
         //Bottom
         drawQuad(from.subtract(0, height * .5f, 0), to.subtract(0, height * .5f, 0), width, 0, pose, consumer, r, g, b, a, uvMin, uvMax);

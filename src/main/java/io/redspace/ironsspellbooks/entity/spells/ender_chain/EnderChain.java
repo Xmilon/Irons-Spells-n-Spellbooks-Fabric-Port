@@ -57,8 +57,6 @@ public class EnderChain extends Entity implements AntiMagicSusceptible, IEntityW
         for (int i = 0; i < SEGMENT_COUNT; i++) {
             this.parts[i] = new EnderChainPart(this, SEGMENT_SIZE, SEGMENT_SIZE);
         }
-        this.setId(ENTITY_COUNTER.getAndAdd(this.parts.length + 1) + 1);
-        this.noCulling = true;
         this.noPhysics = true;
     }
 

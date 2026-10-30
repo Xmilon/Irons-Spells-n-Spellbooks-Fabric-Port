@@ -21,6 +21,7 @@ import java.util.function.BiConsumer;
 
 public class FireBossFlameLayer extends GeoRenderLayer<AbstractSpellCastingMob, Void, EntityRenderState> {
     private static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/fire_boss/tyros_flame.png");
+    private static final Identifier TEXTURE_OMINOUS = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/fire_boss/ominous_tyros_flame.png");
     static int frameCount = 8;
     static int ticksPerFrame = 1;
 
@@ -28,7 +29,7 @@ public class FireBossFlameLayer extends GeoRenderLayer<AbstractSpellCastingMob, 
         super(renderer);
     }
 
-    // unverified: assumes the pose stack handed to a per-bone task is positioned at that bone.
+    // GeckoLib 5 hands a per-bone task a pose stack that is already at the bone pivot (translating to it again floated the flame a head above the boss).
     @Override
     public void addPerBoneRender(RenderPassInfo<EntityRenderState> info, BiConsumer<GeoBone, PerBoneRender<EntityRenderState>> consumer) {
         if (!(IronsGeoEntityRenderer.entityOf(info.renderState()) instanceof FireBossEntity boss) || !boss.isSoulMode()) {
@@ -38,7 +39,6 @@ public class FireBossFlameLayer extends GeoRenderLayer<AbstractSpellCastingMob, 
             var poseStack = renderInfo.poseStack();
             poseStack.pushPose();
             poseStack.rotateDegrees(Axis.YP, 45f);
-            bone.translateToPivotPoint(poseStack);
             poseStack.scale(1 / 2f, 1 / 2f, 1 / 2f);
             int anim = (boss.tickCount / ticksPerFrame) % frameCount;
             float uvMin = anim / (float) frameCount;
@@ -46,7 +46,7 @@ public class FireBossFlameLayer extends GeoRenderLayer<AbstractSpellCastingMob, 
             float halfsqrt2 = 0.7071f;
             for (int i = 0; i < 4; i++) {
                 poseStack.rotateDegrees(Axis.YP, 90f);
-                collector.submitCustomGeometry(poseStack, RenderTypes.entityCutout(TEXTURE), (pose, consumer2) -> {
+                collector.submitCustomGeometry(poseStack, RenderTypes.entityCutout(boss.isOminous() ? TEXTURE_OMINOUS : TEXTURE), (pose, consumer2) -> {
                     consumer2.addVertex(pose.pose(), 0, 0, -halfsqrt2).setColor(255, 255, 255, 255).setUv(0f, uvMax).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightCoordsUtil.FULL_BRIGHT).setNormal(0f, 1f, 0f);
                     consumer2.addVertex(pose.pose(), 0, 1, -halfsqrt2).setColor(255, 255, 255, 255).setUv(0f, uvMin).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightCoordsUtil.FULL_BRIGHT).setNormal(0f, 1f, 0f);
                     consumer2.addVertex(pose.pose(), 0, 1, halfsqrt2).setColor(255, 255, 255, 255).setUv(1f, uvMin).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightCoordsUtil.FULL_BRIGHT).setNormal(0f, 1f, 0f);

@@ -87,12 +87,12 @@ public class DivineSmiteSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.DIVINE_SMITE_WINDUP.get());
+        return Optional.of(SoundRegistry.DIVINE_SMITE_WINDUP.value());
     }
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.DIVINE_SMITE_CAST.get());
+        return Optional.of(SoundRegistry.DIVINE_SMITE_CAST.value());
     }
 
     @Override

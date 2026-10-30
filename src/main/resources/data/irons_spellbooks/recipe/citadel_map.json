@@ -6,15 +6,9 @@
     "PFP"
   ],
   "key": {
-    "P": {
-      "item": "minecraft:paper"
-    },
-    "C": {
-      "item": "irons_spellbooks:cinder_essence"
-    },
-    "F": {
-      "item": "irons_spellbooks:ancient_knowledge_fragment"
-    }
+    "P": "minecraft:paper",
+    "C": "irons_spellbooks:cinder_essence",
+    "F": "irons_spellbooks:ancient_knowledge_fragment"
   },
   "result": {
     "id": "irons_spellbooks:furled_map_citadel"

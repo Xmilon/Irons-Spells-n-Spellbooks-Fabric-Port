@@ -4,9 +4,7 @@
     "amount": 1000,
     "id": "irons_spellbooks:rare_ink"
   },
-  "input": {
-    "tag": "c:ingots/gold"
-  },
+  "input": "#c:ingots/gold",
   "results": [
     {
       "amount": 250,

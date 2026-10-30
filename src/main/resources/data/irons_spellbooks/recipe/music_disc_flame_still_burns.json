@@ -6,12 +6,8 @@
     "FFF"
   ],
   "key": {
-    "F": {
-      "item": "irons_spellbooks:disc_fragment_flame_still_burns"
-    },
-    "P": {
-      "tag": "c:ingots/pyrium"
-    }
+    "F": "irons_spellbooks:disc_fragment_flame_still_burns",
+    "P": "#c:ingots/pyrium"
   },
   "result": {
     "count": 1,

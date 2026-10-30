@@ -121,7 +121,7 @@ public class TeleportSpell extends AbstractSpell {
         Vec3 bbImpact = vec3.subtract(bbOffset);
 
         double ledgeY = level.clip(new ClipContext(Vec3.atBottomCenterOf(pos).add(0, 3, 0), Vec3.atBottomCenterOf(pos), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, CollisionContext.empty())).getLocation().y;
-        boolean isAir = level.getBlockState(new BlockPos(new Vec3i(pos.getX(), (int) ledgeY, pos.getZ())).above()).isAir();
+        boolean isAir = level.getBlockState(new BlockPos(pos.getX(), (int) ledgeY, pos.getZ()).above()).isAir();
         boolean los = level.clip(new ClipContext(bbImpact, bbImpact.add(0, ledgeY - pos.getY(), 0), ClipContext.Block.COLLIDER, ClipContext.Fluid.NONE, entity)).getType() == HitResult.Type.MISS;
 
         if (isAir && los && Math.abs(ledgeY - pos.getY()) <= 3) {
@@ -141,7 +141,7 @@ public class TeleportSpell extends AbstractSpell {
                 double dx = Utils.random.nextDouble() * .1 * (Utils.random.nextBoolean() ? 1 : -1);
                 double dy = Utils.random.nextDouble() * .1 * (Utils.random.nextBoolean() ? 1 : -1);
                 double dz = Utils.random.nextDouble() * .1 * (Utils.random.nextBoolean() ? 1 : -1);
-                level.addParticle(ParticleTypes.PORTAL, true, x, y, z, dx, dy, dz);
+                level.addParticle(ParticleTypes.PORTAL, true, false, x, y, z, dx, dy, dz);
             }
         }
     }

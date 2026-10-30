@@ -17,7 +17,6 @@ import net.minecraft.resources.ResourceKey;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.item.trading.VillagerTrades;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -53,7 +52,13 @@ public class AdditionalWanderingTrades {
         // NeoForge-only event API is not wired in the Fabric port shim yet.
     }
 
-    public static class SimpleTrade implements VillagerTrades.ItemListing {
+    /** Source of a merchant offer; replaces vanilla's removed VillagerTrades.ItemListing. */
+    public interface TradeListing {
+        @Nullable
+        MerchantOffer getOffer(Entity trader, RandomSource random);
+    }
+
+    public static class SimpleTrade implements TradeListing {
         final BiFunction<Entity, RandomSource, MerchantOffer> getOffer;
 
         protected SimpleTrade(BiFunction<Entity, RandomSource, MerchantOffer> getOffer) {
@@ -64,6 +69,7 @@ public class AdditionalWanderingTrades {
             return new SimpleTrade(getOffer);
         }
 
+        @Override
         public MerchantOffer getOffer(Entity pTrader, RandomSource pRandom) {
             return getOffer.apply(pTrader, pRandom);
         }
@@ -249,7 +255,7 @@ public class AdditionalWanderingTrades {
                         }
                         ItemStack forSale = new ItemStack(Items.BUNDLE);
                         forSale.set(DataComponents.ITEM_NAME, Component.translatable("item.irons_spellbooks.scroll_pouch"));
-                        forSale.set(DataComponents.BUNDLE_CONTENTS, new BundleContents(items));
+                        forSale.set(DataComponents.BUNDLE_CONTENTS, new BundleContents(items.stream().map(net.minecraft.world.item.ItemStackTemplate::fromNonEmptyStack).toList()));
                         ItemCost cost = new ItemCost(Items.EMERALD, quality * 4 + random.nextIntBetweenInclusive(8, 16));
                         return new MerchantOffer(cost, forSale, 1, 5, 0.5f);
                     }
@@ -259,7 +265,7 @@ public class AdditionalWanderingTrades {
         }
     }
 
-    public static class RandomScrollTrade implements VillagerTrades.ItemListing {
+    public static class RandomScrollTrade implements TradeListing {
         protected final Optional<ItemCost> price2;
         protected final ItemStack forSale;
         protected final int maxTrades;

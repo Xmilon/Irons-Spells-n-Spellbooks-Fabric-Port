@@ -48,7 +48,7 @@ public class FireWallAbilityGoal extends AnimatedActionGoal<FireBossEntity> {
     protected void doAction() {
         var target = mob.getTarget();
         if (target != null) {
-            mob.playSound(SoundRegistry.FIRE_CAST.get(), 2f, Utils.random.nextIntBetweenInclusive(80, 110) * .01f);
+            mob.playSound(SoundRegistry.FIRE_CAST.value(), 2f, Utils.random.nextIntBetweenInclusive(80, 110) * .01f);
 
             Vec3 pos = target.position();
             float range = 5;

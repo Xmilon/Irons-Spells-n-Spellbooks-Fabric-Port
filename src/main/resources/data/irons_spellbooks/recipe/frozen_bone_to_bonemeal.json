@@ -1,9 +1,7 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "item": "irons_spellbooks:frozen_bone"
-    }
+    "irons_spellbooks:frozen_bone"
   ],
   "result": {
     "id": "minecraft:bone_meal",

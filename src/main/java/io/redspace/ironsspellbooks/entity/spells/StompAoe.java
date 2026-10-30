@@ -95,7 +95,7 @@ public class StompAoe extends AbstractMagicProjectile {
                 if (canHitEntity(entity) && Utils.checkEntityIntersecting(entity, leftBound, rightBound, 1f).getType() != HitResult.Type.MISS) {
                     if (DamageSources.applyDamage(entity, getDamage(), SpellRegistry.STOMP_SPELL.get().getDamageSource(this, getOwner()))) {
                         if (entity instanceof LivingEntity livingEntity) {
-                            livingEntity.knockback(this.explosionRadius * -.35f, forward.x, forward.z);
+                            Utils.knockback(livingEntity, this.explosionRadius * -.35f, forward.x, forward.z);
                         }
                     }
                 }

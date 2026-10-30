@@ -10,7 +10,7 @@
       ],
       "functions": [
         {
-          "function": "minecraft:enchanted_count_increase",
+          "type": "minecraft:enchanted_count_increase",
           "count": {
             "type": "minecraft:uniform",
             "min": 0,

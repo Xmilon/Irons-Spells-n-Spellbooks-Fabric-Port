@@ -5,12 +5,8 @@
     " I "
   ],
   "key": {
-    "F": {
-      "item": "minecraft:campfire"
-    },
-    "I": {
-      "tag": "c:nuggets/iron"
-    }
+    "F": "minecraft:campfire",
+    "I": "#c:nuggets/iron"
   },
   "result": {
     "id": "irons_spellbooks:brazier",

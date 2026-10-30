@@ -1,12 +1,8 @@
 {
   "type": "minecraft:crafting_shapeless",
   "ingredients": [
-    {
-      "item": "minecraft:leather_chestplate"
-    },
-    {
-      "item": "irons_spellbooks:arcane_essence"
-    }
+    "minecraft:leather_chestplate",
+    "irons_spellbooks:arcane_essence"
   ],
   "result": {
     "id": "irons_spellbooks:wandering_magician_chestplate"

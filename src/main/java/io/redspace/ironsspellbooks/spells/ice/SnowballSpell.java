@@ -63,7 +63,7 @@ public class SnowballSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.FROSTWAVE_PREPARE.get());
+        return Optional.of(SoundRegistry.FROSTWAVE_PREPARE.value());
     }
 
     @Override

@@ -78,7 +78,7 @@ public class ThrowSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.THROW_DAGGER.get());
+        return Optional.of(SoundRegistry.THROW_DAGGER.value());
     }
 
     @Override

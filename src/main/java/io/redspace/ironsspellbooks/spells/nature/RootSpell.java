@@ -85,7 +85,7 @@ public class RootSpell extends AbstractSpell {
 //        if (playerMagicData.getAdditionalCastData() instanceof CastTargetingData targetData) {
 //            var targetEntity = targetData.getTarget((ServerLevel) level);
 //            if (targetEntity != null) {
-//                //targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.ROOT.get(), getDuration(entity), getAmplifier(entity)));
+//                //targetEntity.addEffect(new MobEffectInstance(MobEffectRegistry.ROOT.value(), getDuration(entity), getAmplifier(entity)));
 //                IronsSpellbooks.LOGGER.debug("RootSpell.onCast targetEntity:{}", targetEntity);
 //                RootEntity rootEntity = new RootEntity(level, entity, getDuration(entity));
 //                rootEntity.setTarget(targetEntity);
@@ -115,7 +115,7 @@ public class RootSpell extends AbstractSpell {
                 rootEntity.snapTo(spawn);
                 level.addFreshEntity(rootEntity);
                 target.stopRiding();
-                target.startRiding(rootEntity, true);
+                target.startRiding(rootEntity, true, false);
             }
         }
 

@@ -6,15 +6,9 @@
     "N  "
   ],
   "key": {
-    "C": {
-      "item": "irons_spellbooks:magic_cloth"
-    },
-    "N": {
-      "tag": "c:ingots/netherite"
-    },
-    "P": {
-      "tag": "c:ingots/pyrium"
-    }
+    "C": "irons_spellbooks:magic_cloth",
+    "N": "#c:ingots/netherite",
+    "P": "#c:ingots/pyrium"
   },
   "result": {
     "id": "irons_spellbooks:pyrium_staff",

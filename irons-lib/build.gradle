@@ -80,3 +80,6 @@ tasks.register('verifyPortBehavior', JavaExec) {
     enableAssertions = true
     javaLauncher = javaToolchains.launcherFor { languageVersion = JavaLanguageVersion.of(25) }
 }
+
+// the root project runs the game with this library as a dependency; its own run tasks would start a second instance on a bare `runClient`/`runServer`
+tasks.matching { it.name in ["runClient", "runServer"] }.configureEach { enabled = false }

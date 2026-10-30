@@ -6,12 +6,8 @@
     "DDD"
   ],
   "key": {
-    "D": {
-      "item": "irons_spellbooks:dead_king_phylactery_shard"
-    },
-    "L": {
-      "item": "minecraft:soul_lantern"
-    }
+    "D": "irons_spellbooks:dead_king_phylactery_shard",
+    "L": "minecraft:soul_lantern"
   },
   "result": {
     "id": "irons_spellbooks:dead_king_phylactery",

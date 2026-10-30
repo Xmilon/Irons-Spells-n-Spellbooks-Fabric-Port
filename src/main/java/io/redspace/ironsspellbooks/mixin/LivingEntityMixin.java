@@ -72,8 +72,8 @@ public abstract class LivingEntityMixin implements io.redspace.ironsspellbooks.a
         }
     }
 
-    @Inject(method = "hurt", at = @At("RETURN"))
-    public void irons_spellbooks$changeSummonHurtCredit(DamageSource damageSource, float amount, CallbackInfoReturnable<Boolean> cir) {
+    @Inject(method = "hurtServer", at = @At("RETURN"))
+    public void irons_spellbooks$changeSummonHurtCredit(net.minecraft.server.level.ServerLevel serverLevel, DamageSource damageSource, float amount, CallbackInfoReturnable<Boolean> cir) {
         IMagicSummon fromSummon = damageSource.getDirectEntity() instanceof IMagicSummon summon ? summon : damageSource.getEntity() instanceof IMagicSummon summon ? summon : null;
         if (fromSummon instanceof LivingEntity livingSummon) {
             ((LivingEntity) (Object) this).setLastHurtByMob(livingSummon);
@@ -81,7 +81,8 @@ public abstract class LivingEntityMixin implements io.redspace.ironsspellbooks.a
     }
 
     @Shadow
-    abstract ItemStack getLastHandItem(EquipmentSlot pSlot);
+    @org.spongepowered.asm.mixin.Final
+    private Map<EquipmentSlot, ItemStack> lastEquipmentItems;
 
     @Unique
     private static final List<EquipmentSlot> handSlots = List.of(EquipmentSlot.OFFHAND, EquipmentSlot.MAINHAND);
@@ -102,7 +103,7 @@ public abstract class LivingEntityMixin implements io.redspace.ironsspellbooks.a
             // If this stack was not changed, continue
             return;
         }
-        ItemStack fromStack = getLastHandItem(EquipmentSlot.MAINHAND);
+        ItemStack fromStack = lastEquipmentItems.getOrDefault(EquipmentSlot.MAINHAND, ItemStack.EMPTY);
         ItemStack offhandStack = self.getOffhandItem();
         //offhand swap
         if (fromStack == offhandStack) {
@@ -192,7 +193,7 @@ public abstract class LivingEntityMixin implements io.redspace.ironsspellbooks.a
     @Inject(method = "updateFallFlying", at = @At("TAIL"))
     public void irons_spellbooks$updateAngelWingsFlight(CallbackInfo ci) {
         LivingEntity self = (LivingEntity) (Object) this;
-        boolean hasAngelWingsEffect = self.hasEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MobEffectRegistry.ANGEL_WINGS.get()));
+        boolean hasAngelWingsEffect = self.hasEffect(MobEffectRegistry.ANGEL_WINGS);
         if (!hasAngelWingsEffect) {
             return;
         }

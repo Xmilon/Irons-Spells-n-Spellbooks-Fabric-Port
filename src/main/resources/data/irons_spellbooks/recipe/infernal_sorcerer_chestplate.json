@@ -6,18 +6,10 @@
     " D "
   ],
   "key": {
-    "A": {
-      "item": "irons_spellbooks:pyromancer_chestplate"
-    },
-    "D": {
-      "item": "irons_spellbooks:divine_soulshard"
-    },
-    "W": {
-      "item": "irons_spellbooks:mithril_weave"
-    },
-    "P": {
-      "tag": "c:ingots/pyrium"
-    }
+    "A": "irons_spellbooks:pyromancer_chestplate",
+    "D": "irons_spellbooks:divine_soulshard",
+    "W": "irons_spellbooks:mithril_weave",
+    "P": "#c:ingots/pyrium"
   },
   "result": {
     "id": "irons_spellbooks:infernal_sorcerer_chestplate",

@@ -73,7 +73,7 @@ public class EvasionEffect extends CustomDescriptionMobEffect implements ISynced
                 livingEntity.stopRiding();
             }
 
-            if (livingEntity.randomTeleport(x, y, z, true)) {
+            if (livingEntity.randomTeleport(x, y, z, true, net.minecraft.world.level.block.state.BlockState::isSolid)) {
                 if (damageSource.getEntity() != null) {
                     livingEntity.lookAt(EntityAnchorArgument.Anchor.EYES, damageSource.getEntity().getEyePosition());
                 }

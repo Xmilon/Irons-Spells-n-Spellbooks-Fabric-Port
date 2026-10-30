@@ -57,7 +57,7 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
             this.setSummoner(livingEntity);
         }
         if (additionalData.readBoolean()) {
-            setEntityTypeToCopy(BuiltInRegistries.ENTITY_TYPE.get(additionalData.readIdentifier()));
+            setEntityTypeToCopy(BuiltInRegistries.ENTITY_TYPE.getValue(additionalData.readIdentifier()));
         }
     }
 
@@ -125,14 +125,12 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
         baseEntity.setPose(entityToCopy.getPose());
         if (baseEntity instanceof FrozenHumanoid frozenHumanoid) {
             frozenHumanoid.mainArm = entityToCopy.getMainArm();
-            frozenHumanoid.getEntityData().set(DATA_ATTACK_TIME, entityToCopy.attackAnim);
+            frozenHumanoid.getEntityData().set(DATA_ATTACK_TIME, entityToCopy.getSwingAnimation(0f));
             if (entityToCopy.isBaby()) {
                 frozenHumanoid.getEntityData().set(DATA_IS_BABY, true);
             }
         } else if (baseEntity.level().isClientSide()) {
             baseEntity.walkAnimation = entityToCopy.walkAnimation;
-            baseEntity.attackAnim = entityToCopy.attackAnim;
-            baseEntity.oAttackAnim = entityToCopy.attackAnim;
             if (entityToCopy.isBaby()) {
                 if (baseEntity instanceof AgeableMob ageableMob) {
                     ageableMob.setAge(-10);
@@ -339,7 +337,7 @@ public class FrozenHumanoid extends LivingEntity implements IEntityWithComplexSp
         }
         if (compoundTag.contains("entityToCopy")) {
             try {
-                setEntityTypeToCopy(BuiltInRegistries.ENTITY_TYPE.get(Identifier.parse(compoundTag.getStringOr("entityToCopy", ""))));
+                setEntityTypeToCopy(BuiltInRegistries.ENTITY_TYPE.getValue(Identifier.parse(compoundTag.getStringOr("entityToCopy", ""))));
             } catch (Exception ignore) {
             }
         }

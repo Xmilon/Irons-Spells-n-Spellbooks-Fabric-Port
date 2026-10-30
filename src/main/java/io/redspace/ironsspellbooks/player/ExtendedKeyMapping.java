@@ -4,7 +4,7 @@ import com.mojang.blaze3d.platform.InputConstants;
 import net.minecraft.client.KeyMapping;
 
 public class ExtendedKeyMapping extends KeyMapping {
-    public ExtendedKeyMapping(String description, net.neoforged.neoforge.client.settings.IKeyConflictContext keyConflictContext, final InputConstants.Type inputType, final int keyCode, String category) {
+    public ExtendedKeyMapping(String description, final InputConstants.Type inputType, final int keyCode, KeyMapping.Category category) {
         super(description, inputType, keyCode, category);
     }
 

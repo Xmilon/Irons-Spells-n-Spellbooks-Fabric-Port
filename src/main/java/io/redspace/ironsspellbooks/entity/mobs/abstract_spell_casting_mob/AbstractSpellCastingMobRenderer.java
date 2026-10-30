@@ -46,12 +46,12 @@ public abstract class AbstractSpellCastingMobRenderer extends HumanoidRenderer<A
     @Override
     public void submit(EntityRenderState state, PoseStack poseStack, SubmitNodeCollector collector, CameraRenderState camera) {
         super.submit(state, poseStack, collector, camera);
-        var entity = entity(state);
-        SpellRenderingHelper.renderSpellHelper(ClientMagicData.getSyncedSpellData(entity), entity, poseStack, collector, state.getGeckolibData(PARTIAL_TICK));
+        var effects = LivingEffectsRenderState.get(state);
+        if (effects != null && !effects.hideAll()) SpellRenderingHelper.submitRay(effects.ray(), poseStack, collector);
     }
 
     @Override
     public RenderType getRenderType(EntityRenderState state, Identifier texture) {
-        return entity(state).isInvisible() ? RenderTypes.entityTranslucent(texture) : super.getRenderType(state, texture);
+        return state.isInvisible ? RenderTypes.entityTranslucent(texture) : super.getRenderType(state, texture);
     }
 }

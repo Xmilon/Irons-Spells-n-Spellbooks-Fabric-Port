@@ -30,7 +30,7 @@ import java.util.List;
 
 public class ArcaneAnvilMenu extends ItemCombinerMenu {
     public ArcaneAnvilMenu(int pContainerId, Inventory inventory, ContainerLevelAccess containerLevelAccess) {
-        super(MenuRegistry.ARCANE_ANVIL_MENU.get(), pContainerId, inventory, containerLevelAccess);
+        super(MenuRegistry.ARCANE_ANVIL_MENU.get(), pContainerId, inventory, containerLevelAccess, createInputSlotDefinitions());
     }
 
     private final List<ItemStack> additionalDrops = new ArrayList<>();
@@ -152,10 +152,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
             else if (modifierItemStack.is(ItemRegistry.SHRIVING_STONE.get())) {
                 result = Utils.handleShriving(baseItemStack);
                 UpgradeData upgradeData = UpgradeData.getUpgradeData(baseItemStack);
-                upgradeData.upgrades().forEach((upgrade, count) -> upgrade.value().containerItem().map(stack -> {
-                    stack.setCount(count);
-                    return stack;
-                }).ifPresent(additionalDrops::add));
+                upgradeData.upgrades().forEach((upgrade, count) -> upgrade.value().containerItem().map(template -> template.withCount(count).create()).ifPresent(additionalDrops::add));
             }
             //Spell Slot upgrades
             else if (modifierItemStack.getItem() instanceof SpellSlotUpgradeItem spellSlotUpgradeItem) {
@@ -182,8 +179,7 @@ public class ArcaneAnvilMenu extends ItemCombinerMenu {
         resultSlots.setItem(0, result);
     }
 
-    @Override
-    protected ItemCombinerMenuSlotDefinition createInputSlotDefinitions() {
+    private static ItemCombinerMenuSlotDefinition createInputSlotDefinitions() {
         return ItemCombinerMenuSlotDefinition.create().withSlot(0, 27, 47, (p_266635_) -> {
             return true;
         }).withSlot(1, 76, 47, (p_266634_) -> {

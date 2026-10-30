@@ -28,7 +28,7 @@ public class NecronomiconSpellBook extends UniqueSpellBook {
     }
 
     @Override
-    public void appendHoverText(@NotNull ItemStack itemStack, TooltipContext context, @NotNull List<Component> lines, @NotNull TooltipFlag flag) {
+    protected void appendHoverLines(@NotNull ItemStack itemStack, @NotNull List<Component> lines) {
         var affinityData = AffinityData.getAffinityData(itemStack);
         if (!affinityData.affinityData().isEmpty()) {
             int i = TooltipsUtils.indexOfComponent(lines, "tooltip.irons_spellbooks.spellbook_spell_count");

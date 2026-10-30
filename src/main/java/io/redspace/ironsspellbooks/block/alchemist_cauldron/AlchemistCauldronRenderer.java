@@ -1,184 +1,178 @@
 package io.redspace.ironsspellbooks.block.alchemist_cauldron;
 
 import com.mojang.blaze3d.vertex.PoseStack;
-import com.mojang.blaze3d.vertex.VertexConsumer;
 import com.mojang.math.Axis;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.gui.overlays.ScreenTooltipOverlay;
-import io.redspace.ironsspellbooks.registries.FluidRegistry;
-import it.unimi.dsi.fastutil.objects.ObjectIntImmutablePair;
 import net.minecraft.ChatFormatting;
 import net.minecraft.client.Minecraft;
-import net.minecraft.client.renderer.LevelRenderer;
-import net.minecraft.client.renderer.MultiBufferSource;
-import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.SubmitNodeCollector;
 import net.minecraft.client.renderer.blockentity.BlockEntityRenderer;
 import net.minecraft.client.renderer.blockentity.BlockEntityRendererProvider;
-import net.minecraft.client.renderer.entity.ItemRenderer;
+import net.minecraft.client.renderer.blockentity.state.BlockEntityRenderState;
+import net.minecraft.client.renderer.feature.ModelFeatureRenderer.CrumblingOverlay;
+import net.minecraft.client.renderer.item.ItemModelResolver;
+import net.minecraft.client.renderer.item.ItemStackRenderState;
+import net.minecraft.client.renderer.rendertype.RenderType;
+import net.minecraft.client.renderer.rendertype.RenderTypes;
+import net.minecraft.client.renderer.state.level.CameraRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
-import net.minecraft.client.renderer.texture.TextureAtlasSprite;
+import net.minecraft.client.renderer.texture.TextureAtlas;
+import net.minecraft.core.component.DataComponents;
+import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.network.chat.Component;
-import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.resources.Identifier;
 import net.minecraft.util.Mth;
-import net.minecraft.world.inventory.InventoryMenu;
 import net.minecraft.world.item.ItemDisplayContext;
-import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.phys.BlockHitResult;
 import net.minecraft.world.phys.Vec2;
 import net.minecraft.world.phys.Vec3;
-import net.neoforged.neoforge.client.extensions.common.IClientFluidTypeExtensions;
 import net.neoforged.neoforge.fluids.FluidStack;
-import org.joml.Matrix4f;
 import org.joml.Vector2i;
-import org.joml.Vector3f;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.function.Function;
 
-
-public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistCauldronTile> {
-    ItemRenderer itemRenderer;
-    private static final Identifier BLOOD_STILL_TEXTURE = IronsSpellbooks.id("block/blood");
+public class AlchemistCauldronRenderer implements BlockEntityRenderer<AlchemistCauldronTile, AlchemistCauldronRenderer.State> {
+    private final ItemModelResolver itemModels;
 
     public AlchemistCauldronRenderer(BlockEntityRendererProvider.Context context) {
-        this.itemRenderer = context.getItemRenderer();
+        itemModels = context.itemModelResolver();
     }
-
-    private static final Vec3 ITEM_POS = new Vec3(.5, 1.5, .5);
 
     @Override
-    public void render(AlchemistCauldronTile cauldron, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
-        int waterLevel = cauldron.getFluidAmount();
+    public State createRenderState() { return new State(); }
 
-        float waterOffset = Mth.lerp(Mth.clamp(waterLevel, 0, 1000) / 1000f, .25f, .9f);
-
-        if (waterLevel > 0) {
-            renderWater(cauldron, poseStack, bufferSource, packedLight, waterOffset);
+    @Override
+    public void extractRenderState(AlchemistCauldronTile tile, State state, float partialTick,
+                                   Vec3 cameraPosition, CrumblingOverlay breakProgress) {
+        BlockEntityRenderer.super.extractRenderState(tile, state, partialTick, cameraPosition, breakProgress);
+        state.fluids.clear();
+        state.items.clear();
+        state.tooltip = List.of();
+        if (!(tile.getLevel() instanceof net.minecraft.client.multiplayer.ClientLevel level)) return;
+        var minecraft = Minecraft.getInstance();
+        int amount = tile.getFluidAmount();
+        float waterOffset = Mth.lerp(Mth.clamp(amount, 0, 1000) / 1000f, .25f, .9f);
+        float time = amount > 0 ? level.getGameTime() + partialTick : 15;
+        for (int index = 0; index < tile.inputItems.size(); index++) {
+            var stack = tile.inputItems.get(index);
+            if (stack.isEmpty()) continue;
+            var item = new ItemStackRenderState();
+            itemModels.updateForTopItem(item, stack.copy(), ItemDisplayContext.FIXED, level, null, (int) tile.getBlockPos().asLong());
+            Vec2 offset = getFloatingItemOffset(time, index * 587);
+            state.items.add(new FloatingItem(item, offset.x, waterOffset + index * .01f, offset.y,
+                    (time + index * 213) / (index + 1) * 1.5f));
         }
-
-        var floatingItems = cauldron.inputItems;
-        for (int i = 0; i < floatingItems.size(); i++) {
-            var itemStack = floatingItems.get(i);
-            if (!itemStack.isEmpty()) {
-                float f = waterLevel > 0 ? cauldron.getLevel().getGameTime() + partialTick : 15;
-                Vec2 floatOffset = getFloatingItemOffset(f, i * 587);
-                float yRot = (f + i * 213) / (i + 1) * 1.5f;
-                renderItem(itemStack,
-                        new Vec3(
-                                floatOffset.x,
-                                waterOffset + i * .01f,
-                                floatOffset.y),
-                        yRot, cauldron, partialTick, poseStack, bufferSource, packedLight, packedOverlay);
-
+        var fluids = tile.fluidInventory.fluids();
+        float running = amount;
+        float height = waterOffset;
+        for (FluidStack fluid : fluids) {
+            var fluidState = fluid.getFluid().defaultFluidState();
+            var model = minecraft.getModelManager().getFluidStateModelSet().get(fluidState);
+            var sprite = model.stillMaterial().sprite();
+            int tint = model.tintSource() == null ? 0xFFFFFF
+                    : model.tintSource().colorInWorld(fluidState.createLegacyBlock(), level, tile.getBlockPos());
+            Identifier id = BuiltInRegistries.FLUID.getKey(fluid.getFluid());
+            if (id.getNamespace().equals(IronsSpellbooks.MODID)) {
+                Identifier texture = switch (id.getPath()) {
+                    case "blood", "timeless_slurry" -> Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "block/" + id.getPath());
+                    default -> Identifier.withDefaultNamespace("block/water_still");
+                };
+                sprite = minecraft.getAtlasManager().getAtlasOrThrow(net.minecraft.data.AtlasIds.BLOCKS).getSprite(texture);
+                tint = modFluidTint(fluid, id.getPath());
             }
+            int emission = fluidState.createLegacyBlock().getLightEmission();
+            int fluidLight = state.lightCoords & 0xF00000 | Math.max(state.lightCoords >> 4 & 15, emission) << 4;
+            state.fluids.add(new FluidLayer(RenderTypes.entityTranslucent(sprite.atlasLocation()), height,
+                    sprite.getU0(), sprite.getU1(), sprite.getV0(), sprite.getV1(), tint,
+                    amount > 0 ? running / amount : 0, fluidLight));
+            running -= fluid.getAmount();
+            height += .0005f;
         }
-        var player = Minecraft.getInstance().player;
-        if (player != null) {
-            if (Math.abs(player.getX() - cauldron.getBlockPos().getX()) < 5 && Math.abs(player.getY() - cauldron.getBlockPos().getY()) < 5 && Math.abs(player.getZ() - cauldron.getBlockPos().getZ()) < 5) {
-                if (player.isCrouching() && Minecraft.getInstance().hitResult instanceof BlockHitResult blockHitResult && blockHitResult.getBlockPos().equals(cauldron.getBlockPos())) {
-                    List<Component> text = new ArrayList<>();
-                    text.add(Component.translatable("block.irons_spellbooks.alchemist_cauldron").withStyle(ChatFormatting.UNDERLINE, ChatFormatting.WHITE));
-                    var fluids = cauldron.fluidInventory.fluids();
-                    if (fluids.isEmpty()) {
-                        text.add(Component.translatable("ui.irons_spellbooks.empty").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
-                    } else {
-                        List<ObjectIntImmutablePair<MutableComponent>> fluidInfo = new ArrayList<>();
-                        for (int i = fluids.size() - 1; i >= 0; i--) {
-                            var fluid  = fluids.get(i);
-                            fluidInfo.add(new ObjectIntImmutablePair<>(fluid.getFluidType().getDescription(fluid).copy().withStyle(ChatFormatting.DARK_AQUA), fluid.getAmount()));
-                        }
-
-                        for (ObjectIntImmutablePair<MutableComponent> info : fluidInfo) {
-                            text.add(Component.literal("  ").append(info.left()).append(": ").append(Component.literal(info.rightInt() + "mb").withStyle(ChatFormatting.GOLD)));
-                        }
-                    }
-                    ScreenTooltipOverlay.renderTooltip(text, (sw, sh, mx, my, tw, th) -> new Vector2i(sw / 2 + 30, sh / 2 - th / 2));
-                }
+        var player = minecraft.player;
+        if (player != null && Math.abs(player.getX() - tile.getBlockPos().getX()) < 5
+                && Math.abs(player.getY() - tile.getBlockPos().getY()) < 5
+                && Math.abs(player.getZ() - tile.getBlockPos().getZ()) < 5
+                && player.isCrouching() && minecraft.hitResult instanceof BlockHitResult hit
+                && hit.getBlockPos().equals(tile.getBlockPos())) {
+            var tooltip = new ArrayList<Component>();
+            tooltip.add(Component.translatable("block.irons_spellbooks.alchemist_cauldron").withStyle(ChatFormatting.UNDERLINE, ChatFormatting.WHITE));
+            if (fluids.isEmpty()) tooltip.add(Component.translatable("ui.irons_spellbooks.empty").withStyle(ChatFormatting.GRAY, ChatFormatting.ITALIC));
+            for (int index = fluids.size() - 1; index >= 0; index--) {
+                var fluid = fluids.get(index);
+                var id = BuiltInRegistries.FLUID.getKey(fluid.getFluid());
+                String key = id.getNamespace().equals(IronsSpellbooks.MODID) ? "fluid_type." + id.getNamespace() + "." + id.getPath()
+                        : "block." + id.getNamespace() + "." + id.getPath().replace("flowing_", "");
+                tooltip.add(Component.literal("  ").append(Component.translatable(key).withStyle(ChatFormatting.DARK_AQUA))
+                        .append(": ").append(Component.literal(fluid.getAmount() + "mb").withStyle(ChatFormatting.GOLD)));
             }
+            state.tooltip = List.copyOf(tooltip);
         }
     }
 
-    public Vec2 getFloatingItemOffset(float time, int offset) {
-        //for our case, offset never changes
+    @Override
+    public void submit(State state, PoseStack poses, SubmitNodeCollector collector, CameraRenderState camera) {
+        for (FluidLayer layer : state.fluids) {
+            collector.submitCustomGeometry(poses, layer.type, (pose, consumer) -> {
+                float padding = 1 / 16f;
+                float red = ((layer.tint >> 16) & 255) / 255f;
+                float green = ((layer.tint >> 8) & 255) / 255f;
+                float blue = (layer.tint & 255) / 255f;
+                consumer.addVertex(pose.pose(), 1 - padding, layer.height, padding).setColor(red, green, blue, layer.opacity).setUv(layer.u1, layer.v0).setOverlay(OverlayTexture.NO_OVERLAY).setLight(layer.light).setNormal(0, 1, 0);
+                consumer.addVertex(pose.pose(), padding, layer.height, padding).setColor(red, green, blue, layer.opacity).setUv(layer.u0, layer.v0).setOverlay(OverlayTexture.NO_OVERLAY).setLight(layer.light).setNormal(0, 1, 0);
+                consumer.addVertex(pose.pose(), padding, layer.height, 1 - padding).setColor(red, green, blue, layer.opacity).setUv(layer.u0, layer.v1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(layer.light).setNormal(0, 1, 0);
+                consumer.addVertex(pose.pose(), 1 - padding, layer.height, 1 - padding).setColor(red, green, blue, layer.opacity).setUv(layer.u1, layer.v1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(layer.light).setNormal(0, 1, 0);
+            });
+        }
+        for (FloatingItem item : state.items) {
+            poses.pushPose();
+            try {
+                poses.translate(item.x, item.y, item.z);
+                poses.rotateDegrees(Axis.YP, item.rotation);
+                poses.rotateDegrees(Axis.XP, 90);
+                poses.scale(.4f, .4f, .4f);
+                item.item.submit(poses, collector, state.lightCoords, OverlayTexture.NO_OVERLAY, 0);
+            } finally { poses.popPose(); }
+        }
+        if (!state.tooltip.isEmpty()) ScreenTooltipOverlay.renderTooltip(state.tooltip,
+                (sw, sh, mx, my, tw, th) -> new Vector2i(sw / 2 + 30, sh / 2 - th / 2));
+    }
+
+    public static Vec2 getFloatingItemOffset(float time, int offset) {
         float xspeed = offset % 2 == 0 ? .0075f : .025f * (1 + (offset % 88) * .001f);
         float yspeed = offset % 2 == 0 ? .025f : .0075f * (1 + (offset % 88) * .001f);
-        float x = (time + offset) * xspeed;
-        x = (Math.abs((x % 2) - 1) + 1) / 2;
-        float y = (time + offset + 4356) * yspeed;
-        y = (Math.abs((y % 2) - 1) + 1) / 2;
-
-        //these values are "bouncing" between 0-1. however, this needs to be bounded to inside the limits of the cauldron, taking into account the item size
-        x = Mth.lerp(x, -.2f, .75f);
-        y = Mth.lerp(y, -.2f, .75f);
-        return new Vec2(x, y);
-
+        float x = (Math.abs(((time + offset) * xspeed % 2) - 1) + 1) / 2;
+        float y = (Math.abs(((time + offset + 4356) * yspeed % 2) - 1) + 1) / 2;
+        return new Vec2(Mth.lerp(x, -.2f, .75f), Mth.lerp(y, -.2f, .75f));
     }
 
-    private void renderWater(AlchemistCauldronTile cauldron, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, float waterOffset) {
-        Matrix4f pose = poseStack.last().pose();
-        float totalFluid = Mth.clamp(cauldron.getFluidAmount(), 0, 1000);
-        if (totalFluid <= 0) {
-            return;
-        }
-        float runningFluid = totalFluid;
-        float zFightOffset = 0;
-        float padding = 1 / 16f;
-        for (FluidStack fluid : cauldron.fluidInventory.fluids()) {
-            float layerHeight = waterOffset + zFightOffset;
-            zFightOffset += 0.0005f;
-
-            int skylight = packedLight >> 4 & 15;
-            int luminosity = Math.max(skylight, fluid.getFluidType().getLightLevel(fluid));
-            int fluidlight = packedLight & 0xF00000 | luminosity << 4;
-            IClientFluidTypeExtensions clientFluid = IClientFluidTypeExtensions.of(fluid.getFluid());
-            Function<Identifier, TextureAtlasSprite> spriteAtlas = Minecraft.getInstance().getTextureAtlas(InventoryMenu.BLOCK_ATLAS);
-            Identifier stillTexture = clientFluid.getStillTexture(fluid.getFluid().defaultFluidState(), cauldron.getLevel(), cauldron.getBlockPos());
-            if (fluid.getFluid().isSame(FluidRegistry.BLOOD.value())) {
-                stillTexture = BLOOD_STILL_TEXTURE;
-            }
-            TextureAtlasSprite texture = spriteAtlas.apply(stillTexture);
-            VertexConsumer consumer = bufferSource.getBuffer(RenderType.translucent());
-            int tint = clientFluid.getTintColor(fluid) & clientFluid.getTintColor(fluid.getFluid().defaultFluidState(), cauldron.getLevel(), cauldron.getBlockPos());
-            if (fluid.getFluid().isSame(FluidRegistry.BLOOD.value()) && tint == 0xFFFFFF) {
-                tint = 0x8A1118;
-            }
-            var rgb = colorFromLong(tint);
-            float opacity = runningFluid / totalFluid;
-            runningFluid -= fluid.getAmount();
-            float u0 = texture.getU0();
-            float u1 = texture.getU1();
-            float v0 = texture.getV0();
-            float v1 = texture.getV1();
-            consumer.addVertex(pose, 1 - padding, layerHeight, 0 + padding).setColor(rgb.x(), rgb.y(), rgb.z(), opacity).setUv(u1, v0).setOverlay(OverlayTexture.NO_OVERLAY).setLight(fluidlight).setNormal(0, 1, 0);
-            consumer.addVertex(pose, 0 + padding, layerHeight, 0 + padding).setColor(rgb.x(), rgb.y(), rgb.z(), opacity).setUv(u0, v0).setOverlay(OverlayTexture.NO_OVERLAY).setLight(fluidlight).setNormal(0, 1, 0);
-            consumer.addVertex(pose, 0 + padding, layerHeight, 1 - padding).setColor(rgb.x(), rgb.y(), rgb.z(), opacity).setUv(u0, v1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(fluidlight).setNormal(0, 1, 0);
-            consumer.addVertex(pose, 1 - padding, layerHeight, 1 - padding).setColor(rgb.x(), rgb.y(), rgb.z(), opacity).setUv(u1, v1).setOverlay(OverlayTexture.NO_OVERLAY).setLight(fluidlight).setNormal(0, 1, 0);
-        }
+    private static int modFluidTint(FluidStack fluid, String name) {
+        var potion = fluid.get(DataComponents.POTION_CONTENTS);
+        if (potion != null) return potion.getColor();
+        return switch (name) {
+            case "blood" -> 0x8A1118;
+            case "common_ink" -> 0x222222;
+            case "uncommon_ink" -> 0x124300;
+            case "rare_ink" -> 0x0F3844;
+            case "epic_ink" -> 0xA52EA0;
+            case "legendary_ink" -> 0xFCAC1C;
+            case "oakskin_elixir", "greater_oakskin_elixir" -> 0xFFEF95;
+            case "evasion_elixir", "greater_evasion_elixir" -> 0xF17BF4;
+            case "invisibility_elixir", "greater_invisibility_elixir" -> 0x7F83F2;
+            case "greater_healing_elixir" -> 0xF82423;
+            case "ice_venom" -> 0x73BABA;
+            default -> 0xFFFFFF;
+        };
     }
 
-    private Vector3f colorFromLong(long color) {
-        return new Vector3f(
-                ((color >> 16) & 0xFF) / 255.0f,
-                ((color >> 8) & 0xFF) / 255.0f,
-                (color & 0xFF) / 255.0f
-        );
+    public static class State extends BlockEntityRenderState {
+        public final List<FluidLayer> fluids = new ArrayList<>();
+        public final List<FloatingItem> items = new ArrayList<>();
+        public List<Component> tooltip = List.of();
     }
 
-    private void renderItem(ItemStack itemStack, Vec3 offset, float yRot, AlchemistCauldronTile tile, float partialTick, PoseStack poseStack, MultiBufferSource bufferSource, int packedLight, int packedOverlay) {
-        poseStack.pushPose();
-        //renderId seems to be some kind of uuid/salt
-        int renderId = (int) tile.getBlockPos().asLong();
-        //BakedModel model = itemRenderer.getModel(itemStack, null, null, renderId);
-        poseStack.translate(offset.x, offset.y, offset.z);
-        poseStack.rotate(Axis.YP.rotationDegrees(yRot));
-        poseStack.rotate(Axis.XP.rotationDegrees(90));
-        poseStack.scale(0.4f, 0.4f, 0.4f);
-
-        itemRenderer.renderStatic(itemStack, ItemDisplayContext.FIXED, LevelRenderer.getLightColor(tile.getLevel(), tile.getBlockPos()), packedOverlay, poseStack, bufferSource, tile.getLevel(), renderId);
-
-        poseStack.popPose();
-    }
-
+    public record FluidLayer(RenderType type, float height, float u0, float u1, float v0, float v1,
+                             int tint, float opacity, int light) {}
+    public record FloatingItem(ItemStackRenderState item, float x, float y, float z, float rotation) {}
 }

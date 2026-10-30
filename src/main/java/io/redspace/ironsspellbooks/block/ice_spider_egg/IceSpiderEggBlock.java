@@ -51,9 +51,9 @@ public class IceSpiderEggBlock extends Block {
     }
 
     @Override
-    public void playerDestroy(net.minecraft.server.level.ServerLevel level, @NotNull Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool) {
+    public void playerDestroy(net.minecraft.server.level.ServerLevel level, @NotNull net.minecraft.server.level.ServerPlayer player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool) {
         super.playerDestroy(level, player, pos, state, blockEntity, tool);
-        if (state.is(BlockRegistry.ICE_SPIDER_EGG)) {
+        if (state.is(BlockRegistry.ICE_SPIDER_EGG.get())) {
             boolean isFrosted = state.getValue(EGG_FROSTED);
             if (isFrosted && summonSpiderAround(player)) {
                 IronsSpellbooks.LOGGER.debug("summonSpiderAround rcc: {}", raycastCount);
@@ -153,7 +153,7 @@ public class IceSpiderEggBlock extends Block {
     boolean tryPlaceSpiderInWorld(IceSpiderEntity spider, Vec3 pos, Player player) {
         var level = spider.level();
         if (tryMoveSpider(spider, pos)) {
-            level.playSound(null, spider.blockPosition(), SoundRegistry.ICE_SPIDER_HOWL.get(), SoundSource.HOSTILE, 4, 1f);
+            level.playSound(null, spider.blockPosition(), SoundRegistry.ICE_SPIDER_HOWL.value(), SoundSource.HOSTILE, 4, 1f);
             spider.setEmergeFromGround();
             spider.setTarget(player);
             spider.setYRot(Utils.getAngle(pos.x, pos.z, player.getX(), player.getZ()) * Mth.RAD_TO_DEG + 90);

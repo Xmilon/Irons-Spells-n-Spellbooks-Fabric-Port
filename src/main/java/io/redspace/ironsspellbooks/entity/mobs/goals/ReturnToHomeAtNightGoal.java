@@ -16,7 +16,7 @@ public class ReturnToHomeAtNightGoal<T extends PathfinderMob & HomeOwner> extend
 
     @Override
     public boolean canUse() {
-        return homeOwnerMob.getHome() != null && !mob.level().isDay() && super.canUse();
+        return homeOwnerMob.getHome() != null && !mob.level().isBrightOutside() && super.canUse();
     }
 
     @Nullable

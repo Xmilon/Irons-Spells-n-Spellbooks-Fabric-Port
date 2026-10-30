@@ -30,39 +30,13 @@ public class PlayerMixin {
     @Inject(method = "tryToStartFallFlying", at = @At(value = "HEAD"), cancellable = true)
     void irons_spellbooks$tryToStartAngelWingsFallFlying(CallbackInfoReturnable<Boolean> cir) {
         var self = (Player) (Object) this;
-        if (!self.hasEffect(BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MobEffectRegistry.ANGEL_WINGS.get()))) {
+        if (!self.hasEffect(MobEffectRegistry.ANGEL_WINGS)) {
             return;
         }
         // Match vanilla start conditions, but allow Angel Wings effect as elytra source.
         if (!self.onGround() && !self.isFallFlying() && !self.isInWater() && !self.hasEffect(MobEffects.LEVITATION)) {
             ((PlayerAccessor) self).irons_spellbooks$startFallFlying();
             cir.setReturnValue(true);
-        }
-    }
-
-    @Inject(method = "isModelPartShown", at = @At(value = "RETURN"), cancellable = true)
-    void irons_spellbooks$hideJacketLayers(PlayerModelPart part, CallbackInfoReturnable<Boolean> cir) {
-        if (cir.getReturnValue()) {
-            var self = (Player) (Object) this;
-            switch (part) {
-                case PlayerModelPart.HAT:
-                    cir.setReturnValue(!(self.getItemBySlot(EquipmentSlot.HEAD).getItem() instanceof IDisableHat));
-                    break;
-                case JACKET:
-                case LEFT_SLEEVE:
-                case RIGHT_SLEEVE:
-                    if (self.getItemBySlot(EquipmentSlot.CHEST).getItem() instanceof IDisableJacket chestplate && chestplate.disableForSlot(EquipmentSlot.CHEST)) {
-                        cir.setReturnValue(false);
-                    }
-                    break;
-                case LEFT_PANTS_LEG:
-                case RIGHT_PANTS_LEG:
-                    if ((self.getItemBySlot(EquipmentSlot.LEGS).getItem() instanceof IDisableJacket leggings && leggings.disableForSlot(EquipmentSlot.LEGS))
-                            || (self.getItemBySlot(EquipmentSlot.FEET).getItem() instanceof IDisableJacket boots && boots.disableForSlot(EquipmentSlot.FEET))) {
-                        cir.setReturnValue(false);
-                    }
-                    break;
-            }
         }
     }
 }

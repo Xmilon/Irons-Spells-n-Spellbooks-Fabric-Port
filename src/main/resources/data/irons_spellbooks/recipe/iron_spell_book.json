@@ -6,15 +6,9 @@
     "CLL"
   ],
   "key": {
-    "C": {
-      "item": "minecraft:chain"
-    },
-    "L": {
-      "tag": "c:leathers"
-    },
-    "P": {
-      "item": "minecraft:paper"
-    }
+    "C": "minecraft:iron_chain",
+    "L": "#c:leathers",
+    "P": "minecraft:paper"
   },
   "result": {
     "id": "irons_spellbooks:iron_spell_book",

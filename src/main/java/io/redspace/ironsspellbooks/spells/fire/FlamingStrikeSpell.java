@@ -58,12 +58,12 @@ public class FlamingStrikeSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.FLAMING_STRIKE_UPSWING.get());
+        return Optional.of(SoundRegistry.FLAMING_STRIKE_UPSWING.value());
     }
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.FLAMING_STRIKE_SWING.get());
+        return Optional.of(SoundRegistry.FLAMING_STRIKE_SWING.value());
     }
 
     @Override

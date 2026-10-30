@@ -148,7 +148,7 @@ public class GenerateSiteData {
                                 //Skip
                             } else if (io.redspace.ironsspellbooks.api.util.EquipmentUtils.isArmor(new ItemStack(item))) {
                                 Class<? extends Item> armortype = item.getClass();
-                                boolean hasGroup = ItemRegistry.getIronsItems().stream().filter(holder -> armortype.isAssignableFrom(holder.value().getClass())).toList().size() > 1;
+                                boolean hasGroup = ItemRegistry.getIronsItems().stream().filter(holder -> armortype.isAssignableFrom(holder.get().getClass())).toList().size() > 1;
                                 int sort = 0;
                                 String group = "All Armor";
                                 if (hasGroup) {

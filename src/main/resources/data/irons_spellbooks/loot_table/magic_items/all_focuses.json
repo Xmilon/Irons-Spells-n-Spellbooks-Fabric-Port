@@ -5,7 +5,7 @@
       "entries": [
         {
           "type": "minecraft:tag",
-          "name": "irons_spellbooks:lootable_focus",
+          "items": "#irons_spellbooks:lootable_focus",
           "expand": true
         }
       ]

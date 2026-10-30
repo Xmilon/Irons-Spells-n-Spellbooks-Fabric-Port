@@ -6,12 +6,8 @@
     "FFF"
   ],
   "key": {
-    "F": {
-      "item": "minecraft:pufferfish"
-    },
-    "R": {
-      "item": "irons_spellbooks:blank_rune"
-    }
+    "F": "minecraft:pufferfish",
+    "R": "irons_spellbooks:blank_rune"
   },
   "result": {
     "id": "irons_spellbooks:protection_rune",

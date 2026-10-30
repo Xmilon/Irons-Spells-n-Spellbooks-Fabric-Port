@@ -46,7 +46,11 @@ import java.util.Optional;
 public class FurledMapItem extends Item {
 
     public FurledMapItem() {
-        super(ItemPropertiesHelper.material().stacksTo(1));
+        this(ItemPropertiesHelper.material().stacksTo(1));
+    }
+
+    protected FurledMapItem(Item.Properties properties) {
+        super(properties);
     }
 
     @Override
@@ -54,12 +58,12 @@ public class FurledMapItem extends Item {
         if (level instanceof ServerLevel serverlevel) {
             level.playSound(null, player, SoundEvents.UI_CARTOGRAPHY_TABLE_TAKE_RESULT, player.getSoundSource(), 1.0F, 1.0F);
             ItemStack itemStack = player.getItemInHand(hand);
-            player.getCooldowns().addCooldown(itemStack.getItem(), 50);
+            player.getCooldowns().addCooldown(itemStack, 50);
 
             if (itemStack.has(ComponentRegistry.FURLED_MAP_COMPONENT)) {
                 var furledMapData = itemStack.get(ComponentRegistry.FURLED_MAP_COMPONENT);
                 ResourceKey<Structure> structureResourceKey = ResourceKey.create(Registries.STRUCTURE, furledMapData.destinationResource);
-                var holder = serverlevel.registryAccess().lookupOrThrow(Registries.STRUCTURE).getHolder(structureResourceKey).map(HolderSet::direct);
+                var holder = serverlevel.registryAccess().lookupOrThrow(Registries.STRUCTURE).get(structureResourceKey).map(HolderSet::direct);
                 if (furledMapData.dimension().isPresent()) {
                     var dimensionRestriction = furledMapData.dimension().get();
                     if (!serverlevel.dimension().equals(dimensionRestriction)) {

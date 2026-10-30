@@ -37,22 +37,22 @@ public class IceSpiderPatrolSpawner implements CustomSpawner {
     private int tickDelay;
 
     @Override
-    public int tick(ServerLevel level, boolean spawnEnemies, boolean spawnFriendlies) {
+    public void tick(ServerLevel level, boolean spawnEnemies) {
         if (!spawnEnemies || !ServerConfigs.safeGet(ServerConfigs.ICE_SPIDER_PATROLS)) {
-            return 0;
+            return;
         }
         int playercount = level.players().size();
         if (playercount < 1) {
-            return 0;
+            return;
         }
         RandomSource randomsource = level.getRandom();
         this.tickDelay--;
         if (this.tickDelay > 0) {
-            return 0;
+            return;
         }
         this.tickDelay = DELAY_FIXED / getGroupedPlayerCount(level) + randomsource.nextInt(DELAY_VARIABLE);
         if (!level.isRaining() || randomsource.nextBoolean()) {
-            return 0;
+            return;
         }
 
         Player player = null;
@@ -64,15 +64,11 @@ public class IceSpiderPatrolSpawner implements CustomSpawner {
             player = null;
         }
         if (player == null) {
-            return 0;
+            return;
         }
 
 
-        if (performIceSpiderHuntSpawn(level, player, 4)) {
-            return 1;
-        }
-
-        return 0;
+        performIceSpiderHuntSpawn(level, player, 4);
     }
 
     public static boolean performIceSpiderHuntSpawn(ServerLevel level, LivingEntity targetEntity, int maxAttempts) {
@@ -134,7 +130,7 @@ public class IceSpiderPatrolSpawner implements CustomSpawner {
         IceSpiderEntity iceSpider = new IceSpiderEntity(level);
         iceSpider.snapTo(pos.immutable(), 0, 0);
         iceSpider.setTarget(targetEntity);
-        level.playSound(null, iceSpider.blockPosition(), SoundRegistry.ICE_SPIDER_HOWL.get(), SoundSource.HOSTILE, 4, 1f);
+        level.playSound(null, iceSpider.blockPosition(), SoundRegistry.ICE_SPIDER_HOWL.value(), SoundSource.HOSTILE, 4, 1f);
         iceSpider.setEmergeFromGround();
         level.addFreshEntity(iceSpider);
         iceSpider.finalizeSpawn(level, level.getCurrentDifficultyAt(pos), EntitySpawnReason.PATROL, null);

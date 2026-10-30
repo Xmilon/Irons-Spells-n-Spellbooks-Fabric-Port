@@ -6,18 +6,10 @@
     "GWG"
   ],
   "key": {
-    "A": {
-      "item": "irons_spellbooks:priest_chestplate"
-    },
-    "D": {
-      "item": "irons_spellbooks:divine_soulshard"
-    },
-    "W": {
-      "item": "irons_spellbooks:mithril_weave"
-    },
-    "G": {
-      "tag": "c:ingots/gold"
-    }
+    "A": "irons_spellbooks:priest_chestplate",
+    "D": "irons_spellbooks:divine_soulshard",
+    "W": "irons_spellbooks:mithril_weave",
+    "G": "#c:ingots/gold"
   },
   "result": {
     "id": "irons_spellbooks:paladin_chestplate",

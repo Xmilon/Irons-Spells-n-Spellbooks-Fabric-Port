@@ -1,16 +1,10 @@
 {
   "type": "minecraft:smithing_transform",
-  "addition": {
-    "item": "irons_spellbooks:arcane_essence"
-  },
-  "base": {
-    "tag": "irons_spellbooks:wizard_base_boots"
-  },
+  "addition": "irons_spellbooks:arcane_essence",
+  "base": "#irons_spellbooks:wizard_base_boots",
   "result": {
     "count": 1,
     "id": "irons_spellbooks:electromancer_boots"
   },
-  "template": {
-    "item": "irons_spellbooks:lightning_rune"
-  }
+  "template": "irons_spellbooks:lightning_rune"
 }

@@ -142,7 +142,7 @@ public class FluidStack {
         if (tag == null || !tag.contains("fluid")) {
             return EMPTY;
         }
-        Fluid fluid = BuiltInRegistries.FLUID.get(Identifier.parse(tag.getStringOr("fluid", "")));
+        Fluid fluid = BuiltInRegistries.FLUID.getValue(Identifier.parse(tag.getStringOr("fluid", "")));
         int amount = tag.getIntOr("amount", 0);
         FluidStack stack = new FluidStack(fluid, amount);
 

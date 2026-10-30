@@ -224,7 +224,7 @@ public class ServerConfigs {
                     var tag = new TagKey<Item>(Registries.ITEM, Identifier.parse(name.substring(1)));
                     output.addAll(BuiltInRegistries.ITEM.stream().filter(item -> item.builtInRegistryHolder().is(tag)).toList());
                 } else {
-                    var item = BuiltInRegistries.ITEM.get(Identifier.parse(name));
+                    var item = BuiltInRegistries.ITEM.getValue(Identifier.parse(name));
                     if (item != null) {
                         output.add(item);
                     } else {

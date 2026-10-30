@@ -21,9 +21,9 @@ public class CatacombsZombie extends Zombie {
             switch (this.random.nextIntBetweenInclusive(1, 4)) {
 
                 case 1 -> addEffect(new MobEffectInstance(MobEffects.INVISIBILITY, Integer.MAX_VALUE));
-                case 2 -> addEffect(new MobEffectInstance(MobEffects.MOVEMENT_SPEED, Integer.MAX_VALUE, 1));
-                case 3 -> addEffect(new MobEffectInstance(MobEffects.DAMAGE_RESISTANCE, Integer.MAX_VALUE, 1));
-                case 4 -> addEffect(new MobEffectInstance(MobEffects.DAMAGE_BOOST, Integer.MAX_VALUE));
+                case 2 -> addEffect(new MobEffectInstance(MobEffects.SPEED, Integer.MAX_VALUE, 1));
+                case 3 -> addEffect(new MobEffectInstance(MobEffects.RESISTANCE, Integer.MAX_VALUE, 1));
+                case 4 -> addEffect(new MobEffectInstance(MobEffects.STRENGTH, Integer.MAX_VALUE));
             }
 
         }
@@ -57,7 +57,7 @@ public class CatacombsZombie extends Zombie {
         setItemSlot(EquipmentSlot.CHEST, equipment[2]);
         setItemSlot(EquipmentSlot.HEAD, equipment[3]);
         if (random.nextFloat() < .01f)
-            setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.CYAN_BANNER));
+            setItemSlot(EquipmentSlot.HEAD, new ItemStack(Items.BANNER.pick(net.minecraft.world.item.DyeColor.CYAN)));
 
         setDropChance(EquipmentSlot.FEET, 0.0F);
         setDropChance(EquipmentSlot.LEGS, 0.0F);

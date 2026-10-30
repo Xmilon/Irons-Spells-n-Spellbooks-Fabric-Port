@@ -23,7 +23,11 @@ public class SyncRecastsPacket implements CustomPacketPayload {
     }
 
     public SyncRecastsPacket(FriendlyByteBuf buf) {
-        this.recastLookup = buf.readMap(SyncRecastsPacket::readSpellID, SyncRecastsPacket::readRecastInstance);
+        int size = buf.readVarInt();
+        this.recastLookup = new java.util.HashMap<>(size);
+        for (int i = 0; i < size; i++) {
+            this.recastLookup.put(readSpellID(buf), readRecastInstance(buf));
+        }
     }
 
     public static String readSpellID(FriendlyByteBuf buffer) {
@@ -45,7 +49,11 @@ public class SyncRecastsPacket implements CustomPacketPayload {
     }
 
     public void write(FriendlyByteBuf buf) {
-        buf.writeMap(recastLookup, SyncRecastsPacket::writeSpellId, SyncRecastsPacket::writeRecastInstance);
+        buf.writeVarInt(recastLookup.size());
+        recastLookup.forEach((spellId, instance) -> {
+            writeSpellId(buf, spellId);
+            writeRecastInstance(buf, instance);
+        });
     }
 
     public static void handle(SyncRecastsPacket packet, IPayloadContext context) {

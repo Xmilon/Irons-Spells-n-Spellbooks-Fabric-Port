@@ -10,9 +10,7 @@
     },
     "id": "irons_spellbooks:potion"
   },
-  "input": {
-    "item": "irons_spellbooks:shriving_stone"
-  },
+  "input": "irons_spellbooks:shriving_stone",
   "results": [
     {
       "amount": 250,

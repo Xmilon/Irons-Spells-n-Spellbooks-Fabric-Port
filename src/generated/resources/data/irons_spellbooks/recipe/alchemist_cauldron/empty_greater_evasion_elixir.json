@@ -4,9 +4,7 @@
     "amount": 250,
     "id": "irons_spellbooks:greater_evasion_elixir"
   },
-  "input": {
-    "item": "minecraft:glass_bottle"
-  },
+  "input": "minecraft:glass_bottle",
   "result": {
     "count": 1,
     "id": "irons_spellbooks:greater_evasion_elixir"

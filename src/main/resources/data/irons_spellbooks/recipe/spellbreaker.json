@@ -6,15 +6,9 @@
     "WD "
   ],
   "key": {
-    "M": {
-      "tag": "c:ingots/mithril"
-    },
-    "D": {
-      "tag": "c:gems/diamond"
-    },
-    "W": {
-      "item": "irons_spellbooks:weapon_parts"
-    }
+    "M": "#c:ingots/mithril",
+    "D": "#c:gems/diamond",
+    "W": "irons_spellbooks:weapon_parts"
   },
   "result": {
     "id": "irons_spellbooks:spellbreaker",

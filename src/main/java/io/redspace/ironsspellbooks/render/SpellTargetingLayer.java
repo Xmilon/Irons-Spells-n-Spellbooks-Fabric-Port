@@ -19,6 +19,7 @@ import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.rendertype.RenderType;
 import net.minecraft.client.renderer.entity.RenderLayerParent;
 import net.minecraft.client.renderer.entity.layers.RenderLayer;
+import net.minecraft.client.renderer.entity.state.LivingEntityRenderState;
 import net.minecraft.client.renderer.texture.OverlayTexture;
 import net.minecraft.resources.Identifier;
 import net.minecraft.world.entity.LivingEntity;
@@ -33,19 +34,22 @@ import com.geckolib.renderer.layer.GeoRenderLayer;
 public class SpellTargetingLayer {
     public static final Identifier TEXTURE = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, "textures/entity/target/heal.png");
 
-    public static class Vanilla<T extends LivingEntity, M extends EntityModel<T>> extends RenderLayer<T, M> {
-        public Vanilla(RenderLayerParent<T, M> pRenderer) {
-            super(pRenderer);
-        }
+    /** Size and tint of the targeting reticle, captured while the entity is still reachable. */
+    public record Target(float width, float height, Vector3f color) {
+    }
 
+    public static class Vanilla<S extends LivingEntityRenderState, M extends EntityModel<? super S>> extends RenderLayer<S, M> {
+        public Vanilla(RenderLayerParent<S, M> renderer) {
+            super(renderer);
+        }
 
         @Override
-        public void render(PoseStack poseStack, MultiBufferSource bufferSource, int pPackedLight, T entity, float pLimbSwing, float pLimbSwingAmount, float pPartialTick, float pAgeInTicks, float pNetHeadYaw, float pHeadPitch) {
-            if (shouldRender(entity)) {
-                renderTargetLayer(poseStack, bufferSource, entity);
+        public void submit(PoseStack poseStack, SubmitNodeCollector collector, int packedLight, S state, float yRot, float xRot) {
+            var effects = LivingEffectsRenderState.get(state);
+            if (effects != null && !effects.hideAll() && effects.targeting() != null) {
+                renderTargetLayer(poseStack, collector, effects.targeting());
             }
         }
-
     }
 
     public static class Geo extends GeoRenderLayer<AbstractSpellCastingMob, Void, EntityRenderState> {
@@ -56,12 +60,13 @@ public class SpellTargetingLayer {
         @Override
         public void submitRenderTask(RenderPassInfo<EntityRenderState> info, SubmitNodeCollector collector) {
             var mob = (AbstractSpellCastingMob) info.renderState().getGeckolibData(IronsGeoEntityRenderer.ENTITY);
-            if (info.willRender() && shouldRender(mob)) {
+            var target = capture(mob);
+            if (info.willRender() && target != null) {
                 var poseStack = info.poseStack();
                 poseStack.pushPose();
                 poseStack.rotateDegrees(Axis.XP, 180);
-                poseStack.translate(0, -mob.getBoundingBox().getYsize() / 2, 0);
-                renderTargetLayer(poseStack, collector, mob);
+                poseStack.translate(0, -target.height() / 2, 0);
+                renderTargetLayer(poseStack, collector, target);
                 poseStack.popPose();
             }
         }
@@ -71,21 +76,12 @@ public class SpellTargetingLayer {
         return SpellRegistry.getSpell(spellId).getTargetingColor();
     }
 
-    public static void renderTargetLayer(PoseStack poseStack, SubmitNodeCollector collector, LivingEntity entity) {
-        //EntityRenderDispatcher#169(renderHitbox)
-//        AABB aabb = entity.getBoundingBox().move(-entity.getX(), -entity.getY(), -entity.getZ());
-//        double magicYOffset = 1.5 - aabb.getYsize();
-//        poseStack.translate(0, magicYOffset, 0);
-//        poseStack.pushPose();
-//        LevelRenderer.renderLineBox(poseStack, bufferSource.getBuffer(RenderType.lines()), aabb, 1.0F, 1.0F, 1.0F, 1.0F);
-//        poseStack.popPose();
-
-        AABB aabb = entity.getBoundingBox().move(-entity.getX(), -entity.getY(), -entity.getZ());
-
-        float width = (float) aabb.getXsize();
-        float height = (float) aabb.getYsize();
-        float halfWidth = width * .55f;
-        float magicYOffset = (float) (1.5 - height);
+    /** @return the reticle to draw on this entity, or null when it is not targeted */
+    public static Target capture(LivingEntity entity) {
+        if (!shouldRender(entity)) {
+            return null;
+        }
+        AABB aabb = entity.getBoundingBox();
         Vector3f color = null;
         if (ClientMagicData.getRecasts().hasRecastsActive()) {
             for (RecastInstance recastInstance : ClientMagicData.getRecasts().getActiveRecasts()) {
@@ -100,19 +96,22 @@ public class SpellTargetingLayer {
         if (color == null) {
             color = getColor(ClientMagicData.getTargetingData().spellId);
         }
-        color.mul(.4f);
+        return new Target((float) aabb.getXsize(), (float) aabb.getYsize(), new Vector3f(color).mul(.4f));
+    }
+
+    public static void renderTargetLayer(PoseStack poseStack, SubmitNodeCollector collector, Target target) {
+        float height = target.height();
+        float halfWidth = target.width() * .55f;
+        float magicYOffset = 1.5f - height;
+        final float fr = target.color().x(), fg = target.color().y(), fb = target.color().z();
         poseStack.pushPose();
         poseStack.translate(0, magicYOffset, 0);
-
-
-        //LevelRenderer.renderLineBox(poseStack, bufferSource.getBuffer(RenderType.lines()), aabb, 1.0F, 1.0F, 1.0F, 1.0F);
-        final float fr = color.x(), fg = color.y(), fb = color.z();
         for (int i = 0; i < 4; i++) {
             collector.submitCustomGeometry(poseStack, RenderTypes.energySwirl(TEXTURE, 0, 0), (pose, consumer) -> {
-            consumer.addVertex(pose.pose(), halfWidth, height, halfWidth).setColor(fr, fg, fb, 1).setUv(0f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightCoordsUtil.FULL_BRIGHT).setNormal(0f, 1f, 0f);
-            consumer.addVertex(pose.pose(), halfWidth, 0, halfWidth).setColor(fr, fg, fb, 1).setUv(0f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightCoordsUtil.FULL_BRIGHT).setNormal(0f, 1f, 0f);
-            consumer.addVertex(pose.pose(), -halfWidth, 0, halfWidth).setColor(fr, fg, fb, 1).setUv(1f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightCoordsUtil.FULL_BRIGHT).setNormal(0f, 1f, 0f);
-            consumer.addVertex(pose.pose(), -halfWidth, height, halfWidth).setColor(fr, fg, fb, 1).setUv(1f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightCoordsUtil.FULL_BRIGHT).setNormal(0f, 1f, 0f);
+                consumer.addVertex(pose.pose(), halfWidth, height, halfWidth).setColor(fr, fg, fb, 1).setUv(0f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightCoordsUtil.FULL_BRIGHT).setNormal(0f, 1f, 0f);
+                consumer.addVertex(pose.pose(), halfWidth, 0, halfWidth).setColor(fr, fg, fb, 1).setUv(0f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightCoordsUtil.FULL_BRIGHT).setNormal(0f, 1f, 0f);
+                consumer.addVertex(pose.pose(), -halfWidth, 0, halfWidth).setColor(fr, fg, fb, 1).setUv(1f, 0f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightCoordsUtil.FULL_BRIGHT).setNormal(0f, 1f, 0f);
+                consumer.addVertex(pose.pose(), -halfWidth, height, halfWidth).setColor(fr, fg, fb, 1).setUv(1f, 1f).setOverlay(OverlayTexture.NO_OVERLAY).setLight(LightCoordsUtil.FULL_BRIGHT).setNormal(0f, 1f, 0f);
             });
             poseStack.rotateDegrees(Axis.YP, 90.0F);
         }

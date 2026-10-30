@@ -4,9 +4,7 @@
     "amount": 250,
     "id": "irons_spellbooks:greater_oakskin_elixir"
   },
-  "input": {
-    "item": "irons_spellbooks:greater_oakskin_elixir"
-  },
+  "input": "irons_spellbooks:greater_oakskin_elixir",
   "result": {
     "count": 1,
     "id": "minecraft:glass_bottle"

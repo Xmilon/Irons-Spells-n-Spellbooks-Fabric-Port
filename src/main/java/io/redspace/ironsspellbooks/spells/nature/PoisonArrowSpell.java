@@ -60,12 +60,12 @@ public class PoisonArrowSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.POISON_ARROW_CHARGE.get());
+        return Optional.of(SoundRegistry.POISON_ARROW_CHARGE.value());
     }
 
     @Override
     public Optional<SoundEvent> getCastFinishSound() {
-        return Optional.of(SoundRegistry.POISON_ARROW_CAST.get());
+        return Optional.of(SoundRegistry.POISON_ARROW_CAST.value());
     }
 
     @Override

@@ -82,7 +82,7 @@ public class ShadowSlashSpell extends AbstractSpell {
 
     @Override
     public Optional<SoundEvent> getCastStartSound() {
-        return Optional.of(SoundRegistry.SHADOW_SLASH.get());
+        return Optional.of(SoundRegistry.SHADOW_SLASH.value());
     }
 
     @Override
@@ -128,7 +128,7 @@ public class ShadowSlashSpell extends AbstractSpell {
                 }
             }
             if (projectileEffects) {
-                level.playSound(null, closestEntity.getX(), closestEntity.getY(), closestEntity.getZ(), SoundRegistry.FIRE_DAGGER_PARRY.get(), entity.getSoundSource());
+                level.playSound(null, closestEntity.getX(), closestEntity.getY(), closestEntity.getZ(), SoundRegistry.FIRE_DAGGER_PARRY.value(), entity.getSoundSource());
                 MagicManager.spawnParticles(level, ParticleHelper.ENDER_SPARKS, closestEntity.getX(), closestEntity.getY() + closestEntity.getBbHeight() * .5f, closestEntity.getZ(), 25, 0, 0, 0, .4, false);
             }
         }
@@ -136,7 +136,7 @@ public class ShadowSlashSpell extends AbstractSpell {
         Vec3 impulse = rayVector.scale(1 / 6f).add(0, 0.1, 0);
         entity.setDeltaMovement(entity.getDeltaMovement().scale(0.2).add(impulse));
         entity.syncVelocity = true;
-        entity.addEffect(new MobEffectInstance(net.minecraft.core.registries.BuiltInRegistries.MOB_EFFECT.wrapAsHolder(MobEffectRegistry.FALL_DAMAGE_IMMUNITY.get()), 20, 0, false, false, true));
+        entity.addEffect(new MobEffectInstance(MobEffectRegistry.FALL_DAMAGE_IMMUNITY, 20, 0, false, false, true));
 
         forward = impulse.normalize(); // recalculate forward as the direction we are actually moving
         Vec3 up = new Vec3(0, 1, 0);

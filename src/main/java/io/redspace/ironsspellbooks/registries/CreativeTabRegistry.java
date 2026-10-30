@@ -112,7 +112,7 @@ public final class CreativeTabRegistry {
     private static void addOrderedItems(CreativeModeTab.Output output, List<String> orderedIds) {
         for (String path : orderedIds) {
             var id = Identifier.fromNamespaceAndPath(IronsSpellbooks.MODID, path);
-            Item item = BuiltInRegistries.ITEM.get(id);
+            Item item = BuiltInRegistries.ITEM.getValue(id);
             if (item != null && item != ItemStack.EMPTY.getItem()) {
                 acceptSingle(output, new ItemStack(item));
             }

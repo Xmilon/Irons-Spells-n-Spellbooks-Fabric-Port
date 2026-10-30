@@ -99,7 +99,7 @@ public abstract class SummonedWeaponEntity extends AbstractSpellCastingMob imple
         FlyingPathNavigation flyingpathnavigation = new FlyingPathNavigation(this, pLevel);
         flyingpathnavigation.setCanOpenDoors(false);
         flyingpathnavigation.setCanFloat(true);
-        flyingpathnavigation.setCanPassDoors(true);
+        flyingpathnavigation.getNodeEvaluator().setCanPassDoors(true);
         return flyingpathnavigation;
     }
 
@@ -127,7 +127,7 @@ public abstract class SummonedWeaponEntity extends AbstractSpellCastingMob imple
     }
 
     @Override
-    public boolean doHurtTarget(Entity pEntity) {
+    public boolean doHurtTarget(ServerLevel serverLevel, Entity pEntity) {
         return Utils.doMeleeAttack(this, pEntity, SpellRegistry.SUMMON_SWORDS.get().getDamageSource(this, getSummoner()));
     }
 
@@ -185,10 +185,6 @@ public abstract class SummonedWeaponEntity extends AbstractSpellCastingMob imple
     private final AnimationController<SummonedWeaponEntity> meleeController = new AnimationController<>("animations", 0, this::predicate);
     RawAnimation animationToPlay = null;
 
-    @Override
-    public double getBoneResetTime() {
-        return 3;
-    }
 
     @Override
     public void playAnimation(String animationId) {

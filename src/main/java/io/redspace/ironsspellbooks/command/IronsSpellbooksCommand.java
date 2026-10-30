@@ -117,7 +117,7 @@ public class IronsSpellbooksCommand {
         for (int i = 0; i < amount; i++) {
             UpgradeData.set(stack,
                     UpgradeData.getUpgradeData(stack).addUpgrade(stack, (Holder<UpgradeOrbType>) UpgradeOrbTypeRegistry.upgradeTypeRegistry(commandSourceStackCommandContext.getSource().registryAccess())
-                            .getHolder(resourcekey).get(), slot)
+                            .get(resourcekey).get(), slot)
             );
         }
         return amount;

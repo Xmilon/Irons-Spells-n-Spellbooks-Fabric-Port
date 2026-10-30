@@ -35,7 +35,7 @@ import org.jetbrains.annotations.NotNull;
 import org.joml.Vector3f;
 
 public class DeadKingSoulEntity extends Entity implements AntiMagicSusceptible {
-    private static final EntityDataAccessor<Vector3f> DATA_RESPAWN_POS = SynchedEntityData.defineId(DeadKingSoulEntity.class, EntityDataSerializers.VECTOR3);
+    private static final EntityDataAccessor<org.joml.Vector3fc> DATA_RESPAWN_POS = SynchedEntityData.defineId(DeadKingSoulEntity.class, EntityDataSerializers.VECTOR3);
     private static final double MOVE_PER_TICK = .12;
 
     public DeadKingSoulEntity(EntityType<?> type, Level level) {
@@ -55,7 +55,7 @@ public class DeadKingSoulEntity extends Entity implements AntiMagicSusceptible {
     }
 
     public Vec3 getRespawnPos() {
-        Vector3f respawnPos = this.entityData.get(DATA_RESPAWN_POS);
+        org.joml.Vector3fc respawnPos = this.entityData.get(DATA_RESPAWN_POS);
         return new Vec3(respawnPos);
     }
 
@@ -70,13 +70,13 @@ public class DeadKingSoulEntity extends Entity implements AntiMagicSusceptible {
     }
 
     @Override
-    public @NotNull InteractionResult interactAt(@NotNull Player player, @NotNull Vec3 vec, @NotNull InteractionHand hand) {
+    public @NotNull InteractionResult interact(@NotNull Player player, @NotNull InteractionHand hand, @NotNull Vec3 vec) {
         ItemStack itemStack = player.getItemInHand(hand);
         if (isAtSpawn() && itemStack.is(ModTags.DEAD_KING_RESPAWNABLE)) {
             if (player.level() instanceof ServerLevel serverLevel) {
                 if (!player.hasInfiniteMaterials()) {
                     Vec3 particlePos = player.getEyePosition().add(player.getForward()).subtract(0, 0.3, 0);
-                    MagicManager.spawnParticles(serverLevel, new ItemParticleOption(ParticleTypes.ITEM, itemStack.copyWithCount(1)), particlePos.x, particlePos.y, particlePos.z, 9, .15, .15, .15, 0.08, false);
+                    MagicManager.spawnParticles(serverLevel, new ItemParticleOption(ParticleTypes.ITEM, net.minecraft.world.item.ItemStackTemplate.fromNonEmptyStack(itemStack.copyWithCount(1))), particlePos.x, particlePos.y, particlePos.z, 9, .15, .15, .15, 0.08, false);
                     itemStack.shrink(1);
                     player.setItemInHand(hand, itemStack);
                 }
@@ -101,7 +101,7 @@ public class DeadKingSoulEntity extends Entity implements AntiMagicSusceptible {
             }
             return InteractionResult.SUCCESS;
         }
-        return super.interactAt(player, vec, hand);
+        return super.interact(player, hand, vec);
     }
 
     @Override
@@ -122,7 +122,7 @@ public class DeadKingSoulEntity extends Entity implements AntiMagicSusceptible {
                 speed = speed.add(0, 0.05, 0);
                 level().addParticle(
                         ParticleHelper.SOUL_FIRE,
-                        true,
+                        true, false,
                         getX() + offset.x,
                         getY() + halfWidth + offset.y,
                         getZ() + offset.z,
@@ -155,7 +155,7 @@ public class DeadKingSoulEntity extends Entity implements AntiMagicSusceptible {
     @Override
     protected void addAdditionalSaveData(ValueOutput compound) {
         if(!getRespawnPos().equals(Vec3.ZERO)) {
-            compound.put("RespawnPos", NBT.writeVec3Pos(getRespawnPos()));
+            compound.store("RespawnPos", net.minecraft.nbt.CompoundTag.CODEC, NBT.writeVec3Pos(getRespawnPos()));
         }
     }
 

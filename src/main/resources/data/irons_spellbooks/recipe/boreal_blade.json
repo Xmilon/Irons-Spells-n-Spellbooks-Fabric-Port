@@ -6,18 +6,10 @@
     "WV "
   ],
   "key": {
-    "M": {
-      "tag": "c:ingots/mithril"
-    },
-    "V": {
-      "item": "irons_spellbooks:ice_venom_vial"
-    },
-    "W": {
-      "item": "irons_spellbooks:weapon_parts"
-    },
-    "I": {
-      "item": "minecraft:ice"
-    }
+    "M": "#c:ingots/mithril",
+    "V": "irons_spellbooks:ice_venom_vial",
+    "W": "irons_spellbooks:weapon_parts",
+    "I": "minecraft:ice"
   },
   "result": {
     "id": "irons_spellbooks:boreal_blade",
