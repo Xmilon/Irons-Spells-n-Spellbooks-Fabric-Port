@@ -35,7 +35,7 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
     }
 
     @Override
-    public void entityInside(BlockState blockState, Level level, BlockPos pos, Entity entity) {
+    public void entityInside(BlockState blockState, Level level, BlockPos pos, Entity entity, net.minecraft.world.entity.InsideBlockEffectApplier effectApplier, boolean isInside) {
         if (entity.tickCount % 20 == 0) {
             attemptCookEntity(blockState, level, pos, entity, () -> {
                 level.setBlockAndUpdate(pos, blockState.cycle(LayeredCauldronBlock.LEVEL));
@@ -43,11 +43,11 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
             });
         }
 
-        super.entityInside(blockState, level, pos, entity);
+        super.entityInside(blockState, level, pos, entity, effectApplier, isInside);
     }
 
     public static void attemptCookEntity(BlockState blockState, Level level, BlockPos pos, Entity entity, CookExecution execution) {
-        if (level.isClientSide()) {
+        if (!(level instanceof net.minecraft.server.level.ServerLevel serverLevel)) {
             return;
         }
         if (!CampfireBlock.isLitCampfire(level.getBlockState(pos.below()))) {
@@ -58,7 +58,7 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
         }
         if (entity instanceof LivingEntity livingEntity &&
                 livingEntity.getBoundingBox().intersects(cauldron.defaultBlockState().getInteractionShape(level, pos).bounds().move(pos)) &&
-                livingEntity.hurt(DamageSources.get(level, ISSDamageTypes.CAULDRON), 2) &&
+                livingEntity.hurtServer(serverLevel, DamageSources.get(level, ISSDamageTypes.CAULDRON), 2) &&
                 !livingEntity.typeHolder().is(ModTags.CANT_PRODUCE_BLOOD)) {
             MagicManager.spawnParticles(level, ParticleHelper.BLOOD, entity.getX(), entity.getY() + entity.getBbHeight() / 2, entity.getZ(), 20, .05, .05, .05, .1, false);
             if (Utils.random.nextDouble() <= .5 && !isCauldronFull(blockState)) {
@@ -73,11 +73,11 @@ public class BloodCauldronBlock extends LayeredCauldronBlock {
         else return blockState.getValue(LayeredCauldronBlock.LEVEL) == 3;
     }
 
-    public static CauldronInteraction.InteractionMap getInteractionMap() {
-        var map = CauldronInteraction.newInteractionMap("blood_cauldron");
+    public static CauldronInteraction.Dispatcher getInteractionMap() {
+        var map = new CauldronInteraction.Dispatcher();
 
         // Take Blood
-        map.map().put(Items.GLASS_BOTTLE, (blockState, level, blockPos, player, hand, itemStack) -> {
+        map.put(Items.GLASS_BOTTLE, (blockState, level, blockPos, player, hand, itemStack) -> {
             if (!level.isClientSide()) {
                 Item item = itemStack.getItem();
                 player.setItemInHand(hand, ItemUtils.createFilledResult(itemStack, player, new ItemStack(ItemRegistry.BLOOD_VIAL.get())));

@@ -11,10 +11,16 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
-
-import javax.annotation.Nonnull;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 
 public class PedestalTile extends BlockEntity {
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState newState) {
+        if (level instanceof net.minecraft.server.level.ServerLevel) drops();
+        super.preRemoveSideEffects(pos, newState);
+    }
+
     private static final String NBT_HELD_ITEM = "heldItem";
 
     private ItemStack heldItem = ItemStack.EMPTY;
@@ -38,20 +44,21 @@ public class PedestalTile extends BlockEntity {
     }
 
     @Override
-    protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-        super.loadAdditional(pTag, pRegistries);
-        readNBT(pTag, pRegistries);
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        heldItem = input.read(NBT_HELD_ITEM, ItemStack.OPTIONAL_CODEC).orElse(ItemStack.EMPTY);
     }
 
     @Override
-    protected void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider registryAccess) {
-        writeNBT(tag, registryAccess);
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        output.store(NBT_HELD_ITEM, ItemStack.OPTIONAL_CODEC, heldItem);
     }
 
     @Override
     public void setChanged() {
         super.setChanged();
-        if (level != null) {
+        if (level != null && !level.isClientSide()) {
             level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
         }
     }
@@ -66,20 +73,5 @@ public class PedestalTile extends BlockEntity {
         return saveWithoutMetadata(pRegistries);
     }
 
-    private CompoundTag writeNBT(CompoundTag nbt, HolderLookup.Provider pRegistries) {
-        if (!heldItem.isEmpty()) {
-            nbt.put(NBT_HELD_ITEM, heldItem.save(pRegistries));
-        } else {
-            nbt.put(NBT_HELD_ITEM, new CompoundTag());
-        }
-        return nbt;
-    }
-
-    private CompoundTag readNBT(CompoundTag nbt, HolderLookup.Provider pRegistries) {
-        if (nbt.contains(NBT_HELD_ITEM)) {
-            heldItem = ItemStack.parseOptional(pRegistries, nbt.getCompound(NBT_HELD_ITEM));
-        }
-        return nbt;
-    }
 }
 

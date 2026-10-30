@@ -1,6 +1,6 @@
 package io.redspace.ironsspellbooks.worldgen.features;
 
-import com.mojang.serialization.Codec;
+import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.tags.BlockTags;
 import net.minecraft.world.level.WorldGenLevel;
@@ -9,16 +9,18 @@ import net.minecraft.world.level.block.Mirror;
 import net.minecraft.world.level.block.Rotation;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.levelgen.feature.Feature;
-import net.minecraft.world.level.levelgen.feature.FeaturePlaceContext;
 import net.minecraft.world.level.levelgen.structure.templatesystem.StructurePlaceSettings;
 
 import java.util.function.Predicate;
 
-public class ExposedAirFeature extends Feature<StructureFeatureConfiguration> {
+public record ExposedAirFeature(StructureFeatureConfiguration configuration) implements Feature {
+    public static final MapCodec<ExposedAirFeature> CODEC = StructureFeatureConfiguration.CODEC
+            .xmap(ExposedAirFeature::new, ExposedAirFeature::configuration).fieldOf("config");
     private static final BlockState AIR = Blocks.CAVE_AIR.defaultBlockState();
 
-    public ExposedAirFeature(Codec<StructureFeatureConfiguration> codec) {
-        super(codec);
+    @Override
+    public MapCodec<ExposedAirFeature> codec() {
+        return CODEC;
     }
 
     /**
@@ -29,16 +31,12 @@ public class ExposedAirFeature extends Feature<StructureFeatureConfiguration> {
      *                the feature is being placed at
      */
     @Override
-    public boolean place(FeaturePlaceContext<StructureFeatureConfiguration> context) {
+    public boolean place(WorldGenLevel level, net.minecraft.world.level.chunk.ChunkGenerator generator,
+                         net.minecraft.util.RandomSource random, BlockPos origin) {
         // Blocks that cannot be replaced by the feature (e.g., water, bedrock, etc.)
-        Predicate<BlockState> cannotReplacePredicate = Feature.isReplaceable(BlockTags.FEATURES_CANNOT_REPLACE);
-
-        BlockPos origin = context.origin(); // Starting point for placement
-        WorldGenLevel level = context.level();
-
-        var xsize = context.config().xsize();
-        var ysize = context.config().ysize();
-        var zsize = context.config().zsize();
+        var xsize = configuration.xsize();
+        var ysize = configuration.ysize();
+        var zsize = configuration.zsize();
         int minX = -xsize / 2;
         int maxX = xsize / 2;
 
@@ -76,10 +74,10 @@ public class ExposedAirFeature extends Feature<StructureFeatureConfiguration> {
         int perimeter = xsize * 2 + zsize * 2;
         if (sideOpenings < perimeter * .25 /*|| sideOpenings > 5*/) return false;
 
-        var structureTemplateManager = level.getServer().getStructureManager();
-        var structureTemplate = structureTemplateManager.getOrCreate(context.config().structureTemplateLocation());
+        var structureTemplateManager = level.getServer().getStructureTemplateManager();
+        var structureTemplate = structureTemplateManager.getOrCreate(configuration.structureTemplateLocation());
         var placementSettings = (new StructurePlaceSettings()).setMirror(Mirror.NONE).setRotation(Rotation.NONE);
-        var configuredOffset = context.config().offset();
+        var configuredOffset = configuration.offset();
         var structurePos = origin.offset(minX, -1, minZ).offset(configuredOffset);
         structureTemplate.placeInWorld(level, structurePos, structurePos, placementSettings, level.getRandom(), 2);
 

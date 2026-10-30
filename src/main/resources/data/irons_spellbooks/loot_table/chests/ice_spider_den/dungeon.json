@@ -27,7 +27,8 @@
               "function": "irons_spellbooks:randomize_spell",
               "quality": {
                 "min": 0.2,
-                "max": 0.5
+                "max": 0.5,
+                "type": "minecraft:uniform"
               },
               "spell_filter": {
                 "school": "irons_spellbooks:ice"
@@ -54,7 +55,7 @@
       "conditions": [
         {
           "condition": "minecraft:random_chance",
-          "chance": 0.10
+          "chance": 0.1
         }
       ]
     },

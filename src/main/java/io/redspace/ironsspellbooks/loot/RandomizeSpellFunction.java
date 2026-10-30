@@ -8,35 +8,43 @@ import io.redspace.ironsspellbooks.api.spells.ISpellContainer;
 import io.redspace.ironsspellbooks.api.spells.SpellRarity;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.item.Scroll;
-import io.redspace.ironsspellbooks.registries.LootRegistry;
+import net.minecraft.core.Holder;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
+import net.minecraft.world.level.storage.loot.Validatable;
+import net.minecraft.world.level.storage.loot.ValidationContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
-import net.minecraft.world.level.storage.loot.providers.number.NumberProvider;
-import net.minecraft.world.level.storage.loot.providers.number.NumberProviders;
+import net.minecraft.world.level.storage.loot.providers.number.floats.ContextFloatProvider;
+import net.minecraft.world.level.storage.loot.providers.number.floats.ContextFloatProviders;
 
 import java.util.List;
 import java.util.NavigableMap;
+import java.util.Optional;
 import java.util.TreeMap;
 
 public class RandomizeSpellFunction extends LootItemConditionalFunction {
-    final NumberProvider qualityRange;
+    final Holder<ContextFloatProvider> qualityRange;
     final SpellFilter applicableSpells;
 
-    protected RandomizeSpellFunction(List<LootItemCondition> lootConditions, NumberProvider qualityRange, SpellFilter spellFilter) {
-        super(lootConditions);
+    protected RandomizeSpellFunction(Optional<Holder<LootItemCondition>> condition, Holder<ContextFloatProvider> qualityRange, SpellFilter spellFilter) {
+        super(condition);
         this.qualityRange = qualityRange;
         this.applicableSpells = spellFilter;
     }
 
     public static final MapCodec<RandomizeSpellFunction> CODEC = RecordCodecBuilder.mapCodec(builder -> commonFields(builder).and(
             builder.group(
-                    NumberProviders.CODEC.fieldOf("quality").forGetter(data -> data.qualityRange),
+                    ContextFloatProviders.CODEC.fieldOf("quality").forGetter(data -> data.qualityRange),
                     SpellFilter.CODEC.optionalFieldOf("spell_filter", new SpellFilter()).forGetter(data -> data.applicableSpells)
             )
     ).apply(builder, RandomizeSpellFunction::new));
+
+    @Override
+    public void validate(ValidationContext context) {
+        super.validate(context);
+        Validatable.validateHolder(context, "quality", qualityRange);
+    }
 
     @Override
     protected ItemStack run(ItemStack itemStack, LootContext lootContext) {
@@ -54,7 +62,7 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
             }
 
             int maxLevel = spell.getMaxLevel();
-            float quality = qualityRange.getFloat(lootContext);
+            float quality = qualityRange.value().getFloat(lootContext);
             //https://www.desmos.com/calculator/ablc1wg06w
             //quality = quality * Mth.sin(Mth.HALF_PI * quality);
             int spellLevel = 1 + Math.round(quality * (maxLevel - 1));
@@ -91,8 +99,8 @@ public class RandomizeSpellFunction extends LootItemConditionalFunction {
     }
 
     @Override
-    public LootItemFunctionType getType() {
-        return LootRegistry.RANDOMIZE_SPELL_FUNCTION.get();
+    public MapCodec<RandomizeSpellFunction> codec() {
+        return CODEC;
     }
 }
 

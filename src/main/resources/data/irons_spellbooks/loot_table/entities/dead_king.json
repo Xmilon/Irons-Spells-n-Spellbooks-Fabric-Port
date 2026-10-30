@@ -42,7 +42,8 @@
               "function": "irons_spellbooks:randomize_spell",
               "quality": {
                 "min": 0.5,
-                "max": 1
+                "max": 1,
+                "type": "minecraft:uniform"
               }
             }
           ]
@@ -82,7 +83,7 @@
         {
           "condition": "minecraft:random_chance_with_enchanted_bonus",
           "enchantment": "minecraft:looting",
-          "unenchanted_chance": 0.50,
+          "unenchanted_chance": 0.5,
           "enchanted_chance": {
             "type": "minecraft:linear",
             "base": 0.55,

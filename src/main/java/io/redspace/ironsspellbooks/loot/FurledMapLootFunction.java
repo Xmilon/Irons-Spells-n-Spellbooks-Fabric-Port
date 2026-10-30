@@ -4,7 +4,7 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.item.FurledMapItem;
-import io.redspace.ironsspellbooks.registries.LootRegistry;
+import net.minecraft.core.Holder;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceKey;
@@ -12,10 +12,8 @@ import net.minecraft.resources.Identifier;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
-import java.util.List;
 import java.util.Optional;
 
 public class FurledMapLootFunction extends LootItemConditionalFunction {
@@ -34,17 +32,18 @@ public class FurledMapLootFunction extends LootItemConditionalFunction {
     private final String destination, translation;
     private final Optional<String> dimension;
 
+    private static final Codec<String> IDENTIFIER_CODEC = Identifier.CODEC.xmap(Identifier::toString, Identifier::parse);
 
     public static final MapCodec<FurledMapLootFunction> CODEC = RecordCodecBuilder.mapCodec(builder -> commonFields(builder).and(
             builder.group(
-                    Codec.STRING.fieldOf("destination").forGetter(FurledMapLootFunction::getDestination),
+                    IDENTIFIER_CODEC.fieldOf("destination").forGetter(FurledMapLootFunction::getDestination),
                     Codec.STRING.fieldOf("description_translation").forGetter(FurledMapLootFunction::getTranslation),
-                    Codec.STRING.optionalFieldOf("dimension").forGetter(FurledMapLootFunction::getDimension)
+                    IDENTIFIER_CODEC.optionalFieldOf("dimension").forGetter(FurledMapLootFunction::getDimension)
             )
     ).apply(builder, FurledMapLootFunction::new));
 
-    protected FurledMapLootFunction(List<LootItemCondition> lootConditions, String destination, String translation, Optional<String> dimension) {
-        super(lootConditions);
+    protected FurledMapLootFunction(Optional<Holder<LootItemCondition>> condition, String destination, String translation, Optional<String> dimension) {
+        super(condition);
         this.destination = destination;
         this.translation = translation;
         this.dimension = dimension;
@@ -64,8 +63,8 @@ public class FurledMapLootFunction extends LootItemConditionalFunction {
     }
 
     @Override
-    public LootItemFunctionType getType() {
-        return LootRegistry.SET_FURLED_MAP_FUNCTION.get();
+    public MapCodec<FurledMapLootFunction> codec() {
+        return CODEC;
     }
 }
 

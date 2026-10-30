@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.block;
 
-import com.mojang.serialization.MapCodec;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -18,16 +17,10 @@ import net.minecraft.world.level.material.PushReaction;
 import static net.minecraft.world.level.block.PipeBlock.PROPERTY_BY_DIRECTION;
 
 public class VoidstoneBlock extends Block {
-    public static final MapCodec<FenceBlock> CODEC = simpleCodec(FenceBlock::new);
     public static final BooleanProperty NORTH = PipeBlock.NORTH;
     public static final BooleanProperty EAST = PipeBlock.EAST;
     public static final BooleanProperty SOUTH = PipeBlock.SOUTH;
     public static final BooleanProperty WEST = PipeBlock.WEST;
-
-    @Override
-    public MapCodec<FenceBlock> codec() {
-        return CODEC;
-    }
 
     public VoidstoneBlock() {
         super(BlockBehaviour.Properties.of()
@@ -35,7 +28,7 @@ public class VoidstoneBlock extends Block {
                 .mapColor(MapColor.NONE)
                 .noLootTable()
                 .isValidSpawn(Blocks::never)
-                .pushReaction(PushReaction.BLOCK)
+                .pushReaction(PushReaction.IMMOVEABLE)
                 .sound(SoundType.COPPER)
                 .lightLevel(state -> 9));
         this.registerDefaultState(
@@ -76,14 +69,14 @@ public class VoidstoneBlock extends Block {
      * Note that this method should ideally consider only the specific direction passed in.
      */
     @Override
-    protected BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
+    protected BlockState updateShape(BlockState state, net.minecraft.world.level.LevelReader level, net.minecraft.world.level.ScheduledTickAccess tickAccess, BlockPos currentPos, Direction facing, BlockPos facingPos, BlockState facingState, net.minecraft.util.RandomSource random) {
 
         return facing.getAxis().getPlane() == Direction.Plane.HORIZONTAL
                 ? state.setValue(
                 PROPERTY_BY_DIRECTION.get(facing),
                 this.connectsTo(facingState, facing.getOpposite())
         )
-                : super.updateShape(state, facing, facingState, level, currentPos, facingPos);
+                : super.updateShape(state, level, tickAccess, currentPos, facing, facingPos, facingState, random);
     }
 
     @Override

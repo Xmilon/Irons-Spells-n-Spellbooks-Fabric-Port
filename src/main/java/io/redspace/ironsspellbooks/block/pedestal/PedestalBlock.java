@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.block.pedestal;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.server.level.ServerPlayer;
@@ -85,7 +84,7 @@ public class PedestalBlock extends BaseEntityBlock implements SimpleWaterloggedB
 
     private void dropItem(ItemStack itemstack, Player owner) {
         if (owner instanceof ServerPlayer serverplayer) {
-            ItemEntity itementity = serverplayer.drop(itemstack, false);
+            ItemEntity itementity = serverplayer.drop(itemstack, false, net.minecraft.util.Prediction.SERVER_ONLY);
             if (itementity != null) {
                 itementity.setNoPickUpDelay();
                 itementity.setThrower(owner);
@@ -94,22 +93,11 @@ public class PedestalBlock extends BaseEntityBlock implements SimpleWaterloggedB
     }
 
     @Override
-    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
-        if (pState.getBlock() != pNewState.getBlock()) {
-            BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
-            if (blockEntity instanceof PedestalTile) {
-                ((PedestalTile) blockEntity).drops();
-            }
-        }
-        super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
-    }
-
-    @Override
-    protected BlockState updateShape(BlockState pState, Direction pDirection, BlockState pNeighborState, LevelAccessor pLevel, BlockPos pPos, BlockPos pNeighborPos) {
+    protected BlockState updateShape(BlockState pState, net.minecraft.world.level.LevelReader pLevel, net.minecraft.world.level.ScheduledTickAccess tickAccess, BlockPos pPos, Direction pDirection, BlockPos pNeighborPos, BlockState pNeighborState, net.minecraft.util.RandomSource random) {
         if (pState.getValue(WATERLOGGED)) {
-            pLevel.scheduleTick(pPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
+            tickAccess.scheduleTick(pPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
         }
-        return super.updateShape(pState, pDirection, pNeighborState, pLevel, pPos, pNeighborPos);
+        return super.updateShape(pState, pLevel, tickAccess, pPos, pDirection, pNeighborPos, pNeighborState, random);
     }
 
     @Nullable
@@ -132,13 +120,6 @@ public class PedestalBlock extends BaseEntityBlock implements SimpleWaterloggedB
     @Override
     public BlockEntity newBlockEntity(BlockPos pos, BlockState state) {
         return new PedestalTile(pos, state);
-    }
-
-    public static final MapCodec<PedestalBlock> CODEC = simpleCodec((t) -> new PedestalBlock());
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
     @Override

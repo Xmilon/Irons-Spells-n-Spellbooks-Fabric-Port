@@ -1,19 +1,21 @@
 package io.redspace.ironsspellbooks.recipe_types.alchemist_cauldron;
 
 import com.mojang.serialization.Codec;
+import com.mojang.serialization.DataResult;
 import com.mojang.serialization.MapCodec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import io.redspace.ironsspellbooks.registries.RecipeRegistry;
 import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
+import net.minecraft.core.component.DataComponentPatch;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeBuilder;
 import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.tags.TagKey;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
@@ -73,38 +75,57 @@ public record BrewAlchemistCauldronRecipe(FluidStack fluidIn, Ingredient reagent
     }
 
     @Override
-    public ItemStack assemble(BrewAlchemistCauldronRecipe.Input input, HolderLookup.Provider registries) {
+    public ItemStack assemble(BrewAlchemistCauldronRecipe.Input input) {
         // recipe does not yield items
         return ItemStack.EMPTY.copy();
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height) {
+    public boolean showNotification() {
         return false;
     }
 
     @Override
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
-        return ItemStack.EMPTY.copy();
+    public String group() {
+        return "";
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public PlacementInfo placementInfo() {
+        return PlacementInfo.NOT_PLACEABLE;
+    }
+
+    @Override
+    public RecipeBookCategory recipeBookCategory() {
+        return RecipeBookCategories.CRAFTING_MISC;
+    }
+
+    @Override
+    public RecipeSerializer<BrewAlchemistCauldronRecipe> getSerializer() {
         return RecipeRegistry.ALCHEMIST_CAULDRON_BREW_SERIALIZER.get();
     }
 
     @Override
-    public RecipeType<?> getType() {
+    public RecipeType<BrewAlchemistCauldronRecipe> getType() {
         return RecipeRegistry.ALCHEMIST_CAULDRON_BREW_TYPE.get();
     }
 
-    public static class Serializer implements RecipeSerializer<BrewAlchemistCauldronRecipe> {
+    public static final class Serializer {
+        private Serializer() {}
+
+        // Byproducts keep the original single-item JSON shape: id/components, with count fixed to one.
+        private static final Codec<ItemStack> BYPRODUCT_CODEC = RecordCodecBuilder.create(builder -> builder.group(
+                BuiltInRegistries.ITEM.holderByNameCodec()
+                        .validate(item -> item.value() == Items.AIR ? DataResult.error(() -> "Byproduct cannot be air") : DataResult.success(item))
+                        .fieldOf("id").forGetter(ItemStack::typeHolder),
+                DataComponentPatch.CODEC.optionalFieldOf("components", DataComponentPatch.EMPTY).forGetter(ItemStack::getComponentsPatch)
+        ).apply(builder, (item, components) -> new ItemStack(item, 1, components)));
 
         public static final MapCodec<BrewAlchemistCauldronRecipe> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
                 FluidStack.CODEC.fieldOf("base_fluid").forGetter(BrewAlchemistCauldronRecipe::fluidIn),
                 Ingredient.CODEC.fieldOf("input").forGetter(BrewAlchemistCauldronRecipe::reagent),
                 Codec.list(FluidStack.CODEC).fieldOf("results").forGetter(BrewAlchemistCauldronRecipe::results),
-                ItemStack.SINGLE_ITEM_CODEC.optionalFieldOf("byproduct").forGetter(BrewAlchemistCauldronRecipe::byproduct)
+                BYPRODUCT_CODEC.optionalFieldOf("byproduct").forGetter(BrewAlchemistCauldronRecipe::byproduct)
         ).apply(builder, BrewAlchemistCauldronRecipe::new));
 
         public static final StreamCodec<RegistryFriendlyByteBuf, BrewAlchemistCauldronRecipe> STREAM_CODEC = StreamCodec.composite(
@@ -116,21 +137,13 @@ public record BrewAlchemistCauldronRecipe(FluidStack fluidIn, Ingredient reagent
         );
 
 
-        @Override
-        public MapCodec<BrewAlchemistCauldronRecipe> codec() {
-            return CODEC;
-        }
-
-        @Override
-        public StreamCodec<RegistryFriendlyByteBuf, BrewAlchemistCauldronRecipe> streamCodec() {
-            return STREAM_CODEC;
-        }
     }
 
     public static class Builder implements RecipeBuilder {
 
         FluidStack input = null;
         Ingredient reagent = null;
+        TagKey<Item> reagentTag = null;
         List<FluidStack> results = new ArrayList<>();
         ItemStack byproduct = null;
 
@@ -145,16 +158,17 @@ public record BrewAlchemistCauldronRecipe(FluidStack fluidIn, Ingredient reagent
 
         public Builder withReagent(Item item) {
             this.reagent = Ingredient.of(item);
+            this.reagentTag = null;
             return this;
         }
 
         public Builder withReagent(ItemStack item) {
-            this.reagent = Ingredient.of(item);
-            return this;
+            return withReagent(item.getItem());
         }
 
         public Builder withReagent(TagKey<Item> item) {
-            this.reagent = Ingredient.of(item);
+            this.reagent = null;
+            this.reagentTag = item;
             return this;
         }
 
@@ -191,25 +205,21 @@ public record BrewAlchemistCauldronRecipe(FluidStack fluidIn, Ingredient reagent
         }
 
         @Override
-        public Item getResult() {
-            return Items.AIR;
+        public ResourceKey<Recipe<?>> defaultId() {
+            return ResourceKey.create(Registries.RECIPE, BuiltInRegistries.FLUID.getKey(results.getFirst().getFluid()).withPrefix("alchemist_cauldron/brew_"));
         }
 
         @Override
-        public void save(RecipeOutput recipeOutput, Identifier id) {
+        public void save(RecipeOutput recipeOutput, ResourceKey<Recipe<?>> id) {
             //todo: validity check results' size, custom throw (instead of null)
             Objects.requireNonNull(input);
+            if (reagentTag != null) reagent = Ingredient.of(recipeOutput.lookup(Registries.ITEM).getOrThrow(reagentTag));
             Objects.requireNonNull(reagent);
             recipeOutput.accept(id, new BrewAlchemistCauldronRecipe(input, reagent, results, Optional.ofNullable(byproduct)), null);
         }
 
-        @Override
-        public void save(RecipeOutput recipeOutput) {
-            save(recipeOutput, BuiltInRegistries.FLUID.getKey(results.getFirst().getFluid()).withPrefix("alchemist_cauldron/brew_"));
-        }
-
         public void saveSoak(RecipeOutput recipeOutput) {
-            save(recipeOutput, BuiltInRegistries.ITEM.getKey(byproduct.getItem()).withPrefix("alchemist_cauldron/soak_"));
+            save(recipeOutput, ResourceKey.create(Registries.RECIPE, BuiltInRegistries.ITEM.getKey(byproduct.getItem()).withPrefix("alchemist_cauldron/soak_")));
         }
     }
 }

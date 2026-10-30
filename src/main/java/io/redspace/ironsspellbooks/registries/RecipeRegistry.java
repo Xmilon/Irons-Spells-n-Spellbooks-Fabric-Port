@@ -21,19 +21,19 @@ public class RecipeRegistry {
         RECIPE_SERIALIZERS.register(eventBus);
     }
 
-    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<FillAlchemistCauldronRecipe>> ALCHEMIST_CAULDRON_FILL_SERIALIZER = RECIPE_SERIALIZERS.register("alchemist_cauldron_fill", FillAlchemistCauldronRecipe.Serializer::new);
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<FillAlchemistCauldronRecipe>> ALCHEMIST_CAULDRON_FILL_SERIALIZER = RECIPE_SERIALIZERS.register("alchemist_cauldron_fill", () -> new RecipeSerializer<>(FillAlchemistCauldronRecipe.Serializer.CODEC, FillAlchemistCauldronRecipe.Serializer.STREAM_CODEC));
     public static final DeferredHolder<RecipeType<?>, RecipeType<FillAlchemistCauldronRecipe>> ALCHEMIST_CAULDRON_FILL_TYPE = RECIPE_TYPES.register("alchemist_cauldron_fill",
             () -> new RecipeType<>() {});
 
-    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<EmptyAlchemistCauldronRecipe>> ALCHEMIST_CAULDRON_EMPTY_SERIALIZER = RECIPE_SERIALIZERS.register("alchemist_cauldron_empty", EmptyAlchemistCauldronRecipe.Serializer::new);
+    public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<EmptyAlchemistCauldronRecipe>> ALCHEMIST_CAULDRON_EMPTY_SERIALIZER = RECIPE_SERIALIZERS.register("alchemist_cauldron_empty", () -> new RecipeSerializer<>(EmptyAlchemistCauldronRecipe.Serializer.CODEC, EmptyAlchemistCauldronRecipe.Serializer.STREAM_CODEC));
     public static final DeferredHolder<RecipeType<?>, RecipeType<EmptyAlchemistCauldronRecipe>> ALCHEMIST_CAULDRON_EMPTY_TYPE = RECIPE_TYPES.register("alchemist_cauldron_empty",
             () -> new RecipeType<>() {});
 
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<BrewAlchemistCauldronRecipe>> ALCHEMIST_CAULDRON_BREW_SERIALIZER
-            = RECIPE_SERIALIZERS.register("alchemist_cauldron_brew", BrewAlchemistCauldronRecipe.Serializer::new);
+            = RECIPE_SERIALIZERS.register("alchemist_cauldron_brew", () -> new RecipeSerializer<>(BrewAlchemistCauldronRecipe.Serializer.CODEC, BrewAlchemistCauldronRecipe.Serializer.STREAM_CODEC));
     public static final DeferredHolder<RecipeType<?>, RecipeType<BrewAlchemistCauldronRecipe>> ALCHEMIST_CAULDRON_BREW_TYPE
             = RECIPE_TYPES.register("alchemist_cauldron_brew", () -> new RecipeType<>() {});
     public static final DeferredHolder<RecipeSerializer<?>, RecipeSerializer<NoAdditionSmithingTransformRecipe>> SMITHING_TRANSFORM_NO_ADDITION_SERIALIZER =
-            RECIPE_SERIALIZERS.register("smithing_transform_no_addition", NoAdditionSmithingTransformRecipe.Serializer::new);
+            RECIPE_SERIALIZERS.register("smithing_transform_no_addition", () -> new RecipeSerializer<>(NoAdditionSmithingTransformRecipe.Serializer.CODEC, NoAdditionSmithingTransformRecipe.Serializer.STREAM_CODEC));
 
 }

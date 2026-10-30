@@ -7,7 +7,6 @@ import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.registries.RecipeRegistry;
 import net.minecraft.advancements.triggers.Criterion;
 import net.minecraft.core.Holder;
-import net.minecraft.core.HolderLookup;
 import net.minecraft.core.registries.BuiltInRegistries;
 import net.minecraft.core.registries.Registries;
 import net.minecraft.data.recipes.RecipeBuilder;
@@ -15,7 +14,7 @@ import net.minecraft.data.recipes.RecipeOutput;
 import net.minecraft.network.RegistryFriendlyByteBuf;
 import net.minecraft.network.codec.ByteBufCodecs;
 import net.minecraft.network.codec.StreamCodec;
-import net.minecraft.resources.Identifier;
+import net.minecraft.resources.ResourceKey;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.world.item.Item;
@@ -48,7 +47,7 @@ public record FillAlchemistCauldronRecipe(Ingredient input, ItemStack returned,
     }
 
     @Override
-    public ItemStack assemble(SingleRecipeInput input, HolderLookup.Provider registries) {
+    public ItemStack assemble(SingleRecipeInput input) {
         return returned.copy();
     }
 
@@ -58,26 +57,38 @@ public record FillAlchemistCauldronRecipe(Ingredient input, ItemStack returned,
     }
 
     @Override
-    public boolean canCraftInDimensions(int width, int height) {
+    public boolean showNotification() {
         return false;
     }
 
     @Override
-    public ItemStack getResultItem(HolderLookup.Provider registries) {
-        return returned.copy();
+    public String group() {
+        return "";
     }
 
     @Override
-    public RecipeSerializer<?> getSerializer() {
+    public PlacementInfo placementInfo() {
+        return PlacementInfo.NOT_PLACEABLE;
+    }
+
+    @Override
+    public RecipeBookCategory recipeBookCategory() {
+        return RecipeBookCategories.CRAFTING_MISC;
+    }
+
+    @Override
+    public RecipeSerializer<FillAlchemistCauldronRecipe> getSerializer() {
         return RecipeRegistry.ALCHEMIST_CAULDRON_FILL_SERIALIZER.get();
     }
 
     @Override
-    public RecipeType<?> getType() {
+    public RecipeType<FillAlchemistCauldronRecipe> getType() {
         return RecipeRegistry.ALCHEMIST_CAULDRON_FILL_TYPE.get();
     }
 
-    public static class Serializer implements RecipeSerializer<FillAlchemistCauldronRecipe> {
+    public static final class Serializer {
+        private Serializer() {}
+
         public static final MapCodec<FillAlchemistCauldronRecipe> CODEC = RecordCodecBuilder.mapCodec(builder -> builder.group(
                 Ingredient.CODEC.fieldOf("input").forGetter(FillAlchemistCauldronRecipe::input),
                 ItemStack.CODEC.fieldOf("result").forGetter(FillAlchemistCauldronRecipe::returned),
@@ -93,16 +104,6 @@ public record FillAlchemistCauldronRecipe(Ingredient input, ItemStack returned,
                 ByteBufCodecs.holderRegistry(Registries.SOUND_EVENT), FillAlchemistCauldronRecipe::fillSound,
                 FillAlchemistCauldronRecipe::new
         );
-
-        @Override
-        public MapCodec<FillAlchemistCauldronRecipe> codec() {
-            return CODEC;
-        }
-
-        @Override
-        public StreamCodec<RegistryFriendlyByteBuf, FillAlchemistCauldronRecipe> streamCodec() {
-            return STREAM_CODEC;
-        }
     }
 
     public static class Builder implements RecipeBuilder {
@@ -158,17 +159,13 @@ public record FillAlchemistCauldronRecipe(Ingredient input, ItemStack returned,
         }
 
         @Override
-        public Item getResult() {
-            return returned.getItem();
+        public ResourceKey<Recipe<?>> defaultId() {
+            Item firstInput = input.items().findFirst().orElseThrow(() -> new IllegalStateException("Cauldron fill recipe needs an input item")).value();
+            return ResourceKey.create(Registries.RECIPE, IronsSpellbooks.id("alchemist_cauldron/fill_" + BuiltInRegistries.ITEM.getKey(firstInput).getPath()));
         }
 
         @Override
-        public void save(RecipeOutput recipeOutput) {
-            save(recipeOutput, IronsSpellbooks.id("alchemist_cauldron/fill_" + BuiltInRegistries.ITEM.getKey(input.getItems()[0].getItem()).getPath()));
-        }
-
-        @Override
-        public void save(RecipeOutput recipeOutput, Identifier id) {
+        public void save(RecipeOutput recipeOutput, ResourceKey<Recipe<?>> id) {
             recipeOutput.accept(id, new FillAlchemistCauldronRecipe(input, returned, fluid, mustFitAll, BuiltInRegistries.SOUND_EVENT.wrapAsHolder(soundEvent)), null);
         }
     }

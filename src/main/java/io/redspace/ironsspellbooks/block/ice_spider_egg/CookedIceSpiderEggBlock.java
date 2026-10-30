@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.block.ice_spider_egg;
 
-import com.mojang.serialization.MapCodec;
 import io.redspace.ironsspellbooks.registries.MobEffectRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -31,7 +30,6 @@ import net.minecraft.world.phys.shapes.Shapes;
 import net.minecraft.world.phys.shapes.VoxelShape;
 
 public class CookedIceSpiderEggBlock extends Block {
-    public static final MapCodec<CookedIceSpiderEggBlock> CODEC = simpleCodec(CookedIceSpiderEggBlock::new);
     public static final int MAX_BITES = 3;
     public static final IntegerProperty BITES = IntegerProperty.create("bites", 0, MAX_BITES);
     private static final int FROSTBITE_DURATION = 45 * 20;
@@ -40,11 +38,6 @@ public class CookedIceSpiderEggBlock extends Block {
     private static final VoxelShape PLATE = Block.box(1, 0, 1, 15, 1, 15);
     private static final VoxelShape EGG_0 = Block.box(3, 1, 2, 13, 15, 14);
     private static final VoxelShape SHAPE = Shapes.join(PLATE, EGG_0, BooleanOp.OR);
-
-    @Override
-    public MapCodec<CookedIceSpiderEggBlock> codec() {
-        return CODEC;
-    }
 
     public CookedIceSpiderEggBlock(BlockBehaviour.Properties properties) {
         super(properties);
@@ -82,8 +75,8 @@ public class CookedIceSpiderEggBlock extends Block {
                 mobEffectInstance = new MobEffectInstance(MobEffectRegistry.FROSTBITTEN_STRIKES, mobEffectInstance.getDuration() + FROSTBITE_DURATION, FROSTBITE_AMPLIFIER, false, false, true);
             }
             player.addEffect(mobEffectInstance);
-            level.playSound(null, pos, SoundEvents.GENERIC_EAT, SoundSource.BLOCKS);
-            level.playSound(null, pos, SoundEvents.HONEY_DRINK, SoundSource.BLOCKS);
+            level.playSound(null, pos, SoundEvents.GENERIC_EAT.value(), SoundSource.BLOCKS);
+            level.playSound(null, pos, SoundEvents.HONEY_DRINK.value(), SoundSource.BLOCKS);
         }
         for (int i = 0; i < 5; i++) {
             level.addParticle(ColorParticleOption.create(ParticleTypes.ENTITY_EFFECT, 0xFFd0f9ff),
@@ -105,10 +98,10 @@ public class CookedIceSpiderEggBlock extends Block {
     }
 
     @Override
-    protected BlockState updateShape(BlockState state, Direction facing, BlockState facingState, LevelAccessor level, BlockPos currentPos, BlockPos facingPos) {
+    protected BlockState updateShape(BlockState state, net.minecraft.world.level.LevelReader level, net.minecraft.world.level.ScheduledTickAccess tickAccess, BlockPos currentPos, Direction facing, BlockPos facingPos, BlockState facingState, net.minecraft.util.RandomSource random) {
         return facing == Direction.DOWN && !state.canSurvive(level, currentPos)
                 ? Blocks.AIR.defaultBlockState()
-                : super.updateShape(state, facing, facingState, level, currentPos, facingPos);
+                : super.updateShape(state, level, tickAccess, currentPos, facing, facingPos, facingState, random);
     }
 
     @Override
@@ -122,7 +115,7 @@ public class CookedIceSpiderEggBlock extends Block {
     }
 
     @Override
-    protected int getAnalogOutputSignal(BlockState blockState, Level level, BlockPos pos) {
+    protected int getAnalogOutputSignal(BlockState blockState, Level level, BlockPos pos, Direction direction) {
         return (4 - blockState.getValue(BITES)) * 2;
     }
 

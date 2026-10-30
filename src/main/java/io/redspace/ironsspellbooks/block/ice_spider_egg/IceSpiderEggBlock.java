@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.block.ice_spider_egg;
 
-import com.mojang.serialization.MapCodec;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.api.util.Utils;
 import io.redspace.ironsspellbooks.entity.mobs.ice_spider.IceSpiderEntity;
@@ -37,14 +36,8 @@ import java.util.Comparator;
 import java.util.Random;
 
 public class IceSpiderEggBlock extends Block {
-    public static final MapCodec<IceSpiderEggBlock> CODEC = simpleCodec(IceSpiderEggBlock::new);
 
     public static final BooleanProperty EGG_FROSTED = BooleanProperty.create("frosted");
-
-    @Override
-    protected MapCodec<? extends Block> codec() {
-        return CODEC;
-    }
 
     public IceSpiderEggBlock(Properties properties) {
         super(properties);
@@ -58,7 +51,7 @@ public class IceSpiderEggBlock extends Block {
     }
 
     @Override
-    public void playerDestroy(Level level, @NotNull Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool) {
+    public void playerDestroy(net.minecraft.server.level.ServerLevel level, @NotNull Player player, BlockPos pos, BlockState state, @Nullable BlockEntity blockEntity, ItemStack tool) {
         super.playerDestroy(level, player, pos, state, blockEntity, tool);
         if (state.is(BlockRegistry.ICE_SPIDER_EGG)) {
             boolean isFrosted = state.getValue(EGG_FROSTED);

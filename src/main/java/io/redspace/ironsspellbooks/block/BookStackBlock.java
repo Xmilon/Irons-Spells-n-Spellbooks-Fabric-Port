@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.block;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
 import net.minecraft.sounds.SoundEvents;
@@ -20,16 +19,10 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import javax.annotation.Nullable;
 
 public class BookStackBlock extends HorizontalDirectionalBlock {
-    public static final MapCodec<BookStackBlock> CODEC = simpleCodec((p)->new BookStackBlock());
-
-    @Override
-    public MapCodec<BookStackBlock> codec() {
-        return CODEC;
-    }
     public static final VoxelShape SHAPE = Block.box(3, 0, 3, 13, 8, 13);
 
     public BookStackBlock() {
-        super(Properties.of().mapColor(DyeColor.WHITE).noOcclusion().pushReaction(PushReaction.DESTROY).sound(
+        super(Properties.of().mapColor(DyeColor.WHITE).noOcclusion().pushReaction(PushReaction.POPPED).sound(
                 new SoundType(1, 1, SoundEvents.BOOK_PUT, SoundEvents.WOOL_STEP, SoundEvents.BOOK_PUT, SoundEvents.WOOL_HIT, SoundEvents.BOOK_PAGE_TURN)
         ).strength(0.2F));
     }

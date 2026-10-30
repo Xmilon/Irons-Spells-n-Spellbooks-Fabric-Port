@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.block;
 
-import com.mojang.serialization.MapCodec;
 import io.redspace.ironsspellbooks.IronsSpellbooks;
 import io.redspace.ironsspellbooks.registries.ItemRegistry;
 import net.minecraft.core.BlockPos;
@@ -20,17 +19,12 @@ import javax.annotation.Nullable;
 import java.util.Optional;
 
 public class BoneVaultBlock extends VaultBlock {
-    public static final MapCodec<BoneVaultBlock> CODEC = simpleCodec(BoneVaultBlock::new);
 
     public BoneVaultBlock(BlockBehaviour.Properties properties) {
         super(properties);
     }
 
     @SuppressWarnings("unchecked")
-    @Override
-    public @NotNull MapCodec<VaultBlock> codec() {
-        return (MapCodec<VaultBlock>) (Object) CODEC;
-    }
 
     @Nullable
     @Override

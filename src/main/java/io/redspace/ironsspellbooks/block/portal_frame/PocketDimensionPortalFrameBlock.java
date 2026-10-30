@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.block.portal_frame;
 
-import com.mojang.serialization.MapCodec;
 import net.minecraft.core.BlockPos;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -26,7 +25,7 @@ public class PocketDimensionPortalFrameBlock extends PortalFrameBlock {
                 .noOcclusion()
                 .isValidSpawn(Blocks::never)
                 .noTerrainParticles()
-                .pushReaction(PushReaction.BLOCK)
+                .pushReaction(PushReaction.IMMOVEABLE)
                 .sound(SoundType.COPPER_GRATE));
     }
 
@@ -39,13 +38,6 @@ public class PocketDimensionPortalFrameBlock extends PortalFrameBlock {
     @Override
     public boolean canTeleport(Entity entity) {
         return entity instanceof Player;
-    }
-
-    public static final MapCodec<PocketDimensionPortalFrameBlock> CODEC = simpleCodec((t) -> new PocketDimensionPortalFrameBlock());
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 
 }

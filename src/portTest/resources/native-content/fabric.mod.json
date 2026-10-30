@@ -1,0 +1,1 @@
+{"schemaVersion":1,"id":"irons_spellbooks_native_content_probe","version":"1.0.0","environment":"*","entrypoints":{"main":["io.redspace.ironsspellbooks.content.NativeContentPortCheck"]},"depends":{"fabricloader":">=0.19.5","minecraft":"26.3","java":">=25","fabric-api":"*"}}

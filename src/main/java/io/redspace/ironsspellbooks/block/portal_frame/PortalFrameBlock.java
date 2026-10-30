@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.block.portal_frame;
 
-import com.mojang.serialization.MapCodec;
 import io.redspace.ironsspellbooks.config.ServerConfigs;
 import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import net.minecraft.ChatFormatting;
@@ -28,7 +27,7 @@ import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.StateDefinition;
 import net.minecraft.world.level.block.state.properties.BlockStateProperties;
-import net.minecraft.world.level.block.state.properties.DirectionProperty;
+import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
 import net.minecraft.world.level.block.state.properties.EnumProperty;
 import net.minecraft.world.level.material.PushReaction;
@@ -40,7 +39,7 @@ import net.minecraft.world.phys.shapes.VoxelShape;
 import org.jetbrains.annotations.Nullable;
 
 public class PortalFrameBlock extends BaseEntityBlock {
-    public static final DirectionProperty FACING = BlockStateProperties.HORIZONTAL_FACING;
+    public static final EnumProperty<Direction> FACING = BlockStateProperties.HORIZONTAL_FACING;
     public static final EnumProperty<DoubleBlockHalf> HALF = BlockStateProperties.DOUBLE_BLOCK_HALF;
     protected static final VoxelShape SOUTH_AABB = Block.box(0.0, 0.0, 0.0, 16.0, 16.0, 3.0);
     protected static final VoxelShape NORTH_AABB = Block.box(0.0, 0.0, 13.0, 16.0, 16.0, 16.0);
@@ -59,7 +58,7 @@ public class PortalFrameBlock extends BaseEntityBlock {
 
 
     public PortalFrameBlock() {
-        this(Properties.of().noOcclusion().isSuffocating((x, y, z) -> false).sound(SoundType.COPPER_GRATE).isViewBlocking((x, y, z) -> false).strength(10, 6));
+        this(Properties.of().noOcclusion().isSuffocating((state, level, pos) -> false).sound(SoundType.COPPER_GRATE).isViewBlocking((state, level, pos, bounds) -> false).strength(10, 6));
     }
 
     public PortalFrameBlock(BlockBehaviour.Properties properties) {
@@ -77,18 +76,20 @@ public class PortalFrameBlock extends BaseEntityBlock {
     }
 
 
-    public BlockState updateShape(BlockState myState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos myPos, BlockPos pFacingPos) {
+    protected BlockState updateShape(BlockState myState, net.minecraft.world.level.LevelReader pLevel, net.minecraft.world.level.ScheduledTickAccess tickAccess, BlockPos myPos, Direction pFacing, BlockPos pFacingPos, BlockState pFacingState, net.minecraft.util.RandomSource random) {
         var half = myState.getValue(HALF);
         BlockPos requiredNeighborPos = myPos.relative(half.getDirectionToOther());
         BlockState neighborState = pLevel.getBlockState(requiredNeighborPos);
         if (!neighborState.is(this)) {
             var air = Blocks.AIR.defaultBlockState();
             //manually set to prevent block from dropping
-            pLevel.setBlock(myPos, air, 35);
-            pLevel.levelEvent(null, 2001, myPos, Block.getId(air));
+            if (pLevel instanceof Level mutableLevel) {
+                mutableLevel.setBlock(myPos, air, 35);
+                mutableLevel.levelEvent(null, 2001, myPos, Block.getId(air));
+            }
             return air;
         }
-        return super.updateShape(myState, pFacing, pFacingState, pLevel, myPos, pFacingPos);
+        return super.updateShape(myState, pLevel, tickAccess, myPos, pFacing, pFacingPos, pFacingState, random);
     }
 
     @Override
@@ -112,7 +113,7 @@ public class PortalFrameBlock extends BaseEntityBlock {
             var facing = pState.getValue(FACING);
             BlockPos blockpos = pPos.relative(half.getDirectionToOther());
             pLevel.setBlock(blockpos, pState.setValue(HALF, half.getOtherHalf()).setValue(FACING, facing), 3);
-            pLevel.blockUpdated(pPos, Blocks.AIR);
+            pLevel.updateNeighborsAt(pPos, Blocks.AIR, null);
             pState.updateNeighbourShapes(pLevel, pPos, 3);
             if (pPlacer != null && pLevel.getBlockEntity(pPos) instanceof PortalFrameBlockEntity portalFrameBlockEntity) {
                 portalFrameBlockEntity.setOwnerUUID(pPlacer.getUUID());
@@ -146,7 +147,7 @@ public class PortalFrameBlock extends BaseEntityBlock {
 
 
     @Override
-    protected void entityInside(BlockState pState, Level pLevel, BlockPos pPos, Entity pEntity) {
+    protected void entityInside(BlockState pState, Level pLevel, BlockPos pPos, Entity pEntity, net.minecraft.world.entity.InsideBlockEffectApplier effectApplier, boolean isInside) {
         if (!pEntity.level().isClientSide()) {
             VoxelShape voxelshape = pState.getShape(pLevel, pPos, CollisionContext.of(pEntity));
             VoxelShape voxelshape1 = voxelshape.move((double) pPos.getX(), (double) pPos.getY(), (double) pPos.getZ());
@@ -161,11 +162,11 @@ public class PortalFrameBlock extends BaseEntityBlock {
     }
     @Override
     public InteractionResult useItemOn(ItemStack pStack, BlockState state, Level pLevel, BlockPos pos, Player player, InteractionHand hand, BlockHitResult hit) {
-        if (pStack.getItem() instanceof DyeItem dyeItem) {
+        if (pStack.has(net.minecraft.core.component.DataComponents.DYE)) {
             var portal = pLevel.getBlockEntity(pos, BlockRegistry.PORTAL_FRAME_BLOCK_ENTITY.get());
             if (portal.isPresent()) {
                 PortalFrameBlockEntity tile = portal.get();
-                int color = dyeItem.getDyeColor().getTextureDiffuseColor();
+                int color = pStack.get(net.minecraft.core.component.DataComponents.DYE).getTextureDiffuseColor();
                 if (tile.isPortalConnected() && tile.getColor() != color) {
                     if (!ServerConfigs.safeGet(ServerConfigs.PORTAL_FRAME_RESTRICT_DYE) || tile.getOwnerUUID() == null || player.getUUID().equals(tile.getOwnerUUID())) {
                         if (!player.getAbilities().instabuild) {
@@ -184,29 +185,14 @@ public class PortalFrameBlock extends BaseEntityBlock {
         return super.useItemOn(pStack, state, pLevel, pos, player, hand, hit);
     }
 
-    public static final MapCodec<PortalFrameBlock> CODEC = simpleCodec((t) -> new PortalFrameBlock());
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
-    }
-
     @Nullable
     @Override
     public BlockEntity newBlockEntity(BlockPos pPos, BlockState pState) {
         return new PortalFrameBlockEntity(pPos, pState);
     }
 
-    @Override
-    protected void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pMovedByPiston) {
-        if (pLevel.getBlockEntity(pPos) instanceof PortalFrameBlockEntity portalFrame) {
-            portalFrame.breakPortalConnection();
-        }
-        super.onRemove(pState, pLevel, pPos, pNewState, pMovedByPiston);
-    }
-
     public @Nullable PushReaction getPistonPushReaction(BlockState state) {
-        return PushReaction.IGNORE;
+        return PushReaction.IGNORE_ENTITY;
     }
 
     @Override

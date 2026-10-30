@@ -6,7 +6,6 @@ import io.redspace.ironsspellbooks.registries.BlockRegistry;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.Connection;
 import net.minecraft.network.chat.Component;
 import net.minecraft.network.chat.MutableComponent;
 import net.minecraft.network.protocol.game.ClientboundBlockEntityDataPacket;
@@ -20,17 +19,25 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.state.BlockState;
+import net.minecraft.world.level.storage.ValueInput;
+import net.minecraft.world.level.storage.ValueOutput;
 import net.neoforged.neoforge.items.ItemStackHandler;
 import org.jetbrains.annotations.Nullable;
 
-import javax.annotation.Nonnull;
-
 public class ScrollForgeTile extends BlockEntity implements MenuProvider {
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState newState) {
+        if (level instanceof net.minecraft.server.level.ServerLevel) drops();
+        super.preRemoveSideEffects(pos, newState);
+    }
+
     private ScrollForgeMenu menu;
+    private boolean loadingInventory;
 
     private final ItemStackHandler itemHandler = new ItemStackHandler(4) {
         @Override
         protected void onContentsChanged(int slot) {
+            if (loadingInventory) return;
             updateMenuSlots(slot);
             setChanged();
         }
@@ -43,7 +50,6 @@ public class ScrollForgeTile extends BlockEntity implements MenuProvider {
     private void updateMenuSlots(int slot) {
         if (menu != null) {
             menu.onSlotsChanged(slot);
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
         }
     }
 
@@ -83,61 +89,55 @@ public class ScrollForgeTile extends BlockEntity implements MenuProvider {
     }
 
     @Override
-    protected void loadAdditional(CompoundTag pTag, HolderLookup.Provider pRegistries) {
-        super.loadAdditional(pTag, pRegistries);
-        if (pTag.contains("inventory")) {
-            itemHandler.deserializeNBT(pRegistries, pTag.getCompoundOrEmpty("inventory"));
+    protected void loadAdditional(ValueInput input) {
+        super.loadAdditional(input);
+        loadingInventory = true;
+        try {
+            for (int slot = 0; slot < itemHandler.getSlots(); slot++) {
+                itemHandler.setStackInSlot(slot, ItemStack.EMPTY);
+            }
+            for (ValueInput entry : input.childOrEmpty("inventory").childrenListOrEmpty("Items")) {
+                int slot = entry.getIntOr("Slot", -1);
+                if (slot >= 0 && slot < itemHandler.getSlots()) {
+                    entry.read(ItemStack.MAP_CODEC).ifPresent(stack -> itemHandler.setStackInSlot(slot, stack));
+                }
+            }
+        } finally {
+            loadingInventory = false;
         }
     }
 
     @Override
-    protected void saveAdditional(@Nonnull CompoundTag tag, HolderLookup.Provider registryAccess) {
-        //irons_spellbooks.LOGGER.debug("saveAdditional tag:{}", tag);
-        tag.put("inventory", itemHandler.serializeNBT(registryAccess));
+    protected void saveAdditional(ValueOutput output) {
+        super.saveAdditional(output);
+        ValueOutput inventory = output.child("inventory");
+        inventory.putInt("Size", itemHandler.getSlots());
+        var items = inventory.childrenList("Items");
+        for (int slot = 0; slot < itemHandler.getSlots(); slot++) {
+            ItemStack stack = itemHandler.getStackInSlot(slot);
+            if (!stack.isEmpty()) {
+                ValueOutput entry = items.addChild();
+                entry.putInt("Slot", slot);
+                entry.store(ItemStack.MAP_CODEC, stack);
+            }
+        }
     }
 
     @Override
     public CompoundTag getUpdateTag(HolderLookup.Provider pRegistries) {
-        CompoundTag tag = new CompoundTag();
-        tag.put("inventory", itemHandler.serializeNBT(pRegistries));
-        //irons_spellbooks.LOGGER.debug("getUpdateTag tag:{}", tag);
-        return tag;
-    }
-
-    public CompoundTag getUpdateTag() {
-        CompoundTag tag = new CompoundTag();
-        if (level != null) {
-            tag.put("inventory", itemHandler.serializeNBT(level.registryAccess()));
-        }
-        return tag;
-    }
-
-    public void handleUpdateTag(CompoundTag tag, HolderLookup.Provider lookupProvider) {
-        loadAdditional(tag, lookupProvider);
-    }
-
-    public void handleUpdateTag(CompoundTag tag) {
-        if (level != null) {
-            loadAdditional(tag, level.registryAccess());
-        }
+        return saveWithoutMetadata(pRegistries);
     }
 
     @Override
     public ClientboundBlockEntityDataPacket getUpdatePacket() {
-        var packet = ClientboundBlockEntityDataPacket.create(this);
-        //irons_spellbooks.LOGGER.debug("getUpdatePacket: packet.getTag:{}", packet.getTag());
-        return packet;
+        return ClientboundBlockEntityDataPacket.create(this);
     }
 
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt, HolderLookup.Provider lookupProvider) {
-        handleUpdateTag(pkt.getTag(), lookupProvider);
-        level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
-    }
-
-    public void onDataPacket(Connection net, ClientboundBlockEntityDataPacket pkt) {
-        if (level != null) {
-            handleUpdateTag(pkt.getTag(), level.registryAccess());
-            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_ALL);
+    @Override
+    public void setChanged() {
+        super.setChanged();
+        if (level != null && !level.isClientSide()) {
+            level.sendBlockUpdated(worldPosition, getBlockState(), getBlockState(), Block.UPDATE_CLIENTS);
         }
     }
 }

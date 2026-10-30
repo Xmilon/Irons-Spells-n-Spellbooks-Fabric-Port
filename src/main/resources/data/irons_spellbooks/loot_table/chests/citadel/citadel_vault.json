@@ -30,7 +30,7 @@
       "conditions": [
         {
           "condition": "minecraft:random_chance",
-          "chance": 0.40
+          "chance": 0.4
         }
       ]
     },
@@ -76,7 +76,8 @@
               "function": "irons_spellbooks:randomize_spell",
               "quality": {
                 "min": 0.5,
-                "max": 1.0
+                "max": 1.0,
+                "type": "minecraft:uniform"
               }
             }
           ]
@@ -90,7 +91,8 @@
               "function": "irons_spellbooks:randomize_spell",
               "quality": {
                 "min": 0.5,
-                "max": 1.0
+                "max": 1.0,
+                "type": "minecraft:uniform"
               },
               "spell_filter": {
                 "school": "irons_spellbooks:fire"
@@ -107,7 +109,8 @@
               "function": "irons_spellbooks:randomize_spell",
               "quality": {
                 "min": 0.0,
-                "max": 0.5
+                "max": 0.5,
+                "type": "minecraft:uniform"
               },
               "spell_filter": {
                 "spells": [

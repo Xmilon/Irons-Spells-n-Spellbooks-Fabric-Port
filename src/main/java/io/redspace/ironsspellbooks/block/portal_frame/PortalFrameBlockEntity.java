@@ -13,14 +13,14 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
 import net.minecraft.world.entity.Entity;
-import net.minecraft.world.entity.RelativeMovement;
+import net.minecraft.world.entity.Relative;
 import net.minecraft.world.level.Level;
 import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.entity.BlockEntity;
 import net.minecraft.world.level.block.entity.BlockEntityType;
 import net.minecraft.world.level.block.state.BlockState;
 import net.minecraft.world.level.block.state.properties.DoubleBlockHalf;
-import net.minecraft.world.level.portal.DimensionTransition;
+import net.minecraft.world.level.portal.TeleportTransition;
 import net.minecraft.world.phys.Vec3;
 import org.jetbrains.annotations.Nullable;
 
@@ -30,6 +30,12 @@ import java.util.function.Consumer;
 import java.util.function.Function;
 
 public class PortalFrameBlockEntity extends BlockEntity {
+    @Override
+    public void preRemoveSideEffects(BlockPos pos, BlockState newState) {
+        if (level instanceof net.minecraft.server.level.ServerLevel) breakPortalConnection();
+        super.preRemoveSideEffects(pos, newState);
+    }
+
     private PortalId portalId;
     private int color = -1;
     /**
@@ -113,9 +119,9 @@ public class PortalFrameBlockEntity extends BlockEntity {
 
     public Vec3 getPortalLocation() {
         if (isPrimary(this.getBlockState())) {
-            return this.getBlockPos().getBottomCenter();
+            return Vec3.atBottomCenterOf(this.getBlockPos());
         } else {
-            return this.getBlockPos().getBottomCenter().subtract(0, 1, 0);
+            return Vec3.atBottomCenterOf(this.getBlockPos()).subtract(0, 1, 0);
         }
     }
 
@@ -149,12 +155,12 @@ public class PortalFrameBlockEntity extends BlockEntity {
                     serverLevel.playSound(null, this.getBlockPos(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.BLOCKS, 1f, 1f);
                     ServerLevel destinationLevel = serverLevel;
                     if (serverLevel.dimension().equals(portalPos.dimension())) {
-                        entity.teleportTo(serverLevel, destination.x, destination.y, destination.z, RelativeMovement.ROTATION, portalPos.rotation(), entity.getXRot());
+                        entity.teleportTo(serverLevel, destination.x, destination.y, destination.z, Relative.ROTATION, portalPos.rotation(), entity.getXRot());
                     } else {
                         var server = serverLevel.getServer();
                         var dim = server.getLevel(portalPos.dimension());
                         if (dim != null) {
-                            entity.changeDimension(new DimensionTransition(dim, destination, Vec3.ZERO, portalPos.rotation(), entity.getXRot(), DimensionTransition.DO_NOTHING));
+                            entity.teleport(new TeleportTransition(dim, destination, Vec3.ZERO, portalPos.rotation(), entity.getXRot(), TeleportTransition.DO_NOTHING));
                             destinationLevel = dim;
                         }
                     }
@@ -165,11 +171,11 @@ public class PortalFrameBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void loadAdditional(CompoundTag tag, HolderLookup.Provider pRegistries) {
-        super.loadAdditional(tag, pRegistries);
+    protected void loadAdditional(net.minecraft.world.level.storage.ValueInput tag) {
+        super.loadAdditional(tag);
         if (tag.contains("uuid")) {
             var uuid = tag.read("uuid", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
-            this.portalId = new PortalId(Optional.of(uuid));
+            this.portalId = new PortalId(Optional.ofNullable(uuid));
         }
         if (tag.contains("owner")) {
             this.ownerUUID = tag.read("owner", net.minecraft.core.UUIDUtil.CODEC).orElse(null);
@@ -183,8 +189,9 @@ public class PortalFrameBlockEntity extends BlockEntity {
     }
 
     @Override
-    protected void saveAdditional(CompoundTag tag, HolderLookup.Provider pRegistries) {
-        super.saveAdditional(tag, pRegistries);
+    protected void saveAdditional(net.minecraft.world.level.storage.ValueOutput tag) {
+        super.saveAdditional(tag);
+        if (ownerUUID != null) tag.store("owner", net.minecraft.core.UUIDUtil.CODEC, ownerUUID);
         if (isPrimary(this.getBlockState())) {
             tag.putInt("color", color);
             tag.putBoolean("connected", this.isPortalConnected());

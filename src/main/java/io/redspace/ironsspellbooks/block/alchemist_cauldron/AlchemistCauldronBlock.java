@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.block.alchemist_cauldron;
 
-import com.mojang.serialization.MapCodec;
 import io.redspace.ironsspellbooks.capabilities.magic.MagicManager;
 import io.redspace.ironsspellbooks.damage.DamageSources;
 import io.redspace.ironsspellbooks.damage.ISSDamageTypes;
@@ -72,16 +71,16 @@ public class AlchemistCauldronBlock extends BaseEntityBlock {
     }
 
     @Override
-    public void entityInside(BlockState blockState, Level level, BlockPos pos, Entity entity) {
+    public void entityInside(BlockState blockState, Level level, BlockPos pos, Entity entity, net.minecraft.world.entity.InsideBlockEffectApplier effectApplier, boolean isInside) {
         if (!level.isClientSide() && entity.tickCount % 20 == 0) {
             if (level.getBlockEntity(pos) instanceof AlchemistCauldronTile cauldronTile) {
-                if (entity instanceof LivingEntity livingEntity && livingEntity.hurt(DamageSources.get(level, ISSDamageTypes.CAULDRON), 2)) {
+                if (level instanceof net.minecraft.server.level.ServerLevel serverLevel && entity instanceof LivingEntity livingEntity && livingEntity.hurtServer(serverLevel, DamageSources.get(level, ISSDamageTypes.CAULDRON), 2)) {
                     MagicManager.spawnParticles(level, ParticleHelper.BLOOD, entity.getX(), entity.getY() + entity.getBbHeight() / 2, entity.getZ(), 20, .05, .05, .05, .1, false);
                     cauldronTile.fluidInventory.fill(new FluidStack(FluidRegistry.BLOOD, 250), IFluidHandler.FluidAction.EXECUTE);
                 }
             }
         }
-        super.entityInside(blockState, level, pos, entity);
+        super.entityInside(blockState, level, pos, entity, effectApplier, isInside);
     }
 
     @Nullable
@@ -91,27 +90,9 @@ public class AlchemistCauldronBlock extends BaseEntityBlock {
     }
 
     @Override
-    public void onRemove(BlockState pState, Level pLevel, BlockPos pPos, BlockState pNewState, boolean pIsMoving) {
-        if (pState.getBlock() != pNewState.getBlock()) {
-            BlockEntity blockEntity = pLevel.getBlockEntity(pPos);
-            if (blockEntity instanceof AlchemistCauldronTile cauldronTile) {
-                cauldronTile.drops();
-            }
-        }
-        super.onRemove(pState, pLevel, pPos, pNewState, pIsMoving);
-    }
-
-    @Override
     @SuppressWarnings("deprecation")
     public @NotNull RenderShape getRenderShape(@NotNull BlockState blockState) {
         return RenderShape.MODEL;
-    }
-
-    public static final MapCodec<AlchemistCauldronBlock> CODEC = simpleCodec((t) -> new AlchemistCauldronBlock());
-
-    @Override
-    protected MapCodec<? extends BaseEntityBlock> codec() {
-        return CODEC;
     }
 }
 

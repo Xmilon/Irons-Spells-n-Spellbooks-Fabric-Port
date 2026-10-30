@@ -4,10 +4,9 @@ import com.mojang.serialization.Codec;
 import com.mojang.serialization.codecs.RecordCodecBuilder;
 import net.minecraft.core.BlockPos;
 import net.minecraft.resources.Identifier;
-import net.minecraft.world.level.levelgen.feature.configurations.FeatureConfiguration;
 
 public record StructureFeatureConfiguration(Identifier structureTemplateLocation, int xsize, int ysize,
-                                            int zsize, BlockPos offset) implements FeatureConfiguration {
+                                            int zsize, BlockPos offset) {
     public static final Codec<StructureFeatureConfiguration> CODEC = RecordCodecBuilder.create(builder -> builder.group(
             Identifier.CODEC.fieldOf("structure_piece").forGetter(StructureFeatureConfiguration::structureTemplateLocation),
             Codec.intRange(1, 16).fieldOf("x_size").forGetter(StructureFeatureConfiguration::xsize),

@@ -292,6 +292,27 @@ tasks.register('effectTickProbeJar', Jar) {
 	from('src/portTest/resources/effect-ticks')
 }
 
+tasks.register('compilePortNativeContent', JavaCompile) {
+	source 'src/main/java/io/redspace/ironsspellbooks/api/util/EquipmentUtils.java',
+		'src/main/java/io/redspace/ironsspellbooks/worldgen/features/StructureFeatureConfiguration.java',
+		'src/main/java/io/redspace/ironsspellbooks/worldgen/features/ExposedAirFeature.java',
+		'src/portTest/java/io/redspace/ironsspellbooks/content/NativeContentPortCheck.java'
+	classpath = sourceSets.main.compileClasspath
+	destinationDirectory = layout.buildDirectory.dir('port-native-content/classes')
+	options.sourcepath = files()
+	javaCompiler = javaToolchains.compilerFor { languageVersion = JavaLanguageVersion.of(25) }
+}
+
+tasks.register('nativeContentProbeJar', Jar) {
+	dependsOn 'compilePortNativeContent'
+	archiveFileName = 'native-content-port-probe.jar'
+	destinationDirectory = layout.buildDirectory.dir('port-native-content')
+	from(tasks.named('compilePortNativeContent').flatMap { it.destinationDirectory })
+	from('src/portTest/resources/native-content')
+}
+
+tasks.named('check') { dependsOn 'compilePortNativeContent' }
+
 tasks.register('compileWizardAngerData', JavaCompile) {
 	source 'src/main/java/io/redspace/ironsspellbooks/entity/mobs/abstract_spell_casting_mob/WizardAngerData.java',
 		'src/portTest/java/io/redspace/ironsspellbooks/entity/mobs/goals/WizardAngerDataCheck.java'

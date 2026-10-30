@@ -86,7 +86,8 @@
               "function": "irons_spellbooks:randomize_spell",
               "quality": {
                 "min": 0.0,
-                "max": 0.5
+                "max": 0.5,
+                "type": "minecraft:uniform"
               }
             }
           ]
@@ -122,7 +123,8 @@
               "function": "irons_spellbooks:randomize_spell",
               "quality": {
                 "min": 0.2,
-                "max": 0.75
+                "max": 0.75,
+                "type": "minecraft:uniform"
               }
             },
             {
@@ -145,7 +147,8 @@
               "function": "irons_spellbooks:randomize_spell",
               "quality": {
                 "min": 0.2,
-                "max": 0.75
+                "max": 0.75,
+                "type": "minecraft:uniform"
               }
             },
             {
@@ -167,7 +170,8 @@
               "function": "irons_spellbooks:randomize_spell",
               "quality": {
                 "min": 0.2,
-                "max": 0.75
+                "max": 0.75,
+                "type": "minecraft:uniform"
               }
             }
           ]

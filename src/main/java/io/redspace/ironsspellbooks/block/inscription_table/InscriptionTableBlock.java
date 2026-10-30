@@ -1,6 +1,5 @@
 package io.redspace.ironsspellbooks.block.inscription_table;
 
-import com.mojang.serialization.MapCodec;
 import io.redspace.ironsspellbooks.gui.inscription_table.InscriptionTableMenu;
 import net.minecraft.core.BlockPos;
 import net.minecraft.core.Direction;
@@ -62,23 +61,25 @@ public class InscriptionTableBlock extends HorizontalDirectionalBlock implements
         this.registerDefaultState(defaultBlockState().setValue(WATERLOGGED, false));
     }
 
-    public BlockState updateShape(BlockState myState, Direction pFacing, BlockState pFacingState, LevelAccessor pLevel, BlockPos myPos, BlockPos pFacingPos) {
+    protected BlockState updateShape(BlockState myState, net.minecraft.world.level.LevelReader pLevel, net.minecraft.world.level.ScheduledTickAccess tickAccess, BlockPos myPos, Direction pFacing, BlockPos pFacingPos, BlockState pFacingState, net.minecraft.util.RandomSource random) {
         ChestType half = myState.getValue(PART);
         BlockPos requiredNeighborPos = myPos.relative(getNeighbourDirection(half, myState.getValue(FACING)));
         boolean waterlogged = myState.getValue(WATERLOGGED);
         if (waterlogged) {
-            pLevel.scheduleTick(myPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
-            pLevel.scheduleTick(requiredNeighborPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
+            tickAccess.scheduleTick(myPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
+            tickAccess.scheduleTick(requiredNeighborPos, Fluids.WATER, Fluids.WATER.getTickDelay(pLevel));
         }
         BlockState neighborState = pLevel.getBlockState(requiredNeighborPos);
         if (!neighborState.is(this)) {
             var air = (waterlogged ? Blocks.WATER : Blocks.AIR).defaultBlockState();
             //manually set to prevent block from dropping
-            pLevel.setBlock(myPos, air, 35);
-            pLevel.levelEvent(null, 2001, myPos, Block.getId(air));
+            if (pLevel instanceof Level mutableLevel) {
+                mutableLevel.setBlock(myPos, air, 35);
+                mutableLevel.levelEvent(null, 2001, myPos, Block.getId(air));
+            }
             return air;
         }
-        return super.updateShape(myState, pFacing, pFacingState, pLevel, myPos, pFacingPos);
+        return super.updateShape(myState, pLevel, tickAccess, myPos, pFacing, pFacingPos, pFacingState, random);
     }
 
     private static Direction getNeighbourDirection(ChestType pPart, Direction pDirection) {
@@ -117,7 +118,7 @@ public class InscriptionTableBlock extends HorizontalDirectionalBlock implements
             BlockPos blockpos = pPos.relative(pState.getValue(FACING).getClockWise());
             pLevel.setBlock(blockpos, pState.setValue(PART, ChestType.LEFT).setValue(WATERLOGGED, pLevel.getFluidState(blockpos).getType() == Fluids.WATER), 3);
             pLevel.setBlock(pPos, pState.setValue(PART, ChestType.RIGHT), 3);
-            pLevel.blockUpdated(pPos, Blocks.AIR);
+            pLevel.updateNeighborsAt(pPos, Blocks.AIR, null);
             pState.updateNeighbourShapes(pLevel, pPos, 3);
         }
 
@@ -142,7 +143,7 @@ public class InscriptionTableBlock extends HorizontalDirectionalBlock implements
     }
 
     public PushReaction getPistonPushReaction(BlockState pState) {
-        return PushReaction.BLOCK;
+        return PushReaction.IMMOVEABLE;
     }
 
     @Override
@@ -160,13 +161,6 @@ public class InscriptionTableBlock extends HorizontalDirectionalBlock implements
     public MenuProvider getMenuProvider(BlockState pState, Level pLevel, BlockPos pPos) {
         return new SimpleMenuProvider((i, inventory, player) ->
                 new InscriptionTableMenu(i, inventory, ContainerLevelAccess.create(pLevel, pPos)), Component.translatable("block.irons_spellbooks.inscription_table"));
-    }
-
-    public static final MapCodec<InscriptionTableBlock> CODEC = simpleCodec((t) -> new InscriptionTableBlock());
-
-    @Override
-    protected MapCodec<? extends HorizontalDirectionalBlock> codec() {
-        return CODEC;
     }
 }
 

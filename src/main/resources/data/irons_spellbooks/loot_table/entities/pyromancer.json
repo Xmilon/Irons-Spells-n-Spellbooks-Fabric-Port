@@ -42,7 +42,8 @@
               "function": "irons_spellbooks:randomize_spell",
               "quality": {
                 "min": 0.25,
-                "max": 0.85
+                "max": 0.85,
+                "type": "minecraft:uniform"
               },
               "spell_filter": {
                 "school": "irons_spellbooks:fire"

@@ -9,13 +9,13 @@ import io.redspace.ironsspellbooks.registries.LootRegistry;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.storage.loot.LootContext;
 import net.minecraft.world.level.storage.loot.functions.LootItemConditionalFunction;
-import net.minecraft.world.level.storage.loot.functions.LootItemFunctionType;
+import net.minecraft.core.Holder;
 import net.minecraft.world.level.storage.loot.predicates.LootItemCondition;
 
-import java.util.List;
+import java.util.Optional;
 
 public class RandomizeRingEnhancementFunction extends LootItemConditionalFunction {
-    protected RandomizeRingEnhancementFunction(List<LootItemCondition> lootConditions, SpellFilter spellFilter) {
+    protected RandomizeRingEnhancementFunction(Optional<Holder<LootItemCondition>> lootConditions, SpellFilter spellFilter) {
         super(lootConditions);
         this.spellFilter = spellFilter;
     }
@@ -46,8 +46,8 @@ public class RandomizeRingEnhancementFunction extends LootItemConditionalFunctio
     }
 
     @Override
-    public LootItemFunctionType getType() {
-        return LootRegistry.RANDOMIZE_SPELL_RING_FUNCTION.get();
+    public MapCodec<RandomizeRingEnhancementFunction> codec() {
+        return CODEC;
     }
 
 }

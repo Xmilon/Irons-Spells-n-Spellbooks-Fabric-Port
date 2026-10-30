@@ -15,7 +15,7 @@
         {
           "condition": "minecraft:random_chance_with_enchanted_bonus",
           "enchantment": "minecraft:looting",
-          "unenchanted_chance": 0.50,
+          "unenchanted_chance": 0.5,
           "enchanted_chance": {
             "type": "minecraft:linear",
             "base": 0.55,
@@ -36,7 +36,8 @@
               "function": "irons_spellbooks:randomize_spell",
               "quality": {
                 "min": 0.0,
-                "max": 0.5
+                "max": 0.5,
+                "type": "minecraft:uniform"
               },
               "spell_filter": {
                 "spells": [
@@ -54,7 +55,7 @@
         {
           "condition": "minecraft:random_chance_with_enchanted_bonus",
           "enchantment": "minecraft:looting",
-          "unenchanted_chance": 0.70,
+          "unenchanted_chance": 0.7,
           "enchanted_chance": {
             "type": "minecraft:linear",
             "base": 0.75,

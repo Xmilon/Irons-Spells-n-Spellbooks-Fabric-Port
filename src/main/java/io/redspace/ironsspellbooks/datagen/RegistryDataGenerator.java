@@ -16,8 +16,7 @@ import java.util.concurrent.CompletableFuture;
 
 public class RegistryDataGenerator extends DatapackBuiltinEntriesProvider {
     private static final RegistrySetBuilder BUILDER = new RegistrySetBuilder()
-            .add(NeoForgeRegistries.Keys.BIOME_MODIFIERS, FeatureRegistry::bootstrapBiomeModifier)
-            .add(Registries.CONFIGURED_FEATURE, FeatureRegistry::bootstrapConfiguredFeature)
+            .add(Registries.FEATURE, FeatureRegistry::bootstrapFeature)
             .add(Registries.PLACED_FEATURE, FeatureRegistry::bootstrapPlacedFeature)
             .add(Registries.DAMAGE_TYPE, ISSDamageTypes::bootstrap)
             .add(UpgradeOrbTypeRegistry.UPGRADE_ORB_REGISTRY_KEY, UpgradeOrbTypeRegistry::bootstrap)
